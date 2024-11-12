@@ -1,4 +1,4 @@
-# This is my package laravel-cascade
+# This is my package laravel-cascade 2
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/dclaysmith/laravel-cascade.svg?style=flat-square)](https://packagist.org/packages/dclaysmith/laravel-cascade)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/dclaysmith/laravel-cascade/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/dclaysmith/laravel-cascade/actions?query=workflow%3Arun-tests+branch%3Amain)
@@ -76,8 +76,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [D Clay Smith](https://github.com/dclaysmith)
-- [All Contributors](../../contributors)
+-   [D Clay Smith](https://github.com/dclaysmith)
+-   [All Contributors](../../contributors)
 
 ## License
 
