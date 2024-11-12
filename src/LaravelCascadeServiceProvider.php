@@ -2,9 +2,9 @@
 
 namespace Dclaysmith\LaravelCascade;
 
+use Dclaysmith\LaravelCascade\Commands\LaravelCascadeCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Dclaysmith\LaravelCascade\Commands\LaravelCascadeCommand;
 
 class LaravelCascadeServiceProvider extends PackageServiceProvider
 {
