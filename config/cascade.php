@@ -1,6 +1,91 @@
 <?php
 
-// config for Dclaysmith/LaravelCascade
 return [
 
+    /*
+    |--------------------------------------------------------------------------
+    | Scheduling Frequencies
+    |--------------------------------------------------------------------------
+    |
+    | How many minutes should elapse before running scheduled tasks
+    |
+    */
+    'schedule' => [
+        'ExportSegments' => env('CASACADE_FREQUENCY_EXPORT_SEGMENTS', 360),
+        'RecordSegmentStatistics' => env('CASACADE_FREQUENCY_EXPORT_SEGMENT_STATISTICS', 360),
+        'RecordEntityStatistics' => env('CASACADE_FREQUENCY_EXPORT_ENTITY_STATISTICS', 360),
+        'RollupEvents' => env('CASACADE_FREQUENCY_ROLLUP_EVENTS', 360),
+        'RollupPageViews' => env('CASACADE_FREQUENCY_ROLLUP_PAGEVIEWS', 360),
+        'RollupSessions' => env('CASACADE_FREQUENCY_ROLLUP_SESSIONS', 360),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Database
+    |--------------------------------------------------------------------------
+    |
+    | Which database connection (Defined in config.database) should be use.
+    |
+    | This must be a Postgres based connection.
+    */
+    'database' => [
+        'connection' => env('DB_CONNECTION', 'pgsql'),
+        'tablePrefix' => env('CASACADE_TABLE_PRFIX', 'lc_'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Models
+    |--------------------------------------------------------------------------
+    |
+    | Which models should be used for the various entities and what is the relationship
+    | between the group and the user
+    */
+    'models' => [
+        'user' => env('CASACADE_MODEL_USER', \App\Models\User::class),
+        'group' => env('CASACADE_MODEL_GROUP', null),
+        'relationship' => \Illuminate\Database\Eloquent\Relations\BelongsToMany::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Paths
+    |--------------------------------------------------------------------------
+    |
+    | Where are certain items located in your Laravel project
+    */
+    'paths' => [
+        'segments' => env('CASACADE_PATH_SEGMENTS', 'App\Segments'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tracking
+    |--------------------------------------------------------------------------
+    |
+    | Settings determining the behaviour of the tracking
+    */
+    'tracking' => [
+        'server' => [
+            'loadMiddleware' => env('CASCADE_TRACK_SERVER_LOAD_MIDDLEWARE', true),
+            'trackAuthenticationEvents' => env('CASCADE_TRACK_SERVER_AUTHENTICATION_EVENTS', true),
+            'authenticationEventsTracked' => [
+                'Authenticated',
+                'CurrentDeviceLogout',
+                'Login',
+                'Logout',
+                'OtherDeviceLogout',
+                'PasswordReset',
+                'Registered',
+                'Validated',
+                'Verified',
+            ],
+            'trackRequests' => env('CASCADE_TRACK_SERVER_REQUESTS', true),
+        ],
+        'client' => [
+            'loadMiddleware' => env('CASCADE_TRACK_CLIENT_LOAD_MIDDLEWARE', true),
+            'trackPageViews' => env('CASCADE_TRACK_CLIENT_PAGE_VIEWS', true),
+            'controllerPrefix' => env('CASCADE_TRACK_CONTROLLER_PREFIX', ''),
+        ],
+    ],
 ];
