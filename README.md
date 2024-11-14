@@ -147,6 +147,7 @@ Cascade runs several jobs to transform your data. You can update the frequency t
 -   `Relationship`. You should specify the relationship between the `Group` and the `User`. By default, the relationship is `Illuminate\Database\Eloquent\Relations\HasMany` meaning each `Group` has zero or more `Users` objects. Other options include:
     -   `Illuminate\Database\Eloquent\Relations\HasOne`. Each `User` belongs to one `Group` and each `Group` has exactly one `User`.
     -   `Illuminate\Database\Eloquent\Relations\BelongsToMany`. Each `User` can belong to zero or more `Groups` and each `Group` can have have zero or more `Users`.
+-   `Payment`. You can **optionally** specify a Payment model that represents a payment made by a Trackable model to your organization.
 
 ## Tracking Options
 
@@ -164,21 +165,87 @@ Cascade can track requests and events on the server and on the client. There are
 -   `trackPageViews`. Default `true`. When `true`, the Javascript tracking code will listen for pushState changes and record a pageview for each.
 -   `routePrefix`. Default `''`. Tracking events are sent to the `/request` endpoint by default. If you move this endpoint to a different location, update `routePrefix` to reflect this location.
 
+## Paths
+
+Where to autoload `Segments` (ActiveAccounts.php) and export them.
+Where to autoload `Playbooks` (ActiveAccounts.php) and export them (Move to => Cascade Playbooks)
+
 # How To
+
+Cascade is designed to work with minimal configuration but there are some things you can do to customize it to your project.
 
 ## Tracking End User Behavior
 
 ### On the Server
 
+```
+use Dclaysmith\LaravelCascade\Events\Track;
+use Dclaysmith\LaravelCascade\Events\Group;
+
+Track::dispatch(...args);
+Group::dispatch(...args);
+Identify::dispatch(...args);
+```
+
 ### On the Browser
+
+```
+Cascade('track', []);
+Cascade('identify', []);
+Cascade('page', []);
+Cascade('group', []);
+```
 
 ## Tracking Model Attribute Changes
 
-## Tracking User-Defined server events
-
-ServerEventReceived::dispatch($data);
+In your Trackable model, you can have Cascade track numerical attributes over time. To do so, add the attribute to the `$tracked` array on the model.
 
 ## Eloquent Models
+
+Cascade exposes two Eloquent scopes that allow you to segment your users based on their behavior or history: `cascade` and `orCascade`.
+
+These methods expect an instance of a `Dclaysmith\LaravelCascade\Filter` class.
+
+```
+use App\Models\User;
+use Dclaysmith\LaravelCascade\Filters\Base as Filter;
+
+$users = User::cascade(
+        Filter::eventCount('clicked:something')
+            ->greaterThan(10)
+            ->onOrAfter(now()->subYears(1))
+            ->before(now()))
+    ->get();
+```
+
+```
+use App\Models\User;
+use Dclaysmith\LaravelCascade\Filters\Base as Filter;
+
+$users = User::cascade(
+        Filter::eventCount('clicked:something')
+            ->increased(
+                [now()->subYears(2), now()->subYears(1)],
+                [now()->subYears(1), now()],
+            )
+            ->moreThan(new Percentage(10));
+    )->get();
+```
+
+Please see [docs/ELOQUENT](docs/ELOQUENT.md) for a full list of filters and options.
+
+## Creating Segments
+
+You can create segments of Trackable models by creating a class that implements the `Segment` contract and placing it in the `App\Segments` directory.
+
+These classes contain the definition of the segment, most notably, a method that returns a `Illuminate\Database\Eloquent\Builder` that returns the items contained in the Segment.
+
+| Method / Attribute | Description                                                              | Required | Data Type | Default |
+| ------------------ | ------------------------------------------------------------------------ | -------- | --------- | ------- |
+| name               | Human readable name                                                      | Y        | String    |         |
+| refreshInterval    | How frequently the segment is refreshed (minutes)                        | Y        | Integer   | 360     |
+| class              | The Trackable model class (ex. App\Models\User)                          | Y        | String    |         |
+| builder()          | An Eloquent builder class that specifies the filters forming the segment | Y        | Builder   |         |
 
 # Changelog
 
