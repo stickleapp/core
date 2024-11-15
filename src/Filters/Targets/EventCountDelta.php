@@ -17,7 +17,7 @@ class EventCount extends FilterTarget
 
     private DateTimeInterface $endDate;
 
-    public function __construct(public string $event) {}
+    public function __construct(public string $event, public array $dateRange) {}
 
     public function __property(): ?string
     {

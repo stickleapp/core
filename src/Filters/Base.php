@@ -12,7 +12,7 @@ class Base
 {
     public FilterTest $test;
 
-    public function __construct(public FilterTarget $target) {}
+    final public function __construct(public FilterTarget $target) {}
 
     public static function __callStatic(string $method, array $arguments)
     {
@@ -30,10 +30,12 @@ class Base
     public function __call(string $method, array $arguments): self|FilterTest
     {
         if (method_exists($this->target, $method)) {
-            $this->target->$method(...$arguments);
+            if ($newTargetType = $this->target->$method(...$arguments)) {
+                $this->target = $newTargetType;
+            }
         } elseif (isset($this->test)) {
             if (method_exists($this->test, $method)) {
-                $this->test->$method(...$arguments);
+                $return = $this->test->$method(...$arguments);
             }
         } else {
             $testClass = 'Dclaysmith\LaravelCascade\Filters\Tests\\'.ucfirst($method);
@@ -47,11 +49,11 @@ class Base
 
     public function apply(Builder $builder, ?string $operator = 'and'): Builder
     {
-        if (! $this->test) {
+        if (! isset($this->test)) {
             throw new \Exception('No test defined');
         }
 
-        if (! $this->target) {
+        if (! isset($this->target)) {
             throw new \Exception('No target defined');
         }
 

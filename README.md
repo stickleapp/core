@@ -51,20 +51,15 @@ Create shareable dashboards containing metrics gleaned from your Customer data.
 
 Share customer-specific email updates to your customers to demonstrate the value they provide.
 
-# Cascade Pro
+# Cascade UI Professional
 
-Subscribe to Cascade Professional and get the following:
+$499 one time payment includes:
 
-## Premium Cascade Screencasts
+-   A first-party UI for Cascade Core and Cascade Apps;
+-   Updates for 1 year;
+-   Email support.
 
-In addition to the free Cascade screencasts we regularly produce, we will be offering special Premium Screencasts for Cascade Pro subscribers.
-
-## Cascade UI Professional
-
-Cascade UI provides you with a turnkey customer analytics and engagement application including advanced UI options for
-
--   Configuring customer health scores;
--   Orchestrating and observing workflows;
+Renewals for $99/year.
 
 # Getting Started
 
@@ -95,6 +90,7 @@ The installer will guide you through the setup process helping you set configura
 It will also prompt you to install desired first-party Cascade apps:
 
 -   Cascade Webhooks
+-   Cascade Websockets
 -   Cascade Health
 -   Cascade Orchestrations
 -   Cascade Dashboards
@@ -113,14 +109,14 @@ When complete you can run Cascade with the following command:
 
 This command will does the following:
 
--   activates cron tasks;
+-   activates cron tasks; `php artisan schedule:work`
 -   activates websockets server (if applicable).
 
 You can access a test page at the URL specified in the terminal.
 
 # Advanced Configuration
 
-Cascade will work out of the box using the configuration options specified during the installation process. You can override these (and several other) options in the `\config\cascade.php` file.
+Cascade will work out of the box using the configuration options specified during the installation process. You can override these (and several other) options in the `config\cascade.php` file.
 
 ## Database Options
 
@@ -168,11 +164,55 @@ Cascade can track requests and events on the server and on the client. There are
 ## Paths
 
 Where to autoload `Segments` (ActiveAccounts.php) and export them.
+Where to autoload `Listeners`
 Where to autoload `Playbooks` (ActiveAccounts.php) and export them (Move to => Cascade Playbooks)
 
 # How To
 
-Cascade is designed to work with minimal configuration but there are some things you can do to customize it to your project.
+OK. So you installed Cascade and typed the `php artisan cascade:run` command. You were given a URL to open in your web browser (probably http://localhost:8000). You should see a demo screen that you can use to test some things out.
+
+The left frame is your application, the middle frame is an example 'admin console' and the right frame is an example 3rd-party application like a CRM.
+
+```
+Add echo code to your app
+```
+
+```
+Add echo code to admin
+```
+
+```
+Code to send a webhook to fake 3rd party service http://localhost:9000
+```
+
+Start by logging into your application in the left frame. You should have seen:
+
+-   Register a new user
+
+-   A welcome message on the login page;
+-   Some updates in the admin panel:
+
+    -   An alert announcing that someone just logged in;
+    -   An update to the 'Logged In Users' widget;
+    -   An update to your row in the Active Users table (with a new Login Count and Most recent login);
+
+-   In the admin frame, click on your username
+    In the application frame, update your username and add your birthday and click 'Save'. You should see:
+
+-   In application:
+-   In admin panel:
+
+Now do some stuff in the admin interface...
+
+Now do some stuff in the CRM...
+
+```
+Call a remote webhook
+```
+
+Meanwhile, Cascade is refreshing your Segments:
+
+-   Added to Segment alert in Admin
 
 ## Tracking End User Behavior
 
@@ -246,6 +286,39 @@ These classes contain the definition of the segment, most notably, a method that
 | refreshInterval    | How frequently the segment is refreshed (minutes)                        | Y        | Integer   | 360     |
 | class              | The Trackable model class (ex. App\Models\User)                          | Y        | String    |         |
 | builder()          | An Eloquent builder class that specifies the filters forming the segment | Y        | Builder   |         |
+
+## Reacting to Events
+
+### User Events
+
+### TrackEvents
+
+Creates a listener in App\Listeners\User\NameOfEventListener and it will be called when the event is received.
+
+### TrackPageView
+
+Define routes that you want to handle in config(). You can use the same patterns as Laravel's routing. You can assign Listeners to be called when a page is visited.
+
+```
+config\cascade.php
+
+$pageViewListenders => [
+    '/upgrade' => [
+        \App\Listeners\SendUpgradeOfferEmail::class,
+    ]
+],
+
+```
+
+### Server Events
+
+Why handle these through Cascade? We want to log them? We want to hook into webhooks/websockets?
+
+We'll generate some around Segments? What else?
+
+We'll dispatch some TrackEvents for:
+EnteredSegment
+ExitedSegment
 
 # Changelog
 

@@ -44,8 +44,17 @@ return [
     'models' => [
         'user' => env('CASACADE_MODEL_USER', \App\Models\User::class),
         'group' => env('CASACADE_MODEL_GROUP', null),
-        'relationship' => \Illuminate\Database\Eloquent\Relations\BelongsToMany::class,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Parent Child Relationship
+    |--------------------------------------------------------------------------
+    |
+    | Which models should be used for the various entities and what is the relationship
+    | between the group(S) and the user(s)
+    */
+    'relationship' => \Illuminate\Database\Eloquent\Relations\BelongsToMany::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -56,6 +65,7 @@ return [
     */
     'paths' => [
         'segments' => env('CASACADE_PATH_SEGMENTS', 'App\Segments'),
+        'listeners' => env('CASACADE_PATH_LISTENERS', 'App\Listeners'),
     ],
 
     /*
