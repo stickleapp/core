@@ -2,17 +2,20 @@
 
 namespace Dclaysmith\LaravelCascade\Models;
 
+use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class ObjectAttribute extends Model
 {
     /**
-     * The table associated with the model.
-     *
-     * @var string
+     * Creates a new analytics repository instance.
      */
-    protected $table = config('cascade.database.tablePrefix').'object_attributes';
+    public function __construct(
+        #[Config('cascade.database.tablePrefix')] protected ?string $prefix = null,
+    ) {
+        $this->table = $this->prefix.'object_attributes';
+    }
 
     /**
      * The attributes that are mass assignable.

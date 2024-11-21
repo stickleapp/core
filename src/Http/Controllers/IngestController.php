@@ -3,8 +3,6 @@
 namespace Dclaysmith\LaravelCascade\Http\Controllers;
 
 use Carbon\Carbon;
-use Dclaysmith\LaravelCascade\Events\Group;
-use Dclaysmith\LaravelCascade\Events\Identify;
 use Dclaysmith\LaravelCascade\Events\Page;
 use Dclaysmith\LaravelCascade\Events\Track;
 use Dclaysmith\LaravelCascade\Http\Requests\IngestRequest;
@@ -55,8 +53,8 @@ class IngestController
                     'utm_medium' => $request->query('utm_medium'),
                     'utm_campaign' => $request->query('utm_campaign'),
                     'utm_content' => $request->query('utm_content'),
-                    'created_at' => data_get($validated, 'timestamp', $dt),
-                    'created_at' => data_get($validated, 'timestamp', $dt),
+                    'created_at' => data_get($payload, 'timestamp', $dt),
+                    'created_at' => data_get($payload, 'timestamp', $dt),
                 ]);
 
                 Page::dispatch($data);
@@ -80,28 +78,6 @@ class IngestController
                 ]);
 
                 Track::dispatch($data);
-
-                return response()->noContent();
-            case 'group':
-                $data = array_merge($payload, [
-                    'model' => $model,
-                    'object_uid' => $objectUid,
-                    'created_at' => data_get($payload, 'timestamp', $dt),
-                    'created_at' => data_get($payload, 'timestamp', $dt),
-                ]);
-
-                Group::dispatch($data);
-
-                return response()->noContent();
-            case 'identify':
-                $data = array_merge($payload, [
-                    'model' => $model,
-                    'object_uid' => $objectUid,
-                    'created_at' => data_get($payload, 'timestamp', $dt),
-                    'created_at' => data_get($payload, 'timestamp', $dt),
-                ]);
-
-                Identify::dispatch($data);
 
                 return response()->noContent();
             default:

@@ -73,7 +73,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Dclaysmith\\LaravelCascade\\LaravelCascadeServiceProvider"
+                "Dclaysmith\\LaravelCascade\\Providers\\LaravelCascadeServiceProvider"
             ],
             "aliases": {
                 "LaravelCascade": "Dclaysmith\\LaravelCascade\\Facades\\LaravelCascade"

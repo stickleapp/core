@@ -2,7 +2,7 @@
 
 namespace Dclaysmith\LaravelCascade\Tests;
 
-use Dclaysmith\LaravelCascade\LaravelCascadeServiceProvider;
+use Dclaysmith\LaravelCascade\Providers\LaravelCascadeServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
 

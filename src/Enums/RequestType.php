@@ -11,6 +11,6 @@ enum RequestType: string
 {
     case TRACK = 'track';
     case PAGE = 'page';
-    case GROUP = 'group';
-    case IDENTIFY = 'identify';
+    // case GROUP = 'group';
+    // case IDENTIFY = 'identify';
 }
