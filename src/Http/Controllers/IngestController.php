@@ -3,26 +3,58 @@
 namespace Dclaysmith\LaravelCascade\Http\Controllers;
 
 use Carbon\Carbon;
+use Dclaysmith\LaravelCascade\Enums\RequestType;
 use Dclaysmith\LaravelCascade\Events\Page;
 use Dclaysmith\LaravelCascade\Events\Track;
-use Dclaysmith\LaravelCascade\Http\Requests\IngestRequest;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class IngestController
 {
     /**
      * Store a newly created track in storage.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function store(IngestRequest $request)
+    public function store(Request $request): Response
     {
 
-        $payload = $request->collect('payload');
+        Log::debug('Request received', [
+            'request' => $request->getContent(),
+        ]);
+
+        $payload = json_decode($request->getContent(), true);
+
+        $rules = [
+            'payload' => ['required', 'array'],
+            'payload.*.type' => ['required', Rule::enum(RequestType::class)],
+            'payload.*.model' => ['sometimes', $this->availableModels()],
+            'payload.*.object_uid' => ['sometimes', 'string', 'alpha_dash:ascii'],
+            'payload.*.name' => ['required_if:type,track', 'string', 'alpha_dash:ascii'],
+            'payload.*.url' => ['required_if:type,page', 'string', 'url'],
+            'payload.*.data' => ['sometimes_if:type,track', 'array'],
+            'payload.*.timestamp' => ['sometimes', 'nullable', 'date'],
+        ];
+
+        $validator = Validator::make($payload, $rules);
+
+        if ($validator->fails()) {
+            Log::debug('Request failed', [
+                'request' => $request->getContent(),
+            ]);
+
+            return response()->json([
+                'message' => 'Request failed',
+            ], 422);
+        }
+
+        $validated = $validator->validated();
 
         $dt = new Carbon;
 
         if (! $model = $this->model(
-            data_get($payload, 'model'),
+            data_get($validated, 'model'),
             $request->user()
         )) {
             return response()->json([
@@ -31,60 +63,55 @@ class IngestController
         }
 
         if (! $objectUid = $this->objectUid(
-            data_get($payload, 'uid'),
+            data_get($validated, 'object_uid'),
             $request->user()
         )) {
             return response()->json([
                 'message' => 'Uid not found',
             ], 404);
         }
+        foreach (data_get($validated, 'payload') as $item) {
+            switch ($item['type']) {
+                case 'page':
+                    $data = array_merge($item, [
+                        'model' => $model,
+                        'object_uid' => $objectUid,
+                        'session_uid' => $request->session()?->getId(),
+                        'url' => $request->fullUrl(),
+                        'path' => $request->getPathInfo(),
+                        'host' => $request->getHost(),
+                        'search' => $request->getQueryString(),
+                        'utm_source' => $request->query('utm_source'),
+                        'utm_medium' => $request->query('utm_medium'),
+                        'utm_campaign' => $request->query('utm_campaign'),
+                        'utm_content' => $request->query('utm_content'),
+                        'created_at' => data_get($item, 'timestamp', $dt),
+                        'created_at' => data_get($item, 'timestamp', $dt),
+                    ]);
 
-        switch ($payload['type']) {
-            case 'page':
-                $data = array_merge($payload, [
-                    'model' => $model,
-                    'object_uid' => $objectUid,
-                    'session_uid' => $request->session()?->getId(),
-                    'url' => $request->fullUrl(),
-                    'path' => $request->getPathInfo(),
-                    'host' => $request->getHost(),
-                    'search' => $request->getQueryString(),
-                    'utm_source' => $request->query('utm_source'),
-                    'utm_medium' => $request->query('utm_medium'),
-                    'utm_campaign' => $request->query('utm_campaign'),
-                    'utm_content' => $request->query('utm_content'),
-                    'created_at' => data_get($payload, 'timestamp', $dt),
-                    'created_at' => data_get($payload, 'timestamp', $dt),
-                ]);
+                    Page::dispatch($data);
+                case 'track':
+                    $data = array_merge($item, [
+                        'model' => $model,
+                        'object_uid' => $objectUid,
+                        'session_uid' => $request->session()?->getId(),
+                        'url' => $request->fullUrl(),
+                        'path' => $request->getPathInfo(),
+                        'host' => $request->getHost(),
+                        'search' => $request->getQueryString(),
+                        'utm_source' => $request->query('utm_source'),
+                        'utm_medium' => $request->query('utm_medium'),
+                        'utm_campaign' => $request->query('utm_campaign'),
+                        'utm_content' => $request->query('utm_content'),
+                        'created_at' => data_get($item, 'timestamp', $dt),
+                        'created_at' => data_get($item, 'timestamp', $dt),
+                    ]);
 
-                Page::dispatch($data);
-
-                return response()->noContent();
-            case 'track':
-                $data = array_merge($payload, [
-                    'model' => $model,
-                    'object_uid' => $objectUid,
-                    'session_uid' => $request->session()?->getId(),
-                    'url' => $request->fullUrl(),
-                    'path' => $request->getPathInfo(),
-                    'host' => $request->getHost(),
-                    'search' => $request->getQueryString(),
-                    'utm_source' => $request->query('utm_source'),
-                    'utm_medium' => $request->query('utm_medium'),
-                    'utm_campaign' => $request->query('utm_campaign'),
-                    'utm_content' => $request->query('utm_content'),
-                    'created_at' => data_get($payload, 'timestamp', $dt),
-                    'created_at' => data_get($payload, 'timestamp', $dt),
-                ]);
-
-                Track::dispatch($data);
-
-                return response()->noContent();
-            default:
-                return response()->json([
-                    'message' => 'Type not found',
-                ], 404);
+                    Track::dispatch($data);
+            }
         }
+
+        return response()->noContent();
     }
 
     private function model($explicit, ?object $object): ?string
@@ -111,5 +138,12 @@ class IngestController
         }
 
         return null;
+    }
+
+    private function availableModels(): array
+    {
+        $config = config('cascade.models', []);
+
+        return array_filter($config, fn ($value) => ! is_null($value));
     }
 }

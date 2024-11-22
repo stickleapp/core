@@ -2,13 +2,18 @@
     const trackingUrl = "/cascade-track";
 
     function sendTrackingData(data) {
-        data["_token"] = "%_CSRF_TOKEN_%";
-        navigator.sendBeacon(trackingUrl, JSON.stringify(data));
+        navigator.sendBeacon(
+            trackingUrl,
+            JSON.stringify({
+                payload: [data],
+                _token: "%_CSRF_TOKEN_%",
+            })
+        );
     }
 
     function trackPageView() {
         const data = {
-            type: "pageview",
+            type: "page",
             url: window.location.href,
             timestamp: new Date().toISOString(),
         };
@@ -17,7 +22,7 @@
 
     function trackEvent(eventName, eventData = {}) {
         const data = {
-            type: "event",
+            type: "track",
             name: eventName,
             data: eventData,
             timestamp: new Date().toISOString(),

@@ -4,8 +4,9 @@ namespace Dclaysmith\LaravelCascade\Middleware;
 
 use Carbon\Carbon;
 use Closure;
-use Dclaysmith\LaravelCascade\Events\RequestReceived;
+use Dclaysmith\LaravelCascade\Events\Page;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 /**
  * https://medium.com/@mehhfooz/log-requests-and-responses-in-laravel-f859d1f47b74
@@ -24,6 +25,10 @@ class RequestLogger
         if (! $request->user()) {
             return $response;
         }
+
+        Log::debug('Request received by middleware:', [
+            'request' => $request->getContent(),
+        ]);
 
         $headers = $request->header();
 
@@ -45,7 +50,7 @@ class RequestLogger
             'updated_at' => $dt,
         ];
 
-        event(new RequestReceived($data));
+        Page::dispatch($data);
 
         return $response;
     }

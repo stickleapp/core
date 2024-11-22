@@ -2,17 +2,14 @@
 
 use App\Models\User;
 use Dclaysmith\LaravelCascade\Http\Controllers\IngestController;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /**
  * Routes for the demo
  */
-Route::middleware('web')->group(function () {
+Route::middleware(['web', 'auth'])->group(function () {
 
     Route::get('/cascade', function () {
-        Log::debug('init sqlite database;');
-
         return view('cascade::demo/index');
     })->name('cascade::demo/index');
 
@@ -31,4 +28,4 @@ Route::middleware('web')->group(function () {
     Route::post('/cascade-track', [IngestController::class, 'store'])
         ->name('cascade/track');
 
-})->middleware(['auth']);
+});
