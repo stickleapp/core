@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dclaysmith\LaravelCascade\Actions;
 
-use Pan\Contracts\AnalyticsRepository;
+use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
 use Pan\Enums\EventType;
 
 /**
@@ -26,6 +26,6 @@ final readonly class CreateEvent
      */
     public function handle(string $name, EventType $event): void
     {
-        $this->repository->increment($name, $event);
+        $this->repository->saveRequest($name, $event);
     }
 }

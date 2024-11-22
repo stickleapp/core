@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Dclaysmith\LaravelCascade\Providers;
 
-use Dclaysmith\LaravelCascade\Console\Commands\StartCommand;
-// use Dclaysmith\LaravelCascade\Console\Commands\InstallCommand;
+use Dclaysmith\LaravelCascade\Commands\StartCommand;
+// use Dclaysmith\LaravelCascade\Commands\InstallCommand;
 use Dclaysmith\LaravelCascade\Middleware\InjectJavascriptLibrary;
 use Dclaysmith\LaravelCascade\Middleware\RequestLogger;
 use Illuminate\Contracts\Http\Kernel;

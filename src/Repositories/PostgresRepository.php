@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Dclaysmith\LaravelCascade\Repositories;
 
+use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Support\Facades\DB;
-use Pan\ValueObjects\Analytic;
 
 /**
  * @internal
  */
-final class AnalyticsRepository
+final class PostgresRepository implements AnalyticsRepository
 {
     /**
      * Creates a new analytics repository instance.
