@@ -22,7 +22,7 @@ class PageListener implements ShouldQueue
         $this->repository = $repository;
     }
 
-    public function handle(Page $event)
+    public function handle(Page $event): void
     {
         Log::debug('PageEvent Handled', [$event]);
         //

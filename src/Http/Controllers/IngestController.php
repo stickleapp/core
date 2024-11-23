@@ -44,9 +44,7 @@ class IngestController
                 'request' => $request->getContent(),
             ]);
 
-            return response()->json([
-                'message' => 'Request failed',
-            ], 422);
+            throw new \Exception('Request invalid');
         }
 
         $validated = $validator->validated();
@@ -57,18 +55,14 @@ class IngestController
             data_get($validated, 'model'),
             $request->user()
         )) {
-            return response()->json([
-                'message' => 'Model not found',
-            ], 404);
+            throw new \Exception('Model class not specified');
         }
 
         if (! $objectUid = $this->objectUid(
             data_get($validated, 'object_uid'),
             $request->user()
         )) {
-            return response()->json([
-                'message' => 'Uid not found',
-            ], 404);
+            throw new \Exception('Object id not specified');
         }
         foreach (data_get($validated, 'payload') as $item) {
             switch ($item['type']) {
@@ -76,7 +70,7 @@ class IngestController
                     $data = array_merge($item, [
                         'model' => $model,
                         'object_uid' => $objectUid,
-                        'session_uid' => $request->session()?->getId(),
+                        'session_uid' => $request->session()->getId(),
                         'url' => $request->fullUrl(),
                         'path' => $request->getPathInfo(),
                         'host' => $request->getHost(),
@@ -86,7 +80,7 @@ class IngestController
                         'utm_campaign' => $request->query('utm_campaign'),
                         'utm_content' => $request->query('utm_content'),
                         'created_at' => data_get($item, 'timestamp', $dt),
-                        'created_at' => data_get($item, 'timestamp', $dt),
+                        'updated_at' => data_get($item, 'timestamp', $dt),
                     ]);
 
                     Page::dispatch($data);
@@ -95,7 +89,7 @@ class IngestController
                     $data = array_merge($item, [
                         'model' => $model,
                         'object_uid' => $objectUid,
-                        'session_uid' => $request->session()?->getId(),
+                        'session_uid' => $request->session()->getId(),
                         'url' => $request->fullUrl(),
                         'path' => $request->getPathInfo(),
                         'host' => $request->getHost(),
@@ -105,7 +99,7 @@ class IngestController
                         'utm_campaign' => $request->query('utm_campaign'),
                         'utm_content' => $request->query('utm_content'),
                         'created_at' => data_get($item, 'timestamp', $dt),
-                        'created_at' => data_get($item, 'timestamp', $dt),
+                        'updated_at' => data_get($item, 'timestamp', $dt),
                     ]);
 
                     Track::dispatch($data);
@@ -129,7 +123,7 @@ class IngestController
         return null;
     }
 
-    private function objectUid($explicit, ?object $object): string
+    private function objectUid($explicit, ?object $object): ?string
     {
         if ($explicit) {
             return $explicit;

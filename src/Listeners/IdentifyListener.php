@@ -22,7 +22,7 @@ class IdentifyListener implements ShouldQueue
         $this->repository = $repository;
     }
 
-    public function handle(Identify $event)
+    public function handle(Identify $event): void
     {
         Log::debug('IdentifyEvent Handled', [$event]);
 

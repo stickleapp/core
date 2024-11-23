@@ -14,31 +14,18 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class AuthenticatableEventListener implements ShouldQueue
 {
     /**
-     * @var LaravelRepository
-     */
-    protected $repository;
-
-    /**
-     * @var Request
-     */
-    protected $request;
-
-    /**
      * Create the event listener.
      */
-    public function __construct(Request $request, AnalyticsRepository $repository)
-    {
-        $this->repository = $repository;
-        $this->request = $request;
-    }
+    public function __construct(public Request $request, public AnalyticsRepository $repository) {}
 
-    public function onEvent($event): void
+    public function onEvent(mixed $event): void
     {
         Log::debug('AuthenticatableEventListener->onEvent', [$event]);
 
@@ -56,10 +43,8 @@ class AuthenticatableEventListener implements ShouldQueue
 
     /**
      * Register the listeners for the subscriber.
-     *
-     * @param  Illuminate\Events\Dispatcher  $events
      */
-    public function subscribe($events)
+    public function subscribe(Dispatcher $events): void
     {
 
         $events->listen(

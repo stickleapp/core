@@ -13,11 +13,7 @@ class EventCount extends FilterTarget
 {
     use HasDeltaFilters;
 
-    private DateTimeInterface $startDate;
-
-    private DateTimeInterface $endDate;
-
-    public function __construct(public string $event) {}
+    public function __construct(public string $event, public ?DateTimeInterface $startDate, public ?DateTimeInterface $endDate) {}
 
     public function __property(): ?string
     {

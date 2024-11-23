@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Builder;
 /** Attributes: Name / Refresh Every / Description */
 abstract class Segment
 {
-    public $name;
+    public string $name;
 
-    public $refreshInterval;
+    public int $refreshInterval;
 
-    public $class; // could we determine from builder returned by export?
+    public string $class; // could we determine from builder returned by export?
 
     abstract public function toBuilder(): Builder;
 }

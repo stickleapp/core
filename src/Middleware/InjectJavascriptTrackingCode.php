@@ -50,9 +50,6 @@ final readonly class InjectJavascriptTrackingCode
      */
     private function inject(Response $response): void
     {
-        // $original = $response->original ?? null;
-
-        // ['route_prefix' => $routePrefix] =  $this->config->toArray();
         $routePrefix = '';
 
         $response->setContent(
@@ -73,9 +70,5 @@ final readonly class InjectJavascriptTrackingCode
                 (string) $response->getContent(),
             )
         );
-
-        // if ($original !== null) {
-        //     $response->original = $original; // @phpstan-ignore-line
-        // }
     }
 }

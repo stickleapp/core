@@ -114,7 +114,7 @@ return new class extends Migration
             $table->unsignedBigInteger("{$prefix}segment_group_id")->nullable(true);
             $table->string('model')->nullable(false);
             $table->jsonb('definition')->nullable(true);
-            $table->integer('sort_order')->nullable(false)->dafault(0);
+            $table->integer('sort_order')->nullable(false)->default(0);
             $table->timestamps();
 
             $table->foreign("{$prefix}segment_group_id")->references('id')->on("{$prefix}segment_groups");

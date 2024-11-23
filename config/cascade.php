@@ -42,7 +42,8 @@ return [
     | between the group and the user
     */
     'models' => [
-        'user' => env('CASACADE_MODEL_USER', \App\Models\User::class),
+        // @phpstan-ignore class.notFound
+        'user' => env('AUTH_MODEL', App\Models\User::class),
         'group' => env('CASACADE_MODEL_GROUP', null),
     ],
 

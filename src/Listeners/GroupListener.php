@@ -10,19 +10,11 @@ use Illuminate\Support\Facades\Log;
 class GroupListener implements ShouldQueue
 {
     /**
-     * @var LaravelRepository
-     */
-    protected $repository;
-
-    /**
      * Create the event listener.
      */
-    public function __construct(AnalyticsRepository $repository)
-    {
-        $this->repository = $repository;
-    }
+    public function __construct(public AnalyticsRepository $repository) {}
 
-    public function handle(Group $event)
+    public function handle(Group $event): void
     {
 
         Log::debug('GroupEvent Handled', [$event]);

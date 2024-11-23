@@ -36,7 +36,7 @@ class RequestLogger
 
         $data = [
             'model' => get_class($request->user()),
-            'object_uid' => $request->user()?->id,
+            'object_uid' => $request->user()->id,
             'session_uid' => $request->session()->getId(),
             'url' => $request->fullUrl(),
             'path' => $request->getPathInfo(),

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class TrackListener implements ShouldQueue
 {
-    public function handle(Track $event)
+    public function handle(Track $event): void
     {
         Log::debug('TrackEvent Handled', [$event]);
 

@@ -24,8 +24,6 @@ final class PostgresAnalyticsRepository implements AnalyticsRepository
 
     /**
      * Save an event
-     *
-     * @return array<int, Analytic>
      */
     public function saveEvent(
         string $model,
@@ -49,8 +47,6 @@ final class PostgresAnalyticsRepository implements AnalyticsRepository
 
     /**
      * Save a request
-     *
-     * @return array<int, Analytic>
      */
     public function saveRequest(
         string $model,
