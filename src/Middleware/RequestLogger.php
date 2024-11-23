@@ -27,7 +27,7 @@ class RequestLogger
         }
 
         Log::debug('Request received by middleware:', [
-            'request' => $request->getContent(),
+            $request,
         ]);
 
         $headers = $request->header();

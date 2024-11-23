@@ -7,8 +7,10 @@ namespace Dclaysmith\LaravelCascade\Providers;
 use Dclaysmith\LaravelCascade\Commands\StartCommand;
 // use Dclaysmith\LaravelCascade\Console\Commands\InstallCommand;
 use Dclaysmith\LaravelCascade\Components\BlankLayout;
+use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
 use Dclaysmith\LaravelCascade\Middleware\InjectJavascriptTrackingCode;
 use Dclaysmith\LaravelCascade\Middleware\RequestLogger;
+use Dclaysmith\LaravelCascade\Repositories\PostgresAnalyticsRepository;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -21,6 +23,8 @@ final class LaravelCascadeServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(EventServiceProvider::class);
+
+        $this->app->bind(AnalyticsRepository::class, PostgresAnalyticsRepository::class);
     }
 
     public function boot(Kernel $kernel): void
@@ -49,6 +53,12 @@ final class LaravelCascadeServiceProvider extends ServiceProvider
                 ],
             );
         }
+
+        // $this->app->when(PhotoController::class)
+        //     ->needs(Filesystem::class)
+        //     ->give(function ()d {
+        //         return Storage::disk('local');
+        //     });
 
         /**
          * Load Migrations to update the database

@@ -20,8 +20,8 @@ class IngestController
     public function store(Request $request): Response
     {
 
-        Log::debug('Request received', [
-            'request' => $request->getContent(),
+        Log::debug('IngestController', [
+            $request->getContent(),
         ]);
 
         $payload = json_decode($request->getContent(), true);
@@ -90,6 +90,7 @@ class IngestController
                     ]);
 
                     Page::dispatch($data);
+                    break;
                 case 'track':
                     $data = array_merge($item, [
                         'model' => $model,
@@ -108,6 +109,7 @@ class IngestController
                     ]);
 
                     Track::dispatch($data);
+                    break;
             }
         }
 

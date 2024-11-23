@@ -5,11 +5,12 @@ namespace Dclaysmith\LaravelCascade\Listeners;
 use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
 use Dclaysmith\LaravelCascade\Events\Identify;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
 class IdentifyListener implements ShouldQueue
 {
     /**
-     * @var LaravelCoreRepository
+     * @var AnalyticsRepository
      */
     protected $repository;
 
@@ -23,6 +24,8 @@ class IdentifyListener implements ShouldQueue
 
     public function handle(Identify $event)
     {
+        Log::debug('IdentifyEvent Handled', [$event]);
+
         // $this->repository->saveGroup(
 
         // );

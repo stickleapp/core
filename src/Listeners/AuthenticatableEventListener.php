@@ -15,11 +15,12 @@ use Illuminate\Auth\Events\Validated;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AuthenticatableEventListener implements ShouldQueue
 {
     /**
-     * @var LaravelCoreRepository
+     * @var LaravelRepository
      */
     protected $repository;
 
@@ -39,6 +40,8 @@ class AuthenticatableEventListener implements ShouldQueue
 
     public function onEvent($event): void
     {
+        Log::debug('AuthenticatableEventListener->onEvent', [$event]);
+
         if (! $event->user) {
             return;
         }
@@ -61,47 +64,47 @@ class AuthenticatableEventListener implements ShouldQueue
 
         $events->listen(
             Authenticated::class,
-            '\Dclaysmith\LaravelCascadeCore\Listeners\AuthenticatableEventListener@onEvent'
+            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             CurrentDeviceLogout::class,
-            '\Dclaysmith\LaravelCascadeCore\Listeners\AuthenticatableEventListener@onEvent'
+            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             Login::class,
-            '\Dclaysmith\LaravelCascadeCore\Listeners\AuthenticatableEventListener@onEvent'
+            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             Logout::class,
-            '\Dclaysmith\LaravelCascadeCore\Listeners\AuthenticatableEventListener@onEvent'
+            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             OtherDeviceLogout::class,
-            '\Dclaysmith\LaravelCascadeCore\Listeners\AuthenticatableEventListener@onEvent'
+            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             PasswordReset::class,
-            '\Dclaysmith\LaravelCascadeCore\Listeners\AuthenticatableEventListener@onEvent'
+            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             Registered::class,
-            '\Dclaysmith\LaravelCascadeCore\Listeners\AuthenticatableEventListener@onEvent'
+            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             Validated::class,
-            '\Dclaysmith\LaravelCascadeCore\Listeners\AuthenticatableEventListener@onEvent'
+            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             Verified::class,
-            '\Dclaysmith\LaravelCascadeCore\Listeners\AuthenticatableEventListener@onEvent'
+            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
         );
     }
 }

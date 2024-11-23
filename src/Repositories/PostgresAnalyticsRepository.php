@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 /**
  * @internal
  */
-final class PostgresRepository implements AnalyticsRepository
+final class PostgresAnalyticsRepository implements AnalyticsRepository
 {
     /**
      * Creates a new analytics repository instance.

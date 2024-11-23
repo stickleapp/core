@@ -5,11 +5,12 @@ namespace Dclaysmith\LaravelCascade\Listeners;
 use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
 use Dclaysmith\LaravelCascade\Events\Page;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
 class PageListener implements ShouldQueue
 {
     /**
-     * @var LaravelCoreRepository
+     * @var AnalyticsRepository
      */
     protected $repository;
 
@@ -23,6 +24,9 @@ class PageListener implements ShouldQueue
 
     public function handle(Page $event)
     {
+        Log::debug('PageEvent Handled', [$event]);
+        //
+
         // $this->repository->saveEvent(
         //     model: data_get($event->data, 'model'),
         //     objectUid: data_get($event->data, 'object_uid'),

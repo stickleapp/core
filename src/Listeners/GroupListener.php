@@ -5,11 +5,12 @@ namespace Dclaysmith\LaravelCascade\Listeners;
 use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
 use Dclaysmith\LaravelCascade\Events\Group;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
 class GroupListener implements ShouldQueue
 {
     /**
-     * @var LaravelCoreRepository
+     * @var LaravelRepository
      */
     protected $repository;
 
@@ -23,6 +24,8 @@ class GroupListener implements ShouldQueue
 
     public function handle(Group $event)
     {
+
+        Log::debug('GroupEvent Handled', [$event]);
         // $this->repository->saveGroup(
 
         // );
