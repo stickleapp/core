@@ -1,5 +1,10 @@
 Cascade is a package for Laravel that helps you analyze and interact with your customer base.
 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/dclaysmith/laravel-cacade.svg?style=flat-square)](https://packagist.org/packages/dclaysmith/laravel-cacade)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/dclaysmith/laravel-cacade/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/dclaysmith/laravel-cacade/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/dclaysmith/laravel-cacade/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/dclaysmith/laravel-cacade/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/dclaysmith/laravel-cacade.svg?style=flat-square)](https://packagist.org/packages/dclaysmith/laravel-cacade)
+
 # Use Cases
 
 Cascade allows you to embed customer analytics and engagement functionality in your Laravel application. Use it to:
