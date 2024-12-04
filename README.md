@@ -36,9 +36,13 @@ Cascade Apps extend the funtionality of Cascade Core. Anyone can write a Cascade
 
 Cascade Webhooks allow you to send Cascade events to a defined Webhook endpoint.
 
+NOTE: Not sure we need this. Is there a definite market winner library for Webhooks? Spatie?
+
 ## Cascade Websockets
 
 Built on Laravel Reverb, Cascade Websockets allow you to send notifications to connected clients via Websockets.
+
+NOTE: Not sure we need this. **Maybe** something that works out-of-the-box with the Javasdk?
 
 ## Cascade Health
 
@@ -55,6 +59,10 @@ Create shareable dashboards containing metrics gleaned from your Customer data.
 ## Cascade Updates
 
 Share customer-specific email updates to your customers to demonstrate the value they provide.
+
+## Cascade Widget
+
+A multi-purpose, extensible, Intercom-style widget.
 
 # Cascade UI Professional
 
