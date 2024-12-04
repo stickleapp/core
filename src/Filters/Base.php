@@ -57,8 +57,8 @@ class Base
             throw new \Exception('No target defined');
         }
 
-        return $this->test->__applyFilter(
-            $this->target->__applyJoin($builder),
+        return $this->test->applyFilter(
+            $this->target->applyJoin($builder),
             $this->target,
             $operator
         );

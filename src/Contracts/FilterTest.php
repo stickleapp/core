@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 abstract class FilterTest
 {
-    public function __applyFilter(Builder $builder, FilterTarget $target, string $operator): Builder
+    public function applyFilter(Builder $builder, FilterTarget $target, string $operator): Builder
     {
-        throw new \Exception('Method __applyFilter must be implemented');
+        throw new \Exception('Method applyFilter must be implemented');
     }
 }

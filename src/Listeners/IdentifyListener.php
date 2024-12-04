@@ -10,17 +10,9 @@ use Illuminate\Support\Facades\Log;
 class IdentifyListener implements ShouldQueue
 {
     /**
-     * @var AnalyticsRepository
-     */
-    protected $repository;
-
-    /**
      * Create the event listener.
      */
-    public function __construct(AnalyticsRepository $repository)
-    {
-        $this->repository = $repository;
-    }
+    public function __construct(readonly AnalyticsRepository $repository) {}
 
     public function handle(Identify $event): void
     {

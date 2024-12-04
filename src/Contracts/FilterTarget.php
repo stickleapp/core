@@ -8,27 +8,34 @@ use Illuminate\Database\Eloquent\Builder;
 
 abstract class FilterTarget
 {
-    public function __castValue(mixed $value): mixed
+    public array $joins = [];
+
+    final public function joinKey(): ?string
+    {
+        return md5(self::class.''.json_encode(self::definition()));
+    }
+
+    public function castValue(mixed $value): mixed
     {
         return $value;
     }
 
-    public function __castProperty(): mixed
+    public function castProperty(): mixed
     {
-        return $this->__property();
+        return $this->property();
     }
 
-    public function __joinKey(): ?string
-    {
-        return null;
-    }
-
-    public function __property(): ?string
+    public function property(): ?string
     {
         return null;
     }
 
-    public function __applyJoin(Builder $builder): Builder
+    public function definition(): array
+    {
+        return [];
+    }
+
+    public function applyJoin(Builder $builder): Builder
     {
         return $builder;
     }

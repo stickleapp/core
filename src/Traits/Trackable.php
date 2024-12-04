@@ -45,6 +45,7 @@ trait Trackable
         });
 
         static::updated(function (Model $model) {
+
             $propertiesToLog = array_intersect($model->getObservableProperties(), array_keys($model->getDirty()));
 
             foreach ($propertiesToLog as $property) {

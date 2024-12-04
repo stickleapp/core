@@ -12,8 +12,8 @@ class GreaterThan extends FilterTest
 {
     public function __construct(public mixed $value) {}
 
-    public function __applyFilter(Builder $builder, FilterTarget $target, $operator): Builder
+    public function applyFilter(Builder $builder, FilterTarget $target, $operator): Builder
     {
-        return $builder->where($target->__castProperty(), '<', $target->__castValue($this->value), $operator);
+        return $builder->where($target->castProperty(), '<', $target->castValue($this->value), $operator);
     }
 }

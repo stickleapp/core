@@ -8,6 +8,7 @@ use DateTimeInterface;
 use Dclaysmith\LaravelCascade\Contracts\FilterTarget;
 use Dclaysmith\LaravelCascade\Filters\Targets\Traits\HasDeltaFilters;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\JoinClause;
 
 class EventCount extends FilterTarget
 {
@@ -19,23 +20,27 @@ class EventCount extends FilterTarget
         public ?DateTimeInterface $endDate = null
     ) {}
 
-    public function __property(): ?string
+    public function property(): ?string
     {
         return $this->event;
     }
 
-    public function __castProperty(): mixed
+    public function applyJoin(Builder $builder): Builder
     {
-        return $this->__property();
-    }
 
-    public function __applyJoin(Builder $builder): Builder
-    {
-        /**
-         * @todo Implement __applyJoin() method.
-         *
-         * Join necessary tables (event_counts)
-         */
+        if (array_key_exists($this->joinKey(), $this->joins)) {
+            return $builder;
+        }
+
+        $model = $builder->getModel();
+
+        $builder->joinSub(\DB::table('events'), $this->joinKey(), function (JoinClause $join) use ($model) {
+            $join->on($this->joinKey().'.object_uid', '=', "{$model->getTable()}.object_uid");
+            $join->on($this->joinKey().'.model', '=', "{$model->getTable()}.model");
+        });
+
+        $this->joins[] = $this->joinKey();
+
         return $builder;
     }
 

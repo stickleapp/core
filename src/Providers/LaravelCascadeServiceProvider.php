@@ -24,6 +24,9 @@ final class LaravelCascadeServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
 
+        /**
+         * Bind the Analytics Repository
+         */
         $this->app->bind(AnalyticsRepository::class, PostgresAnalyticsRepository::class);
     }
 
@@ -53,12 +56,6 @@ final class LaravelCascadeServiceProvider extends ServiceProvider
                 ],
             );
         }
-
-        // $this->app->when(PhotoController::class)
-        //     ->needs(Filesystem::class)
-        //     ->give(function ()d {
-        //         return Storage::disk('local');
-        //     });
 
         /**
          * Load Migrations to update the database

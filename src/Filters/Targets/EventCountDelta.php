@@ -7,30 +7,34 @@ namespace Dclaysmith\LaravelCascade\Filters\Targets;
 use Dclaysmith\LaravelCascade\Contracts\FilterTarget;
 use Dclaysmith\LaravelCascade\Filters\Targets\Traits\HasDeltaFilters;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\JoinClause;
 
-class EventCount extends FilterTarget
+class EventCountDelta extends FilterTarget
 {
     use HasDeltaFilters;
 
     public function __construct(public string $event, public array $dateRange) {}
 
-    public function __property(): ?string
+    public function property(): ?string
     {
         return $this->event;
     }
 
-    public function __castProperty(): mixed
+    public function applyJoin(Builder $builder): Builder
     {
-        return $this->__property();
-    }
+        if (array_key_exists($this->joinKey(), $this->joins)) {
+            return $builder;
+        }
 
-    public function __applyJoin(Builder $builder): Builder
-    {
-        /**
-         * @todo Implement __applyJoin() method.
-         *
-         * Join necessary tables (event_counts)
-         */
+        $model = $builder->getModel();
+
+        $builder->joinSub(\DB::table('events'), $this->joinKey(), function (JoinClause $join) use ($model) {
+            $join->on($this->joinKey().'.object_uid', '=', "{$model->getTable()}.object_uid");
+            $join->on($this->joinKey().'.model', '=', "{$model->getTable()}.model");
+        });
+
+        $this->joins[] = $this->joinKey();
+
         return $builder;
     }
 }
