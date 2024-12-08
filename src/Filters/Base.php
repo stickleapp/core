@@ -22,7 +22,10 @@ class Base
             throw new \Exception("Target class $targetClass does not exist");
         }
 
-        $target = new $targetClass(...$arguments);
+        $target = new $targetClass(
+            config('cascade.database.tablePrefix'),
+            ...$arguments
+        );
 
         return new static($target);
     }

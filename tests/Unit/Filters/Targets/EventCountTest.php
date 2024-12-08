@@ -1,57 +1,21 @@
 <?php
 
-namespace EventCountTest;
-
 use Dclaysmith\LaravelCascade\Filters\Base as Filter;
-use Dclaysmith\LaravelCascade\Traits\Trackable;
+use Workbench\App\Models\User;
 
-class User extends \Illuminate\Database\Eloquent\Model
-{
-    use Trackable;
+test('Creates correct sql', function () {
 
-    protected $table = 'users';
-}
+    $prefix = config('cascade.database.tablePrefix');
 
-test('Uses Event Count', function () {
+    $filter = Filter::eventCount('clicked:something')
+        ->greaterThan(10)
+        ->between(now()->subYears(1), now());
 
-    $query = User::query()
-        ->cascade(
-            Filter::eventCount('clicked:something')
-                ->greaterThan(10)
-                ->startDate(now()->subYears(1))
-                ->endDate(now())
-        )->orCascade(
-            Filter::eventCount('clicked:something')
-                ->greaterThan(10)
-                ->startDate(now()->subYears(1))
-                ->endDate(now())
-        )->orCascade(
-            Filter::eventCount('clicked:something')
-                ->greaterThan(10)
-                ->between(now()->subYears(1), now())
-        );
+    $builder = User::query();
 
-    expect($query->toSql())->not()->toBeEmpty();
-});
+    $filter->target->applyJoin($builder);
 
-test('Uses Event Count with Delta', function () {
-
-    $query = User::query()
-        ->cascade(
-            Filter::eventCount('clicked:something')
-                ->increased(
-                    [now()->subYears(2), now()->subYears(1)],
-                    [now()->subYears(1), now()],
-                )
-                ->greaterThan(10)
-        )->orCascade(
-            Filter::eventCount('clicked:something')
-                ->decreased(
-                    [now()->subYears(2), now()->subYears(1)],
-                    [now()->subYears(1), now()],
-                )
-                ->greaterThan(10)
-        );
-
-    expect($query->toSql())->not()->toBeEmpty();
+    expect($builder->toSql())->toBe(
+        sprintf('select * from "users" inner join (select "model", "object_uid", sum(event_count) as event_count from "%sevents_rollup_1day" where "event_name" = ? and "day"::date >= ? and "day"::date < ? group by "model", "object_uid") as "3c3311a35fdc500fd5fa76ceda061d2d" on "3c3311a35fdc500fd5fa76ceda061d2d"."object_uid" = "users"."object_uid" and "3c3311a35fdc500fd5fa76ceda061d2d"."model" = "users"."model"', $prefix)
+    );
 });

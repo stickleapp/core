@@ -6,14 +6,20 @@ namespace Dclaysmith\LaravelCascade\Filters\Targets;
 
 use Dclaysmith\LaravelCascade\Contracts\FilterTarget;
 use Dclaysmith\LaravelCascade\Filters\Targets\Traits\HasDeltaFilters;
+use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\JoinClause;
+use Illuminate\Support\Facades\DB;
 
 class EventCountDelta extends FilterTarget
 {
     use HasDeltaFilters;
 
-    public function __construct(public string $event, public array $dateRange) {}
+    public function __construct(
+        #[Config('cascade.database.tablePrefix')] protected ?string $prefix,
+        public string $event,
+        public array $dateRange
+    ) {}
 
     public function property(): ?string
     {
@@ -28,10 +34,26 @@ class EventCountDelta extends FilterTarget
 
         $model = $builder->getModel();
 
-        $builder->joinSub(\DB::table('events'), $this->joinKey(), function (JoinClause $join) use ($model) {
-            $join->on($this->joinKey().'.object_uid', '=', "{$model->getTable()}.object_uid");
-            $join->on($this->joinKey().'.model', '=', "{$model->getTable()}.model");
-        });
+        $builder->joinSub(
+            \DB::table($this->prefix.'events_rollup_1day')
+                ->where('event_name', $this->event)
+                ->select(
+                    'model',
+                    'object_uid',
+                    DB::raw(preg_replace('/\s+/', ' ', "
+                        SUM(event_count)
+                            OVER (PARTITION BY model, object_uid ORDER BY day RANGE BETWEEN INTERVAL '59 day' PRECEDING AND INTERVAL '30 day' PRECEDING) -
+                        SUM(event_count)
+                            OVER (PARTITION BY model, object_uid ORDER BY day RANGE BETWEEN INTERVAL '29 day' PRECEDING AND CURRENT ROW) -
+                        AS delta
+                    "))
+                ),
+            $this->joinKey(),
+            function (JoinClause $join) use ($model) {
+                $join->on($this->joinKey().'.object_uid', '=', "{$model->getTable()}.object_uid");
+                $join->on($this->joinKey().'.model', '=', "{$model->getTable()}.model");
+            }
+        );
 
         $this->joins[] = $this->joinKey();
 

@@ -127,6 +127,14 @@ This command will does the following:
 
 You can access a test page at the URL specified in the terminal.
 
+# Testing
+
+`vendor/bin/testbench vendor:publish --force`
+
+`vendor/bin/testbench workbench:build`
+
+`vendor/bin/testbench db:seed --class=\\Workbench\\Database\\Seeders\\DatabaseSeeder`
+
 # Advanced Configuration
 
 Cascade will work out of the box using the configuration options specified during the installation process. You can override these (and several other) options in the `config\cascade.php` file.

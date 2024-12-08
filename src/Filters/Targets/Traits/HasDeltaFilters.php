@@ -11,7 +11,11 @@ trait HasDeltaFilters
         if (substr(class_basename($this), -5) === 'Count') {
             $newClass = get_class($this).'Delta';
 
-            return new $newClass($this->event, $range);
+            return new $newClass(
+                config('cascade.database.tablePrefix'),
+                $this->event,
+                $range
+            );
         }
 
         return $this;
@@ -22,7 +26,11 @@ trait HasDeltaFilters
         if (substr(class_basename($this), -5) === 'Count') {
             $newClass = get_class($this).'Delta';
 
-            return new $newClass($this->event, $range);
+            return new $newClass(
+                config('cascade.database.tablePrefix'),
+                $this->event,
+                $range
+            );
         }
 
         return $this;

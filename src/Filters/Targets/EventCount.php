@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace Dclaysmith\LaravelCascade\Filters\Targets;
 
+use Carbon\Carbon;
 use DateTimeInterface;
 use Dclaysmith\LaravelCascade\Contracts\FilterTarget;
 use Dclaysmith\LaravelCascade\Filters\Targets\Traits\HasDeltaFilters;
+use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\JoinClause;
+use Illuminate\Support\Facades\DB;
 
 class EventCount extends FilterTarget
 {
     use HasDeltaFilters;
 
     public function __construct(
+        #[Config('cascade.database.tablePrefix')] protected ?string $prefix,
         public string $event,
         public ?DateTimeInterface $startDate = null,
         public ?DateTimeInterface $endDate = null
@@ -34,10 +38,19 @@ class EventCount extends FilterTarget
 
         $model = $builder->getModel();
 
-        $builder->joinSub(\DB::table('events'), $this->joinKey(), function (JoinClause $join) use ($model) {
-            $join->on($this->joinKey().'.object_uid', '=', "{$model->getTable()}.object_uid");
-            $join->on($this->joinKey().'.model', '=', "{$model->getTable()}.model");
-        });
+        $builder->joinSub(
+            \DB::table($this->prefix.'events_rollup_1day')
+                ->where('event_name', $this->event)
+                ->whereDate('day', '>=', Carbon::parse($this->startDate)->toDateString())
+                ->whereDate('day', '<', Carbon::parse($this->endDate)->toDateString())
+                ->groupBy(['model', 'object_uid'])
+                ->select('model', 'object_uid', DB::raw('sum(event_count) as event_count')),
+            $this->joinKey(),
+            function (JoinClause $join) use ($model) {
+                $join->on($this->joinKey().'.object_uid', '=', "{$model->getTable()}.object_uid");
+                $join->on($this->joinKey().'.model', '=', "{$model->getTable()}.model");
+            }
+        );
 
         $this->joins[] = $this->joinKey();
 
