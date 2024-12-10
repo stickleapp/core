@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Dclaysmith\LaravelCascade\Providers;
 
 use Dclaysmith\LaravelCascade\Commands\CreatePartitions;
+use Dclaysmith\LaravelCascade\Commands\DropPartitions;
 use Dclaysmith\LaravelCascade\Commands\StartCommand;
 // use Dclaysmith\LaravelCascade\Console\Commands\InstallCommand;
 use Dclaysmith\LaravelCascade\Components\BlankLayout;
@@ -24,6 +25,7 @@ final class LaravelCascadeServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(EventServiceProvider::class);
+        $this->app->register(ScheduleServiceProvider::class);
 
         /**
          * Bind the Analytics Repository
@@ -49,12 +51,10 @@ final class LaravelCascadeServiceProvider extends ServiceProvider
                     // ExportSegments::class,
                     // LogSegmentStatistics::class,
                     // LogEntityStatistics::class,
-                    // RollupEvents::class,
-                    // RollupPageViews::class,
-                    // RollupSessions::class,
                     // InstallCommand::class,
                     StartCommand::class,
                     CreatePartitions::class,
+                    DropPartitions::class,
                 ],
             );
         }

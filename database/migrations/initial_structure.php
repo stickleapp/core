@@ -96,6 +96,7 @@ CREATE TABLE {$prefix}events (
     id BIGSERIAL,
     object_uid TEXT NOT NULL,
     model TEXT NOT NULL,
+    session_uid TEXT NULL,
     event_name TEXT NOT NULL,
     properties JSONB NULL,
     timestamp TIMESTAMPTZ DEFAULT NOW() NOT NULL

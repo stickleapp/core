@@ -31,6 +31,23 @@ return [
     'database' => [
         'connection' => env('DB_CONNECTION', 'pgsql'),
         'tablePrefix' => env('CASACADE_TABLE_PRFIX', 'lc_'),
+        'partitions' => [
+            'events' => [
+                'interval' => 'week',
+                'extension' => '1 week',
+                'retention' => '1 years',
+            ],
+            'page_views' => [
+                'interval' => 'week',
+                'extension' => '1 week',
+                'retention' => '1 years',
+            ],
+            'sessions' => [
+                'interval' => 'week',
+                'extension' => '1 week',
+                'retention' => '1 years',
+            ],
+        ],
     ],
 
     /*

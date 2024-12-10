@@ -33,7 +33,7 @@ final class CreatePartitions extends Command implements Isolatable
     /**
      * @var string
      */
-    protected $description = 'Created a time-based partitions for the rollup tables (or any table).';
+    protected $description = 'Created a time-based partitions of the rollup tables (or any table).';
 
     /**
      * Create a new command instance.
