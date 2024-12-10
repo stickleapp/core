@@ -18,9 +18,7 @@ final class PostgresAnalyticsRepository implements AnalyticsRepository
      */
     public function __construct(
         #[Config('cascade.database.tablePrefix')] protected ?string $prefix = null,
-    ) {
-        $this->prefix = $prefix;
-    }
+    ) {}
 
     /**
      * Save an event

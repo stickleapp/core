@@ -12,7 +12,7 @@ final class ServeCommand extends Command implements Isolatable
     /**
      * @var string
      */
-    protected $signature = 'laravel-cascade:serve';
+    protected $signature = 'cascade:serve';
 
     /**
      * @var string

@@ -12,7 +12,7 @@ final class StartCommand extends Command implements Isolatable
     /**
      * @var string
      */
-    protected $signature = 'laravel-cascade:start {--withWebsocketServer} {--withDbListener}';
+    protected $signature = 'cascade:start {--withWebsocketServer} {--withDbListener}';
 
     /**
      * @var string

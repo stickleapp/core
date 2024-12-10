@@ -133,6 +133,8 @@ You can access a test page at the URL specified in the terminal.
 
 `vendor/bin/testbench workbench:build`
 
+`vendor/bin/testbench migrate:refresh`
+
 `vendor/bin/testbench db:seed --class=\\Workbench\\Database\\Seeders\\DatabaseSeeder`
 
 # Advanced Configuration
