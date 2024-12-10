@@ -151,14 +151,14 @@ RETURNS record
 AS
 $$
 BEGIN
-    /* determine which page views we can safely aggregate */
+    /* determine which events we can safely aggregate */
     SELECT window_start, window_end INTO start_id, end_id
     FROM {$prefix}incremental_rollup_window('{$prefix}events_rollup_1min');
 
-    /* exit early if there are no new page views to aggregate */
+    /* exit early if there are no new events to aggregate */
     IF start_id > end_id THEN RETURN; END IF;
 
-    /* aggregate the page views, merge results if the entry already exists */
+    /* aggregate the events, merge results if the entry already exists */
     INSERT INTO {$prefix}events_rollup_1min
         SELECT  object_uid,
                 model,
@@ -182,14 +182,14 @@ RETURNS record
 AS
 $$
 BEGIN
-    /* determine which page views we can safely aggregate */
+    /* determine which events we can safely aggregate */
     SELECT window_start, window_end INTO start_id, end_id
     FROM {$prefix}incremental_rollup_window('{$prefix}events_rollup_5min');
 
-    /* exit early if there are no new page views to aggregate */
+    /* exit early if there are no new events to aggregate */
     IF start_id > end_id THEN RETURN; END IF;
 
-    /* aggregate the page views, merge results if the entry already exists */
+    /* aggregate the events, merge results if the entry already exists */
     INSERT INTO {$prefix}events_rollup_5min
         SELECT  object_uid,
                 model,
@@ -213,14 +213,14 @@ RETURNS record
 AS
 $$
 BEGIN
-    /* determine which page views we can safely aggregate */
+    /* determine which events we can safely aggregate */
     SELECT window_start, window_end INTO start_id, end_id
     FROM {$prefix}incremental_rollup_window('{$prefix}events_rollup_1hr');
 
-    /* exit early if there are no new page views to aggregate */
+    /* exit early if there are no new events to aggregate */
     IF start_id > end_id THEN RETURN; END IF;
 
-    /* aggregate the page views, merge results if the entry already exists */
+    /* aggregate the events, merge results if the entry already exists */
     INSERT INTO {$prefix}events_rollup_1hr
         SELECT  object_uid,
                 model,
@@ -244,14 +244,14 @@ RETURNS record
 AS
 $$
 BEGIN
-    /* determine which page views we can safely aggregate */
+    /* determine which events we can safely aggregate */
     SELECT window_start, window_end INTO start_id, end_id
     FROM {$prefix}incremental_rollup_window('{$prefix}events_rollup_1day');
 
-    /* exit early if there are no new page views to aggregate */
+    /* exit early if there are no new events to aggregate */
     IF start_id > end_id THEN RETURN; END IF;
 
-    /* aggregate the page views, merge results if the entry already exists */
+    /* aggregate the events, merge results if the entry already exists */
     INSERT INTO {$prefix}events_rollup_1day
         SELECT  object_uid,
                 model,
@@ -266,8 +266,219 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql;
-        ");
 
+INSERT INTO {$prefix}rollups (name, table_name, id_sequence_name)
+VALUES ('{$prefix}requests_rollup_1min', '{$prefix}requests', '{$prefix}requests_id_seq');
+
+INSERT INTO {$prefix}rollups (name, table_name, id_sequence_name)
+VALUES ('{$prefix}requests_rollup_5min', '{$prefix}requests', '{$prefix}requests_id_seq');
+
+INSERT INTO {$prefix}rollups (name, table_name, id_sequence_name)
+VALUES ('{$prefix}requests_rollup_1hr', '{$prefix}requests', '{$prefix}requests_id_seq');
+
+INSERT INTO {$prefix}rollups (name, table_name, id_sequence_name)
+VALUES ('{$prefix}requests_rollup_1day', '{$prefix}requests', '{$prefix}requests_id_seq');
+
+CREATE TABLE {$prefix}requests (
+    id BIGSERIAL,
+    object_uid TEXT NOT NULL,
+    model TEXT NOT NULL,
+    session_uid TEXT NULL,
+    url TEXT NULL,
+    path TEXT NULL,
+    host TEXT NULL,
+    search TEXT NULL,
+    query_params TEXT NULL,
+    utm_source TEXT NULL,
+    utm_medium TEXT NULL,
+    utm_campaign TEXT NULL,
+    utm_content TEXT NULL,
+    timestamp TIMESTAMPTZ DEFAULT NOW() NOT NULL
+) PARTITION BY RANGE (timestamp);
+CREATE INDEX ON public.{$prefix}requests (timestamp);
+
+CREATE TABLE {$prefix}requests_rollup_1min (
+    object_uid TEXT NOT NULL,
+    model TEXT NOT NULL,
+    url TEXT NULL,
+    path TEXT NULL,
+    host TEXT NULL,
+    minute TIMESTAMPTZ NOT NULL,
+    request_count bigint
+) PARTITION BY RANGE (minute);
+CREATE INDEX ON public.{$prefix}requests_rollup_1min (minute);
+CREATE UNIQUE INDEX {$prefix}requests_rollup_1min_unique_idx ON {$prefix}requests_rollup_1min(object_uid, model, url, path, host, minute);
+
+CREATE TABLE {$prefix}requests_rollup_5min (
+    object_uid TEXT NOT NULL,
+    model TEXT NOT NULL,
+    url TEXT NULL,
+    path TEXT NULL,
+    host TEXT NULL,
+    minute TIMESTAMPTZ NOT NULL,
+    request_count bigint
+) PARTITION BY RANGE (minute);
+CREATE INDEX ON public.{$prefix}requests_rollup_5min (minute);
+CREATE UNIQUE INDEX {$prefix}requests_rollup_5min_unique_idx ON {$prefix}requests_rollup_5min(object_uid, model, url, path, host, minute);
+
+CREATE TABLE {$prefix}requests_rollup_1hr (
+    object_uid TEXT NOT NULL,
+    model TEXT NOT NULL,
+    url TEXT NULL,
+    path TEXT NULL,
+    host TEXT NULL,
+    hour TIMESTAMPTZ NOT NULL,
+    request_count bigint
+) PARTITION BY RANGE (hour);
+CREATE INDEX ON public.{$prefix}requests_rollup_1hr (hour);
+CREATE UNIQUE INDEX {$prefix}requests_rollup_1hr_unique_idx ON {$prefix}requests_rollup_1hr(object_uid, model, url, path, host, hour);
+
+CREATE TABLE {$prefix}requests_rollup_1day (
+    object_uid TEXT NOT NULL,
+    model TEXT NOT NULL,
+    url TEXT NULL,
+    path TEXT NULL,
+    host TEXT NULL,
+    day TIMESTAMPTZ NOT NULL,
+    request_count bigint
+) PARTITION BY RANGE (day);
+CREATE INDEX ON public.{$prefix}requests_rollup_1day (day);
+CREATE UNIQUE INDEX {$prefix}requests_rollup_1day_unique_idx ON {$prefix}requests_rollup_1day(object_uid, model, url, path, host, day);
+
+-- ----------------------------------------------------------------------------
+-- REQUESTS 1 MINUTE AGGREGATION
+-- ----------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION {$prefix}rollup_requests_1min(OUT start_id bigint, OUT end_id bigint)
+RETURNS record
+AS
+$$
+BEGIN
+    /* determine which requests we can safely aggregate */
+    SELECT window_start, window_end INTO start_id, end_id
+    FROM {$prefix}incremental_rollup_window('{$prefix}requests_rollup_1min');
+
+    /* exit early if there are no new events to aggregate */
+    IF start_id > end_id THEN RETURN; END IF;
+
+    /* aggregate the requests, merge results if the entry already exists */
+    INSERT INTO {$prefix}requests_rollup_1min
+        SELECT  object_uid,
+                model,
+                url,
+                path,
+                host,
+                date_trunc('seconds', (timestamp - TIMESTAMP 'epoch') / 60) * 60 + TIMESTAMP 'epoch' AS minute,
+                count(*) as request_count
+        FROM {$prefix}requests WHERE {$prefix}requests.id BETWEEN start_id AND end_id
+        GROUP BY object_uid, model, url, path, host, minute
+        ON CONFLICT (object_uid, model, url, path, host, minute)
+        DO UPDATE
+        SET request_count = {$prefix}requests_rollup_1min.request_count + excluded.request_count;
+END; 
+$$
+LANGUAGE plpgsql;
+
+-- ----------------------------------------------------------------------------
+-- REQUESTS 5 MINUTE AGGREGATION
+-- ----------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION {$prefix}rollup_requests_5min(OUT start_id bigint, OUT end_id bigint)
+RETURNS record
+AS
+$$
+BEGIN
+    /* determine which requests we can safely aggregate */
+    SELECT window_start, window_end INTO start_id, end_id
+    FROM {$prefix}incremental_rollup_window('{$prefix}requests_rollup_5min');
+
+    /* exit early if there are no new events to aggregate */
+    IF start_id > end_id THEN RETURN; END IF;
+
+    /* aggregate the requests, merge results if the entry already exists */
+    INSERT INTO {$prefix}requests_rollup_5min
+        SELECT  object_uid,
+                model,
+                url,
+                path,
+                host,
+                date_trunc('seconds', (timestamp - TIMESTAMP 'epoch') / 300) * 300 + TIMESTAMP 'epoch' AS minute,
+                count(*) as request_count
+        FROM {$prefix}requests WHERE {$prefix}requests.id BETWEEN start_id AND end_id
+        GROUP BY object_uid, model, url, path, host, minute
+        ON CONFLICT (object_uid, model, url, path, host, minute)
+        DO UPDATE
+        SET request_count = {$prefix}requests_rollup_5min.request_count + excluded.request_count;
+END; 
+$$
+LANGUAGE plpgsql;
+
+-- ----------------------------------------------------------------------------
+-- REQUESTS 1 HOUR AGGREGATION
+-- ----------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION {$prefix}rollup_requests_1hr(OUT start_id bigint, OUT end_id bigint)
+RETURNS record
+AS
+$$
+BEGIN
+    /* determine which requests we can safely aggregate */
+    SELECT window_start, window_end INTO start_id, end_id
+    FROM {$prefix}incremental_rollup_window('{$prefix}requests_rollup_1hr');
+
+    /* exit early if there are no new events to aggregate */
+    IF start_id > end_id THEN RETURN; END IF;
+
+    /* aggregate the requests, merge results if the entry already exists */
+    INSERT INTO {$prefix}requests_rollup_1hr
+        SELECT  object_uid,
+                model,
+                url,
+                path,
+                host,
+                date_trunc('hour', timestamp) as hour,
+                count(*) as request_count
+        FROM {$prefix}requests WHERE {$prefix}requests.id BETWEEN start_id AND end_id
+        GROUP BY object_uid, model, url, path, host, hour
+        ON CONFLICT (object_uid, model, url, path, host, hour)
+        DO UPDATE
+        SET request_count = {$prefix}requests_rollup_1hr.request_count + excluded.request_count;
+END; 
+$$
+LANGUAGE plpgsql;
+
+-- ----------------------------------------------------------------------------
+-- REQUESTS 1 DAY AGGREGATION
+-- ----------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION {$prefix}rollup_requests_1day(OUT start_id bigint, OUT end_id bigint)
+RETURNS record
+AS
+$$
+BEGIN
+    /* determine which requests we can safely aggregate */
+    SELECT window_start, window_end INTO start_id, end_id
+    FROM {$prefix}incremental_rollup_window('{$prefix}requests_rollup_1day');
+
+    /* exit early if there are no new events to aggregate */
+    IF start_id > end_id THEN RETURN; END IF;
+
+    /* aggregate the requests, merge results if the entry already exists */
+    INSERT INTO {$prefix}requests_rollup_1day
+        SELECT  object_uid,
+                model,
+                url,
+                path,
+                host,
+                date_trunc('day', timestamp) as day,
+                count(*) as request_count
+        FROM {$prefix}requests WHERE {$prefix}requests.id BETWEEN start_id AND end_id
+        GROUP BY object_uid, model, url, path, host, day
+        ON CONFLICT (object_uid, model, url, path, host, day)
+        DO UPDATE
+        SET request_count = {$prefix}requests_rollup_1day.request_count + excluded.request_count;
+END; 
+$$
+LANGUAGE plpgsql;
+
+
+        ");
         // object attributes
         Schema::create(("{$prefix}object_attributes"), function (Blueprint $table) {
             $table->id();
@@ -281,23 +492,6 @@ LANGUAGE plpgsql;
         //     ->where('model', 'user')
         //     ->where('attributes->age', '>', 18)
         //     ->get();
-
-        Schema::create("{$prefix}requests", function (Blueprint $table) {
-            $table->id();
-            $table->text('object_uid')->nullable(false);
-            $table->text('model')->nullable(false);
-            $table->text('session_uid')->nullable(true);
-            $table->text('url')->nullable(true);
-            $table->text('path')->nullable(true);
-            $table->text('host')->nullable(true);
-            $table->text('search')->nullable(true);
-            $table->text('query_params')->nullable(true);
-            $table->text('utm_source')->nullable(true);
-            $table->text('utm_medium')->nullable(true);
-            $table->text('utm_campaign')->nullable(true);
-            $table->text('utm_content')->nullable(true);
-            $table->timestamps();
-        });
 
         Schema::create("{$prefix}object_attributes_audit", function (Blueprint $table) {
             $table->id();
@@ -364,6 +558,11 @@ LANGUAGE plpgsql;
         Schema::dropIfExists("{$prefix}object_attributes_audit");
         Schema::dropIfExists("{$prefix}requests");
         Schema::dropIfExists("{$prefix}object_attributes");
+        DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1min CASCADE");
+        DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_5min CASCADE");
+        DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1hr CASCADE");
+        DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1day CASCADE");
+        Schema::dropIfExists("{$prefix}requests");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_1min CASCADE");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_5min CASCADE");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_1hr CASCADE");
