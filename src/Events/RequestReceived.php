@@ -14,15 +14,12 @@ class RequestReceived
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $data;
-
     /**
      * Create a new event instance.
+     *
+     * @param  array<mixed>  $data
      */
-    public function __construct(array $data)
-    {
-        $this->data = $data;
-    }
+    public function __construct(public array $data) {}
 
     /**
      * Get the channels the event should broadcast on.

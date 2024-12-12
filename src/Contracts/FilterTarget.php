@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace Dclaysmith\LaravelCascade\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 abstract class FilterTarget
 {
+    /**
+     * @var array<string>
+     */
     public array $joins = [];
 
     final public function joinKey(): ?string
@@ -30,11 +34,18 @@ abstract class FilterTarget
         return null;
     }
 
+    /**
+     * @return array<string>
+     */
     public function definition(): array
     {
         return [];
     }
 
+    /**
+     * @param  Builder<Model>  $builder
+     * @return Builder<Model> $builder
+     */
     public function applyJoin(Builder $builder): Builder
     {
         return $builder;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dclaysmith\LaravelCascade\Filters\Targets;
 
+use DateTimeInterface;
 use Dclaysmith\LaravelCascade\Contracts\FilterTarget;
 use Dclaysmith\LaravelCascade\Filters\Targets\Traits\HasDeltaFilters;
 use Illuminate\Container\Attributes\Config;
@@ -15,10 +16,15 @@ class EventCountDelta extends FilterTarget
 {
     use HasDeltaFilters;
 
+    /**
+     * @param  array<DateTimeInterface>  $currentPeriod
+     * @param  array<DateTimeInterface>  $previousPeriod
+     */
     public function __construct(
         #[Config('cascade.database.tablePrefix')] protected ?string $prefix,
         public string $event,
-        public array $dateRange
+        public ?array $currentPeriod,
+        public ?array $previousPeriod
     ) {}
 
     public function property(): ?string
@@ -28,6 +34,10 @@ class EventCountDelta extends FilterTarget
 
     public function applyJoin(Builder $builder): Builder
     {
+        if (! $this->joinKey()) {
+            return $builder;
+        }
+
         if (array_key_exists($this->joinKey(), $this->joins)) {
             return $builder;
         }

@@ -31,6 +31,9 @@ class EventCount extends FilterTarget
 
     public function applyJoin(Builder $builder): Builder
     {
+        if (! $this->joinKey()) {
+            return $builder;
+        }
 
         if (array_key_exists($this->joinKey(), $this->joins)) {
             return $builder;

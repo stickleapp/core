@@ -32,16 +32,15 @@ class EventServiceProvider extends ServiceProvider
         ],
     ];
 
+    /** @var array<string> */
     protected $subscribe = [
         AuthenticatableEventListener::class,
     ];
 
     /**
      * Register any events for your application.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         parent::boot();
     }

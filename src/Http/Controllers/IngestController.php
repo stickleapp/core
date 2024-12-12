@@ -110,7 +110,7 @@ class IngestController
         return response()->noContent();
     }
 
-    private function model($explicit, ?object $object): ?string
+    private function model(?string $explicit, ?object $object): ?string
     {
         if ($explicit) {
             return $explicit;
@@ -123,19 +123,22 @@ class IngestController
         return null;
     }
 
-    private function objectUid($explicit, ?object $object): ?string
+    private function objectUid(?string $explicit, ?object $object): ?string
     {
         if ($explicit) {
             return $explicit;
         }
 
-        if ($object) {
+        if ($object && property_exists($object, 'id')) {
             return $object->id;
         }
 
         return null;
     }
 
+    /**
+     * @return array<string>
+     */
     private function availableModels(): array
     {
         $config = config('cascade.models', []);

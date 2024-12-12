@@ -78,7 +78,7 @@ final class PostgresAnalyticsRepository implements AnalyticsRepository
         ]);
     }
 
-    private function table($name)
+    private function table(string $name): string
     {
         return $this->prefix.$name;
     }
