@@ -9,12 +9,12 @@ use Dclaysmith\LaravelCascade\Contracts\FilterTest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
-class GreaterThan extends FilterTest
+class Contains extends FilterTest
 {
-    public function __construct(public mixed $comparator) {}
+    public function __construct(public string $comparator, public bool $caseSensitive = false) {}
 
     public function applyFilter(Builder $builder, FilterTarget $target, string $operator): Builder
     {
-        return $builder->where(DB::raw($target->castProperty()), '>', $target->castValue($this->comparator), $operator);
+        return $builder->whereLike(DB::raw($target->property()), sprintf('%%%s%%', $this->comparator), $this->caseSensitive);
     }
 }

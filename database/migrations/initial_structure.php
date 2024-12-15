@@ -486,6 +486,8 @@ LANGUAGE plpgsql;
             $table->text('object_uid')->nullable(false);
             $table->jsonb('attributes')->nullable(false);
             $table->timestamps();
+
+            $table->unique(['model', 'object_uid']);
         });
 
         // Model::join('object_attributes', 'object_uid', 'object_uid')

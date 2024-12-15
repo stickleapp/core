@@ -9,12 +9,15 @@ use Dclaysmith\LaravelCascade\Contracts\FilterTest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
-class GreaterThan extends FilterTest
+class IsNotFalse extends FilterTest
 {
-    public function __construct(public mixed $comparator) {}
+    public function __construct() {}
 
     public function applyFilter(Builder $builder, FilterTarget $target, string $operator): Builder
     {
-        return $builder->where(DB::raw($target->castProperty()), '>', $target->castValue($this->comparator), $operator);
+        return $builder->where(function (Builder $query) use ($target) {
+            $query->where(DB::raw($target->castProperty()), true);
+            $query->orWhereNull(DB::raw($target->castProperty()));
+        });
     }
 }

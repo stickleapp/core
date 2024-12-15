@@ -50,6 +50,7 @@ class Base
      */
     public function __call(string $method, array $arguments): self
     {
+        $testClass = 'Dclaysmith\LaravelCascade\Filters\Tests\\'.ucfirst($method);
 
         if (method_exists($this->target, $method)) {
             if ($newTargetType = $this->target->$method(...$arguments)) {
@@ -59,13 +60,12 @@ class Base
             if (method_exists($this->test, $method)) {
                 $this->test->$method(...$arguments);
             }
+        } elseif (class_exists($testClass)) {
+            /** @var FilterTest */
+            $test = new $testClass(...$arguments);
+            $this->test = $test;
         } else {
-            $testClass = 'Dclaysmith\LaravelCascade\Filters\Tests\\'.ucfirst($method);
-            if (class_exists($testClass)) {
-                /** @var FilterTest */
-                $test = new $testClass(...$arguments);
-                $this->test = $test;
-            }
+            throw new \Exception("Method `$method()` cannot be called via __call. Does it exist on the target or test classes?");
         }
 
         return $this;
