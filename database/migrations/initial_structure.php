@@ -485,6 +485,7 @@ LANGUAGE plpgsql;
             $table->text('model')->nullable(false);
             $table->text('object_uid')->nullable(false);
             $table->jsonb('attributes')->nullable(false);
+            $table->timestamp('synced_at')->nullable(true);
             $table->timestamps();
 
             $table->unique(['model', 'object_uid']);
@@ -500,8 +501,8 @@ LANGUAGE plpgsql;
             $table->text('model')->nullable(false);
             $table->text('object_uid')->nullable(false);
             $table->text('attribute_name')->nullable(false);
-            $table->text('attribute_value')->nullable(true);
-            $table->date(('attribute_updated_at'))->nullable(false);
+            $table->text('attribute_old_value')->nullable(true);
+            $table->text('attribute_new_value')->nullable(true);
             $table->timestamps();
 
             $table->unique(['model', 'object_uid', 'attribute_name', 'attribute_updated_at']);

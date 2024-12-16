@@ -8,6 +8,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Attributes\WithMigration;
 use Orchestra\Testbench\TestCase as Orchestra;
 
+use function Orchestra\Testbench\workbench_path;
+
 #[WithMigration]
 class TestCase extends Orchestra
 {
@@ -33,9 +35,19 @@ class TestCase extends Orchestra
     {
         config()->set('database.default', 'pgsql');
 
-        /*
-        $migration = include __DIR__.'/../database/migrations/create_laravel-cascade_table.php.stub';
-        $migration->up();
-        */
+        // $migration = include __DIR__.'/../database/migrations/initial_structure.php';
+        // $migration->up();
+    }
+
+    /**
+     * Define database migrations.
+     *
+     * @return void
+     */
+    protected function defineDatabaseMigrations()
+    {
+        $this->loadMigrationsFrom(
+            workbench_path('database/migrations')
+        );
     }
 }

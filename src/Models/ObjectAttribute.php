@@ -23,6 +23,8 @@ class ObjectAttribute extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'object_uid',
+        'model',
     ];
 
     /**

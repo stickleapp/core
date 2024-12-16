@@ -7,6 +7,7 @@ use Dclaysmith\LaravelCascade\Traits\Trackable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Workbench\Database\Factories\UserFactory;
 
 class User extends Authenticatable
 {
@@ -42,4 +43,20 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Specify the attributes that should be observed (via Observable)
+     */
+    public array $observed = [
+        'votes',
+        // 'name',
+        // 'items_purchased',
+        // 'cascade.last_order_total',
+        // 'cascade.last_order_item_count',
+    ];
+
+    protected static function newFactory()
+    {
+        return UserFactory::new();
+    }
 }

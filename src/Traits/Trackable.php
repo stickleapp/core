@@ -36,9 +36,7 @@ trait Trackable
                     ObjectAttribute::create([
                         'object_uid' => $model->object_uid,
                         'object_type' => $model::class,
-                        'property' => $property,
-                        'old_value' => $model->getOriginal($property),
-                        'new_value' => $model->getAttribute($property),
+                        'attributes' => $property,
                     ]);
                 }
             }

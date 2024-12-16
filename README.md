@@ -137,6 +137,8 @@ You can access a test page at the URL specified in the terminal.
 
 `vendor/bin/testbench db:seed --class=\\Workbench\\Database\\Seeders\\DatabaseSeeder`
 
+`vendor/bin/testbench migrate:fresh --seed --seeder=\\Workbench\\Database\\Seeders\\DatabaseSeeder`
+
 # Advanced Configuration
 
 Cascade will work out of the box using the configuration options specified during the installation process. You can override these (and several other) options in the `config\cascade.php` file.
