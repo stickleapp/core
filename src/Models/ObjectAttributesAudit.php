@@ -5,7 +5,7 @@ namespace Dclaysmith\LaravelCascade\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class ObjectAttribute extends Model
+class ObjectAttributesAudit extends Model
 {
     /**
      * Creates a new analytics repository instance.
@@ -15,7 +15,7 @@ class ObjectAttribute extends Model
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't popoulate in Factory
          */
-        $this->table = config('cascade.database.tablePrefix').'object_attributes';
+        $this->table = config('cascade.database.tablePrefix').'object_attributes_audit';
     }
 
     /**
@@ -26,7 +26,9 @@ class ObjectAttribute extends Model
     protected $fillable = [
         'object_uid',
         'model',
-        'attributes',
+        'attribute',
+        'from',
+        'to',
     ];
 
     /**
