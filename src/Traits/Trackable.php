@@ -6,7 +6,6 @@ namespace Dclaysmith\LaravelCascade\Traits;
 
 use Dclaysmith\LaravelCascade\Filters\Base as Filter;
 use Dclaysmith\LaravelCascade\Models\ObjectAttribute;
-use Dclaysmith\LaravelCascade\Models\ObjectAttributesAudit;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -36,18 +35,6 @@ trait Trackable
             ], [
                 'attributes' => json_encode($model->only($propertiesToLog)),
             ]);
-
-            foreach ($propertiesToLog as $property) {
-                if (is_numeric($model->getAttribute($property))) {
-                    ObjectAttributesAudit::create([
-                        'model' => $model::class,
-                        'object_uid' => $model->id,
-                        'attribute' => $property,
-                        'from' => $model->getOriginal($property),
-                        'to' => $model->getAttribute($property),
-                    ]);
-                }
-            }
         });
     }
 

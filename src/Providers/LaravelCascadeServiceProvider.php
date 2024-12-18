@@ -12,6 +12,8 @@ use Dclaysmith\LaravelCascade\Components\BlankLayout;
 use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
 use Dclaysmith\LaravelCascade\Middleware\InjectJavascriptTrackingCode;
 use Dclaysmith\LaravelCascade\Middleware\RequestLogger;
+use Dclaysmith\LaravelCascade\Models\ObjectAttribute;
+use Dclaysmith\LaravelCascade\Observers\ObjectAttributeObserver;
 use Dclaysmith\LaravelCascade\Repositories\PostgresAnalyticsRepository;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Blade;
@@ -36,6 +38,8 @@ final class LaravelCascadeServiceProvider extends ServiceProvider
     public function boot(Kernel $kernel): void
     {
         $kernel = $this->app->make(Kernel::class);
+
+        ObjectAttribute::observe(ObjectAttributeObserver::class);
 
         if (config('cascade.tracking.server.loadMiddleware') === true) {
             $kernel->pushMiddleware(RequestLogger::class);

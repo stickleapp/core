@@ -32,5 +32,8 @@ it('observed properties log changes', function () {
     $user->votes = 15;
     $user->save();
 
+    $user->votes = 23;
+    $user->save();
+
     expect($user->getObservableProperties())->toBeArray();
 });
