@@ -26,7 +26,7 @@ class ObjectAttribute extends Model
     protected $fillable = [
         'object_uid',
         'model',
-        'attributes',
+        'model_attributes',
     ];
 
     /**
@@ -45,6 +45,7 @@ class ObjectAttribute extends Model
     protected function casts(): array
     {
         return [
+            'model_attributes' => 'array',
         ];
     }
 

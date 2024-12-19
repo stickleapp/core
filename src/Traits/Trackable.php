@@ -12,11 +12,17 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 trait Trackable
 {
+    /**
+     * Enables a ->cascade() method on the model
+     */
     public static function scopeCascade(Builder $builder, Filter $filter)
     {
         return $filter->apply($builder, 'and');
     }
 
+    /**
+     * Enables a ->orCascade() method on the model
+     */
     public static function scopeOrCascade(Builder $builder, Filter $filter)
     {
         return $filter->apply($builder, 'or');
@@ -25,17 +31,42 @@ trait Trackable
     public static function bootTrackable()
     {
 
-        static::saved(function (Model $model) {
+        /**
+         * When a trackable model is created, log observed attributes
+         */
+        static::created(function (Model $model) {
+
+            $propertiesToLog = $model->getObservableProperties();
+
+            $objectAttributes = ObjectAttribute::firstOrNew([
+                'model' => $model::class,
+                'object_uid' => $model->id,
+            ]);
+
+            $objectAttributes->model_attributes = $model->only($propertiesToLog);
+
+            $objectAttributes->save();
+        });
+
+        /**
+         * When a trackable model is updated, log observed attributes
+         */
+        static::updated(function (Model $model) {
 
             $propertiesToLog = array_intersect($model->getObservableProperties(), array_keys($model->getDirty()));
 
-            ObjectAttribute::updateOrCreate([
+            $objectAttributes = ObjectAttribute::firstOrNew([
                 'model' => $model::class,
                 'object_uid' => $model->id,
-            ], [
-                'attributes' => json_encode($model->only($propertiesToLog)),
             ]);
+
+            $attributes = $objectAttributes->model_attributes ?? [];
+
+            $objectAttributes->model_attributes = array_merge($attributes, $model->only($propertiesToLog));
+
+            $objectAttributes->save();
         });
+
     }
 
     public function getObservableProperties()

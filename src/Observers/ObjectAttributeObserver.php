@@ -14,24 +14,30 @@ class ObjectAttributeObserver
     public function saved(ObjectAttribute $objectAttribute): void
     {
 
-        $from = json_decode($objectAttribute->getOriginal('attributes', '{}'), true);
-        $to = json_decode($objectAttribute->getAttribute('attributes', '{}'), true);
+        $from = $objectAttribute->getOriginal('model_attributes');
+        $to = $objectAttribute->getAttribute('model_attributes');
 
         $diff = $this->getChangedAttributes($from, $to);
 
         foreach ($diff as $property => $changes) {
-            ObjectAttributesAudit::create([
+            // This may be slow
+            ObjectAttributesAudit::firstOrCreate([
                 'model' => $objectAttribute->model,
                 'object_uid' => $objectAttribute->object_uid,
                 'attribute' => $property,
+                'created_at' => now(),
+            ], [
                 'from' => Arr::get($changes, 'from'),
                 'to' => Arr::get($changes, 'to'),
             ]);
         }
     }
 
-    public function getChangedAttributes(array $original, array $modified)
+    public function getChangedAttributes(?array $original = [], ?array $modified = []): array
     {
+
+        $original = $original ?? [];
+        $modified = $modified ?? [];
         $changed = [];
 
         foreach ($original as $key => $value) {
