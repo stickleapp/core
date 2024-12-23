@@ -12,9 +12,9 @@ abstract class Segment
 {
     public string $name;
 
-    public int $refreshInterval;
+    public int $exportInterval;
 
-    public string $class; // could we determine from builder returned by export?
+    public string $model;
 
     /**
      * @return Builder<Model>

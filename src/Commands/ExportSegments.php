@@ -1,0 +1,112 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Dclaysmith\LaravelCascade\Commands;
+
+use Dclaysmith\LaravelCascade\Jobs\ExportSegment;
+use Dclaysmith\LaravelCascade\Models\Segment;
+use Illuminate\Console\Command;
+use Illuminate\Container\Attributes\Config;
+use Illuminate\Contracts\Console\Isolatable;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use ReflectionClass;
+
+final class ExportSegments extends Command implements Isolatable
+{
+    /**
+     * @var string
+     */
+    protected $signature = 'cascade:export-segments {directory : The full path where the Segment classes are stored.}
+                                                    {namespace : The namespace of the Segment classes.}
+                                                    {limit : The maximum number of segments to export.}';
+
+    /**
+     * @var string
+     */
+    protected $description = 'Look at the segments in the designated directory, if necessary, export them.';
+
+    /**
+     * Create a new command instance.
+     */
+    public function __construct(
+        #[Config('cascade.database.tablePrefix')] protected ?string $prefix = null,
+    ) {
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     */
+    public function handle(): void
+    {
+
+        Log::info('ExportSegments Command', $this->arguments());
+
+        $directory = $this->argument('directory');
+        $namespace = $this->argument('namespace');
+
+        /**
+         * Using Reflection, create an array containing all of the segments
+         * in the designated directory.
+         */
+        $segments = $this->getSegmentSyncDefinitions($directory, $namespace);
+
+        /**
+         * Insert any segments from this analysis into the `segments` table.
+         */
+        Segment::insertOrIgnore($segments);
+
+        /**
+         * Return a list of segments to export considering the export_interval
+         * and the last_exported_at timestamp.
+         */
+        $segments = Segment::leftJoin("{$this->prefix}segment_exports", "{$this->prefix}segments.id", '=', "{$this->prefix}segment_exports.segment_id")
+            ->where('last_exported_at', null)
+            ->orWhere('last_exported_at', '<', DB::raw("NOW() - INTERVAL '1 minute' * export_interval"))
+            ->select("{$this->prefix}segments.*", DB::raw("MAX({$this->prefix}segment_exports.created_at) as latest_export_date"))
+            ->groupBy("{$this->prefix}segments.id")
+            ->limit($this->argument('limit'))
+            ->get();
+
+        Log::info('ExportSegments Dispatching ', [$segments->count()]);
+
+        foreach ($segments as $segment) {
+
+            Log::debug('ExportSegments Dispatching', ['segment_id' => $segment->id]);
+
+            ExportSegment::dispatch($segment);
+        }
+
+    }
+
+    public function getSegmentSyncDefinitions($directory, $namespace)
+    {
+        $results = [];
+
+        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+
+        foreach ($files as $file) {
+            if ($file->isFile() && $file->getExtension() === 'php') {
+                $className = $namespace.'\\'.str_replace(
+                    ['/', '.php'],
+                    ['\\', ''],
+                    substr($file->getRealPath(), strlen($directory) + 1)
+                );
+                $reflection = new ReflectionClass($className);
+                $defaultProperties = $reflection->getDefaultProperties();
+                $results[] = [
+                    'model' => Arr::get($defaultProperties, 'model'),
+                    'as_class' => $className,
+                    'export_interval' => Arr::get($defaultProperties, 'exportInterval'),
+                ];
+            }
+        }
+
+        return $results;
+    }
+}

@@ -86,6 +86,10 @@ return [
         'listeners' => env('CASACADE_PATH_LISTENERS', 'App\Listeners'),
     ],
 
+    'storage' => [
+        'exports' => env('CASACADE_STORAGE_EXPORTS', 'segment-exports'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Tracking

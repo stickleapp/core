@@ -478,75 +478,7 @@ BEGIN
 END; 
 $$
 LANGUAGE plpgsql;
-
-
         ");
-        // object attributes
-        Schema::create(("{$prefix}object_attributes"), function (Blueprint $table) {
-            $table->id();
-            $table->text('model')->nullable(false);
-            $table->text('object_uid')->nullable(false);
-            $table->jsonb('model_attributes')->nullable(false);
-            $table->timestamp('synced_at')->nullable(true);
-            $table->timestamps();
-
-            $table->unique(['model', 'object_uid']);
-        });
-
-        // Model::join("{$prefix}object_attributes", function ($join) {
-        //      $join->on("{$prefix}object_attributes.object_uuid", 'object_uid')
-        //      $join->where("{$prefix}object_attributes.model", $this->attributable);
-        // })
-        //     ->where('attributes->age', '>', 18)
-        //     ->get();
-
-        Schema::create("{$prefix}object_attributes_audit", function (Blueprint $table) {
-            $table->id();
-            $table->text('model')->nullable(false);
-            $table->text('object_uid')->nullable(false);
-            $table->text('attribute')->nullable(false);
-            $table->text('from')->nullable(true);
-            $table->text('to')->nullable(true);
-            $table->timestamps();
-
-            $table->unique(['model', 'object_uid', 'attribute', 'created_at']);
-            // ON DUPLICATE KEY UPDATE
-        });
-
-        Schema::create("{$prefix}object_segment", function (Blueprint $table) use ($prefix) {
-            $table->id();
-            $table->text('model')->nullable(false);
-            $table->text('object_uid')->nullable(false);
-            $table->text("{$prefix}segment_id")->nullable(false);
-            $table->timestamps();
-        });
-
-        Schema::create("{$prefix}object_segment_audit", function (Blueprint $table) use ($prefix) {
-            $table->id();
-            $table->text("{$prefix}segment_id")->nullable(false);
-            $table->text('object_uid')->nullable(false);
-            $table->text('operation')->nullable(false); // enum
-            $table->timestamp('recorded_at')->nullable(false);
-        });
-
-        Schema::create("{$prefix}segment_groups", function (Blueprint $table) {
-            $table->id();
-            $table->text('name');
-            $table->timestamps();
-        });
-
-        Schema::create("{$prefix}segments", function (Blueprint $table) use ($prefix) {
-            $table->id();
-            $table->unsignedBigInteger("{$prefix}segment_group_id")->nullable(true);
-            $table->text('model')->nullable(false);
-            $table->jsonb('definition')->nullable(true);
-            $table->integer('sort_order')->nullable(false)->default(0);
-            $table->timestamps();
-
-            $table->foreign("{$prefix}segment_group_id")->references('id')->on("{$prefix}segment_groups");
-            $table->index("{$prefix}segment_group_id");
-        });
-
     }
 
     /**
@@ -558,23 +490,17 @@ LANGUAGE plpgsql;
     {
         $prefix = $this->prefix;
 
-        Schema::dropIfExists("{$prefix}segments");
-        Schema::dropIfExists("{$prefix}segment_groups");
-        Schema::dropIfExists("{$prefix}object_segment_audit");
-        Schema::dropIfExists("{$prefix}object_segment");
-        Schema::dropIfExists("{$prefix}object_attributes_audit");
         Schema::dropIfExists("{$prefix}requests");
-        Schema::dropIfExists("{$prefix}object_attributes");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1min CASCADE");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_5min CASCADE");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1hr CASCADE");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1day CASCADE");
-        Schema::dropIfExists("{$prefix}requests");
+        Schema::dropIfExists("{$prefix}events");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_1min CASCADE");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_5min CASCADE");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_1hr CASCADE");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_1day CASCADE");
-        Schema::dropIfExists("{$prefix}events");
         Schema::dropIfExists("{$prefix}rollups");
+
     }
 };
