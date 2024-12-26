@@ -20,20 +20,20 @@ it('can call cascade()', function () {
 
 it('has observed attributes', function () {
     $user = new User;
-    expect($user->getObservableProperties())->toBeArray();
+    expect($user->getObservedAttributes())->toBeArray();
 });
 
 it('observed properties log changes', function () {
 
     $user = User::factory()->create();
-    $user->votes = 10;
+    $user->user_rating = 1;
     $user->save();
 
-    $user->votes = 15;
+    $user->user_rating = 3;
     $user->save();
 
-    $user->votes = 23;
+    $user->user_rating = 5;
     $user->save();
 
-    expect($user->getObservableProperties())->toBeArray();
+    expect($user->getObservedAttributes())->toBeArray();
 });

@@ -27,6 +27,7 @@ class ObjectAttribute extends Model
         'object_uid',
         'model',
         'model_attributes',
+        'synced_at',
     ];
 
     /**

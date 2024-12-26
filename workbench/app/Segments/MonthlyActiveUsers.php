@@ -23,6 +23,6 @@ class MonthlyActiveUsers extends Segment
         //         ->startDate(now()->subDays(30))
         // );
 
-        return $this->model::query();
+        return $this->model::where('id', '>', 500);
     }
 }

@@ -84,6 +84,7 @@ return [
     'paths' => [
         'segments' => env('CASACADE_PATH_SEGMENTS', 'App\Segments'),
         'listeners' => env('CASACADE_PATH_LISTENERS', 'App\Listeners'),
+        'models' => env('CASACADE_PATH_MODELS', 'App\Models'),
     ],
 
     'storage' => [

@@ -29,6 +29,6 @@ class DailyActiveUsers extends Segment
         //         ->startDate(now()->subDays(7))
         // );
 
-        return $this->model::query();
+        return $this->model::where('id', '>', 300);
     }
 }

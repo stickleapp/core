@@ -36,6 +36,7 @@ return new class extends Migration
             $table->unsignedBigInteger('segment_id')->nullable(false);
             $table->text('operation')->nullable(false); // enum
             $table->timestamp('recorded_at')->nullable(false);
+            $table->timestamp('event_processed_at')->nullable(true);
         });
 
         Schema::create("{$prefix}object_segment_statistics", function (Blueprint $table) {
@@ -46,6 +47,7 @@ return new class extends Migration
             $table->timestamp('first_exit_recorded_at')->nullable(true);
             $table->timestamp('last_enter_recorded_at')->nullable(true);
             $table->timestamp('last_exit_recorded_at')->nullable(true);
+            $table->timestamps();
 
             $table->unique(['object_uid', 'segment_id']);
         });
@@ -67,7 +69,7 @@ return new class extends Migration
             $table->timestamp('last_exported_at')->nullable(true);
             $table->timestamps();
 
-            $table->unique('model', 'as_class', 'as_json');
+            $table->unique(['model', 'as_class', 'as_json']);
             $table->foreign('segment_group_id')->references('id')->on("{$prefix}segment_groups");
             $table->index('segment_group_id');
         });

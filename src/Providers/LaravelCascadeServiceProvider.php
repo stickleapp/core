@@ -7,6 +7,7 @@ namespace Dclaysmith\LaravelCascade\Providers;
 use Dclaysmith\LaravelCascade\Commands\CreatePartitions;
 use Dclaysmith\LaravelCascade\Commands\DropPartitions;
 use Dclaysmith\LaravelCascade\Commands\ExportSegments;
+use Dclaysmith\LaravelCascade\Commands\RecordObjectAttributes;
 use Dclaysmith\LaravelCascade\Commands\StartCommand;
 // use Dclaysmith\LaravelCascade\Console\Commands\InstallCommand;
 use Dclaysmith\LaravelCascade\Components\BlankLayout;
@@ -61,6 +62,7 @@ final class LaravelCascadeServiceProvider extends ServiceProvider
                     CreatePartitions::class,
                     DropPartitions::class,
                     ExportSegments::class,
+                    RecordObjectAttributes::class,
                 ],
             );
         }

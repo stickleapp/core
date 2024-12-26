@@ -58,6 +58,7 @@ final class ExportSegments extends Command implements Isolatable
 
         /**
          * Insert any segments from this analysis into the `segments` table.
+         * If the segment already exists, ignore it.
          */
         Segment::insertOrIgnore($segments);
 
@@ -73,12 +74,8 @@ final class ExportSegments extends Command implements Isolatable
             ->limit($this->argument('limit'))
             ->get();
 
-        Log::info('ExportSegments Dispatching ', [$segments->count()]);
-
         foreach ($segments as $segment) {
-
             Log::debug('ExportSegments Dispatching', ['segment_id' => $segment->id]);
-
             ExportSegment::dispatch($segment);
         }
 

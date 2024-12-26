@@ -7,8 +7,9 @@ namespace Dclaysmith\LaravelCascade\Traits;
 use Dclaysmith\LaravelCascade\Filters\Base as Filter;
 use Dclaysmith\LaravelCascade\Models\ObjectAttribute;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 trait Trackable
 {
@@ -36,16 +37,9 @@ trait Trackable
          */
         static::created(function (Model $model) {
 
-            $propertiesToLog = $model->getObservableProperties();
+            $observableAttributeKeys = $model->getObservedAttributes();
 
-            $objectAttributes = ObjectAttribute::firstOrNew([
-                'model' => $model::class,
-                'object_uid' => $model->id,
-            ]);
-
-            $objectAttributes->model_attributes = $model->only($propertiesToLog);
-
-            $objectAttributes->save();
+            $model->trackable_attributes = $model->only($observableAttributeKeys);
         });
 
         /**
@@ -53,32 +47,85 @@ trait Trackable
          */
         static::updated(function (Model $model) {
 
-            $propertiesToLog = array_intersect($model->getObservableProperties(), array_keys($model->getDirty()));
+            $observableAttributeKeys = array_intersect($model->getObservedAttributes(), array_keys($model->getDirty()));
 
-            $objectAttributes = ObjectAttribute::firstOrNew([
-                'model' => $model::class,
-                'object_uid' => $model->id,
-            ]);
-
-            $attributes = $objectAttributes->model_attributes ?? [];
-
-            $objectAttributes->model_attributes = array_merge($attributes, $model->only($propertiesToLog));
-
-            $objectAttributes->save();
+            $model->trackable_attributes = $model->only($observableAttributeKeys);
         });
 
     }
 
-    public function getObservableProperties()
+    public function getObservedAttributes()
     {
-        return $this->observed ?? [];
+        return $this->observedAttributes ?? [];
     }
 
     /**
-     * Get the model's attributes
+     * Gets the one-to-one ObjectAttribute relationship
+     * ... applies to the models with this trait
      */
-    public function attributes(): MorphOne
+    // public function objectAttribute(): MorphOne
+    // {
+    //     return $this->morphOne(static::class, 'attributable');
+    // }
+    public function objectAttribute(): HasOne
     {
-        return $this->morphOne(static::class, 'attributable');
+        return $this->hasOne(ObjectAttribute::class, 'object_uid')->where('model', self::class);
     }
+
+    /**
+     * Mutator that allows you to set:
+     * `$trackedModel->trackable_attributes = ['key' => 'value', 'key2' => 'value2']`
+     *
+     * It will retrieve or create the one-to-one relationship with the ObjectAttribute model
+     * and merge the provided attributes with the existing ones and persist it to the database
+     */
+    protected function trackableAttributes(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $this->objectAttribute()
+                    ->firstOrNew(
+                        [
+                            'model' => self::class,
+                            'object_uid' => $this->id,
+                        ]
+                    )->model_attributes ?? [];
+            },
+            set: function ($value) {
+                if (is_array($value)) {
+                    $objectAttribute = $this
+                        ->objectAttribute()
+                        ->firstOrCreate(
+                            [
+                                'model' => self::class,
+                                'object_uid' => $this->id,
+                            ],
+                            [
+                                'model_attributes' => [],
+                            ]
+                        );
+                    $existingAttributes = $objectAttribute->model_attributes ?? [];
+                    $objectAttribute->update(
+                        [
+                            'model_attributes' => array_merge($existingAttributes, $value),
+                            'synced_at' => now(),
+                        ]
+                    );
+                }
+            }
+        );
+    }
+
+    // public function setTrackableAttributesProperty($value)
+    // {
+    //     if (is_array($value)) {
+
+    //         $objectAttribute = $this->attributes()->firstOrNew(['model' => self::class,
+    //             'object_uid' => $this->id, ]); // Create a new profile if it doesn't exist
+
+    //         $existingAttributes = $objectAttribute->model_attributes ?? [];
+
+    //         $objectAttribute->update(['model_attributes' => array_merge($existingAttributes, $value)]);
+    //     }
+    // }
 }

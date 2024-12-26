@@ -26,6 +26,6 @@ class SlippingUsers extends Segment
         //         ->greaterThan(40) // meaningless -- make percentage
         // );
 
-        return $this->model::query();
+        return $this->model::where('id', '>', 200);
     }
 }
