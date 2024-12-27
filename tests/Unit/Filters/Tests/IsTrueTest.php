@@ -8,16 +8,13 @@ test('Creates correct sql', function () {
     $prefix = config('cascade.database.tablePrefix');
 
     $filter = Filter::boolean('a_column')
-        ->isFalse();
+        ->isTrue();
 
     $builder = User::query();
 
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        sprintf('select * from "users" where a_column::boolean = ?', $prefix)
+        sprintf('select * from "users" where (model_attributes->a_column)::boolean = true', $prefix)
     );
-
-    expect(collect($builder->getBindings())->first())->toBeFalse();
-
 });

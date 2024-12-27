@@ -30,5 +30,11 @@ final class ProcessSegmentEvents extends Command implements Isolatable
     /**
      * Execute the console command.
      */
-    public function handle(): void {}
+    public function handle(): void
+    {
+
+        /**
+         * Retrieve the
+         **/
+    }
 }

@@ -15,8 +15,6 @@ test('Creates correct sql', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        sprintf('select * from "users" where a_column::boolean = ?', $prefix)
+        sprintf('select * from "users" where (model_attributes->a_column)::boolean = false', $prefix)
     );
-
-    expect(collect($builder->getBindings())->first())->toBeFalse();
 });

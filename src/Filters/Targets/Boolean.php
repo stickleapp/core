@@ -16,11 +16,11 @@ class Boolean extends FilterTarget
 
     public function property(): ?string
     {
-        return $this->attribute;
+        return "model_attributes->{$this->attribute}";
     }
 
     public function castProperty(): mixed
     {
-        return sprintf('%s::boolean', $this->property());
+        return sprintf('(%s)::boolean', $this->property());
     }
 }

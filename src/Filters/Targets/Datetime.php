@@ -16,7 +16,7 @@ class Datetime extends FilterTarget
 
     public function property(): ?string
     {
-        return $this->attribute;
+        return "model_attributes->{$this->attribute}";
     }
 
     public function castProperty(): mixed

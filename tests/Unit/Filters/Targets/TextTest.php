@@ -19,6 +19,6 @@ test('Casts target property as boolean', function () {
 
     $filter = Filter::text('a_column');
 
-    expect($filter->target->castProperty())->toBe('a_column::text');
+    expect($filter->target->castProperty())->toBe('model_attributes->a_column::text');
 
 });

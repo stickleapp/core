@@ -38,5 +38,5 @@ test('example', function () {
                 ->isNull('a_column')
         );
 
-    expect($query->toSql())->not()->toBeEmpty();
+    expect($query->toSql())->dd()->not()->toBeEmpty();
 });

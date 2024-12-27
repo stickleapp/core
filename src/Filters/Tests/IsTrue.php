@@ -15,6 +15,6 @@ class IsTrue extends FilterTest
 
     public function applyFilter(Builder $builder, FilterTarget $target, string $operator): Builder
     {
-        return $builder->where(DB::raw($target->castProperty()), '=', true, $operator);
+        return $builder->where(DB::raw($target->castProperty()), '=', true);
     }
 }

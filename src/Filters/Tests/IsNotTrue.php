@@ -16,7 +16,7 @@ class IsNotTrue extends FilterTest
     public function applyFilter(Builder $builder, FilterTarget $target, string $operator): Builder
     {
         return $builder->where(function (Builder $query) use ($target) {
-            $query->where(DB::raw($target->castProperty()), false);
+            $query->where(DB::raw($target->castProperty()), '!=', true);
             $query->orWhereNull(DB::raw($target->castProperty()));
         });
     }

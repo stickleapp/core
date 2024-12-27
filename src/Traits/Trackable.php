@@ -10,14 +10,31 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 
 trait Trackable
 {
+    public static function getTableName()
+    {
+        return (new self)->getTable();
+    }
+
     /**
      * Enables a ->cascade() method on the model
      */
     public static function scopeCascade(Builder $builder, Filter $filter)
     {
+
+        /**
+         * We'll need this join for the filters but do not want to add it twice
+         */
+        if (! $builder->hasJoin('object_attributes')) {
+            $builder->leftJoin('object_attributes', function ($join) {
+                $join->on('object_attributes.object_uid', '=', DB::raw(self::getTableName().'.id::text'));
+                $join->where('object_attributes.model', '=', self::class);
+            });
+        }
+
         return $filter->apply($builder, 'and');
     }
 
@@ -26,11 +43,26 @@ trait Trackable
      */
     public static function scopeOrCascade(Builder $builder, Filter $filter)
     {
+        /**
+         * We'll need this join for the filters but do not want to add it twice
+         */
+        if (! $builder->hasJoin('object_attributes')) {
+            $builder->leftJoin('object_attributes', function ($join) {
+                $join->on('object_attributes.object_uid', '=', DB::raw(self::getTableName().'.id::text'));
+                $join->where('object_attributes.model', '=', self::class);
+            });
+        }
+
         return $filter->apply($builder, 'or');
     }
 
     public static function bootTrackable()
     {
+        Builder::macro('hasJoin', function ($table) {
+            return collect($this->getQuery()->joins)->contains(function ($join) use ($table) {
+                return $join->table === $table;
+            });
+        });
 
         /**
          * When a trackable model is created, log observed attributes

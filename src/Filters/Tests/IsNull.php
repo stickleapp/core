@@ -15,6 +15,6 @@ class IsNull extends FilterTest
 
     public function applyFilter(Builder $builder, FilterTarget $target, string $operator): Builder
     {
-        return $builder->whereNull(DB::raw($target->castProperty()), $operator);
+        return $builder->whereNull(DB::raw($target->castProperty()));
     }
 }
