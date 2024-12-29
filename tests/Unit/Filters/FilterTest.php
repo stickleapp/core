@@ -15,12 +15,41 @@ class User extends \Illuminate\Database\Eloquent\Model
 
 test('example', function () {
 
+    // $query = User::query()
+    //     ->cascade(
+    //         Filter::eventCount('clicked:something')
+    //             ->greaterThan(10)
+    //             ->startDate(now()->subYears(1))
+    //             ->endDate(now())
+    //     )->orCascade(
+    //         Filter::eventCount('clicked:something')
+    //             ->greaterThan(10)
+    //             ->startDate(now()->subYears(1))
+    //             ->endDate(now())
+    //     )->orCascade(
+    //         Filter::eventCount('clicked:something')
+    //             ->greaterThan(10)
+    //             ->between(now()->subYears(1), now())
+    //     )->orCascade(
+    //         Filter::datetime('a_column')
+    //             ->occurredBefore(Carbon::now()->subYears(1))
+    //     )->orCascade(
+    //         Filter::datetime('a_column')
+    //             ->isNull('a_column')
+    //     );
+
     $query = User::query()
         ->cascade(
             Filter::eventCount('clicked:something')
                 ->greaterThan(10)
                 ->startDate(now()->subYears(1))
                 ->endDate(now())
+        )
+        ->orCascade(
+            Filter::eventCount('clicked:something')
+                ->greaterThan(10)
+                ->startDate(now()->subYears(1))
+                ->endDate(now())
         )->orCascade(
             Filter::eventCount('clicked:something')
                 ->greaterThan(10)
@@ -29,14 +58,14 @@ test('example', function () {
         )->orCascade(
             Filter::eventCount('clicked:something')
                 ->greaterThan(10)
-                ->between(now()->subYears(1), now())
+                ->startDate(now()->subYears(1))
+                ->endDate(now())
         )->orCascade(
-            Filter::datetime('a_column')
-                ->occurredBefore(Carbon::now()->subYears(1))
-        )->orCascade(
-            Filter::datetime('a_column')
-                ->isNull('a_column')
+            Filter::eventCount('clicked:something')
+                ->greaterThan(10)
+                ->startDate(now()->subYears(1))
+                ->endDate(now())
         );
 
-    expect($query->toSql())->dd()->not()->toBeEmpty();
+    expect($query->toSql())->not()->toBeEmpty();
 });

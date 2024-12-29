@@ -15,7 +15,7 @@ test('Creates correct sql for text', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        sprintf('select * from "users" where model_attributes->a_column::text between ? and ?', $prefix)
+        sprintf("select * from \"users\" where (model_attributes->>'a_column')::text between ? and ?", $prefix)
     );
 
     expect(collect($builder->getBindings())->first())->toBe('a');
@@ -35,7 +35,7 @@ test('Creates correct sql for number', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        sprintf('select * from "users" where model_attributes->a_column::numeric between ? and ?', $prefix)
+        sprintf("select * from \"users\" where (model_attributes->>'a_column')::numeric between ? and ?", $prefix)
     );
 
     expect(collect($builder->getBindings())->first())->toBe(1);
@@ -54,7 +54,7 @@ test('Creates correct sql for date', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        sprintf('select * from "users" where model_attributes->a_column::date between ? and ?', $prefix)
+        sprintf("select * from \"users\" where (model_attributes->>'a_column')::date between ? and ?", $prefix)
     );
 
     expect(collect($builder->getBindings())->first())->toBe('2024-11-01');

@@ -16,11 +16,11 @@ class Date extends FilterTarget
 
     public function property(): ?string
     {
-        return "model_attributes->{$this->attribute}";
+        return "model_attributes->>'{$this->attribute}'";
     }
 
     public function castProperty(): mixed
     {
-        return sprintf('%s::date', $this->property());
+        return sprintf('(%s)::date', $this->property());
     }
 }

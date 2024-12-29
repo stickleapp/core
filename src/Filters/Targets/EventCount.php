@@ -10,6 +10,7 @@ use Dclaysmith\LaravelCascade\Contracts\FilterTarget;
 use Dclaysmith\LaravelCascade\Filters\Targets\Traits\HasDeltaFilters;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 
@@ -29,33 +30,44 @@ class EventCount extends FilterTarget
         return $this->event;
     }
 
+    public function joinKey(): ?string
+    {
+        $subJoin = $this->subJoin();
+
+        return md5($subJoin->toSql().json_encode($subJoin->getBindings()));
+    }
+
+    private function subJoin(): QueryBuilder
+    {
+        return \DB::table($this->prefix.'events_rollup_1day')
+            ->where('event_name', $this->event)
+            ->whereDate('day', '>=', Carbon::parse($this->startDate)->toDateString())
+            ->whereDate('day', '<', Carbon::parse($this->endDate)->toDateString())
+            ->groupBy(['model', 'object_uid'])
+            ->select('model', 'object_uid', DB::raw('sum(event_count) as event_count'));
+    }
+
     public function applyJoin(Builder $builder): Builder
     {
+
         if (! $this->joinKey()) {
             return $builder;
         }
 
-        if (array_key_exists($this->joinKey(), $this->joins)) {
+        if ($builder->hasJoin($this->subJoin()->toSql(), $this->joinKey())) {
             return $builder;
         }
 
         $model = $builder->getModel();
 
-        $builder->joinSub(
-            \DB::table($this->prefix.'events_rollup_1day')
-                ->where('event_name', $this->event)
-                ->whereDate('day', '>=', Carbon::parse($this->startDate)->toDateString())
-                ->whereDate('day', '<', Carbon::parse($this->endDate)->toDateString())
-                ->groupBy(['model', 'object_uid'])
-                ->select('model', 'object_uid', DB::raw('sum(event_count) as event_count')),
+        $builder->leftJoinSub(
+            $this->subJoin(),
             $this->joinKey(),
             function (JoinClause $join) use ($model) {
                 $join->on($this->joinKey().'.object_uid', '=', "{$model->getTable()}.object_uid");
                 $join->on($this->joinKey().'.model', '=', "{$model->getTable()}.model");
             }
         );
-
-        $this->joins[] = $this->joinKey();
 
         return $builder;
     }

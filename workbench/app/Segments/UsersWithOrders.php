@@ -7,9 +7,9 @@ use Dclaysmith\LaravelCascade\Filters\Base as Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Workbench\App\Models\User;
 
-class DailyActiveUsers extends Segment
+class UsersWithOrders extends Segment
 {
-    public string $name = 'Daily Active Users';
+    public string $name = 'Users with at least one order';
 
     public int $exportInterval = 60 * 6; // every 6 hours
 
@@ -17,13 +17,9 @@ class DailyActiveUsers extends Segment
 
     public function toBuilder(): Builder
     {
-
-        // return $this->model::cascade(
-        //     Filter::eventCount('clicked:something')
-        //         ->greaterThan(0)
-        //         ->startDate(now()->subDays(7))
-        // );
-
-        return $this->model::where('id', '>', 300);
+        return $this->model::cascade(
+            Filter::number('order_count')
+                ->greaterThan(2)
+        );
     }
 }

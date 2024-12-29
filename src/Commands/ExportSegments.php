@@ -60,7 +60,7 @@ final class ExportSegments extends Command implements Isolatable
          * Insert any segments from this analysis into the `segments` table.
          * If the segment already exists, ignore it.
          */
-        Segment::insertOrIgnore($segments);
+        Segment::insert($segments);
 
         /**
          * Return a list of segments to export considering the export_interval
@@ -99,6 +99,7 @@ final class ExportSegments extends Command implements Isolatable
                 $results[] = [
                     'model' => Arr::get($defaultProperties, 'model'),
                     'as_class' => $className,
+                    'as_json' => null,
                     'export_interval' => Arr::get($defaultProperties, 'exportInterval'),
                 ];
             }

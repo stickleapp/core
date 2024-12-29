@@ -20,6 +20,7 @@ final class CreatePartitions extends Command implements Isolatable
      * vendor/bin/testbench cascade:create-partition lc_events_rollup_5min public week '2024-08-01' 2
      * vendor/bin/testbench cascade:create-partition lc_events_rollup_1hr public week '2024-08-01' 2
      * vendor/bin/testbench cascade:create-partition lc_events_rollup_1day public week '2024-08-01' 2
+     * vendor/bin/testbench cascade:create-partition lc_segment_statistics public week '2024-08-01' 2
      *
      * events_rollup_1min
      */

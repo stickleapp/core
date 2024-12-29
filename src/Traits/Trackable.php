@@ -25,13 +25,15 @@ trait Trackable
     public static function scopeCascade(Builder $builder, Filter $filter)
     {
 
+        $prefix = config('cascade.database.tablePrefix');
+
         /**
          * We'll need this join for the filters but do not want to add it twice
          */
-        if (! $builder->hasJoin('object_attributes')) {
-            $builder->leftJoin('object_attributes', function ($join) {
-                $join->on('object_attributes.object_uid', '=', DB::raw(self::getTableName().'.id::text'));
-                $join->where('object_attributes.model', '=', self::class);
+        if (! $builder->hasJoin("{$prefix}object_attributes")) {
+            $builder->leftJoin("{$prefix}object_attributes", function ($join) use ($prefix) {
+                $join->on("{$prefix}object_attributes.object_uid", '=', DB::raw(self::getTableName().'.id::text'));
+                $join->where("{$prefix}object_attributes.model", '=', self::class);
             });
         }
 
@@ -43,13 +45,15 @@ trait Trackable
      */
     public static function scopeOrCascade(Builder $builder, Filter $filter)
     {
+        $prefix = config('cascade.database.tablePrefix');
+
         /**
          * We'll need this join for the filters but do not want to add it twice
          */
-        if (! $builder->hasJoin('object_attributes')) {
-            $builder->leftJoin('object_attributes', function ($join) {
-                $join->on('object_attributes.object_uid', '=', DB::raw(self::getTableName().'.id::text'));
-                $join->where('object_attributes.model', '=', self::class);
+        if (! $builder->hasJoin("{$prefix}object_attributes")) {
+            $builder->leftJoin("{$prefix}object_attributes", function ($join) use ($prefix) {
+                $join->on("{$prefix}object_attributes.object_uid", '=', DB::raw(self::getTableName().'.id::text'));
+                $join->where("{$prefix}object_attributes.model", '=', self::class);
             });
         }
 
@@ -58,9 +62,17 @@ trait Trackable
 
     public static function bootTrackable()
     {
-        Builder::macro('hasJoin', function ($table) {
-            return collect($this->getQuery()->joins)->contains(function ($join) use ($table) {
-                return $join->table === $table;
+
+        /**
+         * Used when building queries to prevent duplicate joins
+         */
+        Builder::macro('hasJoin', function ($table, $alias = null) {
+            return collect($this->getQuery()->joins)->contains(function ($join) use ($table, $alias) {
+                if ($join->table instanceof \Illuminate\Database\Query\Expression) {
+                    return $join->table->getValue($join->getGrammar()) === "({$table}) as \"{$alias}\"";
+                } else {
+                    return $join->table === $table;
+                }
             });
         });
 
@@ -147,17 +159,4 @@ trait Trackable
             }
         );
     }
-
-    // public function setTrackableAttributesProperty($value)
-    // {
-    //     if (is_array($value)) {
-
-    //         $objectAttribute = $this->attributes()->firstOrNew(['model' => self::class,
-    //             'object_uid' => $this->id, ]); // Create a new profile if it doesn't exist
-
-    //         $existingAttributes = $objectAttribute->model_attributes ?? [];
-
-    //         $objectAttribute->update(['model_attributes' => array_merge($existingAttributes, $value)]);
-    //     }
-    // }
 }

@@ -16,7 +16,7 @@ class Boolean extends FilterTarget
 
     public function property(): ?string
     {
-        return "model_attributes->{$this->attribute}";
+        return "model_attributes->>'{$this->attribute}'";
     }
 
     public function castProperty(): mixed

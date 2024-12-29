@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             EventsSeeder::class,
             RequestsSeeder::class,
             OrdersSeeder::class,
+            SegmentStatisticsSeeder::class,
         ]);
     }
 }

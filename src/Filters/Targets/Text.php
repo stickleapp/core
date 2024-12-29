@@ -16,11 +16,11 @@ class Text extends FilterTarget
 
     public function property(): ?string
     {
-        return "model_attributes->{$this->attribute}";
+        return "model_attributes->>'{$this->attribute}'";
     }
 
     public function castProperty(): mixed
     {
-        return sprintf('%s::text', $this->property());
+        return sprintf('(%s)::text', $this->property());
     }
 }

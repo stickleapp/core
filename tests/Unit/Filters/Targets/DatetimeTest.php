@@ -19,6 +19,6 @@ test('Casts target property as datetime', function () {
 
     $filter = Filter::datetime('a_column');
 
-    expect($filter->target->castProperty())->toBe('model_attributes->a_column::datetime');
+    expect($filter->target->castProperty())->toBe("(model_attributes->>'a_column')::datetime");
 
 });

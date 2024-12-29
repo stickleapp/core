@@ -12,9 +12,7 @@ abstract class FilterTarget
     /**
      * @var array<string>
      */
-    public array $joins = [];
-
-    final public function joinKey(): ?string
+    public function joinKey(): ?string
     {
         return md5(self::class.''.json_encode(self::definition()));
     }

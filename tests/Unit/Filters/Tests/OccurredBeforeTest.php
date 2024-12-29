@@ -19,7 +19,7 @@ test('Creates correct sql for date', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        sprintf('select * from "users" where (model_attributes->a_column::date < ? and model_attributes->a_column::date < ?)', $prefix)
+        sprintf("select * from \"users\" where ((model_attributes->>'a_column')::date < ? and (model_attributes->>'a_column')::date < ?)", $prefix)
     );
 
     expect(collect($builder->getBindings())->first())->toBe($date);
@@ -41,7 +41,7 @@ test('Creates correct sql for datetime', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        sprintf('select * from "users" where (model_attributes->a_column::datetime < ? and model_attributes->a_column::datetime < ?)', $prefix)
+        sprintf("select * from \"users\" where ((model_attributes->>'a_column')::datetime < ? and (model_attributes->>'a_column')::datetime < ?)", $prefix)
     );
 
     expect(collect($builder->getBindings())->first())->toBe($datetime);

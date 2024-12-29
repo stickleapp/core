@@ -16,11 +16,11 @@ class Number extends FilterTarget
 
     public function property(): ?string
     {
-        return "model_attributes->{$this->attribute}";
+        return "model_attributes->>'{$this->attribute}'";
     }
 
     public function castProperty(): mixed
     {
-        return sprintf('%s::numeric', $this->property());
+        return sprintf('(%s)::numeric', $this->property());
     }
 }
