@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Dclaysmith\LaravelCascade\Commands;
 
+use Dclaysmith\LaravelCascade\Jobs\RecordSegmentStatistic as RecordSegmentStatisticJob;
+use Dclaysmith\LaravelCascade\Models\Segment;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 final class RecordSegmentStatistics extends Command implements Isolatable
@@ -43,11 +46,72 @@ final class RecordSegmentStatistics extends Command implements Isolatable
 
         $segmentId = $this->argument('segmentId');
         $attribute = $this->argument('attribute');
-        $limit = $this->argument('limit');
+        $limit = $this->argument('limit') ?? 1;
 
         // we need the segments
-        // segments determine the attributes
-        // we need the attributes
+        // segments specify the model
+        // we have the model...
+        // in addition to the tracked attributes we need to track the count.
 
+        $segments = Segment::all();
+
+        $statistics = $this->getAttributesToRecord($segments);
+
+        $tempTableSql = 'CREATE TEMP TABLE temp_attributes (model VARCHAR(255), attribute VARCHAR(255));';
+
+        DB::statement($tempTableSql);
+
+        DB::table('temp_attributes')->insert(array_values($statistics));
+
+        $rows = DB::table('temp_attributes')
+            ->join("{$this->prefix}segments", "{$this->prefix}segments.model", '=', 'temp_attributes.model')
+            ->leftJoinSub(
+                DB::table("{$this->prefix}segment_statistics")
+                    ->select(['segment_id', 'attribute', DB::raw('MAX(recorded_at) as recorded_at')])
+                    ->groupBy('segment_id', 'attribute')
+                    ->orderBy('recorded_at', 'desc'),
+                'exports',
+                function ($join) {
+                    $join->on('temp_attributes.attribute', '=', 'exports.attribute');
+                    $join->on("{$this->prefix}segments.id", '=', 'exports.segment_id');
+                }
+            )
+            ->select([
+                'temp_attributes.model',
+                'temp_attributes.attribute',
+                "{$this->prefix}segments.id as segment_id",
+                'recorded_at',
+            ])
+            ->orderByRaw('recorded_at asc NULLS FIRST')
+            ->limit($limit)
+            ->get();
+
+        foreach ($rows as $row) {
+            RecordSegmentStatisticJob::dispatch(
+                segmentId: $row->segment_id,
+                model: $row->model,
+                attribute: $row->attribute,
+            );
+        }
+    }
+
+    private function getAttributesToRecord($segments)
+    {
+        $return = [];
+        foreach ($segments as $segment) {
+            $model = $segment->model;
+            if (in_array($model, $return)) {
+                continue;
+            }
+            $observedAttributes = (new $model)->getObservedAttributes();
+            foreach ($observedAttributes as $attribute) {
+                $return[md5($model.$attribute)] = [
+                    'model' => $model,
+                    'attribute' => $attribute,
+                ];
+            }
+        }
+
+        return $return;
     }
 }

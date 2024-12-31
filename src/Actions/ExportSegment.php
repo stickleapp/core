@@ -14,7 +14,7 @@ class ExportSegment
         int $segmentId,
         Segment $segmentDefinition
     ): string {
-        Log::info('Export Segment', [$segmentId]);
+        Log::info('ExportSegment', [$segmentId]);
 
         $builder = $segmentDefinition->toBuilder();
 
