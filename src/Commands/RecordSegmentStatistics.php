@@ -18,7 +18,6 @@ final class RecordSegmentStatistics extends Command implements Isolatable
      * @var string
      */
     protected $signature = 'cascade:record-segment-statitics {segmentId? : A specific segment to export}
-                                                            {attribute? : A specific attribute to export}
                                                             {limit? : The maximum number of segments to export.}';
 
     /**
@@ -45,13 +44,7 @@ final class RecordSegmentStatistics extends Command implements Isolatable
         Log::info('RecordSegmentStatistics Command', $this->arguments());
 
         $segmentId = $this->argument('segmentId');
-        $attribute = $this->argument('attribute');
-        $limit = $this->argument('limit') ?? 1;
-
-        // we need the segments
-        // segments specify the model
-        // we have the model...
-        // in addition to the tracked attributes we need to track the count.
+        $limit = $this->argument('limit') ?? 25;
 
         $segments = Segment::all();
 
@@ -76,6 +69,9 @@ final class RecordSegmentStatistics extends Command implements Isolatable
                     $join->on("{$this->prefix}segments.id", '=', 'exports.segment_id');
                 }
             )
+            ->when($segmentId, function ($query) use ($segmentId) {
+                return $query->where("{$this->prefix}segments.id", $segmentId);
+            })
             ->select([
                 'temp_attributes.model',
                 'temp_attributes.attribute',
