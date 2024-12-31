@@ -20,7 +20,7 @@ class RecordSegmentStatistic
 
         $builder = $this->builder($segmentId, $model, $attribute);
 
-        // ->toArray() doesn't work with the selectRaws
+        // Convert the underlying objects to an array
         $items = $builder->get()->transform(function ($item) {
             return (array) $item;
         });
