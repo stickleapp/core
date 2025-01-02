@@ -18,6 +18,7 @@ class GroupListener implements ShouldQueue
     {
 
         Log::debug('GroupEvent Handled', [$event]);
+
         // $this->repository->saveGroup(
 
         // );

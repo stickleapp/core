@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Dclaysmith\LaravelCascade\Commands;
 
+use Dclaysmith\LaravelCascade\Events\ObjectEnteredSegment;
+use Dclaysmith\LaravelCascade\Events\ObjectExitedSegment;
+use Dclaysmith\LaravelCascade\Models\ObjectSegmentAudit;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Isolatable;
+use Illuminate\Support\Facades\Log;
 
 final class ProcessSegmentEvents extends Command implements Isolatable
 {
@@ -32,9 +36,29 @@ final class ProcessSegmentEvents extends Command implements Isolatable
      */
     public function handle(): void
     {
+        Log::debug('Processing Segment Events');
 
         /**
-         * Retrieve the
-         **/
+         * Retrieve the unprocessed object_segment events
+         */
+        $builder = ObjectSegmentAudit::with('segment')
+            ->where(function ($query) {
+                $query->whereNull('event_processed_at');
+            })
+            // ->lazyById(1000, column: 'id')
+            ->each(function ($item) {
+                if ($item->operation === 'ENTER') {
+                    ObjectEnteredSegment::dispatch(
+                        $item->object,
+                        $item->segment
+                    );
+                } elseif ($item->operation === 'EXIT') {
+                    ObjectExitedSegment::dispatch(
+                        $item->object,
+                        $item->segment
+                    );
+                }
+                $item->update(['event_processed_at' => now()]);
+            });
     }
 }
