@@ -36,12 +36,14 @@
     "autoload": {
         "psr-4": {
             "Dclaysmith\\LaravelCascade\\": "src/",
-            "Dclaysmith\\LaravelCascade\\Database\\Factories\\": "database/factories/"
+            "Dclaysmith\\LaravelCascade\\Database\\Factories\\": "database/factories/",
+            "Dclaysmith\\LaravelCascade\\Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "Dclaysmith\\LaravelCascade\\Tests\\": "tests/",
+            "Dclaysmith\\LaravelCascade\\Database\\Factories\\": "database/factories/",
             "Workbench\\App\\": "workbench/app/",
             "Workbench\\Database\\Factories\\": "workbench/database/factories/",
             "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
@@ -85,7 +87,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Dclaysmith\\LaravelCascade\\Providers\\LaravelCascadeServiceProvider"
+                "Dclaysmith\\LaravelCascade\\LaravelCascadeServiceProvider"
             ],
             "aliases": {
                 "LaravelCascade": "Dclaysmith\\LaravelCascade\\Facades\\LaravelCascade"

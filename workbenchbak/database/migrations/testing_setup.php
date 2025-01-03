@@ -21,7 +21,7 @@ return new class extends Migration
         $prefix = $this->prefix;
 
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('user_rating')->nullable(true);
+            $table->integer('user_rating');
         });
 
         Schema::create(('orders'), function (Blueprint $table) {

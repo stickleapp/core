@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Providers;
+namespace Dclaysmith\LaravelCascade;
 
 use Dclaysmith\LaravelCascade\Commands\CreatePartitions;
 use Dclaysmith\LaravelCascade\Commands\DropPartitions;
@@ -74,9 +74,7 @@ final class LaravelCascadeServiceProvider extends ServiceProvider
         /**
          * Load Migrations to update the database
          */
-        $this->publishesMigrations([
-            __DIR__.'/../../database/migrations' => database_path('migrations'),
-        ]);
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         /**
          * Load resources used by this package
@@ -86,14 +84,14 @@ final class LaravelCascadeServiceProvider extends ServiceProvider
         /**
          * Publish resources used by this package
          */
-        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'cascade');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'cascade');
 
         /**
          * Publish Config file
          */
         $this->publishes(
             [
-                __DIR__.'/../../config/cascade.php' => config_path(
+                __DIR__.'/../config/cascade.php' => config_path(
                     'cascade.php'
                 ),
             ],
@@ -102,6 +100,6 @@ final class LaravelCascadeServiceProvider extends ServiceProvider
         /**
          * Load Routes
          */
-        $this->loadRoutesFrom(__DIR__.'/../../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
     }
 }

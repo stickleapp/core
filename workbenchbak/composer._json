@@ -1,0 +1,16 @@
+{
+    "name": "dclaysmith/workbench",
+    "type": "demo",
+    "autoload": {
+        "psr-4": {
+            "Workbench\\App\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "D Clay Smith",
+            "email": "dclaysmith@gmail.com"
+        }
+    ],
+    "require": {}
+}

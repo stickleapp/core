@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Dclaysmith\LaravelCascade\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 

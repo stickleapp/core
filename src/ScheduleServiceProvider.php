@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Providers;
+namespace Dclaysmith\LaravelCascade;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Carbon;

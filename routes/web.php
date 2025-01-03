@@ -20,12 +20,11 @@ Route::middleware(['web', 'auth'])->group(function () {
         ->name('cascade::demo/integration');
 
     Route::get('/cascade-admin', function () {
-        $users = User::all();
+        $users = []; // User::all();
 
         return view('cascade::demo/admin', ['users' => $users]);
     })->name('cascade::demo/admin');
 
     Route::post('/cascade-track', [IngestController::class, 'store'])
         ->name('cascade/track');
-
 });

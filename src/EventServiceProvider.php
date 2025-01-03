@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Providers;
+namespace Dclaysmith\LaravelCascade;
 
 use Dclaysmith\LaravelCascade\Events\Group;
 use Dclaysmith\LaravelCascade\Events\Identify;
