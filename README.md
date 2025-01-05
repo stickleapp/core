@@ -145,6 +145,8 @@ You can access a test page at the URL specified in the terminal.
 
 `vendor/bin/testbench cascade:record-segment-statitics`
 
+`vendor/bin/testbench cascade:process-segment-events`
+
 Exports
 `vendor/orchestra/testbench-core/laravel/storage/app` (CSV temp exports)
 `vendor/orchestra/testbench-core/laravel/storage/logs` (Logs)
