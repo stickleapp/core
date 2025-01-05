@@ -23,7 +23,7 @@ class PageListener implements ShouldQueue
             model: data_get($event->data, 'model'),
             objectUid: data_get($event->data, 'object_uid'),
             sessionUid: data_get($event->data, 'session_uid'),
-            timestamp: data_get($event->data, 'timestamp', new DateTime()),
+            timestamp: data_get($event->data, 'timestamp', new DateTime),
             url: data_get($event->data, 'url'),
             path: data_get($event->data, 'path'),
             host: data_get($event->data, 'host'),
