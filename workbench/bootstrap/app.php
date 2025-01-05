@@ -16,4 +16,6 @@ return Application::configure(basePath: $APP_BASE_PATH ?? default_skeleton_path(
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })->withEvents(discover: [
+        __DIR__.'/../app/Listeners',
+    ])->create();
