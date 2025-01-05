@@ -13,6 +13,9 @@ class SegmentStatisticsSeeder extends Seeder
      */
     public function run(): void
     {
-        Artisan::call("cascade:create-partitions lc_segment_statistics public week '2024-12-01'");
+
+        $prefix = config('cascade.database.tablePrefix');
+
+        Artisan::call("cascade:create-partitions {$prefix}segment_statistics public week '2024-12-01'");
     }
 }

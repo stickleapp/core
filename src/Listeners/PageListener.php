@@ -2,6 +2,7 @@
 
 namespace Dclaysmith\LaravelCascade\Listeners;
 
+use DateTime;
 use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
 use Dclaysmith\LaravelCascade\Events\Page;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,11 +19,20 @@ class PageListener implements ShouldQueue
     {
         Log::debug('PageEvent Handled', [$event]);
 
-        // $this->repository->saveRequest(
-        //     model: data_get($event->data, 'model'),
-        //     objectUid: data_get($event->data, 'object_uid'),
-        //     sessionUid: data_get($event->data, 'session_uid'),
-        //     ...
-        // );
+        $this->repository->saveRequest(
+            model: data_get($event->data, 'model'),
+            objectUid: data_get($event->data, 'object_uid'),
+            sessionUid: data_get($event->data, 'session_uid'),
+            timestamp: data_get($event->data, 'timestamp', new DateTime()),
+            url: data_get($event->data, 'url'),
+            path: data_get($event->data, 'path'),
+            host: data_get($event->data, 'host'),
+            search: data_get($event->data, 'search'),
+            queryParams: data_get($event->data, 'query_params'),
+            utmSource: data_get($event->data, 'utm_source'),
+            utmMedium: data_get($event->data, 'utm_medium'),
+            utmCampaign: data_get($event->data, 'utm_campaign'),
+            utmContent: data_get($event->data, 'utm_content')
+        );
     }
 }

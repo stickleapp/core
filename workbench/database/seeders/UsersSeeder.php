@@ -15,6 +15,13 @@ class UsersSeeder extends Seeder
     public function run(): void
     {
         DB::table('users')->truncate();
+
+        UserFactory::new()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
         UserFactory::new()->count(1000)->createQuietly();
     }
 }

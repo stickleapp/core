@@ -2,6 +2,7 @@
 
 namespace Dclaysmith\LaravelCascade\Listeners;
 
+use DateTime;
 use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
 use Dclaysmith\LaravelCascade\Events\Track;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,12 +19,14 @@ class TrackListener implements ShouldQueue
     {
         Log::debug('TrackEvent Handled', [$event]);
 
-        // $this->repository->saveEvent(
-        //     model: data_get($event->data, 'model'),
-        //     objectUid: data_get($event->data, 'object_uid'),
-        //     sessionUid: data_get($event->data, 'session_uid'),
-        //     ...
-        // );
+        $this->repository->saveEvent(
+            model: data_get($event->data, 'model'),
+            objectUid: data_get($event->data, 'objectUid'),
+            sessionUid: data_get($event->data, 'sessionUid'),
+            event: data_get($event->data, 'event'),
+            timestamp: data_get($event->data, 'timestamp', new DateTime()),
+            properties: data_get($event->data, 'properties'),
+        );
 
         /**
          * To repond to events createa a listener class in App\Listeners

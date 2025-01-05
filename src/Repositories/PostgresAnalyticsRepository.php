@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dclaysmith\LaravelCascade\Repositories;
 
+use DateTimeInterface;
 use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Support\Facades\DB;
@@ -28,18 +29,17 @@ final class PostgresAnalyticsRepository implements AnalyticsRepository
         string $objectUid,
         string $sessionUid,
         string $event,
+        DateTimeInterface $timestamp,
         ?array $properties = [],
         ?array $pageProperties = []
     ): void {
-        DB::table($this->table('events'))->insert([
-            'object_uid' => $objectUid,
+        DB::table($this->prefix.'events')->insert([
             'model' => $model,
+            'object_uid' => $objectUid,
             'session_uid' => $sessionUid,
             'event_name' => $event,
             'properties' => json_encode($properties),
-            'page_properties' => json_encode($pageProperties),
-            'created_at' => \Carbon\Carbon::now(),
-            'updated_at' => \Carbon\Carbon::now(),
+            'timestamp' => $timestamp,
         ]);
     }
 
@@ -50,19 +50,20 @@ final class PostgresAnalyticsRepository implements AnalyticsRepository
         string $model,
         string $objectUid,
         string $sessionUid,
-        ?string $url,
-        ?string $path,
-        ?string $host,
-        ?string $search,
-        ?string $queryParams,
-        ?string $utmSource,
-        ?string $utmMedium,
-        ?string $utmCampaign,
-        ?string $utmContent
+        DateTimeInterface $timestamp,
+        ?string $url = null,
+        ?string $path = null,
+        ?string $host = null,
+        ?string $search = null,
+        ?string $queryParams = null,
+        ?string $utmSource = null,
+        ?string $utmMedium = null,
+        ?string $utmCampaign = null,
+        ?string $utmContent = null
     ): void {
-        DB::table($this->table('requests'))->insert([
-            'object_uid' => $objectUid,
+        DB::table($this->prefix.'requests')->insert([
             'model' => $model,
+            'object_uid' => $objectUid,
             'session_uid' => $sessionUid,
             'url' => $url,
             'path' => $path,
@@ -73,13 +74,7 @@ final class PostgresAnalyticsRepository implements AnalyticsRepository
             'utm_medium' => $utmMedium,
             'utm_campaign' => $utmCampaign,
             'utm_content' => $utmContent,
-            'created_at' => \Carbon\Carbon::now(),
-            'updated_at' => \Carbon\Carbon::now(),
+            'timestamp' => $timestamp,
         ]);
-    }
-
-    private function table(string $name): string
-    {
-        return $this->prefix.$name;
     }
 }

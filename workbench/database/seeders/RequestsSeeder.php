@@ -15,14 +15,16 @@ class RequestsSeeder extends Seeder
     public function run(): void
     {
 
-        Artisan::call("cascade:create-partitions lc_requests public week '2024-08-01'");
-        Artisan::call("cascade:create-partitions lc_requests_rollup_1min public week '2024-08-01'");
-        Artisan::call("cascade:create-partitions lc_requests_rollup_5min public week '2024-08-01'");
-        Artisan::call("cascade:create-partitions lc_requests_rollup_1hr public week '2024-08-01'");
-        Artisan::call("cascade:create-partitions lc_requests_rollup_1day public week '2024-08-01'");
+        $prefix = config('cascade.database.tablePrefix');
 
-        $sql = <<<'sql'
-INSERT INTO lc_requests (
+        Artisan::call("cascade:create-partitions {$prefix}requests public week '2024-08-01'");
+        Artisan::call("cascade:create-partitions {$prefix}requests_rollup_1min public week '2024-08-01'");
+        Artisan::call("cascade:create-partitions {$prefix}requests_rollup_5min public week '2024-08-01'");
+        Artisan::call("cascade:create-partitions {$prefix}requests_rollup_1hr public week '2024-08-01'");
+        Artisan::call("cascade:create-partitions {$prefix}requests_rollup_1day public week '2024-08-01'");
+
+        $sql = <<<SQL
+INSERT INTO {$prefix}requests (
     object_uid, 
     model, 
     -- session_uid, 
@@ -56,11 +58,11 @@ FROM
 -- ----------------------------------------------------------------------------
 -- RUN AGGREGATION QUERIES
 -- ----------------------------------------------------------------------------
-SELECT lc_rollup_requests_1min();
-SELECT lc_rollup_requests_5min();
-SELECT lc_rollup_requests_1hr();
-SELECT lc_rollup_requests_1day();
-sql;
+SELECT {$prefix}rollup_requests_1min();
+SELECT {$prefix}rollup_requests_5min();
+SELECT {$prefix}rollup_requests_1hr();
+SELECT {$prefix}rollup_requests_1day();
+SQL;
 
         DB::unprepared($sql);
     }

@@ -19,6 +19,14 @@ class User extends Authenticatable
     protected $table = 'users';
 
     /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory()
+    {
+        return UserFactory::new();
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -84,14 +92,6 @@ class User extends Authenticatable
     public function getOrderItemCountAttribute(): int
     {
         return $this->orderItems()->count();
-    }
-
-    /**
-     * Create a new factory instance for the model.
-     */
-    protected static function newFactory()
-    {
-        return UserFactory::new();
     }
 
     public function getItemsPurchasedAttribute()

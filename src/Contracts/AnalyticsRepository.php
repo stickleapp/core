@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Dclaysmith\LaravelCascade\Contracts;
 
+use DateTimeInterface;
+
 /**
  * @internal
  */
@@ -18,22 +20,23 @@ interface AnalyticsRepository
         string $objectUid,
         string $sessionUid,
         string $event,
+        DateTimeInterface $timestamp,
         ?array $properties = [],
-        ?array $pageProperties = []
     ): void;
 
     public function saveRequest(
         string $model,
         string $objectUid,
         string $sessionUid,
-        ?string $url,
-        ?string $path,
-        ?string $host,
-        ?string $search,
-        ?string $queryParams,
-        ?string $utmSource,
-        ?string $utmMedium,
-        ?string $utmCampaign,
-        ?string $utmContent
+        DateTimeInterface $timestamp,
+        ?string $url = null,
+        ?string $path = null,
+        ?string $host = null,
+        ?string $search = null,
+        ?string $queryParams = null,
+        ?string $utmSource = null,
+        ?string $utmMedium = null,
+        ?string $utmCampaign = null,
+        ?string $utmContent = null
     ): void;
 }

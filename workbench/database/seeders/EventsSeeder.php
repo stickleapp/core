@@ -14,15 +14,16 @@ class EventsSeeder extends Seeder
      */
     public function run(): void
     {
+        $prefix = config('cascade.database.tablePrefix');
 
-        Artisan::call("cascade:create-partitions lc_events public week '2024-08-01'");
-        Artisan::call("cascade:create-partitions lc_events_rollup_1min public week '2024-08-01'");
-        Artisan::call("cascade:create-partitions lc_events_rollup_5min public week '2024-08-01'");
-        Artisan::call("cascade:create-partitions lc_events_rollup_1hr public week '2024-08-01'");
-        Artisan::call("cascade:create-partitions lc_events_rollup_1day public week '2024-08-01'");
+        Artisan::call("cascade:create-partitions {$prefix}events public week '2024-08-01'");
+        Artisan::call("cascade:create-partitions {$prefix}events_rollup_1min public week '2024-08-01'");
+        Artisan::call("cascade:create-partitions {$prefix}events_rollup_5min public week '2024-08-01'");
+        Artisan::call("cascade:create-partitions {$prefix}events_rollup_1hr public week '2024-08-01'");
+        Artisan::call("cascade:create-partitions {$prefix}events_rollup_1day public week '2024-08-01'");
 
-        $sql = <<<'sql'
-INSERT INTO lc_events (
+        $sql = <<<SQL
+INSERT INTO {$prefix}events (
     object_uid, 
     model, 
     -- session_uid, 
@@ -46,11 +47,11 @@ FROM
 -- ----------------------------------------------------------------------------
 -- RUN AGGREGATION QUERIES
 -- ----------------------------------------------------------------------------
-SELECT lc_rollup_events_1min();
-SELECT lc_rollup_events_5min();
-SELECT lc_rollup_events_1hr();
-SELECT lc_rollup_events_1day();
-sql;
+SELECT {$prefix}rollup_events_1min();
+SELECT {$prefix}rollup_events_5min();
+SELECT {$prefix}rollup_events_1hr();
+SELECT {$prefix}rollup_events_1day();
+SQL;
 
         DB::unprepared($sql);
     }

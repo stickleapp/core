@@ -43,12 +43,16 @@ class ObjectAttribute extends Model
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'model_attributes' => 'array',
-        ];
-    }
+    protected $casts = [
+        'model_attributes' => 'array',
+    ];
+    // protected function casts(): array
+    // {
+
+    //     return [
+    //         'model_attributes' => 'array',
+    //     ];
+    // }
 
     /**
      * Get the parent attributable model
