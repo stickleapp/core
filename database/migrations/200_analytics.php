@@ -286,6 +286,7 @@ CREATE TABLE {$prefix}requests (
     object_uid TEXT NOT NULL,
     model TEXT NOT NULL,
     session_uid TEXT NULL,
+    offline BOOLEAN DEFAULT FALSE,
     url TEXT NULL,
     path TEXT NULL,
     host TEXT NULL,
