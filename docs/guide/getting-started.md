@@ -21,20 +21,21 @@ You may use Composer to require Cascade into your PHP project:
 $ composer require stickleapp/core
 ```
 
-### Configuration
+### Publish Files
 
-Stickle ships with a command line installation wizard that will help you configure your project.
+You must publish files from Stickle to your project.
 
 ```
-$ php artisan cascade:install
+php artisan vendor:publish
 ```
 
-The installer will guide you through the setup process helping you set configuration options for your project. You can specify:
+### Configure Package
 
--   If you want to install the Cascade JS SDK and track client events;
--   If you want to track events raised by `Illuminate\Auth` events;
--   If you want to track each authenticated request via middleware; and
--   How you define the relationships between Users and Groups in your application.
+Stickle ships with sensible defaults that work with most 'out-of-the-box' Laravel installations.
+
+However, we recommend you review these settings and adjust them as, necessary, to optimize your setting.
+
+These can be found in `/config/stickle.php`.
 
 ### Migrations
 

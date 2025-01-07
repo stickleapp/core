@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dclaysmith\LaravelCascade;
 
+use Dclaysmith\LaravelCascade\Commands\Configure;
 use Dclaysmith\LaravelCascade\Commands\CreatePartitions;
 use Dclaysmith\LaravelCascade\Commands\DropPartitions;
 use Dclaysmith\LaravelCascade\Commands\ExportSegments;
@@ -66,6 +67,7 @@ final class LaravelCascadeServiceProvider extends ServiceProvider
                     RecordObjectAttributes::class,
                     RecordSegmentStatistics::class,
                     ProcessSegmentEvents::class,
+                    Configure::class,
                 ],
             );
         }

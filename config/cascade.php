@@ -7,8 +7,14 @@ return [
     | Scheduling Frequencies
     |--------------------------------------------------------------------------
     |
-    | How many minutes should elapse before running scheduled tasks
+    | How frequently (in minutes) should the various tasks be run.
     |
+    | - Export Segments. Store the objects (users, groups, etc) that are part of each segment
+    | - Record Segment Statistics. Store the number of users in each segment
+    | - Record Entity Statistics. Store the number of users in each group
+    | - Rollup Events. Aggregate the events into the event statistics table
+    | - Rollup Page Views. Aggregate the page views into the page view statistics table
+    | - Rollup Sessions. Aggregate the sessions into the session statistics table
     */
     'schedule' => [
         'ExportSegments' => env('CASACADE_FREQUENCY_EXPORT_SEGMENTS', 360),
@@ -30,7 +36,7 @@ return [
     */
     'database' => [
         'connection' => env('DB_CONNECTION', 'pgsql'),
-        'tablePrefix' => env('CASACADE_TABLE_PRFIX', 'lc_'),
+        'tablePrefix' => env('`CASACADE_TABLE_PRFIX`', 'lc_'),
         'partitions' => [
             'events' => [
                 'interval' => 'week',
