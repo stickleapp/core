@@ -19,15 +19,13 @@ hero:
 
 features:
     - title: User Behavior Tracking
-      details: Lorem ipsum dolor sit amet, consectetur adipiscing elit asdfa sdfasdf adsfasdf asdf adsfas dfasdf
+      details: Stickle can automatically inject a lightweight Javascript tracking code to record page views and custom-defined events.
     - title: Customer Attribute Auditing
-      details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-    - title: Custom Attribute Tracking
-      details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+      details: Define KPIs as attributes in your models and Stickle will tracked them over time, enabling powerful filters.
     - title: Fluent Eloquent Query Engine
-      details: Lorem ipsum dolor sit amet, consectetur adipiscing elitasd fasdf asdfas dfasdfa sdfasdf asdf
-    - title: Customer Segmentation
-      details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-    - title: Customer Attribute Auditing
-      details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+      details: Stickle provides easy-to-use extensions to Eloquent allowing you to create complex filters.
+    - title: Customer Segment Tracking
+      details: Define Customer Segments 'in-code' and track statistics for each segment over time.
+    - title: Respond to Changes in Attributes
+      details: Define Customer Segments 'in-code' and track statistics for each segment over time.
 ---

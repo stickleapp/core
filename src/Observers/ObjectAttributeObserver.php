@@ -2,6 +2,7 @@
 
 namespace Dclaysmith\LaravelCascade\Observers;
 
+use Dclaysmith\LaravelCascade\Events\ObjectAttributeChanged;
 use Dclaysmith\LaravelCascade\Models\ObjectAttribute;
 use Dclaysmith\LaravelCascade\Models\ObjectAttributesAudit;
 use Illuminate\Support\Arr;
@@ -30,6 +31,14 @@ class ObjectAttributeObserver
                 'from' => Arr::get($changes, 'from'),
                 'to' => Arr::get($changes, 'to'),
             ]);
+
+            ObjectAttributeChanged::dispatch(
+                $objectAttribute->model,
+                $objectAttribute->object_uid,
+                $property,
+                Arr::get($changes, 'from'),
+                Arr::get($changes, 'to')
+            );
         }
     }
 

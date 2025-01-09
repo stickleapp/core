@@ -11,7 +11,6 @@ use Dclaysmith\LaravelCascade\Commands\ExportSegments;
 use Dclaysmith\LaravelCascade\Commands\ProcessSegmentEvents;
 use Dclaysmith\LaravelCascade\Commands\RecordObjectAttributes;
 use Dclaysmith\LaravelCascade\Commands\RecordSegmentStatistics;
-use Dclaysmith\LaravelCascade\Commands\StartCommand;
 use Dclaysmith\LaravelCascade\Components\BlankLayout;
 use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
 use Dclaysmith\LaravelCascade\Middleware\InjectJavascriptTrackingCode;
@@ -56,11 +55,6 @@ final class LaravelCascadeServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands(
                 commands: [
-                    // ExportSegments::class,
-                    // LogSegmentStatistics::class,
-                    // LogEntityStatistics::class,
-                    // InstallCommand::class,
-                    StartCommand::class,
                     CreatePartitions::class,
                     DropPartitions::class,
                     ExportSegments::class,
