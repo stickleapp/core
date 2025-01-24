@@ -10,7 +10,7 @@ export default defineConfig({
             { text: "Home", link: "/" },
             { text: "Guide", link: "/guide/index.html" },
             { text: "How-To", link: "/how-to/index.html" },
-            { text: "Sponsor", link: "/sponsor" },
+            { text: "StickleUI", link: "https://stickleui.app" },
         ],
 
         sidebar: [
@@ -23,8 +23,9 @@ export default defineConfig({
                         link: "/guide/what-is-stickle",
                     },
                     { text: "Use Cases", link: "/guide/use-cases" },
-                    { text: "Getting Started", link: "/guide/getting-started" },
+                    { text: "Installation", link: "/guide/installation" },
                     { text: "Configuration", link: "/guide/configuration" },
+                    { text: "Getting Started", link: "/guide/getting-started" },
                 ],
             },
             {
@@ -40,11 +41,6 @@ export default defineConfig({
                         text: "Illuminate\\Auth Events",
                         link: "/guide/illuminate-auth-events",
                     },
-                    {
-                        text: "Model Attributes",
-                        link: "/guide/model-attributes",
-                    },
-                    { text: "Webhooks", link: "/guide/webhooks" },
                 ],
             },
             {
@@ -63,8 +59,18 @@ export default defineConfig({
                         text: "Eloquent Methods",
                         link: "/guide/eloquent-methods",
                     },
+                ],
+            },
+            {
+                text: "Tracking Historical Data",
+                collapsed: false,
+                items: [
                     {
-                        text: "Tracking Segments",
+                        text: "Model Attributes",
+                        link: "/guide/model-attributes",
+                    },
+                    {
+                        text: "Segment Statistics",
                         link: "/guide/tracking-segments",
                     },
                 ],
@@ -82,13 +88,21 @@ export default defineConfig({
                         text: "Segment Events",
                         link: "/guide/listeners-segment-events",
                     },
+                    {
+                        text: "Model Attribute Changes",
+                        link: "/guide/listeners-model-attribute-changes",
+                    },
+                    {
+                        text: "Illuminate\\Auth Events",
+                        link: "/guide/listeners-illuminate-auth-events",
+                    },
                 ],
             },
             {
                 text: "Querying Customer Data",
                 collapsed: false,
                 items: [
-                    { text: "Repositories", link: "/guide/repositories" },
+                    { text: "Custom Scopes", link: "/guide/scopes" },
                     { text: "API Endpoints", link: "/guide/endpoints" },
                 ],
             },

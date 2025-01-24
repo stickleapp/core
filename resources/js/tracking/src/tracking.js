@@ -30,7 +30,7 @@
         sendTrackingData(data);
     }
 
-    window.Tracking = {
+    window.stickle = {
         trackPageView,
         trackEvent,
     };

@@ -2,8 +2,8 @@
 
 namespace Dclaysmith\LaravelCascade\Listeners;
 
+use DateTime;
 use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
-use Dclaysmith\LaravelCascade\Events\Track;
 use Illuminate\Auth\Events\Authenticated;
 use Illuminate\Auth\Events\CurrentDeviceLogout;
 use Illuminate\Auth\Events\Login;
@@ -33,12 +33,13 @@ class AuthenticatableEventListener implements ShouldQueue
             return;
         }
 
-        Track::dispatch([
-            'model' => get_class($event->user),
-            'objectUid' => $event->user->id,
-            'sessionUid' => $this->request->session()->getId(),
-            'event' => get_class($event), // Auth + Login
-        ]);
+        $this->repository->saveEvent(
+            model: get_class($event->user),
+            objectUid: $event->user->id,
+            sessionUid: $this->request->session()->getId(),
+            timestamp: new DateTime,
+            event: get_class($event),
+        );
     }
 
     /**

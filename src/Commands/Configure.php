@@ -41,6 +41,12 @@ class Configure extends Command
 
         pause('Shall we? Press ENTER key to continue...');
 
+        $architecture = suggest(
+            label: 'Which of the following best describes your application?',
+            validate: ['architecture' => 'required|string'],
+            options: ['Blade', 'Inertia', 'Livewire', 'SPA (Vue, React, etc.)']
+        );
+
         note('Stickle runs a number of processes in the background to transform your data.');
 
         $interval = text(

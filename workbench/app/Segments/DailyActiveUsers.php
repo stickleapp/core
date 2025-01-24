@@ -2,17 +2,17 @@
 
 namespace Workbench\App\Segments;
 
+use Dclaysmith\LaravelCascade\Attributes\SegmentName;
+use Dclaysmith\LaravelCascade\Attributes\SegmentRefreshInterval;
 use Dclaysmith\LaravelCascade\Contracts\Segment;
 use Dclaysmith\LaravelCascade\Filters\Base as Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Workbench\App\Models\User;
 
+#[SegmentName('Daily Active Users')]
+#[SegmentRefreshInterval(30)]
 class DailyActiveUsers extends Segment
 {
-    public string $name = 'Daily Active Users';
-
-    public int $exportInterval = 60 * 6; // every 6 hours
-
     public string $model = User::class;
 
     public function toBuilder(): Builder

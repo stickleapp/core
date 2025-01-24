@@ -17,12 +17,12 @@ return [
     | - Rollup Sessions. Aggregate the sessions into the session statistics table
     */
     'schedule' => [
-        'ExportSegments' => env('CASACADE_FREQUENCY_EXPORT_SEGMENTS', 360),
-        'RecordSegmentStatistics' => env('CASACADE_FREQUENCY_EXPORT_SEGMENT_STATISTICS', 360),
-        'RecordEntityStatistics' => env('CASACADE_FREQUENCY_EXPORT_ENTITY_STATISTICS', 360),
-        'RollupEvents' => env('CASACADE_FREQUENCY_ROLLUP_EVENTS', 360),
-        'RollupPageViews' => env('CASACADE_FREQUENCY_ROLLUP_PAGEVIEWS', 360),
-        'RollupSessions' => env('CASACADE_FREQUENCY_ROLLUP_SESSIONS', 360),
+        'exportSegments' => env('CASACADE_FREQUENCY_EXPORT_SEGMENTS', 360),
+        'recordSegmentStatistics' => env('CASACADE_FREQUENCY_EXPORT_SEGMENT_STATISTICS', 360),
+        'recordEntityStatistics' => env('CASACADE_FREQUENCY_EXPORT_ENTITY_STATISTICS', 360),
+        'rollupEvents' => env('CASACADE_FREQUENCY_ROLLUP_EVENTS', 360),
+        'rollupPageViews' => env('CASACADE_FREQUENCY_ROLLUP_PAGEVIEWS', 360),
+        'rollupSessions' => env('CASACADE_FREQUENCY_ROLLUP_SESSIONS', 360),
     ],
 
     /*

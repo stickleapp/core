@@ -1,8 +1,4 @@
-@php
-    $bottomContent1 = 'This is the content for the first bottom section. It may contain a lot of text, and it will scroll vertically.';
-    $bottomContent2 = 'Second bottom section content. It can be any HTML content, including lists, images, etc.';
-    $bottomContent3 = 'Third bottom section content. Similar to the others, this will scroll if the content overflows.';
-@endphp
+
 
 <!-- resources/views/demo.blade.php -->
  <x-blank-layout>
@@ -27,26 +23,6 @@
                 <div class="col-span-1 h-[66vh] sm:rounded-lg border-2">
                     <iframe src="http://localhost:1984" class="w-full h-full">
                     </iframe>
-                </div>
-
-                <!-- Bottom Row: 25% height, 3 scrollable divs -->
-                <div class="col-span-1 h-[33vh] overflow-y-auto bg-gray-100 p-4">
-                    <div class="max-h-full">
-                        <!-- Content for the first bottom column -->
-                        {{ $bottomContent1 }}
-                    </div>
-                </div>
-                <div class="col-span-1 h-[33vh] overflow-y-auto bg-gray-100 p-4">
-                    <div class="max-h-full">
-                        <!-- Content for the second bottom column -->
-                        {{ $bottomContent2 }}
-                    </div>
-                </div>
-                <div class="col-span-1 h-[33vh] overflow-y-auto bg-gray-100 p-4">
-                    <div class="max-h-full">
-                        <!-- Content for the third bottom column -->
-                        {{ $bottomContent3 }}
-                    </div>
                 </div>
             </div>
         </div>

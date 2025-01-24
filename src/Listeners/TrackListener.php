@@ -23,8 +23,8 @@ class TrackListener implements ShouldQueue
             model: data_get($event->data, 'model'),
             objectUid: data_get($event->data, 'objectUid'),
             sessionUid: data_get($event->data, 'sessionUid'),
-            event: data_get($event->data, 'event'),
             timestamp: data_get($event->data, 'timestamp', new DateTime),
+            event: data_get($event->data, 'event'),
             properties: data_get($event->data, 'properties'),
         );
 

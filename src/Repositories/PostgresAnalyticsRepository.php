@@ -28,8 +28,8 @@ final class PostgresAnalyticsRepository implements AnalyticsRepository
         string $model,
         string $objectUid,
         string $sessionUid,
-        string $event,
         DateTimeInterface $timestamp,
+        string $event,
         ?array $properties = [],
         ?array $pageProperties = []
     ): void {

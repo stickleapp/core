@@ -3,7 +3,7 @@
 namespace Workbench\App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Dclaysmith\LaravelCascade\Attributes\Description;
+use Dclaysmith\LaravelCascade\Attributes\ModelAttributeDescription;
 use Dclaysmith\LaravelCascade\Traits\Trackable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -82,13 +82,13 @@ class User extends Authenticatable
         return $this->hasManyThrough(OrderItem::class, Order::class);
     }
 
-    #[Description('How many orders has this user placed?')]
+    #[ModelAttributeDescription('How many orders has this user placed?')]
     public function getOrderCountAttribute(): int
     {
         return $this->orders()->count();
     }
 
-    #[Description('How many items has this user purchased?')]
+    #[ModelAttributeDescription('How many items has this user purchased?')]
     public function getOrderItemCountAttribute(): int
     {
         return $this->orderItems()->count();

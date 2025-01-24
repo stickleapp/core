@@ -4,56 +4,56 @@ outline: deep
 
 # Getting Started
 
-## Installation
+OK. You have installed and are running StickleCore. What now?
 
-### Prerequisites
+## Learn About Your Customers
 
-Stickle requires:
+Go to `/stickle` and you will see a list of your customers. This tells you a few interesting things:
 
--   PHP 8.3+
--   Laravel 11.0+.
+-   Who is using your application _right now_;
+-   When did each user login for the first time;
+-   When did they most recently log in.
 
-### Installation
+::: tip
+Stickle does not know _first login_ or _most recent login_ if those events occurred before you installed Stickle. However, you can backfill this data through the `/stickle/load-data` endpoint.
+:::
 
-You may use Composer to require Cascade into your PHP project:
+Do you want to see what your Users are collectively doing in real-time? Navigate to `/stickle/events` and see these events streaming in.
 
-```
-$ composer require stickleapp/core
-```
+Click on one of the Users and we can have a deeper look.
 
-### Publish Files
+The User view will show you:
 
-You must publish files from Stickle to your project.
+-   A history of the Users sessions over time;
+-   Which pages they have visited.
 
-```
-php artisan vendor:publish
-```
+1. First install it and configure it...
 
-### Configure Package
+QuickStart SPA, Inertia, Livewire, Blade (sets reasonable defaults);
 
-Stickle ships with sensible defaults that work with most 'out-of-the-box' Laravel installations.
+2. Install StickleUI and learn about your customers and how they use your application.
 
-However, we recommend you review these settings and adjust them as, necessary, to optimize your setting.
+3. Set up internal notifications (alert me when a customer does X)
+   ... can we come up with some when() method for only certain conditions?
+   ... channels();
 
-These can be found in `/config/stickle.php`.
+4. Set up customer notifications
+   ... channels() email, in-app, sms
 
-### Migrations
+5. Create some admin dashboards.
 
-Once you have installed and configured Stickle, you must run the required database migrations:
+-   Use Stickle Eloquent Methods (`stickle` and `orStickle`) in your app.
+-   Add Stickle Charts to An Admin Dashboard (auth?)
+    -   Copy and Paste:
+        -   D3 (Vanilla)
+        -   Rechart (React)
+        -   Chart.js (Vue, Filament, Nova)
+        -
+-   Segment data tables
 
-```
-$ php artisan migrate
-```
+-   Send Emails (stickle-notifications-email)
+-   Send Slack Notifications (stickle-notifications-slack)
+-   Send In-App Notifications (stickle-notifications-widget)
+-   Send Toast Notifications (stickle-notifications-toast)
 
-### Scheduled Tasks
-
-Stickle runs several scheduled tasks in the background. Make sure you have a queue worker running. For development, run:
-
-```
-php artisan schedule:work
-
-```
-
-### Demo Page
-
-You can confirm Stickle is installed correctly by visiting the `/stickle` route in the web browser.
+https://neon.tech/guides/laravel-livewire-dynamic-charts

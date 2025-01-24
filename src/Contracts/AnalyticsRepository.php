@@ -19,8 +19,8 @@ interface AnalyticsRepository
         string $model,
         string $objectUid,
         string $sessionUid,
-        string $event,
         DateTimeInterface $timestamp,
+        string $event,
         ?array $properties = [],
     ): void;
 
