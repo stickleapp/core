@@ -1,8 +1,8 @@
 <?php
 
-use StickleApp\Core\Contracts\AnalyticsRepository;
-use StickleApp\\Core\Core\Listeners\AuthenticatableEventListener;
 use Illuminate\Auth\Events\PasswordReset;
+use StickleApp\Core\Contracts\AnalyticsRepository;
+use StickleApp\Core\Listeners\AuthenticatableEventListener;
 
 it('can be instantiated', function () {
 

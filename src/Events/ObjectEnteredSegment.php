@@ -2,12 +2,12 @@
 
 namespace StickleApp\Core\Events;
 
-use StickleApp\\Core\Core\Models\Segment;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use StickleApp\Core\Models\Segment;
 
 class ObjectEnteredSegment
 {

@@ -9,13 +9,13 @@ use Workbench\App\Models\User;
 
 it('will expose eloquent methods', function () {
     $user = new User;
-    expect(method_exists($user, 'scopeSTICKLE'))->toBeTrue();
+    expect(method_exists($user, 'scopestickle'))->toBeTrue();
 });
 
-it('can call STICKLE()', function () {
+it('can call stickle()', function () {
     $filter = Mockery::mock(Filter::class);
     $filter->shouldReceive('apply');
-    expect(User::query()->STICKLE($filter))->toBeInstanceOf(Builder::class);
+    expect(User::query()->stickle($filter))->toBeInstanceOf(Builder::class);
 });
 
 it('has observed attributes', function () {

@@ -1,8 +1,8 @@
 <?php
 
 use StickleApp\Core\Filters\Base as Filter;
-use StickleApp\\Core\Core\Filters\Targets\EventCount;
-use StickleApp\\Core\Core\Filters\Targets\EventCountDelta;
+use StickleApp\Core\Filters\Targets\EventCount;
+use StickleApp\Core\Filters\Targets\EventCountDelta;
 use Workbench\App\Models\User;
 
 test('`decreased` chanages target class', function () {

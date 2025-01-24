@@ -2,11 +2,11 @@
 
 namespace Workbench\App\Segments;
 
-use StickleApp\Core\Attributes\SegmentName;
-use StickleApp\\Core\Core\Attributes\SegmentRefreshInterval;
-use StickleApp\\Core\Core\Contracts\Segment;
-use StickleApp\\Core\Core\Filters\Base as Filter;
 use Illuminate\Database\Eloquent\Builder;
+use StickleApp\Core\Attributes\SegmentName;
+use StickleApp\Core\Attributes\SegmentRefreshInterval;
+use StickleApp\Core\Contracts\Segment;
+use StickleApp\Core\Filters\Base as Filter;
 use Workbench\App\Models\User;
 
 #[SegmentName('Daily Active Users')]

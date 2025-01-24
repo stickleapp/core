@@ -17,12 +17,12 @@ return [
     | - Rollup Sessions. Aggregate the sessions into the session statistics table
     */
     'schedule' => [
-        'exportSegments' => env('CASACADE_FREQUENCY_EXPORT_SEGMENTS', 360),
-        'recordSegmentStatistics' => env('CASACADE_FREQUENCY_EXPORT_SEGMENT_STATISTICS', 360),
-        'recordEntityStatistics' => env('CASACADE_FREQUENCY_EXPORT_ENTITY_STATISTICS', 360),
-        'rollupEvents' => env('CASACADE_FREQUENCY_ROLLUP_EVENTS', 360),
-        'rollupPageViews' => env('CASACADE_FREQUENCY_ROLLUP_PAGEVIEWS', 360),
-        'rollupSessions' => env('CASACADE_FREQUENCY_ROLLUP_SESSIONS', 360),
+        'exportSegments' => env('STICKLE_FREQUENCY_EXPORT_SEGMENTS', 360),
+        'recordSegmentStatistics' => env('STICKLE_FREQUENCY_EXPORT_SEGMENT_STATISTICS', 360),
+        'recordEntityStatistics' => env('STICKLE_FREQUENCY_EXPORT_ENTITY_STATISTICS', 360),
+        'rollupEvents' => env('STICKLE_FREQUENCY_ROLLUP_EVENTS', 360),
+        'rollupPageViews' => env('STICKLE_FREQUENCY_ROLLUP_PAGEVIEWS', 360),
+        'rollupSessions' => env('STICKLE_FREQUENCY_ROLLUP_SESSIONS', 360),
     ],
 
     /*
@@ -36,7 +36,7 @@ return [
     */
     'database' => [
         'connection' => env('DB_CONNECTION', 'pgsql'),
-        'tablePrefix' => env('`CASACADE_TABLE_PRFIX`', 'lc_'),
+        'tablePrefix' => env('`STICKLE_TABLE_PRFIX`', 'lc_'),
         'partitions' => [
             'events' => [
                 'interval' => 'week',
@@ -67,7 +67,7 @@ return [
     'models' => [
         // @phpstan-ignore class.notFound
         'user' => env('AUTH_MODEL', App\Models\User::class),
-        'group' => env('CASACADE_MODEL_GROUP', null),
+        'group' => env('STICKLE_MODEL_GROUP', null),
     ],
 
     /*
@@ -88,13 +88,13 @@ return [
     | Where are certain items located in your Laravel project
     */
     'paths' => [
-        'segments' => env('CASACADE_PATH_SEGMENTS', 'App\Segments'),
-        'listeners' => env('CASACADE_PATH_LISTENERS', 'App\Listeners'),
-        'models' => env('CASACADE_PATH_MODELS', 'App\Models'),
+        'segments' => env('STICKLE_PATH_SEGMENTS', 'App\Segments'),
+        'listeners' => env('STICKLE_PATH_LISTENERS', 'App\Listeners'),
+        'models' => env('STICKLE_PATH_MODELS', 'App\Models'),
     ],
 
     'storage' => [
-        'exports' => env('CASACADE_STORAGE_EXPORTS', 'segment-exports'),
+        'exports' => env('STICKLE_STORAGE_EXPORTS', 'segment-exports'),
     ],
 
     /*
@@ -106,8 +106,8 @@ return [
     */
     'tracking' => [
         'server' => [
-            'loadMiddleware' => env('STICKLE_TRACK_SERVER_LOAD_MIDDLEWARE', true),
-            'trackAuthenticationEvents' => env('STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS', true),
+            'loadMiddleware' => env('stickle_TRACK_SERVER_LOAD_MIDDLEWARE', true),
+            'trackAuthenticationEvents' => env('stickle_TRACK_SERVER_AUTHENTICATION_EVENTS', true),
             'authenticationEventsTracked' => [
                 'Authenticated',
                 'CurrentDeviceLogout',
@@ -119,12 +119,12 @@ return [
                 'Validated',
                 'Verified',
             ],
-            'trackRequests' => env('STICKLE_TRACK_SERVER_REQUESTS', true),
+            'trackRequests' => env('stickle_TRACK_SERVER_REQUESTS', true),
         ],
         'client' => [
-            'loadMiddleware' => env('STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE', true),
-            'trackPageViews' => env('STICKLE_TRACK_CLIENT_PAGE_VIEWS', true),
-            'controllerPrefix' => env('STICKLE_TRACK_CONTROLLER_PREFIX', ''),
+            'loadMiddleware' => env('stickle_TRACK_CLIENT_LOAD_MIDDLEWARE', true),
+            'trackPageViews' => env('stickle_TRACK_CLIENT_PAGE_VIEWS', true),
+            'controllerPrefix' => env('stickle_TRACK_CONTROLLER_PREFIX', ''),
         ],
     ],
 ];

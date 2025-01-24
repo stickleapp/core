@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
-use StickleApp\\Core\Core\Contracts\FilterTarget;
 use Illuminate\Container\Attributes\Config;
+use StickleApp\Core\Contracts\FilterTarget;
 
 class Number extends FilterTarget
 {
     public function __construct(
-        #[Config('STICKLE.database.tablePrefix')] protected ?string $prefix,
+        #[Config('stickle.database.tablePrefix')] protected ?string $prefix,
         public string $attribute
     ) {}
 

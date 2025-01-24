@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Actions;
 
-use StickleApp\\Core\Core\Contracts\Segment;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use StickleApp\Core\Contracts\Segment;
 
 class ExportSegment
 {

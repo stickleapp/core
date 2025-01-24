@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace StickleApp\Core\Filters\Targets;
 
 use DateTimeInterface;
-use StickleApp\\Core\Core\Contracts\FilterTarget;
-use StickleApp\\Core\Core\Filters\Targets\Traits\HasDeltaFilters;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
+use StickleApp\Core\Contracts\FilterTarget;
+use StickleApp\Core\Filters\Targets\Traits\HasDeltaFilters;
 
 class EventCountDelta extends FilterTarget
 {
@@ -22,7 +22,7 @@ class EventCountDelta extends FilterTarget
      * @param  array<DateTimeInterface>  $previousPeriod
      */
     public function __construct(
-        #[Config('STICKLE.database.tablePrefix')] protected ?string $prefix,
+        #[Config('stickle.database.tablePrefix')] protected ?string $prefix,
         public string $event,
         public ?array $currentPeriod,
         public ?array $previousPeriod

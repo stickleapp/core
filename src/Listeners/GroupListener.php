@@ -2,10 +2,10 @@
 
 namespace StickleApp\Core\Listeners;
 
-use StickleApp\\Core\Core\Contracts\AnalyticsRepository;
-use StickleApp\\Core\Core\Events\Group;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
+use StickleApp\Core\Contracts\AnalyticsRepository;
+use StickleApp\Core\Events\Group;
 
 class GroupListener implements ShouldQueue
 {

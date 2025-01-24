@@ -3,7 +3,7 @@
 namespace StickleApp\Core\Filters\Targets\Traits;
 
 use DateTimeInterface;
-use StickleApp\\Core\Core\Contracts\FilterTarget;
+use StickleApp\Core\Contracts\FilterTarget;
 
 trait HasDeltaFilters
 {

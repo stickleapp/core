@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters;
 
-use StickleApp\\Core\Core\Contracts\FilterTarget;
-use StickleApp\\Core\Core\Contracts\FilterTest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use StickleApp\Core\Contracts\FilterTarget;
+use StickleApp\Core\Contracts\FilterTest;
 
 class Base
 {
@@ -25,7 +25,7 @@ class Base
     public static function __callStatic(string $method, array $arguments): Base
     {
 
-        $targetClass = 'StickleApp\\Core\Core\Filters\Targets\\'.ucfirst($method);
+        $targetClass = 'StickleApp\Core\Filters\Targets\\'.ucfirst($method);
 
         if (! class_exists($targetClass)) {
             throw new \Exception("Target class $targetClass does not exist");
@@ -50,7 +50,7 @@ class Base
      */
     public function __call(string $method, array $arguments): self
     {
-        $testClass = 'StickleApp\\Core\Core\Filters\Tests\\'.ucfirst($method);
+        $testClass = 'StickleApp\Core\Filters\Tests\\'.ucfirst($method);
 
         if (method_exists($this->target, $method)) {
             if ($newTargetType = $this->target->$method(...$arguments)) {

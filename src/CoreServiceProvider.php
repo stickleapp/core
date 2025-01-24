@@ -79,7 +79,7 @@ final class CoreServiceProvider extends ServiceProvider
         /**
          * Publish resources used by this package
          */
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'STICKLE');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'stickle');
 
         /**
          * Publish Config file
@@ -87,7 +87,7 @@ final class CoreServiceProvider extends ServiceProvider
         $this->publishes(
             [
                 __DIR__.'/../config/stickle.php' => config_path(
-                    'STICKLE.php'
+                    'stickle.php'
                 ),
             ],
         );

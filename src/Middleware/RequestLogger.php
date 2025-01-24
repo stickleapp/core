@@ -4,9 +4,9 @@ namespace StickleApp\Core\Middleware;
 
 use Carbon\Carbon;
 use Closure;
-use StickleApp\\Core\Core\Events\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use StickleApp\Core\Events\Page;
 
 class RequestLogger
 {

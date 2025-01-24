@@ -1,7 +1,7 @@
 <?php
 
 use StickleApp\Core\Filters\Base as Filter;
-use StickleApp\\Core\Core\Filters\Targets\Number;
+use StickleApp\Core\Filters\Targets\Number;
 
 test('text() sets target as text', function () {
 

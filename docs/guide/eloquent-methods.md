@@ -10,12 +10,12 @@ These scopes accept a single `StickleApp\Core\Filters\Base` that defines a filte
 
 ## Fluent Interface
 
-`StickleApp\\Core\Core\Filters\Base` can be configured by calling fluent methods which return the instance itself, allowing you to chain methods together to define your filter.
+`StickleApp\Core\Filters\Base` can be configured by calling fluent methods which return the instance itself, allowing you to chain methods together to define your filter.
 
 ```php
 use App\Models\User;
-use StickleApp\\Core\Core\Filters\Base as Filter;
-use StickleApp\\Core\Core\Filters\Targets\EventCount;
+use StickleApp\Core\Filters\Base as Filter;
+use StickleApp\Core\Filters\Targets\EventCount;
 
 $users = User::stickle(
         new EventCount()

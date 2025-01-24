@@ -3,10 +3,10 @@
 namespace StickleApp\Core\Listeners;
 
 use DateTime;
-use StickleApp\\Core\Core\Contracts\AnalyticsRepository;
-use StickleApp\\Core\Core\Events\Track;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
+use StickleApp\Core\Contracts\AnalyticsRepository;
+use StickleApp\Core\Events\Track;
 
 class TrackListener implements ShouldQueue
 {

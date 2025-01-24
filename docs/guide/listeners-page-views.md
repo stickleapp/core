@@ -11,7 +11,7 @@ You can create a listener class extending `Illuminate\Contracts\Queue\ShouldQueu
 ```php
 namespace App\Listeners;
 
-use StickleApp\\Core\Core\Events\Page;
+use StickleApp\Core\Events\Page;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 

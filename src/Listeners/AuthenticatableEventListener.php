@@ -3,7 +3,6 @@
 namespace StickleApp\Core\Listeners;
 
 use DateTime;
-use StickleApp\\Core\Core\Contracts\AnalyticsRepository;
 use Illuminate\Auth\Events\Authenticated;
 use Illuminate\Auth\Events\CurrentDeviceLogout;
 use Illuminate\Auth\Events\Login;
@@ -17,6 +16,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use StickleApp\Core\Contracts\AnalyticsRepository;
 
 class AuthenticatableEventListener implements ShouldQueue
 {

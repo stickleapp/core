@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace StickleApp\Core\Repositories;
 
 use DateTimeInterface;
-use StickleApp\\Core\Core\Contracts\AnalyticsRepository;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Support\Facades\DB;
+use StickleApp\Core\Contracts\AnalyticsRepository;
 
 /**
  * @internal
@@ -18,7 +18,7 @@ final class PostgresAnalyticsRepository implements AnalyticsRepository
      * Creates a new analytics repository instance.
      */
     public function __construct(
-        #[Config('STICKLE.database.tablePrefix')] protected ?string $prefix = null,
+        #[Config('stickle.database.tablePrefix')] protected ?string $prefix = null,
     ) {}
 
     /**

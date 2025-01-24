@@ -15,7 +15,7 @@ Stickle requires:
 
 ### Include
 
-You may use Composer to require STICKLE into your PHP project:
+You may use Composer to require stickle into your PHP project:
 
 ```
 $ composer require stickleapp/core

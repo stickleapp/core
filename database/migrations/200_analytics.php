@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function __construct(
-        #[Config('STICKLE.database.tablePrefix')] protected ?string $prefix = null,
+        #[Config('stickle.database.tablePrefix')] protected ?string $prefix = null,
     ) {
         $this->prefix = config('stickle.database.tablePrefix');
     }
@@ -492,15 +492,15 @@ LANGUAGE plpgsql;
         $prefix = $this->prefix;
 
         Schema::dropIfExists("{$prefix}requests");
-        DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1min STICKLE");
-        DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_5min STICKLE");
-        DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1hr STICKLE");
-        DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1day STICKLE");
+        DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1min CASCADE");
+        DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_5min CASCADE");
+        DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1hr CASCADE");
+        DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1day CASCADE");
         Schema::dropIfExists("{$prefix}events");
-        DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_1min STICKLE");
-        DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_5min STICKLE");
-        DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_1hr STICKLE");
-        DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_1day STICKLE");
+        DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_1min CASCADE");
+        DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_5min CASCADE");
+        DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_1hr CASCADE");
+        DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_1day CASCADE");
         Schema::dropIfExists("{$prefix}rollups");
 
     }

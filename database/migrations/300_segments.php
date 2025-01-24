@@ -6,7 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 return new class extends Migration
 {
     public function __construct(
-        #[Config('STICKLE.database.tablePrefix')] protected ?string $prefix = null,
+        #[Config('stickle.database.tablePrefix')] protected ?string $prefix = null,
     ) {
         $this->prefix = config('stickle.database.tablePrefix');
     }

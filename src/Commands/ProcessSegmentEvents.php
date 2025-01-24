@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
-use StickleApp\\Core\Core\Events\ObjectEnteredSegment;
-use StickleApp\\Core\Core\Events\ObjectExitedSegment;
-use StickleApp\\Core\Core\Models\ObjectSegmentAudit;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\Log;
+use StickleApp\Core\Events\ObjectEnteredSegment;
+use StickleApp\Core\Events\ObjectExitedSegment;
+use StickleApp\Core\Models\ObjectSegmentAudit;
 
 final class ProcessSegmentEvents extends Command implements Isolatable
 {
     /**
      * @var string
      */
-    protected $signature = 'STICKLE:process-segment-events';
+    protected $signature = 'stickle:process-segment-events';
 
     /**
      * @var string

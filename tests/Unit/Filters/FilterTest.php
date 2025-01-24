@@ -4,7 +4,7 @@ namespace FilterTest;
 
 use Carbon\Carbon;
 use StickleApp\Core\Filters\Base as Filter;
-use StickleApp\\Core\Core\Traits\Trackable;
+use StickleApp\Core\Traits\Trackable;
 
 class User extends \Illuminate\Database\Eloquent\Model
 {
@@ -21,19 +21,19 @@ test('example', function () {
     //             ->greaterThan(10)
     //             ->startDate(now()->subYears(1))
     //             ->endDate(now())
-    //     )->orSTICKLE(
+    //     )->orstickle(
     //         Filter::eventCount('clicked:something')
     //             ->greaterThan(10)
     //             ->startDate(now()->subYears(1))
     //             ->endDate(now())
-    //     )->orSTICKLE(
+    //     )->orstickle(
     //         Filter::eventCount('clicked:something')
     //             ->greaterThan(10)
     //             ->between(now()->subYears(1), now())
-    //     )->orSTICKLE(
+    //     )->orstickle(
     //         Filter::datetime('a_column')
     //             ->occurredBefore(Carbon::now()->subYears(1))
-    //     )->orSTICKLE(
+    //     )->orstickle(
     //         Filter::datetime('a_column')
     //             ->isNull('a_column')
     //     );
@@ -45,22 +45,22 @@ test('example', function () {
                 ->startDate(now()->subYears(1))
                 ->endDate(now())
         )
-        ->orSTICKLE(
+        ->orstickle(
             Filter::eventCount('clicked:something')
                 ->greaterThan(10)
                 ->startDate(now()->subYears(1))
                 ->endDate(now())
-        )->orSTICKLE(
+        )->orstickle(
             Filter::eventCount('clicked:something')
                 ->greaterThan(10)
                 ->startDate(now()->subYears(1))
                 ->endDate(now())
-        )->orSTICKLE(
+        )->orstickle(
             Filter::eventCount('clicked:something')
                 ->greaterThan(10)
                 ->startDate(now()->subYears(1))
                 ->endDate(now())
-        )->orSTICKLE(
+        )->orstickle(
             Filter::eventCount('clicked:something')
                 ->greaterThan(10)
                 ->startDate(now()->subYears(1))

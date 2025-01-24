@@ -2,12 +2,12 @@
 
 namespace StickleApp\Core\Jobs;
 
-use StickleApp\\Core\Core\Actions\ExportSegment as ExportSegmentAction;
-use StickleApp\\Core\Core\Models\Segment;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Log;
+use StickleApp\Core\Actions\ExportSegment as ExportSegmentAction;
+use StickleApp\Core\Models\Segment;
 
 class ExportSegment implements ShouldQueue
 {

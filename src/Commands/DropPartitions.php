@@ -15,9 +15,9 @@ final class DropPartitions extends Command implements Isolatable
     /**
      * @var string
      *
-     * vendor/bin/testbench STICKLE:drop-partition lc_events_rollup_1day public week '2024-10-01'
+     * vendor/bin/testbench stickle:drop-partition lc_events_rollup_1day public week '2024-10-01'
      */
-    protected $signature = 'STICKLE:drop-partitions
+    protected $signature = 'stickle:drop-partitions
                             {existing_table : The table to be partitioned}
                             {schema : The Postgres Schema of partition}
                             {interval : The interval of the partition}
@@ -32,7 +32,7 @@ final class DropPartitions extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
-        #[Config('STICKLE.database.tablePrefix')] protected ?string $prefix = null,
+        #[Config('stickle.database.tablePrefix')] protected ?string $prefix = null,
     ) {
         parent::__construct();
     }

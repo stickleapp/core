@@ -2,11 +2,11 @@
 
 namespace StickleApp\Core\Tests;
 
-use StickleApp\\Core\Core\Providers\CoreServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Attributes\WithMigration;
 use Orchestra\Testbench\TestCase as Orchestra;
+use StickleApp\Core\Providers\CoreServiceProvider;
 
 use function Orchestra\Testbench\workbench_path;
 
@@ -20,7 +20,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'StickleApp\\Core\\LaravelSTICKLE\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'StickleApp\\Core\\Laravelstickle\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 

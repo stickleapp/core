@@ -18,7 +18,7 @@ class ScheduleServiceProvider extends ServiceProvider
          */
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
             $schedule->command(
-                'STICKLE:create-partitions',
+                'stickle:create-partitions',
                 [
                     config('stickle.database.tablePrefix').'events_rollup_1min',
                     config('stickle.database.schema'),
@@ -30,7 +30,7 @@ class ScheduleServiceProvider extends ServiceProvider
 
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
             $schedule->command(
-                'STICKLE:create-partitions',
+                'stickle:create-partitions',
                 [
                     config('stickle.database.tablePrefix').'events_rollup_5min',
                     config('stickle.database.schema'),
@@ -42,7 +42,7 @@ class ScheduleServiceProvider extends ServiceProvider
 
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
             $schedule->command(
-                'STICKLE:create-partitions',
+                'stickle:create-partitions',
                 [
                     config('stickle.database.tablePrefix').'events_rollup_1hr',
                     config('stickle.database.schema'),
@@ -54,7 +54,7 @@ class ScheduleServiceProvider extends ServiceProvider
 
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
             $schedule->command(
-                'STICKLE:create-partitions',
+                'stickle:create-partitions',
                 [
                     config('stickle.database.tablePrefix').'events_rollup_1day',
                     config('stickle.database.schema'),
@@ -69,7 +69,7 @@ class ScheduleServiceProvider extends ServiceProvider
          */
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
             $schedule->command(
-                'STICKLE:drop-partitions',
+                'stickle:drop-partitions',
                 [
                     config('stickle.database.tablePrefix').'events_rollup_1min',
                     config('stickle.database.schema'),
@@ -81,7 +81,7 @@ class ScheduleServiceProvider extends ServiceProvider
 
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
             $schedule->command(
-                'STICKLE:drop-partitions',
+                'stickle:drop-partitions',
                 [
                     config('stickle.database.tablePrefix').'events_rollup_5min',
                     config('stickle.database.schema'),
@@ -93,7 +93,7 @@ class ScheduleServiceProvider extends ServiceProvider
 
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
             $schedule->command(
-                'STICKLE:drop-partitions',
+                'stickle:drop-partitions',
                 [
                     config('stickle.database.tablePrefix').'events_rollup_1hr',
                     config('stickle.database.schema'),
@@ -105,7 +105,7 @@ class ScheduleServiceProvider extends ServiceProvider
 
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
             $schedule->command(
-                'STICKLE:drop-partitions',
+                'stickle:drop-partitions',
                 [
                     config('stickle.database.tablePrefix').'events_rollup_1day',
                     config('stickle.database.schema'),

@@ -1,7 +1,7 @@
 <?php
 
 use StickleApp\Core\Filters\Base as Filter;
-use StickleApp\\Core\Core\Filters\Targets\Boolean;
+use StickleApp\Core\Filters\Targets\Boolean;
 
 test('boolean() sets target as Boolean', function () {
 

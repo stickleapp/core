@@ -1,7 +1,7 @@
 <?php
 
 use StickleApp\Core\Filters\Base as Filter;
-use StickleApp\\Core\Core\Filters\Targets\Datetime;
+use StickleApp\Core\Filters\Targets\Datetime;
 
 test('boolean() sets target as Datetime', function () {
 

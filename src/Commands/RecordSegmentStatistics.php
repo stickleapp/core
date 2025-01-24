@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
-use StickleApp\\Core\Core\Jobs\RecordSegmentStatistic as RecordSegmentStatisticJob;
-use StickleApp\\Core\Core\Models\Segment;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use StickleApp\Core\Jobs\RecordSegmentStatistic as RecordSegmentStatisticJob;
+use StickleApp\Core\Models\Segment;
 
 final class RecordSegmentStatistics extends Command implements Isolatable
 {
     /**
      * @var string
      */
-    protected $signature = 'STICKLE:record-segment-statitics {segmentId? : A specific segment to export}
+    protected $signature = 'stickle:record-segment-statitics {segmentId? : A specific segment to export}
                                                             {limit? : The maximum number of segments to export.}';
 
     /**
@@ -29,7 +29,7 @@ final class RecordSegmentStatistics extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
-        #[Config('STICKLE.database.tablePrefix')] public ?string $prefix = null,
+        #[Config('stickle.database.tablePrefix')] public ?string $prefix = null,
     ) {
         $this->prefix = config('stickle.database.tablePrefix');
         parent::__construct();

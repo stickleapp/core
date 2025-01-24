@@ -12,6 +12,6 @@ class BlankLayout extends Component
      */
     public function render(): View
     {
-        return view('STICKLE::demo/layouts/blank');
+        return view('stickle::demo/layouts/blank');
     }
 }

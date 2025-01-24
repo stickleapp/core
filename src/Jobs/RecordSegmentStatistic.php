@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Jobs;
 
-use StickleApp\\Core\Core\Actions\RecordSegmentStatistic as RecordSegmentStatisticAction;
-use StickleApp\\Core\Core\Models\Segment;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Log;
+use StickleApp\Core\Actions\RecordSegmentStatistic as RecordSegmentStatisticAction;
+use StickleApp\Core\Models\Segment;
 
 class RecordSegmentStatistic implements ShouldQueue
 {
@@ -18,7 +18,9 @@ class RecordSegmentStatistic implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public ?int $segmentId, public ?string $model, public ?string $attribute) {}
+    public function __construct(public ?int $segmentId, public ?string $model, public ?string $attribute)
+    {
+    }
 
     /**
      * The number of seconds after which the job's unique lock will be released.

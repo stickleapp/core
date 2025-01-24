@@ -3,14 +3,14 @@
 namespace StickleApp\Core\Http\Controllers;
 
 use Carbon\Carbon;
-use StickleApp\\Core\Core\Enums\RequestType;
-use StickleApp\\Core\Core\Events\Page;
-use StickleApp\\Core\Core\Events\Track;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use StickleApp\Core\Enums\RequestType;
+use StickleApp\Core\Events\Page;
+use StickleApp\Core\Events\Track;
 
 class IngestController
 {

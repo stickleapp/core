@@ -1,5 +1,5 @@
 (function () {
-    const trackingUrl = "/STICKLE-track";
+    const trackingUrl = "/stickle-track";
 
     function sendTrackingData(data) {
         navigator.sendBeacon(

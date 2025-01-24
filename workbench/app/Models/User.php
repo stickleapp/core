@@ -3,13 +3,13 @@
 namespace Workbench\App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use StickleApp\Core\Attributes\ModelAttributeDescription;
-use StickleApp\\Core\Core\Traits\Trackable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use StickleApp\Core\Attributes\ModelAttributeDescription;
+use StickleApp\Core\Traits\Trackable;
 use Workbench\Database\Factories\UserFactory;
 
 class User extends Authenticatable

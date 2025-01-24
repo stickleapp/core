@@ -9,9 +9,9 @@ You create a segment by extending the `StickleApp\Core\Contracts\Segment` class.
 ```php
 namespace App\Segments;
 
-use StickleApp\\Core\Core\Attributes\SegmentExportInterval;
-use StickleApp\\Core\Core\Attributes\SegmentName;
-use StickleApp\\Core\Core\Contracts\Segment;
+use StickleApp\Core\Attributes\SegmentExportInterval;
+use StickleApp\Core\Attributes\SegmentName;
+use StickleApp\Core\Contracts\Segment;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\User;
 

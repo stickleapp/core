@@ -1,8 +1,8 @@
 <?php
 
-use StickleApp\Core\Actions\ExportSegment;
-use StickleApp\\Core\Core\Contracts\Segment;
 use Mockery;
+use StickleApp\Core\Actions\ExportSegment;
+use StickleApp\Core\Contracts\Segment;
 use Workbench\App\Models\User;
 
 test('exports segment', function () {

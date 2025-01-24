@@ -17,10 +17,7 @@ final readonly class InjectJavascriptTrackingCode
     /**
      * Creates a new middleware instance.
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct() {}
 
     /**
      * Handle an incoming request.

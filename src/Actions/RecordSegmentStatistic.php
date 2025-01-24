@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Actions;
 
-use StickleApp\\Core\Core\Models\SegmentStatistic;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use StickleApp\Core\Models\SegmentStatistic;
 
 class RecordSegmentStatistic
 {

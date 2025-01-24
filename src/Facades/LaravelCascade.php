@@ -5,12 +5,12 @@ namespace StickleApp\Core\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \StickleApp\\Core\Core\LaravelSTICKLE
+ * @see \StickleApp\Core\Laravelstickle
  */
-class LaravelSTICKLE extends Facade
+class Laravelstickle extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \StickleApp\\Core\Core\LaravelSTICKLE::class;
+        return \StickleApp\Core\Laravelstickle::class;
     }
 }

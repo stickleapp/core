@@ -2,10 +2,10 @@
 
 namespace StickleApp\Core\Observers;
 
-use StickleApp\\Core\Core\Events\ObjectAttributeChanged;
-use StickleApp\\Core\Core\Models\ObjectAttribute;
-use StickleApp\\Core\Core\Models\ObjectAttributesAudit;
 use Illuminate\Support\Arr;
+use StickleApp\Core\Events\ObjectAttributeChanged;
+use StickleApp\Core\Models\ObjectAttribute;
+use StickleApp\Core\Models\ObjectAttributesAudit;
 
 class ObjectAttributeObserver
 {

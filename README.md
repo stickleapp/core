@@ -1,4 +1,4 @@
-STICKLE is a package for Laravel that helps you analyze and interact with your customer base.
+Stickle is a package for Laravel that helps you analyze and interact with your customer base.
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/stickleapp/core.svg?style=flat-square)](https://packagist.org/packages/stickleapp/core)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/stickleapp/core/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/stickleapp/core/actions?query=workflow%3Arun-tests+branch%3Amain)
@@ -7,18 +7,18 @@ STICKLE is a package for Laravel that helps you analyze and interact with your c
 
 # Use Cases
 
-STICKLE allows you to embed customer analytics and engagement functionality in your Laravel application. Use it to:
+Stickle allows you to embed customer analytics and engagement functionality in your Laravel application. Use it to:
 
 -   Build real-time customer analytics dashboard;
 -   Trigger Laravel notifications based on end-user behavior;
 -   Highlight important customer behavior in your admin panel;
 -   Segment your customer base to identify high value or at-risk customers in realtime.
 
-STICKLE Apps allow you to do even more.
+Stickle Apps allow you to do even more.
 
-# STICKLE Core
+# Stickle Core
 
-STICKLE Core is the foundation of STICKLE that:
+Stickle Core is the foundation of Stickle that:
 
 -   Tracks user attributes and behavior via a Javascript tracking code;
 -   Logs authentication events;
@@ -28,47 +28,47 @@ STICKLE Core is the foundation of STICKLE that:
 -   Exposes a REST API for ingesting events from other channels (Mobile, etc);
 -   Provides the ability to define customer segments 'as-code' and track these segments over time.
 
-# STICKLE Apps
+# Stickle Apps
 
-STICKLE Apps extend the funtionality of STICKLE Core. Anyone can write a STICKLE app but we'll provide some first-party apps to get people started.
+Stickle Apps extend the funtionality of Stickle Core. Anyone can write a Stickle app but we'll provide some first-party apps to get people started.
 
-## STICKLE Webhooks
+## Stickle Webhooks
 
-STICKLE Webhooks allow you to send STICKLE events to a defined Webhook endpoint.
+Stickle Webhooks allow you to send Stickle events to a defined Webhook endpoint.
 
 NOTE: Not sure we need this. Is there a definite market winner library for Webhooks? Spatie?
 
-## STICKLE Websockets
+## Stickle Websockets
 
-Built on Laravel Reverb, STICKLE Websockets allow you to send notifications to connected clients via Websockets.
+Built on Laravel Reverb, Stickle Websockets allow you to send notifications to connected clients via Websockets.
 
 NOTE: Not sure we need this. **Maybe** something that works out-of-the-box with the Javasdk?
 
-## STICKLE Health
+## Stickle Health
 
-Build customer health scores based on STICKLE Core.
+Build customer health scores based on Stickle Core.
 
-## STICKLE Orchestrations
+## Stickle Orchestrations
 
-Create workflows triggered on data in STICKLE Core.
+Create workflows triggered on data in Stickle Core.
 
-## STICKLE Dashboards
+## Stickle Dashboards
 
 Create shareable dashboards containing metrics gleaned from your Customer data.
 
-## STICKLE Updates
+## Stickle Updates
 
 Share customer-specific email updates to your customers to demonstrate the value they provide.
 
-## STICKLE Widget
+## Stickle Widget
 
 A multi-purpose, extensible, Intercom-style widget.
 
-# STICKLE UI Professional
+# Stickle UI Professional
 
 $499 one time payment includes:
 
--   A first-party UI for STICKLE Core and STICKLE Apps;
+-   A first-party UI for Stickle Core and Stickle Apps;
 -   Updates for 1 year;
 -   Email support.
 
@@ -78,35 +78,35 @@ Renewals for $99/year.
 
 ## Requirements
 
-STICKLE requires:
+Stickle requires:
 
 -   PHP 8.3+
 -   Laravel 11.0+.
 
 ## Installation
 
-You may use Composer to require STICKLE into your PHP project:
+You may use Composer to require Stickle into your PHP project:
 
     composer require stickleapp/core
 
-You may install STICKLE into your Laravel project using the following command:
+You may install Stickle into your Laravel project using the following command:
 
     php artisan install:stickle
 
 The installer will guide you through the setup process helping you set configuration options for your project. You can specify:
 
--   If you want to install the STICKLE JS SDK and track client events;
+-   If you want to install the Stickle JS SDK and track client events;
 -   If you want to track events raised by Illuminate\Auth events;
 -   If you want to track each authenticated event via middleware; and
 -   How you define the relationships between `Users` and `Groups` in your application.
 
-It will also prompt you to install desired first-party STICKLE apps:
+It will also prompt you to install desired first-party Stickle apps:
 
--   STICKLE Webhooks
--   STICKLE Websockets
--   STICKLE Health
--   STICKLE Orchestrations
--   STICKLE Dashboards
+-   Stickle Webhooks
+-   Stickle Websockets
+-   Stickle Health
+-   Stickle Orchestrations
+-   Stickle Dashboards
 
 ## Running Migrations
 
@@ -116,7 +116,7 @@ After you have specified your configuration options in the installation script, 
 
 ## Initialization
 
-When complete you can run STICKLE with the following command:
+When complete you can run Stickle with the following command:
 
     php artisan run:stickle
 
@@ -153,7 +153,7 @@ Exports
 
 # Advanced Configuration
 
-STICKLE will work out of the box using the configuration options specified during the installation process. You can override these (and several other) options in the `config\stickle.php` file.
+Stickle will work out of the box using the configuration options specified during the installation process. You can override these (and several other) options in the `config\stickle.php` file.
 
 ## Database Options
 
@@ -164,7 +164,7 @@ You can specify the following configuration options:
 
 ## Sync Schedule
 
-STICKLE runs several jobs to transform your data. You can update the frequency that these jobs run:
+Stickle runs several jobs to transform your data. You can update the frequency that these jobs run:
 
 -   `ExportSegments`. (Default Every 360 minutes).
 -   `RecordSegmentStatistics`. (Default Every 360 minutes).
@@ -175,7 +175,7 @@ STICKLE runs several jobs to transform your data. You can update the frequency t
 
 ## Customer Models
 
--   `User`. By default, STICKLE assumes the `App\Models\User` class is the user responsible for authentication events. You can override this class.
+-   `User`. By default, Stickle assumes the `App\Models\User` class is the user responsible for authentication events. You can override this class.
 -   `Group`. You can **optionally** specify a Group class that represents a real world company, account, organization, etc. that a `User` belongs to.
 -   `Relationship`. You should specify the relationship between the `Group` and the `User`. By default, the relationship is `Illuminate\Database\Eloquent\Relations\HasMany` meaning each `Group` has zero or more `Users` objects. Other options include:
     -   `Illuminate\Database\Eloquent\Relations\HasOne`. Each `User` belongs to one `Group` and each `Group` has exactly one `User`.
@@ -184,17 +184,17 @@ STICKLE runs several jobs to transform your data. You can update the frequency t
 
 ## Tracking Options
 
-STICKLE can track requests and events on the server and on the client. There are several configuration options that determine the behavior of each method:
+Stickle can track requests and events on the server and on the client. There are several configuration options that determine the behavior of each method:
 
 ### Server
 
--   `loadMiddleware`. Default `true`. When `true`, STICKLE loads middleware during the Package Service Provider's `boot` method.
+-   `loadMiddleware`. Default `true`. When `true`, Stickle loads middleware during the Package Service Provider's `boot` method.
 -   `trackAuthenticationEvents`. Default `true`. Automatically log all authenticated `Illuminate\Auth` events.
 -   `trackRequests`. Default `true`. Automatically track all authenticated requests made in the application.
 
 ### Client
 
--   `loadMiddleware`. Default `true`. When `true`, STICKLE injects a tracking code via middleware during the Package Service Provider's `boot` method.
+-   `loadMiddleware`. Default `true`. When `true`, Stickle injects a tracking code via middleware during the Package Service Provider's `boot` method.
 -   `trackPageViews`. Default `true`. When `true`, the Javascript tracking code will listen for pushState changes and record a pageview for each.
 -   `routePrefix`. Default `''`. Tracking events are sent to the `/request` endpoint by default. If you move this endpoint to a different location, update `routePrefix` to reflect this location.
 
@@ -202,11 +202,11 @@ STICKLE can track requests and events on the server and on the client. There are
 
 Where to autoload `Segments` (ActiveAccounts.php) and export them.
 Where to autoload `Listeners`
-Where to autoload `Playbooks` (ActiveAccounts.php) and export them (Move to => STICKLE Playbooks)
+Where to autoload `Playbooks` (ActiveAccounts.php) and export them (Move to => Stickle Playbooks)
 
 # How To
 
-OK. So you installed STICKLE and typed the `php artisan stickle:run` command. You were given a URL to open in your web browser (probably http://localhost:8000). You should see a demo screen that you can use to test some things out.
+OK. So you installed Stickle and typed the `php artisan stickle:run` command. You were given a URL to open in your web browser (probably http://localhost:8000). You should see a demo screen that you can use to test some things out.
 
 The left frame is your application, the middle frame is an example 'admin console' and the right frame is an example 3rd-party application like a CRM.
 
@@ -247,7 +247,7 @@ Now do some stuff in the CRM...
 Call a remote webhook
 ```
 
-Meanwhile, STICKLE is refreshing your Segments:
+Meanwhile, Stickle is refreshing your Segments:
 
 -   Added to Segment alert in Admin
 
@@ -257,7 +257,7 @@ Meanwhile, STICKLE is refreshing your Segments:
 
 ```
 use StickleApp\Core\Events\Track;
-use StickleApp\\Core\Core\Events\Group;
+use StickleApp\Core\Events\Group;
 
 Track::dispatch(...args);
 Group::dispatch(...args);
@@ -267,25 +267,25 @@ Identify::dispatch(...args);
 ### On the Browser
 
 ```
-STICKLE('track', []);
-STICKLE('identify', []);
-STICKLE('page', []);
-STICKLE('group', []);
+Stickle('track', []);
+Stickle('identify', []);
+Stickle('page', []);
+Stickle('group', []);
 ```
 
 ## Tracking Model Attribute Changes
 
-In your Trackable model, you can have STICKLE track numerical attributes over time. To do so, add the attribute to the `$tracked` array on the model.
+In your Trackable model, you can have Stickle track numerical attributes over time. To do so, add the attribute to the `$tracked` array on the model.
 
 ## Eloquent Models
 
-STICKLE exposes two Eloquent scopes that allow you to segment your users based on their behavior or history: `stickle` and `orSTICKLE`.
+Stickle exposes two Eloquent scopes that allow you to segment your users based on their behavior or history: `stickle` and `orStickle`.
 
-These methods expect an instance of a `StickleApp\\Core\Core\Filter` class.
+These methods expect an instance of a `StickleApp\Core\Filter` class.
 
 ```
 use App\Models\User;
-use StickleApp\\Core\Core\Filters\Base as Filter;
+use StickleApp\Core\Filters\Base as Filter;
 
 $users = User::stickle(
         Filter::eventCount('clicked:something')
@@ -297,7 +297,7 @@ $users = User::stickle(
 
 ```
 use App\Models\User;
-use StickleApp\\Core\Core\Filters\Base as Filter;
+use StickleApp\Core\Filters\Base as Filter;
 
 $users = User::stickle(
         Filter::eventCount('clicked:something')
@@ -349,7 +349,7 @@ $pageViewListenders => [
 
 ### Server Events
 
-Why handle these through STICKLE? We want to log them? We want to hook into webhooks/websockets?
+Why handle these through Stickle? We want to log them? We want to hook into webhooks/websockets?
 
 We'll generate some around Segments? What else?
 

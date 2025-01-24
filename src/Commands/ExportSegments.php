@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
-use StickleApp\\Core\Core\Jobs\ExportSegment;
-use StickleApp\\Core\Core\Models\Segment;
 use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Contracts\Console\Isolatable;
@@ -15,13 +13,15 @@ use Illuminate\Support\Facades\Log;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
+use StickleApp\Core\Jobs\ExportSegment;
+use StickleApp\Core\Models\Segment;
 
 final class ExportSegments extends Command implements Isolatable
 {
     /**
      * @var string
      */
-    protected $signature = 'STICKLE:export-segments {directory : The full path where the Segment classes are stored.}
+    protected $signature = 'stickle:export-segments {directory : The full path where the Segment classes are stored.}
                                                     {namespace : The namespace of the Segment classes.}
                                                     {limit : The maximum number of segments to export.}';
 
@@ -34,7 +34,7 @@ final class ExportSegments extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
-        #[Config('STICKLE.database.tablePrefix')] protected ?string $prefix = null,
+        #[Config('stickle.database.tablePrefix')] protected ?string $prefix = null,
     ) {
         parent::__construct();
     }

@@ -22,7 +22,7 @@ trait Trackable
     /**
      * Enables a ->stickle() method on the model
      */
-    public static function scopeSTICKLE(Builder $builder, Filter $filter)
+    public static function scopestickle(Builder $builder, Filter $filter)
     {
 
         $prefix = config('stickle.database.tablePrefix');
@@ -41,9 +41,9 @@ trait Trackable
     }
 
     /**
-     * Enables a ->orSTICKLE() method on the model
+     * Enables a ->orstickle() method on the model
      */
-    public static function scopeOrSTICKLE(Builder $builder, Filter $filter)
+    public static function scopeOrstickle(Builder $builder, Filter $filter)
     {
         $prefix = config('stickle.database.tablePrefix');
 
