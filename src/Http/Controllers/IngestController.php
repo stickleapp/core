@@ -1,11 +1,11 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Http\Controllers;
+namespace StickleApp\Core\Http\Controllers;
 
 use Carbon\Carbon;
-use Dclaysmith\LaravelCascade\Enums\RequestType;
-use Dclaysmith\LaravelCascade\Events\Page;
-use Dclaysmith\LaravelCascade\Events\Track;
+use StickleApp\\Core\Core\Enums\RequestType;
+use StickleApp\\Core\Core\Events\Page;
+use StickleApp\\Core\Core\Events\Track;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -141,7 +141,7 @@ class IngestController
      */
     private function availableModels(): array
     {
-        $config = config('cascade.models', []);
+        $config = config('stickle.models', []);
 
         return array_filter($config, fn ($value) => ! is_null($value));
     }

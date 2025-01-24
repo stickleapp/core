@@ -1,8 +1,8 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Listeners;
+namespace StickleApp\Core\Listeners;
 
-use Dclaysmith\LaravelCascade\Events\ObjectAttributeChanged;
+use StickleApp\\Core\Core\Events\ObjectAttributeChanged;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
@@ -41,6 +41,6 @@ class ObjectAttributeChangedListener implements ShouldQueue
         $model = str_replace(' ', '', ucwords(str_replace('_', ' ', $model)));
         $attribute = str_replace(' ', '', ucwords(str_replace('_', ' ', $attribute)));
 
-        return config('cascade.paths.listeners').'\\'.$model.$attribute.'Listener';
+        return config('stickle.paths.listeners').'\\'.$model.$attribute.'Listener';
     }
 }

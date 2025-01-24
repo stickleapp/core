@@ -1,8 +1,8 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Tests;
+namespace StickleApp\Core\Tests;
 
-use Dclaysmith\LaravelCascade\Providers\LaravelCascadeServiceProvider;
+use StickleApp\\Core\Core\Providers\CoreServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Attributes\WithMigration;
@@ -20,14 +20,14 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Dclaysmith\\LaravelCascade\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'StickleApp\\Core\\LaravelSTICKLE\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 
     protected function getPackageProviders($app)
     {
         return [
-            LaravelCascadeServiceProvider::class,
+            CoreServiceProvider::class,
         ];
     }
 

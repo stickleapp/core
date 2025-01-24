@@ -12,7 +12,7 @@ hero:
           link: /docs
         - theme: alt
           text: Github
-          link: https://www.github.com/dclaysmith/laravelcascade
+          link: https://www.github.com/stickleapp/core
         - theme: alt
           text: Stickle Pro
           link: /pro

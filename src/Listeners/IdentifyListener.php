@@ -1,9 +1,9 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Listeners;
+namespace StickleApp\Core\Listeners;
 
-use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
-use Dclaysmith\LaravelCascade\Events\Identify;
+use StickleApp\\Core\Core\Contracts\AnalyticsRepository;
+use StickleApp\\Core\Core\Events\Identify;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 

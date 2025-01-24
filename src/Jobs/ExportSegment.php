@@ -1,9 +1,9 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Jobs;
+namespace StickleApp\Core\Jobs;
 
-use Dclaysmith\LaravelCascade\Actions\ExportSegment as ExportSegmentAction;
-use Dclaysmith\LaravelCascade\Models\Segment;
+use StickleApp\\Core\Core\Actions\ExportSegment as ExportSegmentAction;
+use StickleApp\\Core\Core\Models\Segment;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;

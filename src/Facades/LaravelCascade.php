@@ -1,16 +1,16 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Facades;
+namespace StickleApp\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Dclaysmith\LaravelCascade\LaravelCascade
+ * @see \StickleApp\\Core\Core\LaravelSTICKLE
  */
-class LaravelCascade extends Facade
+class LaravelSTICKLE extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \Dclaysmith\LaravelCascade\LaravelCascade::class;
+        return \StickleApp\\Core\Core\LaravelSTICKLE::class;
     }
 }

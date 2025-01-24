@@ -2,10 +2,10 @@
 
 namespace Workbench\App\Segments;
 
-use Dclaysmith\LaravelCascade\Attributes\SegmentName;
-use Dclaysmith\LaravelCascade\Attributes\SegmentRefreshInterval;
-use Dclaysmith\LaravelCascade\Contracts\Segment;
-use Dclaysmith\LaravelCascade\Filters\Base as Filter;
+use StickleApp\Core\Attributes\SegmentName;
+use StickleApp\\Core\Core\Attributes\SegmentRefreshInterval;
+use StickleApp\\Core\Core\Contracts\Segment;
+use StickleApp\\Core\Core\Filters\Base as Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Workbench\App\Models\User;
 

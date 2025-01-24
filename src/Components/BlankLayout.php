@@ -1,6 +1,6 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Components;
+namespace StickleApp\Core\Components;
 
 use Illuminate\View\Component;
 use Illuminate\View\View;
@@ -12,6 +12,6 @@ class BlankLayout extends Component
      */
     public function render(): View
     {
-        return view('cascade::demo/layouts/blank');
+        return view('STICKLE::demo/layouts/blank');
     }
 }

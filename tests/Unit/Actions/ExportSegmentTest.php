@@ -1,7 +1,7 @@
 <?php
 
-use Dclaysmith\LaravelCascade\Actions\ExportSegment;
-use Dclaysmith\LaravelCascade\Contracts\Segment;
+use StickleApp\Core\Actions\ExportSegment;
+use StickleApp\\Core\Core\Contracts\Segment;
 use Mockery;
 use Workbench\App\Models\User;
 

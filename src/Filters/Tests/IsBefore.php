@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Filters\Tests;
+namespace Stickle\Core\Filters\Tests;
 
 use DateTimeInterface;
-use Dclaysmith\LaravelCascade\Contracts\FilterTarget;
-use Dclaysmith\LaravelCascade\Contracts\FilterTest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Number;
+use Stickle\Core\Contracts\FilterTarget;
+use Stickle\Core\Contracts\FilterTest;
 
 class IsBefore extends FilterTest
 {

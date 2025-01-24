@@ -4,14 +4,14 @@ outline: deep
 
 # Creating Segments
 
-You create a segment by extending the `Dclaysmith\LaravelCascade\Contracts\Segment` class.
+You create a segment by extending the `StickleApp\Core\Contracts\Segment` class.
 
 ```php
 namespace App\Segments;
 
-use Dclaysmith\LaravelCascade\Attributes\SegmentExportInterval;
-use Dclaysmith\LaravelCascade\Attributes\SegmentName;
-use Dclaysmith\LaravelCascade\Contracts\Segment;
+use StickleApp\\Core\Core\Attributes\SegmentExportInterval;
+use StickleApp\\Core\Core\Attributes\SegmentName;
+use StickleApp\\Core\Core\Contracts\Segment;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\User;
 

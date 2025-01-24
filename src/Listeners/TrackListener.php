@@ -1,10 +1,10 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Listeners;
+namespace StickleApp\Core\Listeners;
 
 use DateTime;
-use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
-use Dclaysmith\LaravelCascade\Events\Track;
+use StickleApp\\Core\Core\Contracts\AnalyticsRepository;
+use StickleApp\\Core\Core\Events\Track;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
@@ -37,7 +37,7 @@ class TrackListener implements ShouldQueue
          * i_did_a_thing => IDidAThingListener
          * IDidAThing => IDidAThingListener
          */
-        $class = config('cascade.paths.listeners').'\\'.class_basename(data_get($event, 'data.event')).'Listener';
+        $class = config('stickle.paths.listeners').'\\'.class_basename(data_get($event, 'data.event')).'Listener';
 
         Log::debug('TrackEvent Class', [$class]);
 

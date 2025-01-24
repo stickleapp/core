@@ -4,7 +4,7 @@
  <x-blank-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Cascade Demo') }}
+            {{ __('Stickle Demo') }}
         </h2>
     </x-slot>    
 
@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="col-span-1 h-[66vh] sm:rounded-lg border-2">
-                    <iframe src="{{ route('cascade::demo/admin') }}" class="w-full h-full"></iframe>
+                    <iframe src="{{ route('STICKLE::demo/admin') }}" class="w-full h-full"></iframe>
                 </div>
 
                 <div class="col-span-1 h-[66vh] sm:rounded-lg border-2">

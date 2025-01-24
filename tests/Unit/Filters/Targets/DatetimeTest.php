@@ -1,11 +1,11 @@
 <?php
 
-use Dclaysmith\LaravelCascade\Filters\Base as Filter;
-use Dclaysmith\LaravelCascade\Filters\Targets\Datetime;
+use StickleApp\Core\Filters\Base as Filter;
+use StickleApp\\Core\Core\Filters\Targets\Datetime;
 
 test('boolean() sets target as Datetime', function () {
 
-    $prefix = config('cascade.database.tablePrefix');
+    $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::datetime('a_column');
 
@@ -15,7 +15,7 @@ test('boolean() sets target as Datetime', function () {
 
 test('Casts target property as datetime', function () {
 
-    $prefix = config('cascade.database.tablePrefix');
+    $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::datetime('a_column');
 

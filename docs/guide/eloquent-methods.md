@@ -6,16 +6,16 @@ outline: deep
 
 Stickle adds additional filter options to Eloquent through two Eloquent Scopes `stickle()` and `orStickle()` which behave in the same way as `where()` and `orWhere()` respectively.
 
-These scopes accept a single `Dclaysmith\LaravelCascade\Filters\Base` that defines a filter which will be applied to your query builder.
+These scopes accept a single `StickleApp\Core\Filters\Base` that defines a filter which will be applied to your query builder.
 
 ## Fluent Interface
 
-`Dclaysmith\LaravelCascade\Filters\Base` can be configured by calling fluent methods which return the instance itself, allowing you to chain methods together to define your filter.
+`StickleApp\\Core\Core\Filters\Base` can be configured by calling fluent methods which return the instance itself, allowing you to chain methods together to define your filter.
 
 ```php
 use App\Models\User;
-use Dclaysmith\LaravelCascade\Filters\Base as Filter;
-use Dclaysmith\LaravelCascade\Filters\Targets\EventCount;
+use StickleApp\\Core\Core\Filters\Base as Filter;
+use StickleApp\\Core\Core\Filters\Targets\EventCount;
 
 $users = User::stickle(
         new EventCount()

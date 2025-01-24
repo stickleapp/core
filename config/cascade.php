@@ -106,8 +106,8 @@ return [
     */
     'tracking' => [
         'server' => [
-            'loadMiddleware' => env('CASCADE_TRACK_SERVER_LOAD_MIDDLEWARE', true),
-            'trackAuthenticationEvents' => env('CASCADE_TRACK_SERVER_AUTHENTICATION_EVENTS', true),
+            'loadMiddleware' => env('STICKLE_TRACK_SERVER_LOAD_MIDDLEWARE', true),
+            'trackAuthenticationEvents' => env('STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS', true),
             'authenticationEventsTracked' => [
                 'Authenticated',
                 'CurrentDeviceLogout',
@@ -119,12 +119,12 @@ return [
                 'Validated',
                 'Verified',
             ],
-            'trackRequests' => env('CASCADE_TRACK_SERVER_REQUESTS', true),
+            'trackRequests' => env('STICKLE_TRACK_SERVER_REQUESTS', true),
         ],
         'client' => [
-            'loadMiddleware' => env('CASCADE_TRACK_CLIENT_LOAD_MIDDLEWARE', true),
-            'trackPageViews' => env('CASCADE_TRACK_CLIENT_PAGE_VIEWS', true),
-            'controllerPrefix' => env('CASCADE_TRACK_CONTROLLER_PREFIX', ''),
+            'loadMiddleware' => env('STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE', true),
+            'trackPageViews' => env('STICKLE_TRACK_CLIENT_PAGE_VIEWS', true),
+            'controllerPrefix' => env('STICKLE_TRACK_CONTROLLER_PREFIX', ''),
         ],
     ],
 ];

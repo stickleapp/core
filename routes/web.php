@@ -1,30 +1,30 @@
 <?php
 
 use App\Models\User;
-use Dclaysmith\LaravelCascade\Http\Controllers\IngestController;
 use Illuminate\Support\Facades\Route;
+use StickleApp\Core\Http\Controllers\IngestController;
 
 /**
  * Routes for the demo
  */
 Route::middleware(['web', 'auth'])->group(function () {
 
-    Route::get('/cascade', function () {
-        return view('cascade::demo/index');
-    })->name('cascade::demo/index');
+    Route::get('/STICKLE', function () {
+        return view('STICKLE::demo/index');
+    })->name('STICKLE::demo/index');
 
-    Route::view('/cascade-app', 'cascade::demo/app')
-        ->name('cascade::demo/app');
+    Route::view('/STICKLE-app', 'STICKLE::demo/app')
+        ->name('STICKLE::demo/app');
 
-    Route::view('/cascade-integration', 'cascade::demo/integration')
-        ->name('cascade::demo/integration');
+    Route::view('/STICKLE-integration', 'STICKLE::demo/integration')
+        ->name('STICKLE::demo/integration');
 
-    Route::get('/cascade-admin', function () {
+    Route::get('/STICKLE-admin', function () {
         $users = []; // User::all();
 
-        return view('cascade::demo/admin', ['users' => $users]);
-    })->name('cascade::demo/admin');
+        return view('STICKLE::demo/admin', ['users' => $users]);
+    })->name('STICKLE::demo/admin');
 
-    Route::post('/cascade-track', [IngestController::class, 'store'])
-        ->name('cascade/track');
+    Route::post('/STICKLE-track', [IngestController::class, 'store'])
+        ->name('STICKLE/track');
 });

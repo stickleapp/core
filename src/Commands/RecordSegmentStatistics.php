@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Commands;
+namespace StickleApp\Core\Commands;
 
-use Dclaysmith\LaravelCascade\Jobs\RecordSegmentStatistic as RecordSegmentStatisticJob;
-use Dclaysmith\LaravelCascade\Models\Segment;
+use StickleApp\\Core\Core\Jobs\RecordSegmentStatistic as RecordSegmentStatisticJob;
+use StickleApp\\Core\Core\Models\Segment;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\Config;
@@ -17,7 +17,7 @@ final class RecordSegmentStatistics extends Command implements Isolatable
     /**
      * @var string
      */
-    protected $signature = 'cascade:record-segment-statitics {segmentId? : A specific segment to export}
+    protected $signature = 'STICKLE:record-segment-statitics {segmentId? : A specific segment to export}
                                                             {limit? : The maximum number of segments to export.}';
 
     /**
@@ -29,9 +29,9 @@ final class RecordSegmentStatistics extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
-        #[Config('cascade.database.tablePrefix')] public ?string $prefix = null,
+        #[Config('STICKLE.database.tablePrefix')] public ?string $prefix = null,
     ) {
-        $this->prefix = config('cascade.database.tablePrefix');
+        $this->prefix = config('stickle.database.tablePrefix');
         parent::__construct();
     }
 

@@ -2,27 +2,27 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade;
+namespace StickleApp\Core;
 
-use Dclaysmith\LaravelCascade\Commands\Configure;
-use Dclaysmith\LaravelCascade\Commands\CreatePartitions;
-use Dclaysmith\LaravelCascade\Commands\DropPartitions;
-use Dclaysmith\LaravelCascade\Commands\ExportSegments;
-use Dclaysmith\LaravelCascade\Commands\ProcessSegmentEvents;
-use Dclaysmith\LaravelCascade\Commands\RecordObjectAttributes;
-use Dclaysmith\LaravelCascade\Commands\RecordSegmentStatistics;
-use Dclaysmith\LaravelCascade\Components\BlankLayout;
-use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
-use Dclaysmith\LaravelCascade\Middleware\InjectJavascriptTrackingCode;
-use Dclaysmith\LaravelCascade\Middleware\RequestLogger;
-use Dclaysmith\LaravelCascade\Models\ObjectAttribute;
-use Dclaysmith\LaravelCascade\Observers\ObjectAttributeObserver;
-use Dclaysmith\LaravelCascade\Repositories\PostgresAnalyticsRepository;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use StickleApp\Core\Commands\Configure;
+use StickleApp\Core\Commands\CreatePartitions;
+use StickleApp\Core\Commands\DropPartitions;
+use StickleApp\Core\Commands\ExportSegments;
+use StickleApp\Core\Commands\ProcessSegmentEvents;
+use StickleApp\Core\Commands\RecordObjectAttributes;
+use StickleApp\Core\Commands\RecordSegmentStatistics;
+use StickleApp\Core\Components\BlankLayout;
+use StickleApp\Core\Contracts\AnalyticsRepository;
+use StickleApp\Core\Middleware\InjectJavascriptTrackingCode;
+use StickleApp\Core\Middleware\RequestLogger;
+use StickleApp\Core\Models\ObjectAttribute;
+use StickleApp\Core\Observers\ObjectAttributeObserver;
+use StickleApp\Core\Repositories\PostgresAnalyticsRepository;
 
-final class LaravelCascadeServiceProvider extends ServiceProvider
+final class CoreServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
@@ -44,11 +44,11 @@ final class LaravelCascadeServiceProvider extends ServiceProvider
 
         ObjectAttribute::observe(ObjectAttributeObserver::class);
 
-        if (config('cascade.tracking.server.loadMiddleware') === true) {
+        if (config('stickle.tracking.server.loadMiddleware') === true) {
             $kernel->pushMiddleware(RequestLogger::class);
         }
 
-        if (config('cascade.tracking.client.loadMiddleware') === true) {
+        if (config('stickle.tracking.client.loadMiddleware') === true) {
             $kernel->pushMiddleware(InjectJavascriptTrackingCode::class);
         }
 
@@ -79,15 +79,15 @@ final class LaravelCascadeServiceProvider extends ServiceProvider
         /**
          * Publish resources used by this package
          */
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'cascade');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'STICKLE');
 
         /**
          * Publish Config file
          */
         $this->publishes(
             [
-                __DIR__.'/../config/cascade.php' => config_path(
-                    'cascade.php'
+                __DIR__.'/../config/stickle.php' => config_path(
+                    'STICKLE.php'
                 ),
             ],
         );

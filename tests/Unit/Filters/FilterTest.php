@@ -3,8 +3,8 @@
 namespace FilterTest;
 
 use Carbon\Carbon;
-use Dclaysmith\LaravelCascade\Filters\Base as Filter;
-use Dclaysmith\LaravelCascade\Traits\Trackable;
+use StickleApp\Core\Filters\Base as Filter;
+use StickleApp\\Core\Core\Traits\Trackable;
 
 class User extends \Illuminate\Database\Eloquent\Model
 {
@@ -16,51 +16,51 @@ class User extends \Illuminate\Database\Eloquent\Model
 test('example', function () {
 
     // $query = User::query()
-    //     ->cascade(
+    //     ->stickle(
     //         Filter::eventCount('clicked:something')
     //             ->greaterThan(10)
     //             ->startDate(now()->subYears(1))
     //             ->endDate(now())
-    //     )->orCascade(
+    //     )->orSTICKLE(
     //         Filter::eventCount('clicked:something')
     //             ->greaterThan(10)
     //             ->startDate(now()->subYears(1))
     //             ->endDate(now())
-    //     )->orCascade(
+    //     )->orSTICKLE(
     //         Filter::eventCount('clicked:something')
     //             ->greaterThan(10)
     //             ->between(now()->subYears(1), now())
-    //     )->orCascade(
+    //     )->orSTICKLE(
     //         Filter::datetime('a_column')
     //             ->occurredBefore(Carbon::now()->subYears(1))
-    //     )->orCascade(
+    //     )->orSTICKLE(
     //         Filter::datetime('a_column')
     //             ->isNull('a_column')
     //     );
 
     $query = User::query()
-        ->cascade(
+        ->stickle(
             Filter::eventCount('clicked:something')
                 ->greaterThan(10)
                 ->startDate(now()->subYears(1))
                 ->endDate(now())
         )
-        ->orCascade(
+        ->orSTICKLE(
             Filter::eventCount('clicked:something')
                 ->greaterThan(10)
                 ->startDate(now()->subYears(1))
                 ->endDate(now())
-        )->orCascade(
+        )->orSTICKLE(
             Filter::eventCount('clicked:something')
                 ->greaterThan(10)
                 ->startDate(now()->subYears(1))
                 ->endDate(now())
-        )->orCascade(
+        )->orSTICKLE(
             Filter::eventCount('clicked:something')
                 ->greaterThan(10)
                 ->startDate(now()->subYears(1))
                 ->endDate(now())
-        )->orCascade(
+        )->orSTICKLE(
             Filter::eventCount('clicked:something')
                 ->greaterThan(10)
                 ->startDate(now()->subYears(1))

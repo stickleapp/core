@@ -2,20 +2,20 @@
 
 namespace TrackableTest;
 
-use Dclaysmith\LaravelCascade\Filters\Base as Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Mockery;
+use StickleApp\Core\Filters\Base as Filter;
 use Workbench\App\Models\User;
 
 it('will expose eloquent methods', function () {
     $user = new User;
-    expect(method_exists($user, 'scopeCascade'))->toBeTrue();
+    expect(method_exists($user, 'scopeSTICKLE'))->toBeTrue();
 });
 
-it('can call cascade()', function () {
+it('can call STICKLE()', function () {
     $filter = Mockery::mock(Filter::class);
     $filter->shouldReceive('apply');
-    expect(User::query()->cascade($filter))->toBeInstanceOf(Builder::class);
+    expect(User::query()->STICKLE($filter))->toBeInstanceOf(Builder::class);
 });
 
 it('has observed attributes', function () {

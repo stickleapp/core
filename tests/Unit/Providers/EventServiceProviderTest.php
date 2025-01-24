@@ -1,7 +1,7 @@
 <?php
 
-use Dclaysmith\LaravelCascade\Events\Identify;
-use Dclaysmith\LaravelCascade\Providers\EventServiceProvider;
+use StickleApp\Core\Events\Identify;
+use StickleApp\\Core\Core\Providers\EventServiceProvider;
 
 it('can be instantiated', function () {
     $obj = new EventServiceProvider(app());

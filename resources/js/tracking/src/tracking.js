@@ -1,5 +1,5 @@
 (function () {
-    const trackingUrl = "/cascade-track";
+    const trackingUrl = "/STICKLE-track";
 
     function sendTrackingData(data) {
         navigator.sendBeacon(

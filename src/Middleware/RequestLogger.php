@@ -1,10 +1,10 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Middleware;
+namespace StickleApp\Core\Middleware;
 
 use Carbon\Carbon;
 use Closure;
-use Dclaysmith\LaravelCascade\Events\Page;
+use StickleApp\\Core\Core\Events\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 

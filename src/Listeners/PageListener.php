@@ -1,10 +1,10 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Listeners;
+namespace StickleApp\Core\Listeners;
 
 use DateTime;
-use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
-use Dclaysmith\LaravelCascade\Events\Page;
+use StickleApp\\Core\Core\Contracts\AnalyticsRepository;
+use StickleApp\\Core\Core\Events\Page;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 

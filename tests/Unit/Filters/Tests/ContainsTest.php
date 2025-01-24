@@ -1,11 +1,11 @@
 <?php
 
-use Dclaysmith\LaravelCascade\Filters\Base as Filter;
+use StickleApp\Core\Filters\Base as Filter;
 use Workbench\App\Models\User;
 
 test('Creates correct sql for text', function () {
 
-    $prefix = config('cascade.database.tablePrefix');
+    $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::text('a_column')
         ->contains('donkey');

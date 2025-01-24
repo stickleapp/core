@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Jobs;
+namespace StickleApp\Core\Jobs;
 
-use Dclaysmith\LaravelCascade\Actions\RecordSegmentStatistic as RecordSegmentStatisticAction;
-use Dclaysmith\LaravelCascade\Models\Segment;
+use StickleApp\\Core\Core\Actions\RecordSegmentStatistic as RecordSegmentStatisticAction;
+use StickleApp\\Core\Core\Models\Segment;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;

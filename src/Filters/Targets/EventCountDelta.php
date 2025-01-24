@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Filters\Targets;
+namespace StickleApp\Core\Filters\Targets;
 
 use DateTimeInterface;
-use Dclaysmith\LaravelCascade\Contracts\FilterTarget;
-use Dclaysmith\LaravelCascade\Filters\Targets\Traits\HasDeltaFilters;
+use StickleApp\\Core\Core\Contracts\FilterTarget;
+use StickleApp\\Core\Core\Filters\Targets\Traits\HasDeltaFilters;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -22,7 +22,7 @@ class EventCountDelta extends FilterTarget
      * @param  array<DateTimeInterface>  $previousPeriod
      */
     public function __construct(
-        #[Config('cascade.database.tablePrefix')] protected ?string $prefix,
+        #[Config('STICKLE.database.tablePrefix')] protected ?string $prefix,
         public string $event,
         public ?array $currentPeriod,
         public ?array $previousPeriod

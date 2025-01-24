@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Commands;
+namespace StickleApp\Core\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -15,9 +15,9 @@ final class DropPartitions extends Command implements Isolatable
     /**
      * @var string
      *
-     * vendor/bin/testbench cascade:drop-partition lc_events_rollup_1day public week '2024-10-01'
+     * vendor/bin/testbench STICKLE:drop-partition lc_events_rollup_1day public week '2024-10-01'
      */
-    protected $signature = 'cascade:drop-partitions
+    protected $signature = 'STICKLE:drop-partitions
                             {existing_table : The table to be partitioned}
                             {schema : The Postgres Schema of partition}
                             {interval : The interval of the partition}
@@ -32,7 +32,7 @@ final class DropPartitions extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
-        #[Config('cascade.database.tablePrefix')] protected ?string $prefix = null,
+        #[Config('STICKLE.database.tablePrefix')] protected ?string $prefix = null,
     ) {
         parent::__construct();
     }

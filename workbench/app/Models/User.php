@@ -3,8 +3,8 @@
 namespace Workbench\App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Dclaysmith\LaravelCascade\Attributes\ModelAttributeDescription;
-use Dclaysmith\LaravelCascade\Traits\Trackable;
+use StickleApp\Core\Attributes\ModelAttributeDescription;
+use StickleApp\\Core\Core\Traits\Trackable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;

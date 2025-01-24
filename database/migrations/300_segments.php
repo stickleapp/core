@@ -6,9 +6,9 @@ use Illuminate\Database\Migrations\Migration;
 return new class extends Migration
 {
     public function __construct(
-        #[Config('cascade.database.tablePrefix')] protected ?string $prefix = null,
+        #[Config('STICKLE.database.tablePrefix')] protected ?string $prefix = null,
     ) {
-        $this->prefix = config('cascade.database.tablePrefix');
+        $this->prefix = config('stickle.database.tablePrefix');
     }
 
     /**

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Repositories;
+namespace StickleApp\Core\Repositories;
 
 use DateTimeInterface;
-use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
+use StickleApp\\Core\Core\Contracts\AnalyticsRepository;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Support\Facades\DB;
 
@@ -18,7 +18,7 @@ final class PostgresAnalyticsRepository implements AnalyticsRepository
      * Creates a new analytics repository instance.
      */
     public function __construct(
-        #[Config('cascade.database.tablePrefix')] protected ?string $prefix = null,
+        #[Config('STICKLE.database.tablePrefix')] protected ?string $prefix = null,
     ) {}
 
     /**

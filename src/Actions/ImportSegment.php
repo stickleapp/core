@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Actions;
+namespace StickleApp\Core\Actions;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +16,7 @@ class ImportSegment
     ) {
 
         // Retrieve from storage
-        $storage = Storage::disk(config('cascade.filesystem.disk'));
+        $storage = Storage::disk(config('stickle.filesystem.disk'));
 
         if ($storage->missing($exportFilename)) {
             throw new \Exception('File missing');

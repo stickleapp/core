@@ -1,13 +1,13 @@
 <?php
 
-use Dclaysmith\LaravelCascade\Filters\Base as Filter;
+use StickleApp\Core\Filters\Base as Filter;
 use Workbench\App\Models\User;
 
 use function Pest\Faker\fake;
 
 test('Creates correct sql for date', function () {
 
-    $prefix = config('cascade.database.tablePrefix');
+    $prefix = config('stickle.database.tablePrefix');
 
     $date = fake()->date();
 
@@ -29,7 +29,7 @@ test('Creates correct sql for date', function () {
 
 test('Creates correct sql for datetime', function () {
 
-    $prefix = config('cascade.database.tablePrefix');
+    $prefix = config('stickle.database.tablePrefix');
 
     $datetime = fake()->datetime();
 

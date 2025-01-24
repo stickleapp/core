@@ -1,8 +1,8 @@
 <?php
 
-use Dclaysmith\LaravelCascade\Filters\Base as Filter;
-use Dclaysmith\LaravelCascade\Filters\Targets\EventCount;
-use Dclaysmith\LaravelCascade\Filters\Targets\EventCountDelta;
+use StickleApp\Core\Filters\Base as Filter;
+use StickleApp\\Core\Core\Filters\Targets\EventCount;
+use StickleApp\\Core\Core\Filters\Targets\EventCountDelta;
 use Workbench\App\Models\User;
 
 test('`decreased` chanages target class', function () {
@@ -36,7 +36,7 @@ test('`increased` chanages target class', function () {
 
 test('Delta creates correct sql', function () {
 
-    $prefix = config('cascade.database.tablePrefix');
+    $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::eventCount('clicked:something')->increased(
         [now()->subYears(2), now()->subYears(1)],

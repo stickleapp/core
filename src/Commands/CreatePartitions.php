@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Commands;
+namespace StickleApp\Core\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -15,16 +15,16 @@ final class CreatePartitions extends Command implements Isolatable
     /**
      * @var string
      *
-     * vendor/bin/testbench cascade:create-partition lc_events public week '2024-08-01' 2
-     * vendor/bin/testbench cascade:create-partition lc_events_rollup_1min public week '2024-08-01' 2
-     * vendor/bin/testbench cascade:create-partition lc_events_rollup_5min public week '2024-08-01' 2
-     * vendor/bin/testbench cascade:create-partition lc_events_rollup_1hr public week '2024-08-01' 2
-     * vendor/bin/testbench cascade:create-partition lc_events_rollup_1day public week '2024-08-01' 2
-     * vendor/bin/testbench cascade:create-partition lc_segment_statistics public week '2024-08-01' 2
+     * vendor/bin/testbench STICKLE:create-partition lc_events public week '2024-08-01' 2
+     * vendor/bin/testbench STICKLE:create-partition lc_events_rollup_1min public week '2024-08-01' 2
+     * vendor/bin/testbench STICKLE:create-partition lc_events_rollup_5min public week '2024-08-01' 2
+     * vendor/bin/testbench STICKLE:create-partition lc_events_rollup_1hr public week '2024-08-01' 2
+     * vendor/bin/testbench STICKLE:create-partition lc_events_rollup_1day public week '2024-08-01' 2
+     * vendor/bin/testbench STICKLE:create-partition lc_segment_statistics public week '2024-08-01' 2
      *
      * events_rollup_1min
      */
-    protected $signature = 'cascade:create-partitions
+    protected $signature = 'STICKLE:create-partitions
                             {existing_table : The table to be partitioned}
                             {schema : The Postgres Schema of partition}
                             {interval : The interval of the partition}
@@ -40,7 +40,7 @@ final class CreatePartitions extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
-        #[Config('cascade.database.tablePrefix')] protected ?string $prefix = null,
+        #[Config('STICKLE.database.tablePrefix')] protected ?string $prefix = null,
     ) {
         parent::__construct();
     }

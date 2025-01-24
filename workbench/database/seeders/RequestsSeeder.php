@@ -15,7 +15,7 @@ class RequestsSeeder extends Seeder
     public function run(): void
     {
 
-        $prefix = config('cascade.database.tablePrefix');
+        $prefix = config('stickle.database.tablePrefix');
 
         Artisan::call("cascade:create-partitions {$prefix}requests public week '2024-08-01'");
         Artisan::call("cascade:create-partitions {$prefix}requests_rollup_1min public week '2024-08-01'");

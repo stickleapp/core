@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Commands;
+namespace StickleApp\Core\Commands;
 
-use Dclaysmith\LaravelCascade\Traits\Trackable;
+use StickleApp\\Core\Core\Traits\Trackable;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\Config;
@@ -16,7 +16,7 @@ final class RecordObjectAttributes extends Command implements Isolatable
     /**
      * @var string
      */
-    protected $signature = 'cascade:record-object-attributes {directory : The full path where the Model classes are stored.}
+    protected $signature = 'STICKLE:record-object-attributes {directory : The full path where the Model classes are stored.}
                                                     {namespace : The namespace of the Model classes.}
                                                     {limit : The maximum number of models to record.}';
 
@@ -29,9 +29,9 @@ final class RecordObjectAttributes extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
-        #[Config('cascade.database.tablePrefix')] public ?string $prefix = null,
+        #[Config('STICKLE.database.tablePrefix')] public ?string $prefix = null,
     ) {
-        $this->prefix = config('cascade.database.tablePrefix');
+        $this->prefix = config('stickle.database.tablePrefix');
         parent::__construct();
     }
 

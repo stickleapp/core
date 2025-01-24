@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Filters\Tests;
+namespace StickleApp\Core\Filters\Tests;
 
-use Dclaysmith\LaravelCascade\Contracts\FilterTarget;
-use Dclaysmith\LaravelCascade\Contracts\FilterTest;
+use StickleApp\\Core\Core\Contracts\FilterTarget;
+use StickleApp\\Core\Core\Contracts\FilterTest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 

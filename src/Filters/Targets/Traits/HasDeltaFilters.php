@@ -1,9 +1,9 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Filters\Targets\Traits;
+namespace StickleApp\Core\Filters\Targets\Traits;
 
 use DateTimeInterface;
-use Dclaysmith\LaravelCascade\Contracts\FilterTarget;
+use StickleApp\\Core\Core\Contracts\FilterTarget;
 
 trait HasDeltaFilters
 {
@@ -18,7 +18,7 @@ trait HasDeltaFilters
 
             /** @var FilterTarget $filterTarget */
             $filterTarget = new $newClass(
-                config('cascade.database.tablePrefix'),
+                config('stickle.database.tablePrefix'),
                 $this->event,
                 $currentPeriod,
                 $previousPeriod
@@ -41,7 +41,7 @@ trait HasDeltaFilters
 
             /** @var FilterTarget $filterTarget */
             $filterTarget = new $newClass(
-                config('cascade.database.tablePrefix'),
+                config('stickle.database.tablePrefix'),
                 $this->event,
                 $currentPeriod,
                 $previousPeriod

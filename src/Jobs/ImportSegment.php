@@ -1,8 +1,8 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Jobs;
+namespace StickleApp\Core\Jobs;
 
-use Dclaysmith\LaravelCascade\Actions\ImportSegment as ImportSegmentAction;
+use StickleApp\\Core\Core\Actions\ImportSegment as ImportSegmentAction;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;

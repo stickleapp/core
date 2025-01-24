@@ -1,9 +1,9 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Listeners;
+namespace StickleApp\Core\Listeners;
 
 use DateTime;
-use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
+use StickleApp\\Core\Core\Contracts\AnalyticsRepository;
 use Illuminate\Auth\Events\Authenticated;
 use Illuminate\Auth\Events\CurrentDeviceLogout;
 use Illuminate\Auth\Events\Login;
@@ -50,47 +50,47 @@ class AuthenticatableEventListener implements ShouldQueue
 
         $events->listen(
             Authenticated::class,
-            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             CurrentDeviceLogout::class,
-            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             Login::class,
-            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             Logout::class,
-            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             OtherDeviceLogout::class,
-            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             PasswordReset::class,
-            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             Registered::class,
-            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             Validated::class,
-            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             Verified::class,
-            '\Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
     }
 }

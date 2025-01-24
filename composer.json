@@ -1,12 +1,12 @@
 {
-    "name": "dclaysmith/laravel-cascade",
-    "description": "This is my package laravel-cascade",
+    "name": "stickleapp/core",
+    "description": "This is my package stickle core",
     "keywords": [
         "D Clay Smith",
         "laravel",
-        "laravel-cascade"
+        "stickleapp"
     ],
-    "homepage": "https://github.com/dclaysmith/laravel-cascade",
+    "homepage": "https://github.com/stickleapp/core",
     "license": "MIT",
     "authors": [
         {
@@ -36,15 +36,15 @@
     },
     "autoload": {
         "psr-4": {
-            "Dclaysmith\\LaravelCascade\\": "src/",
-            "Dclaysmith\\LaravelCascade\\Database\\Factories\\": "database/factories/",
-            "Dclaysmith\\LaravelCascade\\Database\\Seeders\\": "database/seeders/"
+            "StickleApp\\Core\\": "src/",
+            "StickleApp\\Core\\Database\\Factories\\": "database/factories/",
+            "StickleApp\\Core\\Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Dclaysmith\\LaravelCascade\\Tests\\": "tests/",
-            "Dclaysmith\\LaravelCascade\\Database\\Factories\\": "database/factories/",
+            "StickleApp\\Core\\Tests\\": "tests/",
+            "StickleApp\\Core\\Database\\Factories\\": "database/factories/",
             "Workbench\\App\\": "workbench/app/",
             "Workbench\\Database\\Factories\\": "workbench/database/factories/",
             "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
@@ -88,10 +88,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Dclaysmith\\LaravelCascade\\LaravelCascadeServiceProvider"
+                "StickleApp\\Core\\CoreServiceProvider"
             ],
             "aliases": {
-                "LaravelCascade": "Dclaysmith\\LaravelCascade\\Facades\\LaravelCascade"
+                "Core": "StickleApp\\Core\\Facades\\Core"
             }
         }
     },

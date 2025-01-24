@@ -1,11 +1,11 @@
 <?php
 
-use Dclaysmith\LaravelCascade\Filters\Base as Filter;
-use Dclaysmith\LaravelCascade\Filters\Targets\Text;
+use StickleApp\Core\Filters\Base as Filter;
+use StickleApp\\Core\Core\Filters\Targets\Text;
 
 test('text() sets target as text', function () {
 
-    $prefix = config('cascade.database.tablePrefix');
+    $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::text('a_column');
 
@@ -15,7 +15,7 @@ test('text() sets target as text', function () {
 
 test('Casts target property as boolean', function () {
 
-    $prefix = config('cascade.database.tablePrefix');
+    $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::text('a_column');
 

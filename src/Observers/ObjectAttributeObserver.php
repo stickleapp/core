@@ -1,10 +1,10 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Observers;
+namespace StickleApp\Core\Observers;
 
-use Dclaysmith\LaravelCascade\Events\ObjectAttributeChanged;
-use Dclaysmith\LaravelCascade\Models\ObjectAttribute;
-use Dclaysmith\LaravelCascade\Models\ObjectAttributesAudit;
+use StickleApp\\Core\Core\Events\ObjectAttributeChanged;
+use StickleApp\\Core\Core\Models\ObjectAttribute;
+use StickleApp\\Core\Core\Models\ObjectAttributesAudit;
 use Illuminate\Support\Arr;
 
 class ObjectAttributeObserver

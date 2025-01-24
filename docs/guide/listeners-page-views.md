@@ -4,14 +4,14 @@ outline: deep
 
 # Page View Listeners
 
-You can create a listener class extending `Illuminate\Contracts\Queue\ShouldQueue` containing a `handle` method that takes a `Dclaysmith\LaravelCascade\Events\Page` object as a parameter. Laravel will automatically execute the listener when a page is dispatched.
+You can create a listener class extending `Illuminate\Contracts\Queue\ShouldQueue` containing a `handle` method that takes a `StickleApp\Core\Events\Page` object as a parameter. Laravel will automatically execute the listener when a page is dispatched.
 
 ## Writing Listeners
 
 ```php
 namespace App\Listeners;
 
-use Dclaysmith\LaravelCascade\Events\Page;
+use StickleApp\\Core\Core\Events\Page;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 

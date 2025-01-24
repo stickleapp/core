@@ -1,6 +1,6 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Models;
+namespace StickleApp\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -15,7 +15,7 @@ class ObjectAttributesAudit extends Model
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't popoulate in Factory
          */
-        $this->table = config('cascade.database.tablePrefix').'object_attributes_audit';
+        $this->table = config('stickle.database.tablePrefix').'object_attributes_audit';
     }
 
     /**

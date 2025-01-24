@@ -1,7 +1,7 @@
 <?php
 
-use Dclaysmith\LaravelCascade\Contracts\AnalyticsRepository;
-use Dclaysmith\LaravelCascade\Listeners\AuthenticatableEventListener;
+use StickleApp\Core\Contracts\AnalyticsRepository;
+use StickleApp\\Core\Core\Listeners\AuthenticatableEventListener;
 use Illuminate\Auth\Events\PasswordReset;
 
 it('can be instantiated', function () {

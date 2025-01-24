@@ -1,6 +1,6 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Models;
+namespace StickleApp\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,7 +14,7 @@ class Segment extends Model
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't popoulate in Factory
          */
-        $this->table = config('cascade.database.tablePrefix').'segments';
+        $this->table = config('stickle.database.tablePrefix').'segments';
     }
 
     /**

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Traits;
+namespace StickleApp\Core\Traits;
 
-use Dclaysmith\LaravelCascade\Filters\Base as Filter;
-use Dclaysmith\LaravelCascade\Models\ObjectAttribute;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
+use StickleApp\Core\Filters\Base as Filter;
+use StickleApp\Core\Models\ObjectAttribute;
 
 trait Trackable
 {
@@ -20,12 +20,12 @@ trait Trackable
     }
 
     /**
-     * Enables a ->cascade() method on the model
+     * Enables a ->stickle() method on the model
      */
-    public static function scopeCascade(Builder $builder, Filter $filter)
+    public static function scopeSTICKLE(Builder $builder, Filter $filter)
     {
 
-        $prefix = config('cascade.database.tablePrefix');
+        $prefix = config('stickle.database.tablePrefix');
 
         /**
          * We'll need this join for the filters but do not want to add it twice
@@ -41,11 +41,11 @@ trait Trackable
     }
 
     /**
-     * Enables a ->orCascade() method on the model
+     * Enables a ->orSTICKLE() method on the model
      */
-    public static function scopeOrCascade(Builder $builder, Filter $filter)
+    public static function scopeOrSTICKLE(Builder $builder, Filter $filter)
     {
-        $prefix = config('cascade.database.tablePrefix');
+        $prefix = config('stickle.database.tablePrefix');
 
         /**
          * We'll need this join for the filters but do not want to add it twice

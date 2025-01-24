@@ -1,11 +1,11 @@
 <?php
 
-use Dclaysmith\LaravelCascade\Filters\Base as Filter;
-use Dclaysmith\LaravelCascade\Filters\Targets\Boolean;
+use StickleApp\Core\Filters\Base as Filter;
+use StickleApp\\Core\Core\Filters\Targets\Boolean;
 
 test('boolean() sets target as Boolean', function () {
 
-    $prefix = config('cascade.database.tablePrefix');
+    $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::boolean('a_column');
 
@@ -15,7 +15,7 @@ test('boolean() sets target as Boolean', function () {
 
 test('Casts target property as boolean', function () {
 
-    $prefix = config('cascade.database.tablePrefix');
+    $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::boolean('a_column');
 

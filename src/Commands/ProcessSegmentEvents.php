@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Commands;
+namespace StickleApp\Core\Commands;
 
-use Dclaysmith\LaravelCascade\Events\ObjectEnteredSegment;
-use Dclaysmith\LaravelCascade\Events\ObjectExitedSegment;
-use Dclaysmith\LaravelCascade\Models\ObjectSegmentAudit;
+use StickleApp\\Core\Core\Events\ObjectEnteredSegment;
+use StickleApp\\Core\Core\Events\ObjectExitedSegment;
+use StickleApp\\Core\Core\Models\ObjectSegmentAudit;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +16,7 @@ final class ProcessSegmentEvents extends Command implements Isolatable
     /**
      * @var string
      */
-    protected $signature = 'cascade:process-segment-events';
+    protected $signature = 'STICKLE:process-segment-events';
 
     /**
      * @var string

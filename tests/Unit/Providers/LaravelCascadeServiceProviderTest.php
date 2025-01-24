@@ -1,8 +1,8 @@
 <?php
 
-use Dclaysmith\LaravelCascade\Providers\LaravelCascadeServiceProvider;
+use StickleApp\Core\Providers\CoreServiceProvider;
 
 it('can be instantiated', function () {
-    $obj = new LaravelCascadeServiceProvider(app());
-    expect($obj)->toBeInstanceOf(LaravelCascadeServiceProvider::class);
+    $obj = new CoreServiceProvider(app());
+    expect($obj)->toBeInstanceOf(CoreServiceProvider::class);
 });

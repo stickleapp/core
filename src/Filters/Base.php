@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Filters;
+namespace StickleApp\Core\Filters;
 
-use Dclaysmith\LaravelCascade\Contracts\FilterTarget;
-use Dclaysmith\LaravelCascade\Contracts\FilterTest;
+use StickleApp\\Core\Core\Contracts\FilterTarget;
+use StickleApp\\Core\Core\Contracts\FilterTest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,7 +25,7 @@ class Base
     public static function __callStatic(string $method, array $arguments): Base
     {
 
-        $targetClass = 'Dclaysmith\LaravelCascade\Filters\Targets\\'.ucfirst($method);
+        $targetClass = 'StickleApp\\Core\Core\Filters\Targets\\'.ucfirst($method);
 
         if (! class_exists($targetClass)) {
             throw new \Exception("Target class $targetClass does not exist");
@@ -33,7 +33,7 @@ class Base
 
         /** @var FilterTarget */
         $target = new $targetClass(
-            config('cascade.database.tablePrefix'),
+            config('stickle.database.tablePrefix'),
             ...$arguments
         );
 
@@ -50,7 +50,7 @@ class Base
      */
     public function __call(string $method, array $arguments): self
     {
-        $testClass = 'Dclaysmith\LaravelCascade\Filters\Tests\\'.ucfirst($method);
+        $testClass = 'StickleApp\\Core\Core\Filters\Tests\\'.ucfirst($method);
 
         if (method_exists($this->target, $method)) {
             if ($newTargetType = $this->target->$method(...$arguments)) {

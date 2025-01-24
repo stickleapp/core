@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Actions;
+namespace StickleApp\Core\Actions;
 
-use Dclaysmith\LaravelCascade\Contracts\Segment;
+use StickleApp\\Core\Core\Contracts\Segment;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -34,7 +34,7 @@ class ExportSegment
 
         $filename = $this->formatFilename($segmentId);
 
-        Storage::disk(config('cascade.filesystem.disk'))->putFileAs('', $csvPath, $filename);
+        Storage::disk(config('stickle.filesystem.disk'))->putFileAs('', $csvPath, $filename);
 
         return $filename;
     }

@@ -16,7 +16,7 @@
     backupStaticProperties="false"
 >
     <testsuites>
-        <testsuite name="Dclaysmith Test Suite">
+        <testsuite name="StickleApp\\Core Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

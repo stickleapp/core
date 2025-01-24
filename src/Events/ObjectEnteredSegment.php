@@ -1,8 +1,8 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Events;
+namespace StickleApp\Core\Events;
 
-use Dclaysmith\LaravelCascade\Models\Segment;
+use StickleApp\\Core\Core\Models\Segment;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Database\Eloquent\Model;

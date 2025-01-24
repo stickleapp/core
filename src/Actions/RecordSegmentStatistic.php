@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Actions;
+namespace StickleApp\Core\Actions;
 
-use Dclaysmith\LaravelCascade\Models\SegmentStatistic;
+use StickleApp\\Core\Core\Models\SegmentStatistic;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;

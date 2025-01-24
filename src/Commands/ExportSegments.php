@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Commands;
+namespace StickleApp\Core\Commands;
 
-use Dclaysmith\LaravelCascade\Jobs\ExportSegment;
-use Dclaysmith\LaravelCascade\Models\Segment;
+use StickleApp\\Core\Core\Jobs\ExportSegment;
+use StickleApp\\Core\Core\Models\Segment;
 use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Contracts\Console\Isolatable;
@@ -21,7 +21,7 @@ final class ExportSegments extends Command implements Isolatable
     /**
      * @var string
      */
-    protected $signature = 'cascade:export-segments {directory : The full path where the Segment classes are stored.}
+    protected $signature = 'STICKLE:export-segments {directory : The full path where the Segment classes are stored.}
                                                     {namespace : The namespace of the Segment classes.}
                                                     {limit : The maximum number of segments to export.}';
 
@@ -34,7 +34,7 @@ final class ExportSegments extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
-        #[Config('cascade.database.tablePrefix')] protected ?string $prefix = null,
+        #[Config('STICKLE.database.tablePrefix')] protected ?string $prefix = null,
     ) {
         parent::__construct();
     }
