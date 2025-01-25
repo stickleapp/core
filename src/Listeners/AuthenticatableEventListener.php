@@ -23,9 +23,7 @@ class AuthenticatableEventListener implements ShouldQueue
     /**
      * Create the event listener.
      */
-    public function __construct(public Request $request, public AnalyticsRepository $repository)
-    {
-    }
+    public function __construct(public Request $request, public AnalyticsRepository $repository) {}
 
     public function onEvent(mixed $event): void
     {
