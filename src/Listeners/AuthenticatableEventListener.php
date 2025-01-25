@@ -23,7 +23,9 @@ class AuthenticatableEventListener implements ShouldQueue
     /**
      * Create the event listener.
      */
-    public function __construct(public Request $request, public AnalyticsRepository $repository) {}
+    public function __construct(public Request $request, public AnalyticsRepository $repository)
+    {
+    }
 
     public function onEvent(mixed $event): void
     {
@@ -50,47 +52,47 @@ class AuthenticatableEventListener implements ShouldQueue
 
         $events->listen(
             Authenticated::class,
-            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             CurrentDeviceLogout::class,
-            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             Login::class,
-            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             Logout::class,
-            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             OtherDeviceLogout::class,
-            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             PasswordReset::class,
-            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             Registered::class,
-            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             Validated::class,
-            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
 
         $events->listen(
             Verified::class,
-            '\StickleApp\\Core\Core\Listeners\AuthenticatableEventListener@onEvent'
+            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
         );
     }
 }

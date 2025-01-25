@@ -1,7 +1,7 @@
 (function () {
     const trackingUrl = "/stickle-track";
 
-    function sendTrackingData(data) {
+    function sendData(data) {
         navigator.sendBeacon(
             trackingUrl,
             JSON.stringify({
@@ -11,28 +11,28 @@
         );
     }
 
-    function trackPageView() {
+    function page() {
         const data = {
             type: "page",
             url: window.location.href,
             timestamp: new Date().toISOString(),
         };
-        sendTrackingData(data);
+        sendData(data);
     }
 
-    function trackEvent(eventName, eventData = {}) {
+    function track(eventName, eventData = {}) {
         const data = {
             type: "track",
             name: eventName,
             data: eventData,
             timestamp: new Date().toISOString(),
         };
-        sendTrackingData(data);
+        sendData(data);
     }
 
     window.stickle = {
-        trackPageView,
-        trackEvent,
+        page,
+        track,
     };
 
     // Automatically track page view on load
@@ -44,15 +44,15 @@
 
         history.pushState = function () {
             originalPushState.apply(this, arguments);
-            trackPageView();
+            page();
         };
 
         history.replaceState = function () {
             originalReplaceState.apply(this, arguments);
-            trackPageView();
+            page();
         };
 
-        window.addEventListener("popstate", trackPageView);
+        window.addEventListener("popstate", page);
     }
 
     trackSPA();
