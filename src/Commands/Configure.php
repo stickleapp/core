@@ -1,6 +1,6 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Commands;
+namespace StickleApp\Core\Commands;
 
 use Illuminate\Console\Command;
 

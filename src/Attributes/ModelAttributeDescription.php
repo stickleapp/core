@@ -1,6 +1,6 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Attributes;
+namespace StickleApp\Core\Attributes;
 
 use Attribute;
 

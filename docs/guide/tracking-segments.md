@@ -17,7 +17,7 @@ Each segment is refreshed on an interval (in minutes) specified using the `sched
 This interval can be overriden on a per-segment basis using the `SegmentRefreshInterval` attribute of the class definition.
 
 ```php
-use Dclaysmith\LaravelCascade\Attributes\SegmentRefreshInterval;
+use StickleApp\Core\Attributes\SegmentRefreshInterval;
 
 #[SegmentRefreshInterval(30)]
 class DailyActiveUsers extends Segment {}

@@ -9,7 +9,7 @@ Stickle makes it easy to listen for and respond to User initiated events.
 To recap, User events can be triggered via:
 
 -   the Javascript SDK using the stickle.trackEvent() method; or
--   on the server by dispatching the `Dclaysmith\LaravelCascade\Events\Track` event.
+-   on the server by dispatching the `StickleApp\Core\Events\Track` event.
 
 ## Creating Listeners
 

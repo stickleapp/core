@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Middleware;
+namespace StickleApp\Core\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

@@ -1,6 +1,6 @@
 <?php
 
-use Dclaysmith\LaravelCascade\Repositories\PostgresAnalyticsRepository;
+use StickleApp\Core\Repositories\PostgresAnalyticsRepository;
 
 it('can be instantiated', function () {
     $repository = new PostgresAnalyticsRepository;

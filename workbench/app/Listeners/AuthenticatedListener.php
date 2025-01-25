@@ -2,9 +2,9 @@
 
 namespace Workbench\App\Listeners;
 
-use Dclaysmith\LaravelCascade\Events\ObjectEnteredSegment;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
+use StickleApp\Core\Events\ObjectEnteredSegment;
 
 class AuthenticatedListener implements ShouldQueue
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Events;
+namespace StickleApp\Core\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Dclaysmith\LaravelCascade\Database\Seeders;
+namespace StickleApp\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 

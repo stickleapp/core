@@ -13,7 +13,7 @@ To do so, create a listener class extending `Illuminate\Contracts\Queue\ShouldQu
 ```php
 namespace App\Listeners;
 
-use Dclaysmith\LaravelCascade\Events\ObjectEnteredSegment;
+use StickleApp\Core\Events\ObjectEnteredSegment;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 

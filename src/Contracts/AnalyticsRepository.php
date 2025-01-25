@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dclaysmith\LaravelCascade\Contracts;
+namespace StickleApp\Core\Contracts;
 
 use DateTimeInterface;
 

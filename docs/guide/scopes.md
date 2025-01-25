@@ -11,7 +11,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Dclaysmith\LaravelCascade\Filters\Targets\RequestCount;
+use StickleApp\Core\Filters\Targets\RequestCount;
 
 class User extends Model
 {

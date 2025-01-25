@@ -21,7 +21,7 @@ To track these attributes, Stickle will periodically fetch the values for these 
 ## Listening for Changes
 
 You can respond to changes in Model Attributes by creating a listener with the following naming convention:
-**ModelName** + **AttributeMame** + `Listener`. The `handle()` method should accept a `Dclaysmith\LaravelCascade\Events\ObjectAttributeChanged` event as its only parameter.
+**ModelName** + **AttributeMame** + `Listener`. The `handle()` method should accept a `StickleApp\Core\Events\ObjectAttributeChanged` event as its only parameter.
 
 For instance, if you want to respond to changes in the Users `order_count` attribute:
 

@@ -12,7 +12,7 @@ A segment is a filtered set of your Users (or any class with the `trackable` tra
 -   Who are your "high value" customers?
 -   Who are your "primary contacts"?
 
-You define segment "in-code" by creating a class that extends the `Dclaysmith\LaravelCascade\Contracts\Segment` class.
+You define segment "in-code" by creating a class that extends the `StickleApp\Core\Contracts\Segment` class.
 
 Once you have defined a segment, Trickle will automatically update which Users belong in the Segment and maintain a historical record as Users enter and leave the segment.
 

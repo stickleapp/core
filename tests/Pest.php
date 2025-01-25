@@ -1,5 +1,5 @@
 <?php
 
-use Dclaysmith\LaravelCascade\Tests\TestCase;
+use StickleApp\Core\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);
