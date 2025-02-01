@@ -12,9 +12,7 @@ use StickleApp\Core\Contracts\FilterTest;
 
 class OccurredBefore extends FilterTest
 {
-    public function __construct(public mixed $comparator)
-    {
-    }
+    public function __construct(public mixed $comparator) {}
 
     public function applyFilter(Builder $builder, FilterTarget $target, string $operator): Builder
     {
