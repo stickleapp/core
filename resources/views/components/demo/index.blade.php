@@ -1,7 +1,4 @@
-
-
-<!-- resources/views/demo.blade.php -->
- <x-blank-layout>
+<x-stickle-demo-default-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Stickle Demo') }}
@@ -17,14 +14,14 @@
                 </div>
 
                 <div class="col-span-1 h-[66vh] sm:rounded-lg border-2">
-                    <iframe src="{{ route('STICKLE::demo/admin') }}" class="w-full h-full"></iframe>
+                    <iframe src="{{ route('stickle::demo/admin') }}" class="w-full h-full"></iframe>
                 </div>
 
                 <div class="col-span-1 h-[66vh] sm:rounded-lg border-2">
-                    <iframe src="http://localhost:1984" class="w-full h-full">
+                    <iframe src="{{ route('stickle::ui/index') }}" class="w-full h-full">
                     </iframe>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-stickle-demo-default-layout>

@@ -22,19 +22,26 @@ class ExportSegment
             ->selectRaw("{$segmentId} as segment_id");
 
         $csvFile = tmpfile();
+
         $csvPath = stream_get_meta_data($csvFile)['uri'];
 
-        $fd = fopen($csvPath, 'w');
+        if (! $fd = fopen($csvPath, 'w')) {
+            throw new \Exception('Cannot open file');
+        }
 
         $builder->cursor()->each(function ($item) use ($fd) {
-            fputcsv($fd, $item->toArray());
+            /** @var array<int, string> $asArray * */
+            $asArray = $item->toArray();
+            fputcsv($fd, $asArray);
         });
 
         fclose($fd);
 
         $filename = $this->formatFilename($segmentId);
 
-        Storage::disk(config('stickle.filesystem.disk'))->putFileAs('', $csvPath, $filename);
+        /** @var string $disk * */
+        $disk = config('stickle.filesystem.disk');
+        Storage::disk($disk)->putFileAs('', $csvPath, $filename);
 
         return $filename;
     }

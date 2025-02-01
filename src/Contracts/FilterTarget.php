@@ -9,9 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class FilterTarget
 {
-    /**
-     * @var array<string>
-     */
     public function joinKey(): ?string
     {
         return md5(self::class.''.json_encode(self::definition()));

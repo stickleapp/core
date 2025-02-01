@@ -23,29 +23,26 @@ class ExportSegment implements ShouldQueue
      *
      * @var int
      */
-    // public $uniqueFor = 60; // TODO: SET IN CONFIG
+    public $uniqueFor = 60; // TODO: SET IN CONFIG
 
     /**
      * Get the unique ID for the job.
      */
-    // public function uniqueId(): string
-    // {
-    //     return $this->segment->id;
-    // }
+    public function uniqueId(): string
+    {
+        return (string) $this->segment->id;
+    }
 
     /**
      * Get the middleware the job should pass through.
      *
      * @return array<int, object>
      */
-    // public function middleware(): array
-    // {
-    //     return [new WithoutOverlapping($this->segment->id)];
-    // }
+    public function middleware(): array
+    {
+        return [new WithoutOverlapping(class_basename($this).(string) $this->segment->id)];
+    }
 
-    /**
-     * Execute the job.
-     */
     public function handle(ExportSegmentAction $exportSegment): void
     {
         Log::debug('ExportSegment Job', ['segment_id' => $this->segment->id]);

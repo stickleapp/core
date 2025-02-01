@@ -16,14 +16,17 @@ class RecordSegmentStatistic
         string $model,
         string $attribute
     ): void {
+
         Log::info('RecordSegmentStatistics', [$segmentId, $model, $attribute]);
 
         $builder = $this->builder($segmentId, $model, $attribute);
 
-        // Convert the underlying objects to an array
-        $items = $builder->get()->transform(function ($item) {
-            return (array) $item;
-        });
+        /** @var \Illuminate\Support\Collection<int, \stdClass> $items */
+        $items = $builder->get();
+
+        /** @var callable $callback */
+        $callback = fn ($item) => (array) $item;
+        $items = $items->transform($callback);
 
         SegmentStatistic::upsert(
             $items->toArray(),
@@ -32,7 +35,7 @@ class RecordSegmentStatistic
         );
     }
 
-    private function builder($segmentId, $model, $attribute): Builder
+    private function builder(int $segmentId, string $model, string $attribute): Builder
     {
         return DB::table('lc_object_segment')
             ->select('lc_object_segment.segment_id')

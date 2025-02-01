@@ -14,13 +14,15 @@ use StickleApp\Core\Commands\ExportSegments;
 use StickleApp\Core\Commands\ProcessSegmentEvents;
 use StickleApp\Core\Commands\RecordObjectAttributes;
 use StickleApp\Core\Commands\RecordSegmentStatistics;
-use StickleApp\Core\Components\BlankLayout;
 use StickleApp\Core\Contracts\AnalyticsRepository;
 use StickleApp\Core\Middleware\InjectJavascriptTrackingCode;
 use StickleApp\Core\Middleware\RequestLogger;
 use StickleApp\Core\Models\ObjectAttribute;
 use StickleApp\Core\Observers\ObjectAttributeObserver;
 use StickleApp\Core\Repositories\PostgresAnalyticsRepository;
+use StickleApp\Core\Views\Components\Demo\Layouts\DefaultLayout as DemoDefaultLayout;
+use StickleApp\Core\Views\Components\UI\Charts\SegmentChart;
+use StickleApp\Core\Views\Components\UI\Layouts\DefaultLayout as UIDefaultLayout;
 
 final class CoreServiceProvider extends ServiceProvider
 {
@@ -74,7 +76,9 @@ final class CoreServiceProvider extends ServiceProvider
         /**
          * Load resources used by this package
          */
-        Blade::component('blank-layout', BlankLayout::class);
+        Blade::component('stickle-demo-default-layout', DemoDefaultLayout::class);
+        Blade::component('stickle-ui-default-layout', UIDefaultLayout::class);
+        Blade::component('stickle-segment-chart', SegmentChart::class);
 
         /**
          * Publish resources used by this package
@@ -96,5 +100,6 @@ final class CoreServiceProvider extends ServiceProvider
          * Load Routes
          */
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
     }
 }

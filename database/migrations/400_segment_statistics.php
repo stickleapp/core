@@ -1,14 +1,15 @@
 <?php
 
-use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
+    protected string $prefix;
+
     public function __construct(
-        #[Config('stickle.database.tablePrefix')] protected ?string $prefix = null,
+        ?string $prefix = null
     ) {
-        $this->prefix = config('stickle.database.tablePrefix');
+        $this->prefix = $prefix ?? '';
     }
 
     /**
@@ -48,10 +49,6 @@ CREATE UNIQUE INDEX {$prefix}segment_statistics_segment_id_attribute_recorded_at
     public function down()
     {
         $prefix = $this->prefix;
-
-        $sql = <<<'eof'
-eof;
-        \DB::connection()->getPdo()->exec($sql);
 
         Schema::dropIfExists("{$prefix}segment_statistics");
     }

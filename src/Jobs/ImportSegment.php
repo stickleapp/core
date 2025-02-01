@@ -21,32 +21,31 @@ class ImportSegment implements ShouldQueue
      *
      * @var int
      */
-    // public $uniqueFor = 60; // TODO: SET IN CONFIG
+    public $uniqueFor = 60; // TODO: SET IN CONFIG
 
-    // /**
-    //  * Get the unique ID for the job.
-    //  */
-    // public function uniqueId(): string
-    // {
-    //     return $this->segmentId;
-    // }
+    /**
+     * Get the unique ID for the job.
+     */
+    public function uniqueId(): string
+    {
+        return $this->segmentId;
+    }
 
-    // /**
-    //  * Get the middleware the job should pass through.
-    //  *
-    //  * @return array<int, object>
-    //  */
-    // public function middleware(): array
-    // {
-    //     return [new WithoutOverlapping($this->segmentId)];
-    // }
+    /**
+     * Get the middleware the job should pass through.
+     *
+     * @return array<int, object>
+     */
+    public function middleware(): array
+    {
+        return [new WithoutOverlapping($this->segmentId)];
+    }
 
     /**
      * Execute the job.
      */
     public function handle(ImportSegmentAction $importSegment): void
     {
-
         $importSegment(
             segmentId: $this->segmentId,
             exportFilename: $this->exportFilename

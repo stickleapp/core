@@ -13,8 +13,6 @@ class ObjectAttributeChanged
 
     /**
      * Create a new event instance.
-     *
-     * @param  array<mixed>  $data
      */
     public function __construct(
         public string $model,

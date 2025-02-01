@@ -377,3 +377,28 @@ Please review [our security policy](../../security/policy) on how to report secu
 # License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+    			<!--
+    			<x-segment-table
+    				title="Active Users"
+    				segment="Active Users"
+    				columns="['name','email']"
+    				per-page="[10,25,50]" />
+    			<x-segment-chart
+    				title="New Users"
+    				segment="NewUsers"
+    				metric="count"
+    				aggregates="['count']"
+    				start-date=""
+    				end-date=""
+    				increment="['day','week']" />
+    			<x-segment-chart
+    				title="New User MRR"
+    				segment="NewUsers"
+    				metric="mrr"
+    				aggregates="['sum', 'avg', 'min', 'max']"
+    				start-date=""
+    				end-date=""
+    				increment="['day','week']" />
+
+-->

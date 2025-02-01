@@ -16,6 +16,6 @@ class SegmentStatisticsSeeder extends Seeder
 
         $prefix = config('stickle.database.tablePrefix');
 
-        Artisan::call("cascade:create-partitions {$prefix}segment_statistics public week '2024-12-01'");
+        Artisan::call("stickle:create-partitions {$prefix}segment_statistics public week '2024-12-01'");
     }
 }

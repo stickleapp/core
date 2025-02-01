@@ -15,8 +15,6 @@ class ObjectExitedSegment
 
     /**
      * Create a new event instance.
-     *
-     * @param  array<mixed>  $data
      */
     public function __construct(public Model $object, public Segment $segment) {}
 

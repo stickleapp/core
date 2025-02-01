@@ -99,6 +99,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Routes
+    |--------------------------------------------------------------------------
+    |
+    | Web and API Routes for Stickle
+    */
+    'routes' => [
+        'api' => [
+            'prefix' => env('STICKLE_API_PREFIX', 'stickle/api'),
+            'middleware' => env('STICKLE_API_MIDDLEWARE', ['api']),
+        ],
+        'web' => [
+            'prefix' => env('STICKLE_WEB_PREFIX', 'stickle'),
+            'middleware' => env('STICKLE_WEB_MIDDLEWARE', ['web']),
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Tracking
     |--------------------------------------------------------------------------
     |

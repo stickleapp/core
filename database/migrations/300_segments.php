@@ -1,14 +1,15 @@
 <?php
 
-use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
+    protected string $prefix;
+
     public function __construct(
-        #[Config('stickle.database.tablePrefix')] protected ?string $prefix = null,
+        ?string $prefix = null
     ) {
-        $this->prefix = config('stickle.database.tablePrefix');
+        $this->prefix = $prefix ?? '';
     }
 
     /**
@@ -165,7 +166,10 @@ ON CONFLICT             DO NOTHING;', tempTable, tempTable, segmentId, tempTable
 END; $$
 LANGUAGE PLPGSQL;
 eof;
-        \DB::connection()->getPdo()->exec(preg_replace('/%s/', $prefix, $sql));
+
+        if ($sql = preg_replace('/%s/', $prefix, $sql)) {
+            \DB::connection()->getPdo()->exec($sql);
+        }
     }
 
     /**

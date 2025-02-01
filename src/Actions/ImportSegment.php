@@ -13,16 +13,19 @@ class ImportSegment
     public function __invoke(
         int $segmentId,
         string $exportFilename
-    ) {
+    ): void {
 
         // Retrieve from storage
-        $storage = Storage::disk(config('stickle.filesystem.disk'));
+
+        /** @var string $disk * */
+        $disk = config('stickle.filesystem.disk');
+        $storage = Storage::disk($disk);
 
         if ($storage->missing($exportFilename)) {
             throw new \Exception('File missing');
         }
 
-        $contents = $storage->get($exportFilename);
+        $contents = $storage->get($exportFilename) ?? '';
 
         $localFilename = $this->localFilename($exportFilename);
 
@@ -39,7 +42,7 @@ class ImportSegment
         unlink($localFilename);
     }
 
-    public function executeQuery($segmentId, $tempTableName)
+    public function executeQuery(int $segmentId, string $tempTableName): void
     {
         $sql = <<<EOF
     -- +----------------------------------------------------------------------------
@@ -63,14 +66,17 @@ class ImportSegment
             ->exec($this->wrapInTransaction($sql));
     }
 
-    public function writeLocalFile($localFilename, $contents): void
+    public function writeLocalFile(string $localFilename, string $contents): void
     {
         $handle = fopen($localFilename, 'w');
-        fwrite($handle, $contents);
-        fclose($handle);
+
+        if ($handle) {
+            fwrite($handle, $contents);
+            fclose($handle);
+        }
     }
 
-    public function createTmpTable($tempTableName): void
+    public function createTmpTable(string $tempTableName): void
     {
         $sql = <<<eof
 DROP TABLE IF EXISTS {$tempTableName};
@@ -84,7 +90,7 @@ eof;
             ->exec($sql);
     }
 
-    public function loadTmpTable($tempTableName, $tempFilename)
+    public function loadTmpTable(string $tempTableName, string $tempFilename): void
     {
         $sql =
             "\copy ".
@@ -110,7 +116,7 @@ eof;
         exec($cmd, $output, $res);
     }
 
-    public function tempTableName($filename)
+    public function tempTableName(string $filename): string
     {
         $tableName = str_replace(
             '.csv',
@@ -121,7 +127,7 @@ eof;
         return '_'.$tableName;
     }
 
-    public function localFilename($exportFilename)
+    public function localFilename(string $exportFilename): string
     {
         return '/tmp/'.
             (string) Str::uuid().
@@ -129,10 +135,8 @@ eof;
             $exportFilename;
     }
 
-    public function wrapInTransaction($sql)
+    public function wrapInTransaction(string $sql): string
     {
-        return $sql;
-
         return implode(' ', ['BEGIN;', $sql, 'COMMIT;']);
     }
 }

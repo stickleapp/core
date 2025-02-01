@@ -31,7 +31,6 @@ final class PostgresAnalyticsRepository implements AnalyticsRepository
         DateTimeInterface $timestamp,
         string $event,
         ?array $properties = [],
-        ?array $pageProperties = []
     ): void {
         DB::table($this->prefix.'events')->insert([
             'model' => $model,

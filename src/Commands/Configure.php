@@ -31,7 +31,7 @@ class Configure extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $settings = [];
 
@@ -47,12 +47,17 @@ class Configure extends Command
             options: ['Blade', 'Inertia', 'Livewire', 'SPA (Vue, React, etc.)']
         );
 
+        // The architecture will determine settings
+        if ($architecture) {
+
+        }
+
         note('Stickle runs a number of processes in the background to transform your data.');
 
         $interval = text(
             label: 'How frequently would you like to run these processes (in minutes)?',
             validate: ['interval' => 'required|int|min:1'],
-            default: 360
+            default: '360'
         );
 
         $settings[] = $this->addSetting('interval', $interval, 'Default Process Interval (minutes)');
@@ -70,10 +75,12 @@ class Configure extends Command
 
         note('What is your user model?');
 
+        /** @var string $userModelDefault * */
+        $userModelDefault = config('auth.providers.users.model');
         $userModel = text(
             label: 'What is your user model (full namespace)?',
             validate: ['userModel' => 'required|string'],
-            default: config('auth.providers.users.model')
+            default: $userModelDefault
         );
 
         $settings[] = $this->addSetting('userModel', $userModel, 'User Model');
@@ -113,10 +120,12 @@ class Configure extends Command
 
         note('Stickle needs access to a disk to store files for loading large data sets.');
 
+        /** @var array<string> $disks */
+        $disks = config('filesystems.disks');
         $storageDisk = suggest(
             label: 'What storage disk should be used for data exports?',
             validate: ['storageDisk' => 'string'],
-            options: array_keys(config('filesystems.disks'))
+            options: array_keys($disks)
         );
 
         $settings[] = $this->addSetting('storageDisk', $storageDisk, 'Storage Disk');
@@ -147,14 +156,20 @@ class Configure extends Command
 
         note('You can change any of these settings in config/stickle.php.');
 
+        /** @var callable $callback */
+        $callback = function ($item) {
+            return [
+                'label' => (string) $item['label'],
+                'value' => (string) $item['displayValue'],
+            ];
+        };
+
+        /** @var array<int, array<int, string>> $rows */
+        $rows = collect($settings)->map($callback);
+
         table(
             headers: ['Setting', 'Value'],
-            rows: collect($settings)->map(function ($item) {
-                return [
-                    'label' => $item['label'],
-                    'value' => $item['displayValue'],
-                ];
-            }),
+            rows: $rows,
         );
 
         $serverLoadMiddleware = confirm(
@@ -165,7 +180,8 @@ class Configure extends Command
         );
     }
 
-    private function addSetting($key, $value, $label, $displayValue = null)
+    /** @return array<string, mixed> */
+    private function addSetting(string $key, mixed $value, string $label, ?string $displayValue = null): array
     {
         return [
             'key' => $key,

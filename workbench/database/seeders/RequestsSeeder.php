@@ -17,11 +17,11 @@ class RequestsSeeder extends Seeder
 
         $prefix = config('stickle.database.tablePrefix');
 
-        Artisan::call("cascade:create-partitions {$prefix}requests public week '2024-08-01'");
-        Artisan::call("cascade:create-partitions {$prefix}requests_rollup_1min public week '2024-08-01'");
-        Artisan::call("cascade:create-partitions {$prefix}requests_rollup_5min public week '2024-08-01'");
-        Artisan::call("cascade:create-partitions {$prefix}requests_rollup_1hr public week '2024-08-01'");
-        Artisan::call("cascade:create-partitions {$prefix}requests_rollup_1day public week '2024-08-01'");
+        Artisan::call("stickle:create-partitions {$prefix}requests public week '2024-08-01'");
+        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_1min public week '2024-08-01'");
+        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_5min public week '2024-08-01'");
+        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_1hr public week '2024-08-01'");
+        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_1day public week '2024-08-01'");
 
         $sql = <<<SQL
 INSERT INTO {$prefix}requests (

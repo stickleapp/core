@@ -18,9 +18,7 @@ class RecordSegmentStatistic implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public ?int $segmentId, public ?string $model, public ?string $attribute)
-    {
-    }
+    public function __construct(public ?int $segmentId, public ?string $model, public ?string $attribute) {}
 
     /**
      * The number of seconds after which the job's unique lock will be released.
@@ -47,9 +45,6 @@ class RecordSegmentStatistic implements ShouldQueue
     //     return [new WithoutOverlapping($this->segment->id)];
     // }
 
-    /**
-     * Execute the job.
-     */
     public function handle(RecordSegmentStatisticAction $recordSegmentStatisticAction): void
     {
         Log::info('RecordSegmentStatistic Job', [

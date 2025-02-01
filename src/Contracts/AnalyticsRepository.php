@@ -13,7 +13,6 @@ interface AnalyticsRepository
 {
     /**
      * @param  array<int, string>  $properties
-     * @param  array<int, string>  $pageProperties
      */
     public function saveEvent(
         string $model,

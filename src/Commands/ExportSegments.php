@@ -67,11 +67,11 @@ final class ExportSegments extends Command implements Isolatable
          * and the last_exported_at timestamp.
          */
         $segments = Segment::leftJoin("{$this->prefix}segment_exports", "{$this->prefix}segments.id", '=', "{$this->prefix}segment_exports.segment_id")
-            ->where('last_exported_at', null)
-            ->orWhere('last_exported_at', '<', DB::raw("NOW() - INTERVAL '1 minute' * export_interval"))
+            ->where("{$this->prefix}segments.last_exported_at", null)
+            ->orWhere("{$this->prefix}segments.last_exported_at", '<', DB::raw("NOW() - INTERVAL '1 minute' * export_interval"))
             ->select("{$this->prefix}segments.*", DB::raw("MAX({$this->prefix}segment_exports.created_at) as latest_export_date"))
             ->groupBy("{$this->prefix}segments.id")
-            ->limit($this->argument('limit'))
+            ->limit((int) $this->argument('limit'))
             ->get();
 
         foreach ($segments as $segment) {
@@ -81,14 +81,19 @@ final class ExportSegments extends Command implements Isolatable
 
     }
 
-    public function getSegmentSyncDefinitions($directory, $namespace)
+    /** @return array<string, mixed> */
+    public function getSegmentSyncDefinitions(string $directory, string $namespace): array
     {
         $results = [];
 
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
 
+        /** @var \SplFileInfo $file */
         foreach ($files as $file) {
             if ($file->isFile() && $file->getExtension() === 'php') {
+                /**
+                 * @var class-string $className
+                 */
                 $className = $namespace.'\\'.str_replace(
                     ['/', '.php'],
                     ['\\', ''],

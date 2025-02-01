@@ -47,12 +47,12 @@ final class ProcessSegmentEvents extends Command implements Isolatable
             })
             // ->lazyById(1000, column: 'id')
             ->each(function ($item) {
-                if ($item->operation === 'ENTER') {
+                if (data_get($item, 'operation') === 'ENTER') {
                     ObjectEnteredSegment::dispatch(
                         $item->object,
                         $item->segment
                     );
-                } elseif ($item->operation === 'EXIT') {
+                } elseif (data_get($item, 'operation') === 'EXIT') {
                     ObjectExitedSegment::dispatch(
                         $item->object,
                         $item->segment

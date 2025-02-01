@@ -1,16 +1,17 @@
 <?php
 
-use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    protected string $prefix;
+
     public function __construct(
-        #[Config('stickle.database.tablePrefix')] protected ?string $prefix = null,
+        ?string $prefix = null
     ) {
-        $this->prefix = config('stickle.database.tablePrefix');
+        $this->prefix = $prefix ?? '';
     }
 
     /**

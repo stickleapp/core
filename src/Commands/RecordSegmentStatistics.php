@@ -32,6 +32,7 @@ final class RecordSegmentStatistics extends Command implements Isolatable
         #[Config('stickle.database.tablePrefix')] public ?string $prefix = null,
     ) {
         $this->prefix = config('stickle.database.tablePrefix');
+
         parent::__construct();
     }
 
@@ -44,6 +45,7 @@ final class RecordSegmentStatistics extends Command implements Isolatable
         Log::info('RecordSegmentStatistics Command', $this->arguments());
 
         $segmentId = $this->argument('segmentId');
+
         $limit = $this->argument('limit') ?? 25;
 
         $segments = Segment::all();
@@ -79,7 +81,7 @@ final class RecordSegmentStatistics extends Command implements Isolatable
                 'recorded_at',
             ])
             ->orderByRaw('recorded_at asc NULLS FIRST')
-            ->limit($limit)
+            ->limit((int) $limit)
             ->get();
 
         foreach ($rows as $row) {
