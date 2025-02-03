@@ -1,0 +1,44 @@
+laravel: "@testbench"
+
+providers:
+    - Workbench\App\Providers\WorkbenchServiceProvider
+    - StickleApp\Core\CoreServiceProvider
+    - StickleApp\Core\EventServiceProvider
+    - StickleApp\Core\ScheduleServiceProvider
+
+migrations:
+    - workbench/database/migrations
+
+seeders:
+    - Workbench\Database\Seeders\DatabaseSeeder
+
+workbench:
+    start: "/"
+    install: true
+    health: false
+    discovers:
+        web: true
+        api: false
+        commands: false
+        components: false
+        views: false
+    build:
+        - asset-publish
+        - db-wipe
+        - migrate-fresh
+    assets:
+        - laravel-assets
+    sync:
+        - from: storage
+          to: workbench/storage
+          reverse: true
+
+env:
+    PACKAGE_PATH: /Users/dclaysmith/Projects/StickleApp/Core
+    QUEUE_CONNECTION: sync
+    DB_CONNECTION: pgsql
+    DB_HOST: 127.0.0.1
+    DB_PORT: 5432
+    DB_DATABASE: workbench
+    DB_USERNAME: root
+    DB_PASSWORD:
