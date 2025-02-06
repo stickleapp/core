@@ -6,6 +6,7 @@ namespace StickleApp\Core;
 
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use StickleApp\Core\Commands\Configure;
 use StickleApp\Core\Commands\CreatePartitions;
@@ -18,6 +19,7 @@ use StickleApp\Core\Contracts\AnalyticsRepository;
 use StickleApp\Core\Middleware\InjectJavascriptTrackingCode;
 use StickleApp\Core\Middleware\RequestLogger;
 use StickleApp\Core\Models\ObjectAttribute;
+use StickleApp\Core\Models\Segment;
 use StickleApp\Core\Observers\ObjectAttributeObserver;
 use StickleApp\Core\Repositories\PostgresAnalyticsRepository;
 use StickleApp\Core\Views\Components\Demo\Layouts\DefaultLayout as DemoDefaultLayout;
@@ -45,6 +47,16 @@ final class CoreServiceProvider extends ServiceProvider
         $kernel = $this->app->make(Kernel::class);
 
         ObjectAttribute::observe(ObjectAttributeObserver::class);
+
+        /** Allows URLs using Segment Class instead of ID */
+        Route::bind('segment', function (string $value) {
+
+            if (is_numeric($value)) {
+                return Segment::findOrFail($value);
+            }
+
+            return Segment::where('as_class', $value)->firstOrFail();
+        });
 
         if (config('stickle.tracking.server.loadMiddleware') === true) {
             $kernel->pushMiddleware(RequestLogger::class);

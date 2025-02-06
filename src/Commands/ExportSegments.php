@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace StickleApp\Core\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Container\Attributes\Config;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +17,8 @@ use StickleApp\Core\Models\Segment;
 
 final class ExportSegments extends Command implements Isolatable
 {
+    protected string $prefix;
+
     /**
      * @var string
      */
@@ -34,8 +35,10 @@ final class ExportSegments extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
-        #[Config('stickle.database.tablePrefix')] protected ?string $prefix = null,
     ) {
+
+        $this->prefix = config('stickle.database.tablePrefix') ?? '';
+
         parent::__construct();
     }
 
@@ -60,7 +63,7 @@ final class ExportSegments extends Command implements Isolatable
          * Insert any segments from this analysis into the `segments` table.
          * If the segment already exists, ignore it.
          */
-        Segment::insert($segments);
+        Segment::insertOrIgnore($segments);
 
         /**
          * Return a list of segments to export considering the export_interval
@@ -101,11 +104,14 @@ final class ExportSegments extends Command implements Isolatable
                 );
                 $reflection = new ReflectionClass($className);
                 $defaultProperties = $reflection->getDefaultProperties();
+
                 $results[] = [
                     'model' => Arr::get($defaultProperties, 'model'),
                     'as_class' => $className,
                     'as_json' => null,
-                    'export_interval' => Arr::get($defaultProperties, 'exportInterval'),
+                    'export_interval' => config('stickle.schedule.exportSegments'),
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ];
             }
         }

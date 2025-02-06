@@ -17,7 +17,7 @@ class UsersWithOrders extends Segment
 
     public function toBuilder(): Builder
     {
-        return $this->model::cascade(
+        return $this->model::stickle(
             Filter::number('order_count')
                 ->greaterThan(2)
         );

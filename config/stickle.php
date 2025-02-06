@@ -36,7 +36,7 @@ return [
     */
     'database' => [
         'connection' => env('DB_CONNECTION', 'pgsql'),
-        'tablePrefix' => env('`STICKLE_TABLE_PRFIX`', 'lc_'),
+        'tablePrefix' => env('STICKLE_TABLE_PRFIX', 'lc_'),
         'partitions' => [
             'events' => [
                 'interval' => 'week',

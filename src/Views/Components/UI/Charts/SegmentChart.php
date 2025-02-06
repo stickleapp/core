@@ -15,13 +15,11 @@ class SegmentChart extends Component
      * @return void
      */
     public function __construct(
-        #[Config('stickle.api.prefix')] protected ?string $apiPrefix,
+        #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
         public string $type,
-        public string|int $segment,
+        public int $segmentId,
         public string $attribute,
-        public ?string $title,
-        public ?array $labels = [],
-        public ?array $data = []
+        public ?string $title
     ) {}
 
     /**
@@ -34,6 +32,13 @@ class SegmentChart extends Component
 
     public function endpoint(): string
     {
-        return $this->apiPrefix.'/segments/'.$this->segment.'/history';
+        return url()->query(
+            $this->apiPrefix.'/segment-statistics',
+            [
+                'segment_id' => $this->segmentId,
+                'attribute' => $this->attribute,
+                'date_from' => now()->subDays(30)->toDateString(),
+            ]
+        );
     }
 }

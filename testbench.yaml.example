@@ -17,6 +17,7 @@ workbench:
     install: true
     health: false
     discovers:
+        config: true
         web: true
         api: false
         commands: false
@@ -39,6 +40,6 @@ env:
     DB_CONNECTION: pgsql
     DB_HOST: 127.0.0.1
     DB_PORT: 5432
-    DB_DATABASE: workbench
+    DB_DATABASE: stickle-core
     DB_USERNAME: root
     DB_PASSWORD:

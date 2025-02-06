@@ -1,5 +1,5 @@
 (function () {
-    const trackingUrl = "/stickle-track";
+    const trackingUrl = "/stickle/api/track";
 
     function sendData(data) {
         navigator.sendBeacon(
@@ -36,7 +36,7 @@
     };
 
     // Automatically track page view on load
-    window.addEventListener("load", trackPageView);
+    window.addEventListener("load", page);
 
     function trackSPA() {
         const originalPushState = history.pushState;

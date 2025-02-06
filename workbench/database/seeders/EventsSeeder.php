@@ -31,7 +31,7 @@ INSERT INTO {$prefix}events (
     properties, 
     timestamp)
 SELECT
-    (random() * 1000)::int::text AS object_uid,
+    (SELECT (random() * MAX(id))::int::text FROM users) AS object_uid,
     '\App\Models\User' AS model,
     -- 'session_' || (random() * 20)::int::text AS session_uid,
     'event_' || (random() * 10)::int::text AS event_name,    

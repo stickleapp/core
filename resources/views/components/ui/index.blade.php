@@ -5,15 +5,19 @@
         </h2>
     </x-slot>    
 
-    <div class="py-12">
+    
+    <div class="py-9">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div>
-				<x-stickle-segment-chart 
-					type="line" 
-					title="Active Users" 
-					segment="DailyActiveUsers" 
-					attribute="count">
-				</x-stickle-segment-chart>
+            <div class="grid grid-cols-3 gap-3">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
+                    <x-stickle-segment-chart 
+                    style="padding-bottom: -10px;"
+                        type="line" 
+                        title="Active Users" 
+                        segment-id="13" 
+                        attribute="count">
+                    </x-stickle-segment-chart>
+                </div>
             </div>
         </div>
     </div>

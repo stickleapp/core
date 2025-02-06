@@ -1,40 +1,71 @@
 <div>
-    <div>{{ $title }}</div>
+    <div class="p-5">{{ $title }}</div>
     <canvas id="chart-canvas"></canvas>
-    <div>{{ $endpoint }}</div>
-    <div>{{ $attribute }}</div>
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", async function() {
-        const endpoint = "{{ $endpoint }}";
+
+        const endpoint = "{!! $endpoint !!}";
         
         try {
-            const response = await fetch(endpoint);
+            const headers = new Headers({
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }) ;
+            
+            const response = await fetch(
+                endpoint, 
+                { 
+                    headers
+                }
+            );
+
             const data = await response.json();
             
-            // Assuming the API returns data in the format { labels: [], values: [] }
-            const labels = data.labels;
-            const values = data.values;
+            // const labels = data.labels;
+
+            // const dataset = data.values;
+
+            const labels = ['','','','','',''];
+
+
 
             const ctx = document.getElementById("chart-canvas").getContext("2d");
+
             new Chart(
                 ctx, 
                 {
-                    type: '{{ $type }}',
+                    type: '{{ $type  }}',
                     data: {
-                        labels: {{ Illuminate\Support\Js::from($labels) }},
+                        labels: labels,
                         datasets: [{
-                            label: '# of Votes',
                             data: [12, 19, 3, 5, 2, 3],
-                            borderWidth: 1
+                            backgroundColor: 'rgba(75, 192, 192, .7 )',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 2,
+                            fill: true,
+                            pointRadius: 0,
+                            tension: 0.4
                         }]
                     },
                     options: {
+                        responsive: false,
+                        maintainAspectRatio: false,
                         scales: {
+                            x: {
+                                display: false,
+                                grid: { drawTicks: false, drawBorder: false, drawOnChartArea: false }
+                            },
                             y: {
-                            beginAtZero: true
+                                display: false,
+                                grid: { drawTicks: false, drawBorder: false, drawOnChartArea: false }
                             }
-                        }   
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: false }
+                        },
+                        layout: { padding: 0 }
                     }
                 }
             );

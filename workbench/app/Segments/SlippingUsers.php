@@ -17,7 +17,7 @@ class SlippingUsers extends Segment
 
     public function toBuilder(): Builder
     {
-        // return $this->model::cascade(
+        // return $this->model::stickle(
         //     Filter::eventCount('clicked:something')
         //         ->decreased(
         //             [now()->subWeeks(4), now()->subWeeks(2)],

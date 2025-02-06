@@ -9,9 +9,9 @@ use StickleApp\Core\Contracts\Segment;
 use StickleApp\Core\Filters\Base as Filter;
 use Workbench\App\Models\User;
 
-#[SegmentName('Daily Active Users')]
+#[SegmentName('All Users')]
 #[SegmentRefreshInterval(30)]
-class DailyActiveUsers extends Segment
+class AllUsers extends Segment
 {
     public string $model = User::class;
 
@@ -24,6 +24,6 @@ class DailyActiveUsers extends Segment
         //         ->startDate(now()->subDays(7))
         // );
 
-        return $this->model::where('id', '>', 300);
+        return $this->model::query();
     }
 }

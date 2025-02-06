@@ -1,18 +1,23 @@
 <?php
 
+use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    protected string $prefix;
+    //     protected string $prefix;
 
-    public function __construct(
-        ?string $prefix = null
-    ) {
-        $this->prefix = $prefix ?? '';
-    }
+    // public function __construct(
+    //     ?string $prefix = null
+    // ) {
+    //     $this->prefix = $prefix ?? '';
+    // }
+
+    // public function __construct(
+    //     #[Config('stickle.database.tablePrefix')] protected ?string $prefix = null,
+    // ) {}
 
     /**
      * Run the migrations.
@@ -21,7 +26,7 @@ return new class extends Migration
      */
     public function up()
     {
-        $prefix = $this->prefix;
+        $prefix = config('stickle.database.tablePrefix') ?? '';
 
         // object attributes
         Schema::create(("{$prefix}object_attributes"), function (Blueprint $table) {
@@ -111,7 +116,7 @@ return new class extends Migration
             $table->timestamp('last_exported_at')->nullable(true);
             $table->timestamps();
 
-            $table->unique(['model', 'as_class', 'as_json']);
+            $table->unique(['model', 'as_class']);
             $table->foreign('segment_group_id')->references('id')->on("{$prefix}segment_groups");
             $table->index('segment_group_id');
         });
@@ -151,12 +156,12 @@ return new class extends Migration
      */
     public function down()
     {
-        $prefix = $this->prefix ?? '';
+        $prefix = config('stickle.database.tablePrefix') ?? '';
 
         Schema::dropIfExists("{$prefix}segment_statistics");
         Schema::dropIfExists("{$prefix}segment_exports");
-        Schema::dropIfExists("{$prefix}segment_groups");
         Schema::dropIfExists("{$prefix}segments");
+        Schema::dropIfExists("{$prefix}segment_groups");
         Schema::dropIfExists("{$prefix}object_segment_statistics");
         Schema::dropIfExists("{$prefix}object_segment_audit");
         Schema::dropIfExists("{$prefix}object_segment");

@@ -18,11 +18,31 @@ return new class extends Migration
      */
     public function up()
     {
-        $prefix = $this->prefix;
+
+        Schema::create('customers', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('parent_id')->nullable(true);
+            $table->text('name')->nullable(false);
+            $table->timestamps();
+
+            $table->foreign('parent_id')->references('id')->on('customers');
+        });
 
         Schema::table('users', function (Blueprint $table) {
             $table->integer('user_rating')->nullable(true);
+            $table->unsignedBigInteger('customer_id')->nullable(true);
+
+            $table->foreign('customer_id')->references('id')->on('customers');
         });
+
+        // Schema::table('customr_user', function (Blueprint $table) {
+        //     $table->unsignedBigInteger('customer_id')->nullable(false);
+        //     $table->unsignedBigInteger('user_id')->nullable(false);
+        //     $table->timestamps();
+
+        //     $table->foreign('order_id')->references('id')->on('orders');
+        //     $table->foreign('customer_id')->references('id')->on('customers');
+        // });
 
         Schema::create(('orders'), function (Blueprint $table) {
             $table->id();
@@ -52,8 +72,5 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
-    {
-        $prefix = $this->prefix;
-    }
+    public function down() {}
 };

@@ -41,18 +41,13 @@ class ObjectAttribute extends Model
     /**
      * Get the attributes that should be cast.
      *
+     * Why doesn't casts() function work?
+     *
      * @return array<string, string>
      */
     protected $casts = [
         'model_attributes' => 'array',
     ];
-    // protected function casts(): array
-    // {
-
-    //     return [
-    //         'model_attributes' => 'array',
-    //     ];
-    // }
 
     /**
      * Get the parent attributable model

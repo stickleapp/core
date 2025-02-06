@@ -3,6 +3,7 @@
 namespace StickleApp\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Segment extends Model
 {
@@ -48,5 +49,13 @@ class Segment extends Model
     {
         return [
         ];
+    }
+
+    /**
+     * Get the SegmentStatistics associated with the Segment
+     */
+    public function segmentStatistics(): HasMany
+    {
+        return $this->hasMany(SegmentStatistic::class);
     }
 }

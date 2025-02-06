@@ -4,14 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
-    protected string $prefix;
-
-    public function __construct(
-        ?string $prefix = null
-    ) {
-        $this->prefix = $prefix ?? '';
-    }
-
     /**
      * Run the migrations.
      *
@@ -19,7 +11,7 @@ return new class extends Migration
      */
     public function up()
     {
-        $prefix = $this->prefix;
+        $prefix = config('stickle.database.tablePrefix') ?? '';
 
         $sql = <<<'eof'
 CREATE OR REPLACE FUNCTION process_object_segment_audit() RETURNS TRIGGER AS $process_object_segment_audit$
@@ -179,7 +171,7 @@ eof;
      */
     public function down()
     {
-        $prefix = $this->prefix;
+        $prefix = config('stickle.database.tablePrefix') ?? '';
 
         $sql = <<<'eof'
 DROP FUNCTION IF EXISTS f_activate_object_segments(segmentId INT, tempTable VARCHAR);

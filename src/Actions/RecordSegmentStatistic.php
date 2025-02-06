@@ -31,25 +31,37 @@ class RecordSegmentStatistic
         SegmentStatistic::upsert(
             $items->toArray(),
             uniqueBy: ['segment_id', 'attribute', 'recorded_at'],
-            update: ['value_sum', 'value_min', 'value_max', 'value_count']
+            update: ['value', 'value_sum', 'value_min', 'value_max', 'value_count']
         );
     }
 
     private function builder(int $segmentId, string $model, string $attribute): Builder
     {
-        return DB::table('lc_object_segment')
-            ->select('lc_object_segment.segment_id')
+        $prefix = config('stickle.database.tablePrefix');
+
+        /** "count" is a special case */
+        if ($attribute === 'count') {
+            return DB::table("{$prefix}object_segment")
+                ->select("{$prefix}object_segment.segment_id")
+                ->selectRaw('? AS attribute', [$attribute])
+                ->selectRaw("COUNT({$prefix}object_segment.segment_id) AS value")
+                ->selectRaw('CURRENT_DATE AS recorded_at')
+                ->groupBy("{$prefix}object_segment.segment_id", 'attribute');
+        }
+
+        return DB::table("{$prefix}object_segment")
+            ->select("{$prefix}object_segment.segment_id")
             ->selectRaw('? AS attribute', [$attribute])
-            ->selectRaw('SUM((lc_object_attributes.model_attributes->>?)::float) AS value_sum', [$attribute])
-            ->selectRaw('MIN((lc_object_attributes.model_attributes->>?)::float) AS value_min', [$attribute])
-            ->selectRaw('MAX((lc_object_attributes.model_attributes->>?)::float) AS value_max', [$attribute])
-            ->selectRaw('COUNT(lc_object_attributes.model_attributes->>?) AS value_count', [$attribute])
-            ->selectRAW('CURRENT_DATE AS recorded_at')
-            ->join('lc_segments', 'lc_object_segment.segment_id', '=', 'lc_segments.id')
-            ->join('lc_object_attributes', function ($join) use ($model) {
-                $join->on('lc_object_attributes.object_uid', '=', 'lc_object_segment.object_uid');
-                $join->where('lc_object_attributes.model', '=', $model);
+            ->selectRaw("SUM(({$prefix}object_attributes.model_attributes->>?)::float) AS value_sum", [$attribute])
+            ->selectRaw("MIN(({$prefix}object_attributes.model_attributes->>?)::float) AS value_min", [$attribute])
+            ->selectRaw("MAX(({$prefix}object_attributes.model_attributes->>?)::float) AS value_max", [$attribute])
+            ->selectRaw("COUNT({$prefix}object_attributes.model_attributes->>?) AS value_count", [$attribute])
+            ->selectRaw('CURRENT_DATE AS recorded_at')
+            ->join("{$prefix}segments", "{$prefix}object_segment.segment_id", '=', "{$prefix}segments.id")
+            ->join("{$prefix}object_attributes", function ($join) use ($model, $prefix) {
+                $join->on("{$prefix}object_attributes.object_uid", '=', "{$prefix}object_segment.object_uid");
+                $join->where("{$prefix}object_attributes.model", '=', $model);
             })
-            ->groupBy('lc_object_segment.segment_id', 'attribute');
+            ->groupBy("{$prefix}object_segment.segment_id", 'attribute');
     }
 }

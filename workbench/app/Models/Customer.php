@@ -4,26 +4,23 @@ namespace Workbench\App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use StickleApp\Core\Attributes\ModelAttributeDescription;
 use StickleApp\Core\Traits\Trackable;
-use Workbench\Database\Factories\UserFactory;
+use Workbench\Database\Factories\CustomerFactory;
 
-class User extends Authenticatable
+class Customer extends Model
 {
-    use HasFactory, Notifiable, Trackable;
-
-    protected $table = 'users';
+    use HasFactory, Trackable;
 
     /**
      * Create a new factory instance for the model.
      */
     protected static function newFactory()
     {
-        return UserFactory::new();
+        return CustomerFactory::new();
     }
 
     /**
@@ -69,9 +66,19 @@ class User extends Authenticatable
         // 'last_order_item_count',
     ];
 
-    public function customers(): BelongsToMany
+    public function children(): hasMany
     {
-        return $this->belongsToMany(Customer::class);
+        return $this->hasMany(self::class, 'parent_id');
+    }
+
+    public function parent(): hasMany
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->hasMany(User::class);
     }
 
     public function orders(): HasMany

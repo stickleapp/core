@@ -6,14 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    protected string $prefix;
-
-    public function __construct(
-        ?string $prefix = null
-    ) {
-        $this->prefix = $prefix ?? '';
-    }
-
     /**
      * Run the migrations.
      *
@@ -21,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        $prefix = $this->prefix;
+        $prefix = config('stickle.database.tablePrefix') ?? '';
 
         Schema::create("{$prefix}rollups", function (Blueprint $table) {
             $table->text('name')->nullable(false);
@@ -490,7 +482,7 @@ LANGUAGE plpgsql;
      */
     public function down()
     {
-        $prefix = $this->prefix;
+        $prefix = config('stickle.database.tablePrefix') ?? '';
 
         Schema::dropIfExists("{$prefix}requests");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1min CASCADE");
