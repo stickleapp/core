@@ -69,19 +69,16 @@ final class ExportSegments extends Command implements Isolatable
          * Return a list of segments to export considering the export_interval
          * and the last_exported_at timestamp.
          */
-        $segments = Segment::leftJoin("{$this->prefix}segment_exports", "{$this->prefix}segments.id", '=', "{$this->prefix}segment_exports.segment_id")
-            ->where("{$this->prefix}segments.last_exported_at", null)
+        $segments = Segment::where("{$this->prefix}segments.last_exported_at", null)
             ->orWhere("{$this->prefix}segments.last_exported_at", '<', DB::raw("NOW() - INTERVAL '1 minute' * export_interval"))
-            ->select("{$this->prefix}segments.*", DB::raw("MAX({$this->prefix}segment_exports.created_at) as latest_export_date"))
-            ->groupBy("{$this->prefix}segments.id")
             ->limit((int) $this->argument('limit'))
             ->get();
 
         foreach ($segments as $segment) {
-            Log::debug('ExportSegments Dispatching', ['segment_id' => $segment->id]);
+            Log::info('ExportSegments Dispatching', ['segment_id' => $segment->id]);
             ExportSegment::dispatch($segment);
+            $segment->update(['last_exported_at' => now()]);
         }
-
     }
 
     /** @return array<string, mixed> */
@@ -102,6 +99,7 @@ final class ExportSegments extends Command implements Isolatable
                     ['\\', ''],
                     substr($file->getRealPath(), strlen($directory) + 1)
                 );
+
                 $reflection = new ReflectionClass($className);
                 $defaultProperties = $reflection->getDefaultProperties();
 

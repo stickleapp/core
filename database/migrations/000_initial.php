@@ -121,31 +121,15 @@ return new class extends Migration
             $table->index('segment_group_id');
         });
 
-        Schema::create("{$prefix}segment_exports", function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('segment_id')->nullable(false);
-            $table->text('result')->nullable(false);
-            $table->text('error')->nullable(true);
-            $table->timestamps();
-
-            $table->index('segment_id');
-        });
-
-        Schema::create("{$prefix}segment_statistics", function (Blueprint $table) {
+        Schema::create("{$prefix}segment_statistic_exports", function (Blueprint $table) use ($prefix) {
             $table->id();
             $table->unsignedBigInteger('segment_id')->nullable(false);
             $table->text('attribute')->nullable(false);
-            $table->float('value')->nullable(true);
-            $table->float('value_count')->nullable(true);
-            $table->float('value_sum')->nullable(true);
-            $table->float('value_min')->nullable(true);
-            $table->float('value_max')->nullable(true);
-            $table->date('recorded_at')->nullable(false);
+            $table->timestamp('last_recorded_at')->nullable(false);
             $table->timestamps();
 
+            $table->foreign('segment_id')->references('id')->on("{$prefix}segments");
             $table->unique(['segment_id', 'attribute']);
-            $table->index('segment_id');
-            $table->index('attribute');
         });
     }
 
@@ -158,8 +142,8 @@ return new class extends Migration
     {
         $prefix = config('stickle.database.tablePrefix') ?? '';
 
+        Schema::dropIfExists("{$prefix}segment_statistic_exports");
         Schema::dropIfExists("{$prefix}segment_statistics");
-        Schema::dropIfExists("{$prefix}segment_exports");
         Schema::dropIfExists("{$prefix}segments");
         Schema::dropIfExists("{$prefix}segment_groups");
         Schema::dropIfExists("{$prefix}object_segment_statistics");

@@ -16,24 +16,26 @@ class EventsSeeder extends Seeder
     {
         $prefix = config('stickle.database.tablePrefix');
 
-        Artisan::call("stickle:create-partitions {$prefix}events public week '2024-08-01'");
-        Artisan::call("stickle:create-partitions {$prefix}events_rollup_1min public week '2024-08-01'");
-        Artisan::call("stickle:create-partitions {$prefix}events_rollup_5min public week '2024-08-01'");
-        Artisan::call("stickle:create-partitions {$prefix}events_rollup_1hr public week '2024-08-01'");
-        Artisan::call("stickle:create-partitions {$prefix}events_rollup_1day public week '2024-08-01'");
+        $date = now()->subDays(25)->toDateString();
+
+        Artisan::call("stickle:create-partitions {$prefix}events public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$prefix}events_rollup_1min public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$prefix}events_rollup_5min public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$prefix}events_rollup_1hr public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$prefix}events_rollup_1day public week '{$date}' 2");
 
         $sql = <<<SQL
 INSERT INTO {$prefix}events (
     object_uid, 
     model, 
-    -- session_uid, 
+    session_uid, 
     event_name, 
     properties, 
     timestamp)
 SELECT
-    (SELECT (random() * MAX(id))::int::text FROM users) AS object_uid,
+    (((SELECT MAX(id) FROM users) * random())+1)::INT::TEXT AS object_uid,
     '\App\Models\User' AS model,
-    -- 'session_' || (random() * 20)::int::text AS session_uid,
+    'session_' || (random() * 5)::int::text AS session_uid,
     'event_' || (random() * 10)::int::text AS event_name,    
     jsonb_build_object(
         'property1', 'value1',
@@ -42,7 +44,7 @@ SELECT
     ) AS properties,
     CURRENT_TIMESTAMP - (random() * interval '19 days') AS timestamp
 FROM
-    generate_series(1,1e6) AS s;
+    generate_series(1,1e3) AS s;
 
 -- ----------------------------------------------------------------------------
 -- RUN AGGREGATION QUERIES

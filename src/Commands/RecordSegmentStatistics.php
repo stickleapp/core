@@ -46,7 +46,7 @@ final class RecordSegmentStatistics extends Command implements Isolatable
 
         $segmentId = $this->argument('segmentId');
 
-        $limit = $this->argument('limit') ?? 25;
+        $limit = $this->argument('limit') ?? 10;
 
         $segments = Segment::all();
 
@@ -60,17 +60,10 @@ final class RecordSegmentStatistics extends Command implements Isolatable
 
         $rows = DB::table('temp_attributes')
             ->join("{$this->prefix}segments", "{$this->prefix}segments.model", '=', 'temp_attributes.model')
-            ->leftJoinSub(
-                DB::table("{$this->prefix}segment_statistics")
-                    ->select(['segment_id', 'attribute', DB::raw('MAX(recorded_at) as recorded_at')])
-                    ->groupBy('segment_id', 'attribute')
-                    ->orderBy('recorded_at', 'desc'),
-                'exports',
-                function ($join) {
-                    $join->on('temp_attributes.attribute', '=', 'exports.attribute');
-                    $join->on("{$this->prefix}segments.id", '=', 'exports.segment_id');
-                }
-            )
+            ->leftJoin("{$this->prefix}segment_statistic_exports", function ($query) {
+                $query->on("{$this->prefix}segment_statistic_exports.segment_id", '=', "{$this->prefix}segments.id");
+                $query->on("{$this->prefix}segment_statistic_exports.attribute", '=', 'temp_attributes.attribute');
+            })
             ->when($segmentId, function ($query) use ($segmentId) {
                 return $query->where("{$this->prefix}segments.id", $segmentId);
             })
@@ -78,16 +71,15 @@ final class RecordSegmentStatistics extends Command implements Isolatable
                 'temp_attributes.model',
                 'temp_attributes.attribute',
                 "{$this->prefix}segments.id as segment_id",
-                'recorded_at',
+                'last_recorded_at',
             ])
-            ->orderByRaw('recorded_at asc NULLS FIRST')
+            ->orderByRaw('last_recorded_at asc NULLS FIRST')
             ->limit((int) $limit)
             ->get();
 
         foreach ($rows as $row) {
             RecordSegmentStatisticJob::dispatch(
                 segmentId: $row->segment_id,
-                model: $row->model,
                 attribute: $row->attribute,
             );
         }

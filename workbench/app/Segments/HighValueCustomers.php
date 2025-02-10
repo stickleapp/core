@@ -7,21 +7,23 @@ use StickleApp\Core\Attributes\SegmentName;
 use StickleApp\Core\Attributes\SegmentRefreshInterval;
 use StickleApp\Core\Contracts\Segment;
 use StickleApp\Core\Filters\Base as Filter;
-use Workbench\App\Models\User;
+use Workbench\App\Models\Customer;
 
-#[SegmentName('Users with Orders')]
+#[SegmentName('High Value Customers')]
 #[SegmentRefreshInterval(30)]
-class UsersWithOrders extends Segment
+class HighValueCustomers extends Segment
 {
-    public string $model = User::class;
+    public string $model = Customer::class;
 
     public function toBuilder(): Builder
     {
+
         // return $this->model::stickle(
-        //     Filter::number('order_count')
-        //         ->greaterThan(2)
+        //     Filter::eventCount('clicked:something')
+        //         ->greaterThan(0)
+        //         ->startDate(now()->subDays(7))
         // );
 
-        return $this->model::where('id', '>', 500);
+        return $this->model::query();
     }
 }

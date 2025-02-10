@@ -17,17 +17,19 @@ class RequestsSeeder extends Seeder
 
         $prefix = config('stickle.database.tablePrefix');
 
-        Artisan::call("stickle:create-partitions {$prefix}requests public week '2024-08-01'");
-        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_1min public week '2024-08-01'");
-        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_5min public week '2024-08-01'");
-        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_1hr public week '2024-08-01'");
-        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_1day public week '2024-08-01'");
+        $date = now()->subDays(25)->toDateString();
+
+        Artisan::call("stickle:create-partitions {$prefix}requests public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_1min public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_5min public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_1hr public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_1day public week '{$date}' 2");
 
         $sql = <<<SQL
 INSERT INTO {$prefix}requests (
     object_uid, 
     model, 
-    -- session_uid, 
+    session_uid, 
     url,
     path,
     host,
@@ -39,9 +41,9 @@ INSERT INTO {$prefix}requests (
     utm_content,
     timestamp)
 SELECT
-    (SELECT (random() * MAX(id))::int::text FROM users) AS object_uid,
+    (((SELECT MAX(id) FROM users) * random())+1)::INT::TEXT AS object_uid,
     '\App\Models\User' AS model,
-    -- 'session_' || (random() * 20)::int::text AS session_uid,
+    'session_' || (random() * 20)::int::text AS session_uid,
     'http://example.com' AS url,
     '/path/to/page' AS path,
     'example.com' AS host,
@@ -53,7 +55,7 @@ SELECT
     'utm_content' AS utm_content,
     CURRENT_TIMESTAMP - (random() * interval '19 days') AS timestamp
 FROM
-    generate_series(1,1e6) AS s;
+    generate_series(1,1e3) AS s;
 
 -- ----------------------------------------------------------------------------
 -- RUN AGGREGATION QUERIES

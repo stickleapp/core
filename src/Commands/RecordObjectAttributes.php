@@ -9,7 +9,8 @@ use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\Config;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use StickleApp\Core\Traits\Trackable;
+use StickleApp\Core\Traits\GroupTrait as StickleGroupTrait;
+use StickleApp\Core\Traits\UserTrait as StickleUserTrait;
 
 final class RecordObjectAttributes extends Command implements Isolatable
 {
@@ -43,7 +44,7 @@ final class RecordObjectAttributes extends Command implements Isolatable
         $directory = $this->argument('directory');
         $namespace = $this->argument('namespace');
 
-        $classes = $this->getClassesWithTrait(Trackable::class, $directory, $namespace);
+        $classes = $this->getClassesWithTraits([StickleUserTrait::class, StickleGroupTrait::class], $directory, $namespace);
 
         foreach ($classes as $class) {
             $object = new $class;
@@ -74,7 +75,7 @@ final class RecordObjectAttributes extends Command implements Isolatable
         }
     }
 
-    private function getClassesWithTrait(string $trait, string $modelsDirectory, string $modelsNamespace): array
+    private function getClassesWithTrait(array $checkForTraits, string $modelsDirectory, string $modelsNamespace): array
     {
         $results = [];
 
@@ -88,7 +89,7 @@ final class RecordObjectAttributes extends Command implements Isolatable
                     substr($file->getRealPath(), strlen($modelsDirectory) + 1)
                 );
                 $traits = class_uses($className);
-                if ($traits && in_array($trait, $traits)) {
+                if ($traits && in_array($checkForTraits, $traits)) {
                     $results[] = $className;
                 }
             }

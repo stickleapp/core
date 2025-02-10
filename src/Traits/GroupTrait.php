@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Models\ObjectAttribute;
 
-trait Trackable
+trait GroupTrait
 {
     public static function getTableName()
     {
@@ -22,7 +22,7 @@ trait Trackable
     /**
      * Enables a ->stickle() method on the model
      */
-    public static function scopestickle(Builder $builder, Filter $filter)
+    public static function scopeStickle(Builder $builder, Filter $filter)
     {
 
         $prefix = config('stickle.database.tablePrefix');
@@ -43,7 +43,7 @@ trait Trackable
     /**
      * Enables a ->orstickle() method on the model
      */
-    public static function scopeOrstickle(Builder $builder, Filter $filter)
+    public static function scopeOrStickle(Builder $builder, Filter $filter)
     {
         $prefix = config('stickle.database.tablePrefix');
 

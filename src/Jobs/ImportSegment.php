@@ -5,6 +5,7 @@ namespace StickleApp\Core\Jobs;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Actions\ImportSegment as ImportSegmentAction;
 
 class ImportSegment implements ShouldQueue
@@ -46,6 +47,8 @@ class ImportSegment implements ShouldQueue
      */
     public function handle(ImportSegmentAction $importSegment): void
     {
+        Log::debug('ImportSegment Job', ['segment_id' => $this->segmentId, 'exportFilename' => $this->exportFilename]);
+
         $importSegment(
             segmentId: $this->segmentId,
             exportFilename: $this->exportFilename

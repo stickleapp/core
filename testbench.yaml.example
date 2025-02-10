@@ -43,3 +43,4 @@ env:
     DB_DATABASE: stickle-core
     DB_USERNAME: root
     DB_PASSWORD:
+    LOG_CHANNEL: stack

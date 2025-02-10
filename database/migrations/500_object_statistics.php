@@ -14,24 +14,25 @@ return new class extends Migration
         $prefix = config('stickle.database.tablePrefix') ?? '';
 
         \DB::connection()->getPdo()->exec("
-DROP TABLE IF EXISTS {$prefix}segment_statistics;
-CREATE TABLE {$prefix}segment_statistics (
+DROP TABLE IF EXISTS {$prefix}object_statistics;
+CREATE TABLE {$prefix}object_statistics (
     id BIGSERIAL,
-    segment_id BIGINT NOT NULL,
+    model TEXT NOT NULL,
+    object_uid TEXT NOT NULL,
     attribute TEXT NOT NULL,
     value FLOAT NULL,
-    value_avg FLOAT NULL,
     value_count FLOAT NULL,
-    value_max FLOAT NULL,
-    value_min FLOAT NULL,
     value_sum FLOAT NULL,
+    value_avg FLOAT NULL,
+    value_min FLOAT NULL,
+    value_max FLOAT NULL,
     recorded_at DATE NOT NULL
 ) PARTITION BY RANGE (recorded_at);
 
-CREATE INDEX ON {$prefix}segment_statistics (recorded_at);
+CREATE INDEX ON {$prefix}object_statistics (recorded_at);
 
-CREATE UNIQUE INDEX {$prefix}segment_statistics_segment_id_attribute_recorded_at_unique ON {$prefix}segment_statistics (segment_id, attribute, recorded_at);
-        ");
+CREATE UNIQUE INDEX {$prefix}object_statistics_model_object_uid_attribute_recorded_at_unique ON {$prefix}object_statistics (model, object_uid, attribute, recorded_at);
+");
     }
 
     /**
@@ -43,6 +44,6 @@ CREATE UNIQUE INDEX {$prefix}segment_statistics_segment_id_attribute_recorded_at
     {
         $prefix = config('stickle.database.tablePrefix') ?? '';
 
-        Schema::dropIfExists("{$prefix}segment_statistics");
+        Schema::dropIfExists("{$prefix}object_statistics");
     }
 };

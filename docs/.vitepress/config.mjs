@@ -67,11 +67,25 @@ export default defineConfig({
                 items: [
                     {
                         text: "Model Attributes",
-                        link: "/guide/model-attributes",
+                        link: "/guide/tracking-model-attributes",
                     },
                     {
                         text: "Segment Statistics",
                         link: "/guide/tracking-segments",
+                    },
+                ],
+            },
+            {
+                text: "Aggregating Data",
+                collapsed: false,
+                items: [
+                    {
+                        text: "User Attributes",
+                        link: "/guide/aggregate-user-attributes",
+                    },
+                    {
+                        text: "Group Attributes",
+                        link: "/guide/aggregate-group-attributes",
                     },
                 ],
             },

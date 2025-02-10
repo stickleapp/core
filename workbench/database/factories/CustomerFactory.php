@@ -28,6 +28,7 @@ class CustomerFactory extends Factory
     {
         return [
             'name' => fake()->company(),
+            // 'mrr' => [24, 49, 99, 199, 499, 999][rand(0, 5)],
         ];
     }
 }

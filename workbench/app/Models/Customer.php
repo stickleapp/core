@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use StickleApp\Core\Attributes\ModelAttributeDescription;
-use StickleApp\Core\Traits\Trackable;
+use StickleApp\Core\Traits\GroupTrait as StickleGroup;
 use Workbench\Database\Factories\CustomerFactory;
 
 class Customer extends Model
 {
-    use HasFactory, Trackable;
+    use HasFactory, StickleGroup;
 
     /**
      * Create a new factory instance for the model.
@@ -58,12 +58,7 @@ class Customer extends Model
      * Specify the attributes that should be observed (via Observable)
      */
     public array $observedAttributes = [
-        'user_rating',
-        'order_count',
-        'order_item_count',
-        // 'total_spend',
-        // 'last_order_total',
-        // 'last_order_item_count',
+        'mrr',
     ];
 
     public function children(): hasMany

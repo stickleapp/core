@@ -23,15 +23,15 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('parent_id')->nullable(true);
             $table->text('name')->nullable(false);
+
             $table->timestamps();
 
             $table->foreign('parent_id')->references('id')->on('customers');
         });
 
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('user_rating')->nullable(true);
             $table->unsignedBigInteger('customer_id')->nullable(true);
-
+            $table->integer('user_rating')->nullable(true);
             $table->foreign('customer_id')->references('id')->on('customers');
         });
 
@@ -72,5 +72,15 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down() {}
+    public function down()
+    {
+        Schema::dropIfExists('order_items');
+        Schema::dropIfExists('orders');
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('customer_id');
+            $table->dropColumn('user_rating');
+        });
+        Schema::dropIfExists('customers');
+    }
 };
