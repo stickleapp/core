@@ -15,9 +15,9 @@ class ObjectAttributesSeeder extends Seeder
     {
         $prefix = config('stickle.database.tablePrefix');
 
-        $sql = <<<'sql'
-DELETE FROM lc_object_attributes;
-INSERT INTO lc_object_attributes (
+        $sql = <<<sql
+DELETE FROM {$prefix}object_attributes;
+INSERT INTO {$prefix}object_attributes (
 	model,
 	object_uid,
 	model_attributes,
@@ -95,7 +95,7 @@ ON CONFLICT (modeL, object_uid)
 DO UPDATE SET
   model_attributes = EXCLUDED.model_attributes;
 
-INSERT INTO lc_object_attributes (
+INSERT INTO {$prefix}object_attributes (
 	model,
 	object_uid,
 	model_attributes,

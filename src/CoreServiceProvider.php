@@ -15,6 +15,7 @@ use StickleApp\Core\Commands\ExportSegments;
 use StickleApp\Core\Commands\ProcessSegmentEvents;
 use StickleApp\Core\Commands\RecordObjectAttributes;
 use StickleApp\Core\Commands\RecordSegmentStatistics;
+use StickleApp\Core\Commands\RollupSessions;
 use StickleApp\Core\Contracts\AnalyticsRepository;
 use StickleApp\Core\Middleware\InjectJavascriptTrackingCode;
 use StickleApp\Core\Middleware\RequestLogger;
@@ -69,6 +70,7 @@ final class CoreServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands(
                 commands: [
+                    RollupSessions::class,
                     CreatePartitions::class,
                     DropPartitions::class,
                     ExportSegments::class,

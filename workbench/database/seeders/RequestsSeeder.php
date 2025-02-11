@@ -43,7 +43,7 @@ INSERT INTO {$prefix}requests (
 SELECT
     (((SELECT MAX(id) FROM users) * random())+1)::INT::TEXT AS object_uid,
     '\App\Models\User' AS model,
-    'session_' || (random() * 20)::int::text AS session_uid,
+    'session_' || (random() * 90)::int::text AS session_uid,
     'http://example.com' AS url,
     '/path/to/page' AS path,
     'example.com' AS host,
@@ -55,7 +55,7 @@ SELECT
     'utm_content' AS utm_content,
     CURRENT_TIMESTAMP - (random() * interval '19 days') AS timestamp
 FROM
-    generate_series(1,1e3) AS s;
+    generate_series(1,1e6) AS s;
 
 -- ----------------------------------------------------------------------------
 -- RUN AGGREGATION QUERIES

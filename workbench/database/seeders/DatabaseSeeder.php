@@ -18,12 +18,14 @@ class DatabaseSeeder extends Seeder
             UsersSeeder::class,
             ObjectSegmentsSeeder::class,
             ObjectAttributesSeeder::class,
+            ObjectAttributesAuditSeeder::class,
             ObjectStatisticsSeeder::class,
             EventsSeeder::class,
             RequestsSeeder::class,
             OrdersSeeder::class,
             SegmentsSeeder::class,
             SegmentStatisticsSeeder::class,
+            SessionsSeeder::class,
         ]);
     }
 }

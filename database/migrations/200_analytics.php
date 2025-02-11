@@ -472,7 +472,19 @@ BEGIN
 END; 
 $$
 LANGUAGE plpgsql;
-        ");
+
+-- ----------------------------------------------------------------------------
+-- SESSIONS 1 DAY AGGREGATION
+-- ----------------------------------------------------------------------------
+CREATE TABLE {$prefix}sessions_rollup_1day (
+    object_uid TEXT NOT NULL,
+    model TEXT NOT NULL,
+    day TIMESTAMPTZ NOT NULL,
+    session_count INT NOT NULL
+) PARTITION BY RANGE (day);
+CREATE INDEX ON {$prefix}sessions_rollup_1day (day);
+CREATE UNIQUE INDEX {$prefix}sessions_rollup_1day_unique_idx ON {$prefix}sessions_rollup_1day(object_uid, model, day);
+");
     }
 
     /**
@@ -484,6 +496,7 @@ LANGUAGE plpgsql;
     {
         $prefix = config('stickle.database.tablePrefix') ?? '';
 
+        DB::unprepared("DROP TABLE IF EXISTS {$prefix}sessions_rollup_1day CASCADE");
         Schema::dropIfExists("{$prefix}requests");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1min CASCADE");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_5min CASCADE");
