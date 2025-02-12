@@ -5,6 +5,7 @@ namespace StickleApp\Core\Listeners;
 use DateTime;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use StickleApp\Core\Contracts\AnalyticsRepository;
 use StickleApp\Core\Events\Track;
 
@@ -21,8 +22,8 @@ class TrackListener implements ShouldQueue
 
         $this->repository->saveEvent(
             model: data_get($event->data, 'model'),
-            objectUid: data_get($event->data, 'objectUid'),
-            sessionUid: data_get($event->data, 'sessionUid'),
+            objectUid: data_get($event->data, 'object_uid'),
+            sessionUid: data_get($event->data, 'session_uid'),
             timestamp: data_get($event->data, 'timestamp', new DateTime),
             event: data_get($event->data, 'event'),
             properties: data_get($event->data, 'properties'),
@@ -37,9 +38,12 @@ class TrackListener implements ShouldQueue
          * i_did_a_thing => IDidAThingListener
          * IDidAThing => IDidAThingListener
          */
-        $class = config('stickle.paths.listeners').'\\'.class_basename(data_get($event, 'data.event')).'Listener';
+        $class = config('stickle.paths.listeners').
+            '\\'.
+            Str::studly(class_basename(data_get($event->data, 'event'))).
+            'Listener';
 
-        Log::debug('TrackEvent Class', [$class]);
+        Log::info('TrackEvent Class', [$class]);
 
         if (class_exists($class)) {
             Log::debug('TrackEvent Class Exists', [$class]);
