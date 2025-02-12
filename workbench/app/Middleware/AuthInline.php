@@ -4,8 +4,8 @@ namespace Workbench\App\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AuthInline
 {
@@ -23,7 +23,7 @@ class AuthInline
 
         Log::info('Authenticating with credentials', $credentials);
 
-        if (!Auth::attempt($credentials)) {
+        if (! Auth::attempt($credentials)) {
             return response()->json($credentials, 401);
         }
 
