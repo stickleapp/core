@@ -8,11 +8,6 @@ use Illuminate\Support\Str;
 use SplFileInfo;
 use Workbench\App\Commands\SendTestRequests;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Log;
-use Workbench\App\Middleware\AuthInline;
-
 class WorkbenchServiceProvider extends ServiceProvider
 {
     /**
