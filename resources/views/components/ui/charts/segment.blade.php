@@ -1,18 +1,23 @@
 <div>
-    <div class="p-5">{{ $title }}</div>
-    <canvas id="chart-canvas"></canvas>
+  <div class="sm:flex sm:items-center mb-8">
+      <div class="sm:flex-auto p-6">
+          <h1 class="text-base font-semibold text-gray-900">Users</h1>
+          <p class="mt-2 text-sm text-gray-700">A list of all the users in your account including their name, title, email and role.</p>
+      </div>
+  </div>  
+  <canvas id="chart-canvas"></canvas>
 </div>
+
 <script>
     document.addEventListener("DOMContentLoaded", async function() {
-
         const endpoint = "{!! $endpoint !!}";
         
-        try {
             const headers = new Headers({
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             }) ;
             
+        try {
             const response = await fetch(
                 endpoint, 
                 { 
@@ -20,7 +25,10 @@
                 }
             );
 
-            const data = await response.json();
+        } catch (error) {
+            console.error("Error fetching chart data:", error);
+        }
+            // const data = await response.json();
             
             // const labels = data.labels;
 
@@ -35,7 +43,7 @@
             new Chart(
                 ctx, 
                 {
-                    type: '{{ $type  }}',
+                    type: 'bar',
                     data: {
                         labels: labels,
                         datasets: [{
@@ -69,8 +77,5 @@
                     }
                 }
             );
-        } catch (error) {
-            console.error("Error fetching chart data:", error);
-        }
     });
 </script>

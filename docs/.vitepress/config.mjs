@@ -41,6 +41,10 @@ export default defineConfig({
                         text: "Illuminate\\Auth Events",
                         link: "/guide/illuminate-auth-events",
                     },
+                    {
+                        text: "3rd-Party Data",
+                        link: "/guide/3rd-party-integrations",
+                    },
                 ],
             },
             {
@@ -118,6 +122,17 @@ export default defineConfig({
                 items: [
                     { text: "Custom Scopes", link: "/guide/scopes" },
                     { text: "API Endpoints", link: "/guide/endpoints" },
+                ],
+            },
+            {
+                text: "StickleUI",
+                collapsed: false,
+                items: [
+                    {
+                        text: "Getting Started",
+                        link: "/guide/ui-getting-started",
+                    },
+                    { text: "Customizing", link: "/guide/ui-customizing" },
                 ],
             },
         ],

@@ -17,7 +17,7 @@ class PageListener implements ShouldQueue
 
     public function handle(Page $event): void
     {
-        Log::debug('PageEvent Handled', [$event]);
+        Log::debug('PageListener->handle()', [$event]);
 
         $this->repository->saveRequest(
             model: data_get($event->data, 'model'),

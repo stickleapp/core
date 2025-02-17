@@ -26,18 +26,18 @@ class ObjectAttributeObserver
                 'model' => $objectAttribute->model,
                 'object_uid' => $objectAttribute->object_uid,
                 'attribute' => $property,
-                'created_at' => now(),
+                'timestamp' => now(),
             ], [
-                'from' => Arr::get($changes, 'from'),
-                'to' => Arr::get($changes, 'to'),
+                'value_old' => Arr::get($changes, 'value_old'),
+                'value_new' => Arr::get($changes, 'value_new'),
             ]);
 
             ObjectAttributeChanged::dispatch(
                 $objectAttribute->model,
                 $objectAttribute->object_uid,
                 $property,
-                Arr::get($changes, 'from'),
-                Arr::get($changes, 'to')
+                Arr::get($changes, 'value_old'),
+                Arr::get($changes, 'value_new')
             );
         }
     }
@@ -53,8 +53,8 @@ class ObjectAttributeObserver
             // Check if the key exists in the modified array and if the value is different
             if (array_key_exists($key, $modified) && $modified[$key] !== $value) {
                 $changed[$key] = [
-                    'from' => $value,
-                    'to' => $modified[$key],
+                    'value_old' => $value,
+                    'value_new' => $modified[$key],
                 ];
             }
         }
@@ -63,8 +63,8 @@ class ObjectAttributeObserver
         foreach ($modified as $key => $value) {
             if (! array_key_exists($key, $original)) {
                 $changed[$key] = [
-                    'from' => null,
-                    'to' => $value,
+                    'value_old' => null,
+                    'value_new' => $value,
                 ];
             }
         }

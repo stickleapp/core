@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class ObjectAttributesAudit extends Model
 {
+    public $timestamps = false;
+
     /**
      * Creates a new analytics repository instance.
      */
@@ -27,8 +29,8 @@ class ObjectAttributesAudit extends Model
         'object_uid',
         'model',
         'attribute',
-        'from',
-        'to',
+        'value_old',
+        'value_new',
     ];
 
     /**

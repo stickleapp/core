@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Models\ObjectAttribute;
 
-trait GroupTrait
+trait StickleEntity
 {
     public static function getTableName()
     {
@@ -60,7 +60,7 @@ trait GroupTrait
         return $filter->apply($builder, 'or');
     }
 
-    public static function bootTrackable()
+    public static function bootStickleEntity()
     {
 
         /**

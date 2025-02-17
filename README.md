@@ -180,7 +180,7 @@ Stickle runs several jobs to transform your data. You can update the frequency t
 -   `Relationship`. You should specify the relationship between the `Group` and the `User`. By default, the relationship is `Illuminate\Database\Eloquent\Relations\HasMany` meaning each `Group` has zero or more `Users` objects. Other options include:
     -   `Illuminate\Database\Eloquent\Relations\HasOne`. Each `User` belongs to one `Group` and each `Group` has exactly one `User`.
     -   `Illuminate\Database\Eloquent\Relations\BelongsToMany`. Each `User` can belong to zero or more `Groups` and each `Group` can have have zero or more `Users`.
--   `Payment`. You can **optionally** specify a Payment model that represents a payment made by a Trackable model to your organization.
+-   `Payment`. You can **optionally** specify a Payment model that represents a payment made by a StickleEntity model to your organization.
 
 ## Tracking Options
 
@@ -275,7 +275,7 @@ Stickle('group', []);
 
 ## Tracking Model Attribute Changes
 
-In your Trackable model, you can have Stickle track numerical attributes over time. To do so, add the attribute to the `$tracked` array on the model.
+In your StickleEntity model, you can have Stickle track numerical attributes over time. To do so, add the attribute to the `$tracked` array on the model.
 
 ## Eloquent Models
 
@@ -313,7 +313,7 @@ Please see [docs/ELOQUENT](docs/ELOQUENT.md) for a full list of filters and opti
 
 ## Creating Segments
 
-You can create segments of Trackable models by creating a class that implements the `Segment` contract and placing it in the `App\Segments` directory.
+You can create segments of StickleEntity models by creating a class that implements the `Segment` contract and placing it in the `App\Segments` directory.
 
 These classes contain the definition of the segment, most notably, a method that returns a `Illuminate\Database\Eloquent\Builder` that returns the items contained in the Segment.
 
@@ -321,7 +321,7 @@ These classes contain the definition of the segment, most notably, a method that
 | ------------------ | ------------------------------------------------------------------------ | -------- | --------- | ------- |
 | name               | Human readable name                                                      | Y        | String    |         |
 | refreshInterval    | How frequently the segment is refreshed (minutes)                        | Y        | Integer   | 360     |
-| class              | The Trackable model class (ex. App\Models\User)                          | Y        | String    |         |
+| class              | The StickleEntity model class (ex. App\Models\User)                      | Y        | String    |         |
 | builder()          | An Eloquent builder class that specifies the filters forming the segment | Y        | Builder   |         |
 
 ## Reacting to Events

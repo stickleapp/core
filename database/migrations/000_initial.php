@@ -43,22 +43,6 @@ return new class extends Migration
             $table->index('object_uid');
         });
 
-        // Schema::create("{$prefix}object_attributes_audit", function (Blueprint $table) {
-        //     $table->id();
-        //     $table->text('model')->nullable(false);
-        //     $table->text('object_uid')->nullable(false);
-        //     $table->text('attribute')->nullable(false);
-        //     $table->text('from')->nullable(true);
-        //     $table->text('to')->nullable(true);
-        //     $table->timestamps();
-
-        //     $table->unique(['model', 'object_uid', 'attribute', 'created_at']);
-
-        //     $table->index('model');
-        //     $table->index('object_uid');
-        //     $table->index('attribute');
-        // });
-
         Schema::create("{$prefix}object_segment", function (Blueprint $table) {
             $table->id();
             $table->text('object_uid')->nullable(false);
@@ -148,7 +132,6 @@ return new class extends Migration
         Schema::dropIfExists("{$prefix}object_segment_statistics");
         Schema::dropIfExists("{$prefix}object_segment_audit");
         Schema::dropIfExists("{$prefix}object_segment");
-        // Schema::dropIfExists("{$prefix}object_attributes_audit");
         Schema::dropIfExists("{$prefix}object_attributes");
     }
 };

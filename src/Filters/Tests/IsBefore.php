@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Stickle\Core\Filters\Tests;
+namespace StickleApp\Core\Filters\Tests;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Number;
-use Stickle\Core\Contracts\FilterTarget;
-use Stickle\Core\Contracts\FilterTest;
+use StickleApp\Core\Contracts\FilterTarget;
+use StickleApp\Core\Contracts\FilterTest;
 
 class IsBefore extends FilterTest
 {

@@ -4,7 +4,30 @@ outline: deep
 
 # Use Cases
 
-1. First install it and configure it...
+Stickle is extremely powerful&mdash;if you need it to be. But it very easy to get started.
+
+## Is anyone using my app? Who? What are they doing?
+
+Stickle has you covered. Install Stickle and run the `stickle:configure` script and then navigate to `/stickle`.
+
+Stickle is already processing your user data and making it available in snazzy charts and data tables. Have a click around and then come back here!
+
+## Let's Segment your customers!
+
+Not all customers are alike. If you know Laravel Eloquent, then you can build powerful Segments. Here are some ideas:
+
+-   Customers who joined this week.
+-   Customers who have paid the most money.
+-   Customers who have been active the longest.
+-   Cusotmers who have made the most purchases.
+-   Customers renewing in the next 30- (or 60- or 90-) days.
+-   ICP (Ideal Customer Profile)
+
+We've already created a few of these for you to use as examples.
+
+Once you have built a Segment, Stickle will start tracking your customer KPIs at the Segment-level (ex. what is the MRR of Customers renewing in the next 30 days).
+
+## I need more customer data!
 
 QuickStart SPA, Inertia, Livewire, Blade (sets reasonable defaults);
 

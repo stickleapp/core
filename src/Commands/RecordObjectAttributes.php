@@ -9,8 +9,7 @@ use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\Config;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use StickleApp\Core\Traits\GroupTrait as StickleGroupTrait;
-use StickleApp\Core\Traits\UserTrait as StickleUserTrait;
+use StickleApp\Core\Traits\StickleEntity;
 
 final class RecordObjectAttributes extends Command implements Isolatable
 {
@@ -44,7 +43,7 @@ final class RecordObjectAttributes extends Command implements Isolatable
         $directory = $this->argument('directory');
         $namespace = $this->argument('namespace');
 
-        $classes = $this->getClassesWithTraits([StickleUserTrait::class, StickleGroupTrait::class], $directory, $namespace);
+        $classes = $this->getClassesWithTraits([StickleEntity::class], $directory, $namespace);
 
         foreach ($classes as $class) {
             $object = new $class;

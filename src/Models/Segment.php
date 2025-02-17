@@ -3,7 +3,9 @@
 namespace StickleApp\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class Segment extends Model
 {
@@ -57,5 +59,14 @@ class Segment extends Model
     public function segmentStatistics(): HasMany
     {
         return $this->hasMany(SegmentStatistic::class);
+    }
+
+    /**
+     * Get the SegmentStatistics associated with the Segment
+     */
+    public function objects(): BelongsToMany
+    {
+        return $this->belongsToMany($this->model, 'lc_object_segment', 'segment_id', 'object_uid')
+            ->join('users', DB::raw('users.id::string'), '=', 'lc_object_segment.object_uid');
     }
 }

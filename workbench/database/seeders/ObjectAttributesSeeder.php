@@ -4,6 +4,7 @@ namespace Workbench\Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
 class ObjectAttributesSeeder extends Seeder
@@ -14,6 +15,10 @@ class ObjectAttributesSeeder extends Seeder
     public function run(): void
     {
         $prefix = config('stickle.database.tablePrefix');
+
+        $date = now()->subDays(25)->toDateString();
+
+        Artisan::call("stickle:create-partitions {$prefix}object_attributes_audit public week '{$date}' 2");
 
         $sql = <<<sql
 DELETE FROM {$prefix}object_attributes;

@@ -16,6 +16,6 @@ test('Creates correct sql', function () {
     $filter->target->applyJoin($builder);
 
     expect($builder->toSql())->toBe(
-        sprintf('select * from "users" left join (select "model", "object_uid", sum(event_count) as event_count from "%sevents_rollup_1day" where "event_name" = ? and "day"::date >= ? and "day"::date < ? group by "model", "object_uid") as "ea359f2879dcae9a2c79f80ff98624cf" on "ea359f2879dcae9a2c79f80ff98624cf"."object_uid" = "users"."object_uid" and "ea359f2879dcae9a2c79f80ff98624cf"."model" = "users"."model"', $prefix)
+        sprintf('select * from "users" left join (select "model", "object_uid", sum(event_count) as event_count from "%sevents_rollup_1day" where "event_name" = ? and "day"::date >= ? and "day"::date < ? group by "model", "object_uid") as "b45d8e0405d2ec36e0e77a5dd4a1cdda" on "b45d8e0405d2ec36e0e77a5dd4a1cdda"."object_uid" = "users"."object_uid" and "b45d8e0405d2ec36e0e77a5dd4a1cdda"."model" = "users"."model"', $prefix)
     );
 });

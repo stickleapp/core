@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use StickleApp\Core\Http\Controllers\IngestController;
+use StickleApp\Core\Http\Controllers\SegmentObjectsController;
 use StickleApp\Core\Http\Controllers\SegmentStatisticsController;
 
 /**
@@ -14,4 +15,7 @@ Route::middleware(['api'])->group(function () {
 
     Route::get('/stickle/api/segment-statistics', [SegmentStatisticsController::class, 'index'])
         ->name('segment-statistics');
+
+    Route::get('/stickle/api/segment-objects', [SegmentObjectsController::class, 'index'])
+        ->name('segment-objects');
 });

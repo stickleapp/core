@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Attributes\WithMigration;
 use Orchestra\Testbench\TestCase as Orchestra;
-use StickleApp\Core\Providers\CoreServiceProvider;
+use StickleApp\Core\CoreServiceProvider;
 
 use function Orchestra\Testbench\workbench_path;
 

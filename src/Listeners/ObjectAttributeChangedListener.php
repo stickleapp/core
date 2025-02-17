@@ -15,7 +15,7 @@ class ObjectAttributeChangedListener implements ShouldQueue
 
     public function handle(ObjectAttributeChanged $event): void
     {
-        Log::debug('ObjectAttributeChanged Handled', [$event]);
+        Log::debug('ObjectAttributeChangedListener->handle()', [$event]);
 
         /**
          * Look for a listener Model + Attribute + Listener

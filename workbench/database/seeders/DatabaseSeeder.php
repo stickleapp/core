@@ -3,6 +3,7 @@
 namespace Workbench\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -13,6 +14,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $prefix = config('stickle.database.tablePrefix');
+
+        $date = now()->subDays(25)->toDateString();
+
+        Artisan::call("stickle:create-partitions {$prefix}object_attributes_audit public week '{$date}' 2");
+
         $this->call([
             CustomersSeeder::class,
             UsersSeeder::class,

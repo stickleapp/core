@@ -5,7 +5,7 @@ namespace StickleApp\Core\Attributes;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class Description
+class ModelAttributeDescription
 {
     public function __construct(public string $value) {}
 }

@@ -73,12 +73,12 @@ $customer->stickle()
     ->users(withChildGroups: false)
     ->attribute(attribute: 'mrr')
     ->sum();
-$customer->stickle()->groups()->users()->attribute(attribute: 'mrr')->min();
-$customer->stickle()->groups()->users()->attribute(attribute: 'mrr')->max();
+$customer->stickle()->includeGroups()->includeUsers()->attribute(attribute: 'mrr')->min();
+$customer->stickle()->includeGroups()->includeUsers()->attribute(attribute: 'mrr')->max();
 
-$customer->stickle()->users()->attribute(attribute: 'mrr')->sum();
-$customer->stickle()->users()->attribute(attribute: 'mrr')->min();
-$customer->stickle()->users()->attribute(attribute: 'mrr')->max();
+$customer->stickle()->includeUsers()->attribute(attribute: 'mrr')->sum();
+$customer->stickle()->includeUsers()->attribute(attribute: 'mrr')->min();
+$customer->stickle()->includeUsers()->attribute(attribute: 'mrr')->max();
 ```
 
 ```php

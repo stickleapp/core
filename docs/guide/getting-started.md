@@ -20,12 +20,36 @@ Stickle does not know _first login_ or _most recent login_ if those events occur
 
 Do you want to see what your Users are collectively doing in real-time? Navigate to `/stickle/events` and see these events streaming in.
 
+## Let's have a closer look at an individual customer!
+
 Click on one of the Users and we can have a deeper look.
 
 The User view will show you:
 
 -   A history of the Users sessions over time;
--   Which pages they have visited.
+-   Which pages they have visited;
+-   When they signed up;
+-   When they last logged in;
+-   User-defined attributes (we'll get to this later!).
+
+Depending on your configuration, your customers may have **Sub Accounts** or a list of **Users**.
+
+## Not all customers are created equal.
+
+Not all customers are alike. If you know Laravel Eloquent, then you can build powerful Segments. Here are some ideas:
+
+-   Customers who joined this week.
+-   Customers who have paid the most money.
+-   Customers who have been active the longest.
+-   Cusotmers who have made the most purchases.
+-   Customers renewing in the next 30- (or 60- or 90-) days.
+-   ICP (Ideal Customer Profile)
+
+We've already created a few of these for you to use as examples.
+
+Once you have built a Segment, Stickle will start tracking your customer KPIs at the Segment-level (ex. what is the MRR of Customers renewing in the next 30 days).
+
+## I need more customer data!
 
 1. First install it and configure it...
 

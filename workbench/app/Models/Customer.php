@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use StickleApp\Core\Attributes\ModelAttributeDescription;
-use StickleApp\Core\Traits\GroupTrait as StickleGroup;
+use StickleApp\Core\Traits\StickleEntity;
 use Workbench\Database\Factories\CustomerFactory;
 
 class Customer extends Model
 {
-    use HasFactory, StickleGroup;
+    use HasFactory, StickleEntity;
 
     /**
      * Create a new factory instance for the model.

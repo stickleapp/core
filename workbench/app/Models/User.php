@@ -6,12 +6,12 @@ namespace Workbench\App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use StickleApp\Core\Traits\UserTrait as StickleUser;
+use StickleApp\Core\Traits\StickleEntity;
 use Workbench\Database\Factories\UserFactory;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, StickleUser;
+    use HasFactory, Notifiable, StickleEntity;
 
     protected $table = 'users';
 

@@ -11,3 +11,4 @@ Stickle exposes several endpoints.
 -   /stickle/objects-segments
 -   /stickle/segments
 -   /stickle/segment-statistics
+-   /stickle/load-data

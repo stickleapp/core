@@ -16,7 +16,7 @@ class IdentifyListener implements ShouldQueue
 
     public function handle(Identify $event): void
     {
-        Log::debug('IdentifyEvent Handled', [$event]);
+        Log::debug('IdentifyListener->handle()', [$event]);
 
         // $this->repository->saveGroup(
 

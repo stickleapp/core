@@ -26,6 +26,8 @@ use StickleApp\Core\Repositories\PostgresAnalyticsRepository;
 use StickleApp\Core\Views\Components\Demo\Layouts\DefaultLayout as DemoDefaultLayout;
 use StickleApp\Core\Views\Components\UI\Charts\SegmentChart;
 use StickleApp\Core\Views\Components\UI\Layouts\DefaultLayout as UIDefaultLayout;
+use StickleApp\Core\Views\Components\UI\Tables\SegmentTable;
+use StickleApp\Core\Views\Components\UI\Timelines\EventTimeline;
 
 final class CoreServiceProvider extends ServiceProvider
 {
@@ -93,6 +95,8 @@ final class CoreServiceProvider extends ServiceProvider
         Blade::component('stickle-demo-default-layout', DemoDefaultLayout::class);
         Blade::component('stickle-ui-default-layout', UIDefaultLayout::class);
         Blade::component('stickle-segment-chart', SegmentChart::class);
+        Blade::component('stickle-segment-table', SegmentTable::class);
+        Blade::component('stickle-events-timeline', EventTimeline::class);
 
         /**
          * Publish resources used by this package

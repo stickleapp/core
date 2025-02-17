@@ -7,9 +7,15 @@ use Illuminate\Support\Facades\Route;
  */
 Route::middleware(['web'])->group(function () {
 
-    /** Installation Demo */
-    Route::view('/stickle', 'stickle::components/ui/index')
-        ->name('stickle::ui/index');
+    /** Stickle UI */
+    Route::view('/stickle', 'stickle::pages/live')
+        ->name('stickle::index');
+    Route::view('/stickle/live', 'stickle::pages/live')
+        ->name('stickle::live');
+    Route::view('/stickle/users', 'stickle::pages/users')
+        ->name('stickle::users');
+    Route::view('/stickle/groups/{id}', 'stickle::pages/group')
+        ->name('stickle::group');
 
     /** Installation Demo */
     Route::view('/stickle-demo', 'stickle::demo/index')

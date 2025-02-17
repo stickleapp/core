@@ -13,9 +13,13 @@ Stickle is a customer analytics and engagement package for Laravel. Use it to:
 
 Stickle can be further extended by adding 1st-party Stickle apps and can be integrated with other Laravel Packages to expand their functionality.
 
-## StickleCore
+## What Stickle is not...
 
-StickleCore is the foundation of Stickle that:
+Stickle isn't a replacement for Google Analytics. It doesn't track unauthenticated users and isn't particularly interested in users before they become customers.
+
+## StickleCore <Badge type="warning" text="MIT License" />
+
+StickleCore is the foundation of Stickle that runs on your application server(s) gathering and preprocessing data about your users:
 
 -   Tracks user attributes and behavior via a Javascript tracking code;
 -   Logs authentication events;
@@ -25,24 +29,39 @@ StickleCore is the foundation of Stickle that:
 -   Exposes a REST API endpoint for ingesting events from other channels (Mobile, etc);
 -   Provides the ability to define customer segments 'as-code' and track these segments over time.
 
-## StickleUI
+## StickleUI <Badge type="warning" text="MIT License" />
 
-StickleUI complements StickleCore, providing analytics and reporting for StickleCore. StickleUI is built in [] (Filament) and provides an out-of-the box solution for analyzing your customer base.
+StickleUI is bundled with StickleCore, providing analytics and reporting for StickleCore. StickleUI provides some out-of-the-box reports on your customers and allows you to build your own reports, customized to your business.
 
--   Browse and search users;
--   Browse your segments of Users;
--   Export segments to CSV;
+You can:
+
+-   Browse and search users and gropus;
+-   Browse your segments of users and groups;
+-   Export segments to CSV for further processing;
 -   View segment-level metrics;
--   View user-level metrics;
--   View user- and segment-events in real-time.
+-   View user- and group-level metrics;
+-   View user-, group- and segment-level events in real-time.
 
-## SticklePro
+StickleUI is composed of a rich library of Laravel Blade components that can be assembled to provide your team with information it needs.
 
-Want a full-featured, self-hosted, privacy first customer analytics, engagement and success platform at a fraction of the cost of a SaaS solution? Try SticklePro! SticklePro includes:
+StickleUI also has some low-level Blade Components which you can extend to make StickleUI fit your own use case.
+
+## SticklePro <Badge type="tip" text="From $499" />
+
+Want a full-featured, self-hosted, privacy first customer analytics, engagement and success platform at a fraction of the cost of a SaaS solution? Try SticklePro!
+
+SticklePro includes:
 
 -   Powerful playbooks and automations;
 -   In-app notifications;
 -   Customer health-scores;
 -   Customer digest builder (send personalized email upates to your customers).
 
-A one-time purchase of $299 gives you lifetime access to SticklePro and a year of updates. Stay up-to-date with a $199/year SticklePro subscription.
+A one-time purchase of $499 gives you lifetime access to SticklePro and a year of updates. Stay up-to-date with a $199/year SticklePro subscription.
+
+SticklePro subscription also includes:
+
+-   Access to all future feature releases;
+-   Access to members-only forum;
+-   Priority support for StickleCore issues;
+-   Email and live-chat support (24-hour response).

@@ -4,11 +4,11 @@ namespace FilterTest;
 
 use Carbon\Carbon;
 use StickleApp\Core\Filters\Base as Filter;
-use StickleApp\Core\Traits\Trackable;
+use StickleApp\Core\Traits\StickleEntity;
 
 class User extends \Illuminate\Database\Eloquent\Model
 {
-    use Trackable;
+    use StickleEntity;
 
     protected $table = 'users';
 }

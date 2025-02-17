@@ -1,6 +1,6 @@
 <?php
 
-use StickleApp\Core\Providers\CoreServiceProvider;
+use StickleApp\Core\CoreServiceProvider;
 
 it('can be instantiated', function () {
     $obj = new CoreServiceProvider(app());

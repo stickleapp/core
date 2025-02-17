@@ -1,7 +1,7 @@
 <?php
 
 use StickleApp\Core\Events\Identify;
-use StickleApp\Core\Providers\EventServiceProvider;
+use StickleApp\Core\EventServiceProvider;
 
 it('can be instantiated', function () {
     $obj = new EventServiceProvider(app());

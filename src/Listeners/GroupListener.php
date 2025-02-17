@@ -16,8 +16,7 @@ class GroupListener implements ShouldQueue
 
     public function handle(Group $event): void
     {
-
-        Log::debug('GroupEvent Handled', [$event]);
+        Log::debug('GroupListener->handle()', [$event]);
 
         // $this->repository->saveGroup(
 
