@@ -25,7 +25,7 @@ trait StickleEntity
     public static function scopeStickle(Builder $builder, Filter $filter)
     {
 
-        $prefix = config('stickle.database.tablePrefix');
+        $prefix = Config::string('stickle.database.tablePrefix');
 
         /**
          * We'll need this join for the filters but do not want to add it twice
@@ -45,7 +45,7 @@ trait StickleEntity
      */
     public static function scopeOrStickle(Builder $builder, Filter $filter)
     {
-        $prefix = config('stickle.database.tablePrefix');
+        $prefix = Config::string('stickle.database.tablePrefix');
 
         /**
          * We'll need this join for the filters but do not want to add it twice

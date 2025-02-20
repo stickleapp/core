@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Config;
 
 return new class extends Migration
 {
@@ -11,7 +12,7 @@ return new class extends Migration
      */
     public function up()
     {
-        $prefix = config('stickle.database.tablePrefix') ?? '';
+        $prefix = Config::string('stickle.database.tablePrefix');
 
         $sql = <<<'eof'
 CREATE OR REPLACE FUNCTION process_object_segment_audit() RETURNS TRIGGER AS $process_object_segment_audit$
@@ -171,7 +172,7 @@ eof;
      */
     public function down()
     {
-        $prefix = config('stickle.database.tablePrefix') ?? '';
+        $prefix = Config::string('stickle.database.tablePrefix');
 
         $sql = <<<'eof'
 DROP FUNCTION IF EXISTS f_activate_object_segments(segmentId INT, tempTable VARCHAR);

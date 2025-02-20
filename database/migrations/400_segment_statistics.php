@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Config;
 
 return new class extends Migration
 {
@@ -11,7 +12,7 @@ return new class extends Migration
      */
     public function up()
     {
-        $prefix = config('stickle.database.tablePrefix') ?? '';
+        $prefix = Config::string('stickle.database.tablePrefix');
 
         \DB::connection()->getPdo()->exec("
 DROP TABLE IF EXISTS {$prefix}segment_statistics;
@@ -31,7 +32,7 @@ CREATE TABLE {$prefix}segment_statistics (
 CREATE INDEX ON {$prefix}segment_statistics (recorded_at);
 
 CREATE UNIQUE INDEX {$prefix}segment_statistics_segment_id_attribute_recorded_at_unique ON {$prefix}segment_statistics (segment_id, attribute, recorded_at);
-        ");
+");
     }
 
     /**
@@ -41,7 +42,7 @@ CREATE UNIQUE INDEX {$prefix}segment_statistics_segment_id_attribute_recorded_at
      */
     public function down()
     {
-        $prefix = config('stickle.database.tablePrefix') ?? '';
+        $prefix = Config::string('stickle.database.tablePrefix');
 
         Schema::dropIfExists("{$prefix}segment_statistics");
     }

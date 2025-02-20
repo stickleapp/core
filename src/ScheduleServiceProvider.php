@@ -7,6 +7,7 @@ namespace StickleApp\Core;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Config;
 
 class ScheduleServiceProvider extends ServiceProvider
 {
@@ -20,10 +21,10 @@ class ScheduleServiceProvider extends ServiceProvider
             $schedule->command(
                 'stickle:create-partitions',
                 [
-                    config('stickle.database.tablePrefix').'events_rollup_1min',
-                    config('stickle.database.schema'),
-                    config('stickle.database.partitions.events.interval'),
-                    now()->add(Carbon::parse(config('stickle.database.partitions.events.extension'))->diffAsCarbonInterval())->format('Y-m-d'),
+                    Config::string('stickle.database.tablePrefix').'events_rollup_1min',
+                    Config::string('stickle.database.schema'),
+                    Config::string('stickle.database.partitions.events.interval'),
+                    now()->add(Carbon::parse(Config::string('stickle.database.partitions.events.extension'))->diffAsCarbonInterval())->format('Y-m-d'),
                 ]
             )->twiceDailyAt(1, 8, 0);
         });
@@ -32,10 +33,10 @@ class ScheduleServiceProvider extends ServiceProvider
             $schedule->command(
                 'stickle:create-partitions',
                 [
-                    config('stickle.database.tablePrefix').'events_rollup_5min',
-                    config('stickle.database.schema'),
-                    config('stickle.database.partitions.events.interval'),
-                    now()->add(Carbon::parse(config('stickle.database.partitions.events.extension'))->diffAsCarbonInterval())->format('Y-m-d'),
+                    Config::string('stickle.database.tablePrefix').'events_rollup_5min',
+                    Config::string('stickle.database.schema'),
+                    Config::string('stickle.database.partitions.events.interval'),
+                    now()->add(Carbon::parse(Config::string('stickle.database.partitions.events.extension'))->diffAsCarbonInterval())->format('Y-m-d'),
                 ]
             )->twiceDailyAt(3, 15, 0);
         });
@@ -44,10 +45,10 @@ class ScheduleServiceProvider extends ServiceProvider
             $schedule->command(
                 'stickle:create-partitions',
                 [
-                    config('stickle.database.tablePrefix').'events_rollup_1hr',
-                    config('stickle.database.schema'),
-                    config('stickle.database.partitions.events.interval'),
-                    now()->add(Carbon::parse(config('stickle.database.partitions.events.extension'))->diffAsCarbonInterval())->format('Y-m-d'),
+                    Config::string('stickle.database.tablePrefix').'events_rollup_1hr',
+                    Config::string('stickle.database.schema'),
+                    Config::string('stickle.database.partitions.events.interval'),
+                    now()->add(Carbon::parse(Config::string('stickle.database.partitions.events.extension'))->diffAsCarbonInterval())->format('Y-m-d'),
                 ]
             )->twiceDailyAt(5, 17, 0);
         });
@@ -56,10 +57,10 @@ class ScheduleServiceProvider extends ServiceProvider
             $schedule->command(
                 'stickle:create-partitions',
                 [
-                    config('stickle.database.tablePrefix').'events_rollup_1day',
-                    config('stickle.database.schema'),
-                    config('stickle.database.partitions.interval'),
-                    now()->add(Carbon::parse(config('stickle.database.partitions.events.extension'))->diffAsCarbonInterval())->format('Y-m-d'),
+                    Config::string('stickle.database.tablePrefix').'events_rollup_1day',
+                    Config::string('stickle.database.schema'),
+                    Config::string('stickle.database.partitions.events.interval'),
+                    now()->add(Carbon::parse(Config::string('stickle.database.partitions.events.extension'))->diffAsCarbonInterval())->format('Y-m-d'),
                 ]
             )->twiceDailyAt(7, 19, 0);
         });
@@ -71,10 +72,10 @@ class ScheduleServiceProvider extends ServiceProvider
             $schedule->command(
                 'stickle:drop-partitions',
                 [
-                    config('stickle.database.tablePrefix').'events_rollup_1min',
-                    config('stickle.database.schema'),
-                    config('stickle.database.partitions.interval'),
-                    now()->add(Carbon::parse(config('stickle.database.partitions.events.retention'))->diffAsCarbonInterval())->format('Y-m-d'),
+                    Config::string('stickle.database.tablePrefix').'events_rollup_1min',
+                    Config::string('stickle.database.schema'),
+                    Config::string('stickle.database.partitions.events.interval'),
+                    now()->add(Carbon::parse(Config::string('stickle.database.partitions.events.retention'))->diffAsCarbonInterval())->format('Y-m-d'),
                 ]
             )->twiceDailyAt(1, 8, 0);
         });
@@ -83,10 +84,10 @@ class ScheduleServiceProvider extends ServiceProvider
             $schedule->command(
                 'stickle:drop-partitions',
                 [
-                    config('stickle.database.tablePrefix').'events_rollup_5min',
-                    config('stickle.database.schema'),
-                    config('stickle.database.partitions.interval'),
-                    now()->add(Carbon::parse(config('stickle.database.partitions.events.retention'))->diffAsCarbonInterval())->format('Y-m-d'),
+                    Config::string('stickle.database.tablePrefix').'events_rollup_5min',
+                    Config::string('stickle.database.schema'),
+                    Config::string('stickle.database.partitions.events.interval'),
+                    now()->add(Carbon::parse(Config::string('stickle.database.partitions.events.retention'))->diffAsCarbonInterval())->format('Y-m-d'),
                 ]
             )->twiceDailyAt(3, 15, 0);
         });
@@ -95,10 +96,10 @@ class ScheduleServiceProvider extends ServiceProvider
             $schedule->command(
                 'stickle:drop-partitions',
                 [
-                    config('stickle.database.tablePrefix').'events_rollup_1hr',
-                    config('stickle.database.schema'),
-                    config('stickle.database.partitions.interval'),
-                    now()->add(Carbon::parse(config('stickle.database.partitions.events.retention'))->diffAsCarbonInterval())->format('Y-m-d'),
+                    Config::string('stickle.database.tablePrefix').'events_rollup_1hr',
+                    Config::string('stickle.database.schema'),
+                    Config::string('stickle.database.partitions.events.interval'),
+                    now()->add(Carbon::parse(Config::string('stickle.database.partitions.events.retention'))->diffAsCarbonInterval())->format('Y-m-d'),
                 ]
             )->twiceDailyAt(5, 17, 0);
         });
@@ -107,10 +108,10 @@ class ScheduleServiceProvider extends ServiceProvider
             $schedule->command(
                 'stickle:drop-partitions',
                 [
-                    config('stickle.database.tablePrefix').'events_rollup_1day',
-                    config('stickle.database.schema'),
-                    config('stickle.database.partitions.interval'),
-                    now()->add(Carbon::parse(config('stickle.database.partitions.events.retention'))->diffAsCarbonInterval())->format('Y-m-d'),
+                    Config::string('stickle.database.tablePrefix').'events_rollup_1day',
+                    Config::string('stickle.database.schema'),
+                    Config::string('stickle.database.partitions.events.interval'),
+                    now()->add(Carbon::parse(Config::string('stickle.database.partitions.events.retention'))->diffAsCarbonInterval())->format('Y-m-d'),
                 ]
             )->twiceDailyAt(7, 19, 0);
         });

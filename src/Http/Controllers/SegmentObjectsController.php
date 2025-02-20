@@ -2,12 +2,13 @@
 
 namespace StickleApp\Core\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use StickleApp\Core\Models\Segment;
 
 class SegmentObjectsController
 {
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $segmentId = $request->integer('segment_id');
 

@@ -6,7 +6,7 @@ namespace StickleApp\Core\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Container\Attributes\Config;
+use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\DB;
 
@@ -32,7 +32,7 @@ final class DropPartitions extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
-        #[Config('stickle.database.tablePrefix')] protected ?string $prefix = null,
+        #[ConfigAttribute('stickle.database.tablePrefix')] protected ?string $prefix = null,
     ) {
         parent::__construct();
     }

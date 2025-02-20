@@ -29,7 +29,7 @@ class ImportSegment implements ShouldQueue
      */
     public function uniqueId(): string
     {
-        return $this->segmentId;
+        return (string) $this->segmentId;
     }
 
     /**
@@ -39,7 +39,7 @@ class ImportSegment implements ShouldQueue
      */
     public function middleware(): array
     {
-        return [new WithoutOverlapping($this->segmentId)];
+        return [new WithoutOverlapping((string) $this->segmentId)];
     }
 
     /**

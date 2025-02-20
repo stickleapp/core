@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace StickleApp\Core\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -17,8 +18,6 @@ use StickleApp\Core\Models\Segment;
 
 final class ExportSegments extends Command implements Isolatable
 {
-    protected string $prefix;
-
     /**
      * @var string
      */
@@ -35,10 +34,8 @@ final class ExportSegments extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
+        #[ConfigAttribute('stickle.database.tablePrefix')] protected ?string $prefix = null,
     ) {
-
-        $this->prefix = config('stickle.database.tablePrefix') ?? '';
-
         parent::__construct();
     }
 
@@ -81,7 +78,7 @@ final class ExportSegments extends Command implements Isolatable
         }
     }
 
-    /** @return array<string, mixed> */
+    /** @return array<int<0, max>, array<string, mixed>> */
     public function getSegmentSyncDefinitions(string $directory, string $namespace): array
     {
         $results = [];

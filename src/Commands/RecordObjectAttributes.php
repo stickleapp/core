@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace StickleApp\Core\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
-use Illuminate\Support\Facades\Config;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use StickleApp\Core\Traits\StickleEntity;
@@ -29,9 +29,8 @@ final class RecordObjectAttributes extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
-        #[Config('stickle.database.tablePrefix')] public ?string $prefix = null,
+        #[ConfigAttribute('stickle.database.tablePrefix')] public ?string $prefix = null,
     ) {
-        $this->prefix = config('stickle.database.tablePrefix');
         parent::__construct();
     }
 
@@ -74,7 +73,7 @@ final class RecordObjectAttributes extends Command implements Isolatable
         }
     }
 
-    private function getClassesWithTrait(array $checkForTraits, string $modelsDirectory, string $modelsNamespace): array
+    private function getClassesWithTraits(array $checkForTraits, string $modelsDirectory, string $modelsNamespace): array
     {
         $results = [];
 

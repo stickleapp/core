@@ -2,6 +2,7 @@
 
 namespace StickleApp\Core\Models;
 
+use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,11 +14,12 @@ class Segment extends Model
      * Creates a new analytics repository instance.
      */
     public function __construct(
+        #[ConfigAttribute('stickle.database.tablePrefix')] protected ?string $prefix = null,
     ) {
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't popoulate in Factory
          */
-        $this->table = config('stickle.database.tablePrefix').'segments';
+        $this->table = $this->prefix.'segments';
     }
 
     /**
@@ -66,7 +68,11 @@ class Segment extends Model
      */
     public function objects(): BelongsToMany
     {
-        return $this->belongsToMany($this->model, 'lc_object_segment', 'segment_id', 'object_uid')
-            ->join('users', DB::raw('users.id::string'), '=', 'lc_object_segment.object_uid');
+        return $this->belongsToMany(
+            $this->model,
+            "{$this->prefix}object_segment",
+            'segment_id',
+            'object_uid')
+            ->join('users', DB::raw('users.id::string'), '=', "{$this->prefix}object_segment.object_uid");
     }
 }

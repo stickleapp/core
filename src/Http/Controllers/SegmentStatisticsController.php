@@ -2,12 +2,13 @@
 
 namespace StickleApp\Core\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use StickleApp\Core\Models\SegmentStatistic;
 
 class SegmentStatisticsController
 {
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $attribute = $request->string('attribute');
 

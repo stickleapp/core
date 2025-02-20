@@ -4,8 +4,8 @@ namespace Workbench\Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-
 // use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Config;
 
 class SegmentsSeeder extends Seeder
 {
@@ -14,7 +14,7 @@ class SegmentsSeeder extends Seeder
      */
     public function run(): void
     {
-        $prefix = config('stickle.database.tablePrefix');
+        $prefix = Config::string('stickle.database.tablePrefix');
 
     }
 }

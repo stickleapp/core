@@ -2,6 +2,7 @@
 
 namespace StickleApp\Core\Models;
 
+use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -14,11 +15,12 @@ class ObjectSegmentAudit extends Model
      * Creates a new analytics repository instance.
      */
     public function __construct(
+        #[ConfigAttribute('stickle.database.tablePrefix')] protected ?string $prefix = null,
     ) {
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't popoulate in Factory
          */
-        $this->table = config('stickle.database.tablePrefix').'object_segment_audit';
+        $this->table = $this->prefix.'object_segment_audit';
     }
 
     /**
@@ -55,13 +57,13 @@ class ObjectSegmentAudit extends Model
 
     /**
      * Get the Object associated with the audit
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute<Model, string>
      */
     protected function object(): Attribute
     {
         return Attribute::make(
-            get: function () {
-                return $this->segment->model::find($this->object_uid);
-            },
+            get: fn ($value) => $this->segment->model::find($this->object_uid)
         );
     }
 

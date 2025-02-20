@@ -5,7 +5,7 @@ use Workbench\App\Models\User;
 
 test('Creates correct sql', function () {
 
-    $prefix = config('stickle.database.tablePrefix');
+    $prefix = Config::string('stickle.database.tablePrefix');
 
     $filter = Filter::boolean('a_column')
         ->isNull();

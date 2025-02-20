@@ -38,6 +38,8 @@ env:
     PACKAGE_PATH: /Users/dclaysmith/Projects/StickleApp/Core
     STICKLE_PATH_LISTENERS: Workbench\App\Listeners
     QUEUE_CONNECTION: sync
+    STICKLE_TABLE_PREFIX: stc_
+    STICKLE_SCHEMA: public
     DB_CONNECTION: pgsql
     DB_HOST: 127.0.0.1
     DB_PORT: 5432

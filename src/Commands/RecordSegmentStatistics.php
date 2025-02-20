@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace StickleApp\Core\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Jobs\RecordSegmentStatistic as RecordSegmentStatisticJob;
@@ -29,10 +30,8 @@ final class RecordSegmentStatistics extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
-        #[Config('stickle.database.tablePrefix')] public ?string $prefix = null,
+        #[ConfigAttribute('stickle.database.tablePrefix')] public ?string $prefix = null,
     ) {
-        $this->prefix = config('stickle.database.tablePrefix');
-
         parent::__construct();
     }
 
@@ -85,7 +84,10 @@ final class RecordSegmentStatistics extends Command implements Isolatable
         }
     }
 
-    private function getAttributesToRecord($segments)
+    /**
+     * Get the attributes to record for each segment
+     */
+    private function getAttributesToRecord(Collection $segments): array
     {
         $return = [];
         foreach ($segments as $segment) {

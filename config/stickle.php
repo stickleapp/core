@@ -35,8 +35,9 @@ return [
     | This must be a Postgres based connection.
     */
     'database' => [
+        'schema' => env('STICKLE_SCHEMA', 'public'),
         'connection' => env('DB_CONNECTION', 'pgsql'),
-        'tablePrefix' => env('STICKLE_TABLE_PRFIX', 'lc_'),
+        'tablePrefix' => env('STICKLE_TABLE_PREFIX', 'stc_'),
         'partitions' => [
             'events' => [
                 'interval' => 'week',

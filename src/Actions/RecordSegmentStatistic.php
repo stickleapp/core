@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Models\SegmentStatistic;
 use StickleApp\Core\Models\SegmentStatisticExport;
+use Illuminate\Support\Facades\Config;
 
 class RecordSegmentStatistic
 {
@@ -46,7 +47,7 @@ class RecordSegmentStatistic
 
     private function builder(int $segmentId, string $attribute): Builder
     {
-        $prefix = config('stickle.database.tablePrefix');
+        $prefix = Config::string('stickle.database.tablePrefix');
 
         /** "count" is a special case */
         if ($attribute === 'count') {

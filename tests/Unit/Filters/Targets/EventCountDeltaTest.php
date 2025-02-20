@@ -36,7 +36,7 @@ test('`increased` chanages target class', function () {
 
 test('Delta creates correct sql', function () {
 
-    $prefix = config('stickle.database.tablePrefix');
+    $prefix = Config::string('stickle.database.tablePrefix');
 
     $filter = Filter::eventCount('clicked:something')->increased(
         [now()->subYears(2), now()->subYears(1)],

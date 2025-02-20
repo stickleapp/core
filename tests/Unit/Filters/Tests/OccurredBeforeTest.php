@@ -7,7 +7,7 @@ use function Pest\Faker\fake;
 
 test('Creates correct sql for date', function () {
 
-    $prefix = config('stickle.database.tablePrefix');
+    $prefix = Config::string('stickle.database.tablePrefix');
 
     $date = fake()->date();
 
@@ -29,7 +29,7 @@ test('Creates correct sql for date', function () {
 
 test('Creates correct sql for datetime', function () {
 
-    $prefix = config('stickle.database.tablePrefix');
+    $prefix = Config::string('stickle.database.tablePrefix');
 
     $datetime = fake()->datetime();
 

@@ -4,6 +4,7 @@ namespace StickleApp\Core\Listeners;
 
 use DateTime;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Contracts\AnalyticsRepository;
 use StickleApp\Core\Events\Page;
@@ -20,19 +21,19 @@ class PageListener implements ShouldQueue
         Log::debug('PageListener->handle()', [$event]);
 
         $this->repository->saveRequest(
-            model: data_get($event->data, 'model'),
-            objectUid: data_get($event->data, 'object_uid'),
-            sessionUid: data_get($event->data, 'session_uid'),
-            timestamp: data_get($event->data, 'timestamp', new DateTime),
-            url: data_get($event->data, 'url'),
-            path: data_get($event->data, 'path'),
-            host: data_get($event->data, 'host'),
-            search: data_get($event->data, 'search'),
-            queryParams: data_get($event->data, 'query_params'),
-            utmSource: data_get($event->data, 'utm_source'),
-            utmMedium: data_get($event->data, 'utm_medium'),
-            utmCampaign: data_get($event->data, 'utm_campaign'),
-            utmContent: data_get($event->data, 'utm_content')
+            model: Arr::get($event->data, 'model'),
+            objectUid: Arr::get($event->data, 'object_uid'),
+            sessionUid: Arr::get($event->data, 'session_uid'),
+            timestamp: Arr::get($event->data, 'timestamp', new DateTime),
+            url: Arr::get($event->data, 'url'),
+            path: Arr::get($event->data, 'path'),
+            host: Arr::get($event->data, 'host'),
+            search: Arr::get($event->data, 'search'),
+            queryParams: Arr::get($event->data, 'query_params'),
+            utmSource: Arr::get($event->data, 'utm_source'),
+            utmMedium: Arr::get($event->data, 'utm_medium'),
+            utmCampaign: Arr::get($event->data, 'utm_campaign'),
+            utmContent: Arr::get($event->data, 'utm_content')
         );
     }
 }

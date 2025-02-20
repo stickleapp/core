@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -26,7 +26,8 @@ return new class extends Migration
      */
     public function up()
     {
-        $prefix = config('stickle.database.tablePrefix') ?? '';
+
+        $prefix = Config::string('stickle.database.tablePrefix');
 
         // object attributes
         Schema::create(("{$prefix}object_attributes"), function (Blueprint $table) {
@@ -124,7 +125,7 @@ return new class extends Migration
      */
     public function down()
     {
-        $prefix = config('stickle.database.tablePrefix') ?? '';
+        $prefix = Config::string('stickle.database.tablePrefix');
 
         Schema::dropIfExists("{$prefix}segment_statistic_exports");
         Schema::dropIfExists("{$prefix}segments");

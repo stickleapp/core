@@ -3,6 +3,7 @@
 namespace StickleApp\Core\Filters\Targets\Traits;
 
 use DateTimeInterface;
+use Illuminate\Support\Facades\Config;
 use StickleApp\Core\Contracts\FilterTarget;
 
 trait HasDeltaFilters
@@ -18,7 +19,7 @@ trait HasDeltaFilters
 
             /** @var FilterTarget $filterTarget */
             $filterTarget = new $newClass(
-                config('stickle.database.tablePrefix'),
+                Config::string('stickle.database.tablePrefix'),
                 $this->event,
                 $currentPeriod,
                 $previousPeriod
@@ -41,7 +42,7 @@ trait HasDeltaFilters
 
             /** @var FilterTarget $filterTarget */
             $filterTarget = new $newClass(
-                config('stickle.database.tablePrefix'),
+                Config::string('stickle.database.tablePrefix'),
                 $this->event,
                 $currentPeriod,
                 $previousPeriod

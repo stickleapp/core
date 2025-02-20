@@ -6,6 +6,7 @@ namespace StickleApp\Core\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 use StickleApp\Core\Contracts\FilterTarget;
 use StickleApp\Core\Contracts\FilterTest;
 
@@ -33,7 +34,7 @@ class Base
 
         /** @var FilterTarget */
         $target = new $targetClass(
-            config('stickle.database.tablePrefix'),
+            Config::string('stickle.database.tablePrefix'),
             ...$arguments
         );
 

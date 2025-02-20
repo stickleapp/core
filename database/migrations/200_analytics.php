@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Config;
 
 return new class extends Migration
 {
@@ -13,7 +14,7 @@ return new class extends Migration
      */
     public function up()
     {
-        $prefix = config('stickle.database.tablePrefix') ?? '';
+        $prefix = Config::string('stickle.database.tablePrefix');
 
         Schema::create("{$prefix}rollups", function (Blueprint $table) {
             $table->text('name')->nullable(false);
@@ -494,7 +495,7 @@ CREATE UNIQUE INDEX {$prefix}sessions_rollup_1day_unique_idx ON {$prefix}session
      */
     public function down()
     {
-        $prefix = config('stickle.database.tablePrefix') ?? '';
+        $prefix = Config::string('stickle.database.tablePrefix');
 
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}sessions_rollup_1day CASCADE");
         Schema::dropIfExists("{$prefix}requests");

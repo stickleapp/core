@@ -23,7 +23,7 @@ class RecordSegmentStatistic implements ShouldQueue
     /**
      * The number of seconds after which the job's unique lock will be released.
      *
-     * @var int
+     * var int
      */
     // public $uniqueFor = 60; // TODO: SET IN CONFIG
 
@@ -38,7 +38,7 @@ class RecordSegmentStatistic implements ShouldQueue
     /**
      * Get the middleware the job should pass through.
      *
-     * @return array<int, object>
+     * return array<int, object>
      */
     // public function middleware(): array
     // {

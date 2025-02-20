@@ -56,7 +56,7 @@ class TrackListener implements ShouldQueue
         $listener = new $listenerClass;
 
         if (! method_exists($listener, 'handle')) {
-            throw new \Exception('Listener class does not have handle method', [$listenerClass]);
+            throw new \Exception('Listener class does not have handle method');
         }
 
         $listener->handle($event);

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Config;
 
 return new class extends Migration
 {
@@ -11,7 +12,7 @@ return new class extends Migration
      */
     public function up()
     {
-        $prefix = config('stickle.database.tablePrefix') ?? '';
+        $prefix = Config::string('stickle.database.tablePrefix');
 
         \DB::connection()->getPdo()->exec("
 DROP TABLE IF EXISTS {$prefix}object_attributes_audit;
@@ -36,7 +37,7 @@ CREATE INDEX {$prefix}object_attributes_audit_model_object_uid_attribute_idx  ON
      */
     public function down()
     {
-        $prefix = config('stickle.database.tablePrefix') ?? '';
+        $prefix = Config::string('stickle.database.tablePrefix');
 
         Schema::dropIfExists("{$prefix}object_attributes_audit");
     }

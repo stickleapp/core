@@ -6,7 +6,7 @@ namespace StickleApp\Core\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Container\Attributes\Config;
+use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
 
 final class RollupSessions extends Command implements Isolatable
@@ -28,7 +28,7 @@ final class RollupSessions extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
-        #[Config('stickle.database.tablePrefix')] protected ?string $prefix = null,
+        #[ConfigAttribute('stickle.database.tablePrefix')] protected ?string $prefix = null,
     ) {
         parent::__construct();
     }
@@ -43,8 +43,8 @@ final class RollupSessions extends Command implements Isolatable
 
         $startDate = Carbon::parse($startDate);
 
-        $sql = <<<'sql'
-INSERT INTO lc_sessions_rollup_1day (
+        $sql = <<<sql
+INSERT INTO {$this->prefix}sessions_rollup_1day (
     model, 
     object_uid, 
     day, 
@@ -57,9 +57,9 @@ INSERT INTO lc_sessions_rollup_1day (
             session_uid,
             MIN(DATE(timestamp)) AS first_day
         FROM
-            (SELECT model, object_uid, session_uid, timestamp FROM lc_events WHERE timestamp >= '%s'
+            (SELECT model, object_uid, session_uid, timestamp FROM {$this->prefix}events WHERE timestamp >= '%s'
              UNION ALL
-             SELECT model, object_uid, session_uid, timestamp FROM lc_requests WHERE offline = FALSE AND timestamp > '%s') AS combined
+             SELECT model, object_uid, session_uid, timestamp FROM {$this->prefix}requests WHERE offline = FALSE AND timestamp > '%s') AS combined
         GROUP BY
             model,
             object_uid,

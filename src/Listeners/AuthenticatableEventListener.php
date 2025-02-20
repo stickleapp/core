@@ -50,47 +50,47 @@ class AuthenticatableEventListener implements ShouldQueue
 
         $events->listen(
             Authenticated::class,
-            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
+            [AuthenticatableEventListener::class, 'onEvent']
         );
 
         $events->listen(
             CurrentDeviceLogout::class,
-            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
+            [AuthenticatableEventListener::class, 'onEvent']
         );
 
         $events->listen(
             Login::class,
-            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
+            [AuthenticatableEventListener::class, 'onEvent']
         );
 
         $events->listen(
             Logout::class,
-            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
+            [AuthenticatableEventListener::class, 'onEvent']
         );
 
         $events->listen(
             OtherDeviceLogout::class,
-            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
+            [AuthenticatableEventListener::class, 'onEvent']
         );
 
         $events->listen(
             PasswordReset::class,
-            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
+            [AuthenticatableEventListener::class, 'onEvent']
         );
 
         $events->listen(
             Registered::class,
-            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
+            [AuthenticatableEventListener::class, 'onEvent']
         );
 
         $events->listen(
             Validated::class,
-            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
+            [AuthenticatableEventListener::class, 'onEvent']
         );
 
         $events->listen(
             Verified::class,
-            '\StickleApp\Core\Listeners\AuthenticatableEventListener@onEvent'
+            [AuthenticatableEventListener::class, 'onEvent']
         );
     }
 }
