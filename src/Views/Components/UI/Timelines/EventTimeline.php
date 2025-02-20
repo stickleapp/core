@@ -10,6 +10,7 @@ class EventTimeline extends Component
 {
     /**
      * Create the component instance.
+     *
      * @return void
      */
     public function __construct(
