@@ -78,8 +78,8 @@ final class RecordSegmentStatistics extends Command implements Isolatable
 
         foreach ($rows as $row) {
             RecordSegmentStatisticJob::dispatch(
-                segmentId: $row->segment_id,
-                attribute: $row->attribute,
+                $row->segment_id,
+                $row->attribute,
             );
         }
     }

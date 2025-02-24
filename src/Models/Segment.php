@@ -23,9 +23,17 @@ class Segment extends Model
     }
 
     /**
+     * @var class-string
+     */
+    public $model;
+
+    /**
+     * @var string
+     */
+    public $as_class;
+
+    /**
      * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
      */
     protected $fillable = [
         'segment_group_id',
@@ -38,8 +46,6 @@ class Segment extends Model
 
     /**
      * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
      */
     protected $hidden = [
     ];
@@ -57,6 +63,8 @@ class Segment extends Model
 
     /**
      * Get the SegmentStatistics associated with the Segment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Model, SegmentStatistic>
      */
     public function segmentStatistics(): HasMany
     {

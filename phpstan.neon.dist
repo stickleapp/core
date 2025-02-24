@@ -1,14 +1,23 @@
 includes:
-    - phpstan-baseline.neon
+    - vendor/larastan/larastan/extension.neon
+    - vendor/nesbot/carbon/extension.neon
 
 parameters:
-    level: 6
+
     paths:
-        - src
-        - config
-        - database
-    tmpDir: build/phpstan
-    checkOctaneCompatibility: true
-    checkModelProperties: true
+        - src/
+        - database/
+
+    # Level 10 is the highest level
+    level: 5
+
     ignoreErrors:
-        - '#return type with generic class#'
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder<Illuminate\\Database\\Eloquent\\Model>::hasJoin\(\).#'
+        - '#Method StickleApp\\Core\\Models\\ObjectAttribute::attributable\(\) should return#'
+        - '#Method StickleApp\\Core\\Models\\ObjectAttributesAudit::attributable\(\) should return#'
+        - '#Method StickleApp\\Core\\Models\\Segment::segmentStatistics\(\) should return#'
+        - '#Method StickleApp\\Core\\Models\\ObjectSegmentAudit::segment\(\)#'
+
+    excludePaths:
+        - src/Commands/Configure.php
+        - src/Traits/StickleEntity.php

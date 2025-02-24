@@ -73,6 +73,9 @@ final class RecordObjectAttributes extends Command implements Isolatable
         }
     }
 
+    /**
+     * @param  array<int, string>  $checkForTraits
+     */
     private function getClassesWithTraits(array $checkForTraits, string $modelsDirectory, string $modelsNamespace): array
     {
         $results = [];

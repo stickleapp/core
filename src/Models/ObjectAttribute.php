@@ -22,8 +22,6 @@ class ObjectAttribute extends Model
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
      */
     protected $fillable = [
         'object_uid',
@@ -34,8 +32,6 @@ class ObjectAttribute extends Model
 
     /**
      * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
      */
     protected $hidden = [
     ];
@@ -44,15 +40,25 @@ class ObjectAttribute extends Model
      * Get the attributes that should be cast.
      *
      * Why doesn't casts() function work?
-     *
-     * @return array<string, string>
      */
     protected $casts = [
         'model_attributes' => 'array',
     ];
 
     /**
+     * @var string
+     */
+    public $model;
+
+    /**
+     * @var string
+     */
+    public $object_uid;
+
+    /**
      * Get the parent attributable model
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo<Model, ObjectAttribute>
      */
     public function attributable(): MorphTo
     {

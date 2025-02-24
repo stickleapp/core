@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Actions;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -101,14 +102,14 @@ eof;
 
         $cmd =
             'PGPASSWORD='.
-            config('database.connections.pgsql.password').
+            Config::string('database.connections.pgsql.password').
             ' psql '.
             ' -h '.
-            config('database.connections.pgsql.host').
+            Config::string('database.connections.pgsql.host').
             ' -U '.
-            config('database.connections.pgsql.username').
+            Config::string('database.connections.pgsql.username').
             ' -d '.
-            config('database.connections.pgsql.database').
+            Config::string('database.connections.pgsql.database').
             ' -c "'.
             $sql.
             '"';

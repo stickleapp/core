@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace StickleApp\Core\Actions;
 
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Models\SegmentStatistic;
 use StickleApp\Core\Models\SegmentStatisticExport;
-use Illuminate\Support\Facades\Config;
 
 class RecordSegmentStatistic
 {
@@ -25,9 +25,8 @@ class RecordSegmentStatistic
         /** @var \Illuminate\Support\Collection<int, \stdClass> $items */
         $items = $builder->get();
 
-        /** @var callable $callback */
-        $callback = fn ($item) => (array) $item;
-        $items = $items->transform($callback);
+        // $callback = function ($item) => (array) $item;
+        // $items = $items->transform($callback);
 
         SegmentStatistic::upsert(
             $items->toArray(),

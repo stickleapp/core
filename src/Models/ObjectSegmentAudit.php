@@ -5,7 +5,7 @@ namespace StickleApp\Core\Models;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ObjectSegmentAudit extends Model
 {
@@ -25,8 +25,6 @@ class ObjectSegmentAudit extends Model
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
      */
     protected $fillable = [
         'object_uid',
@@ -38,22 +36,28 @@ class ObjectSegmentAudit extends Model
 
     /**
      * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
      */
     protected $hidden = [
     ];
 
     /**
      * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
         ];
     }
+
+    /**
+     * @var string
+     */
+    public $model;
+
+    /**
+     * @var string
+     */
+    public $object_uid;
 
     /**
      * Get the Object associated with the audit
@@ -63,15 +67,21 @@ class ObjectSegmentAudit extends Model
     protected function object(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $this->segment->model::find($this->object_uid)
+            get: function ($value) {
+                $modelClass = $this->segment->model;
+
+                return $modelClass::find($this->object_uid);
+            }
         );
     }
 
     /**
      * Get the Segment associated with the audit
+     * 
+     * @return BelongsTo<Segment, ObjectSegmentAudit>
      */
-    public function segment(): HasOne
+    public function segment(): BelongsTo
     {
-        return $this->hasOne(Segment::class, 'id', 'segment_id');
+        return $this->belongsTo(Segment::class);
     }
 }

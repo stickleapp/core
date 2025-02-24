@@ -24,8 +24,6 @@ class ObjectAttributesAudit extends Model
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
      */
     protected $fillable = [
         'object_uid',
@@ -37,16 +35,12 @@ class ObjectAttributesAudit extends Model
 
     /**
      * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
      */
     protected $hidden = [
     ];
 
     /**
      * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
      */
     protected function casts(): array
     {
@@ -56,6 +50,8 @@ class ObjectAttributesAudit extends Model
 
     /**
      * Get the parent attributable model
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo<Model, Model>
      */
     public function attributable(): MorphTo
     {

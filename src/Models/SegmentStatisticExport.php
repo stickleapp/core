@@ -21,8 +21,6 @@ class SegmentStatisticExport extends Model
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
      */
     protected $fillable = [
         'segment_id',

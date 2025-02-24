@@ -3,6 +3,7 @@
 namespace StickleApp\Core\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Events\ObjectAttributeChanged;
 
@@ -41,6 +42,6 @@ class ObjectAttributeChangedListener implements ShouldQueue
         $model = str_replace(' ', '', ucwords(str_replace('_', ' ', $model)));
         $attribute = str_replace(' ', '', ucwords(str_replace('_', ' ', $attribute)));
 
-        return config('stickle.paths.listeners').'\\'.$model.$attribute.'Listener';
+        return Config::string('stickle.paths.listeners').'\\'.$model.$attribute.'Listener';
     }
 }

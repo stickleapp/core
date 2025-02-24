@@ -156,7 +156,6 @@ class Configure extends Command
 
         note('You can change any of these settings in config/stickle.php.');
 
-        /** @var callable $callback */
         $callback = function ($item) {
             return [
                 'label' => (string) $item['label'],
@@ -164,7 +163,6 @@ class Configure extends Command
             ];
         };
 
-        /** @var array<int, array<int, string>> $rows */
         $rows = collect($settings)->map($callback);
 
         table(

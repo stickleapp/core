@@ -43,8 +43,8 @@ class ObjectAttributeObserver
     }
 
     /**
-     * @param  array<string, string>|null  $original
-     * @param  array<string, string>|null  $modified
+     * @param  array<string, string|null>  $original
+     * @param  array<string, string|null>  $modified
      * @return array<string, array{value_old: string|null, value_new: string|null}>
      */
     public function getChangedAttributes(?array $original = [], ?array $modified = []): array
