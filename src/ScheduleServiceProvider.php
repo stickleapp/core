@@ -6,8 +6,8 @@ namespace StickleApp\Core;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\ServiceProvider;
 
 class ScheduleServiceProvider extends ServiceProvider
 {
