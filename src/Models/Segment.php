@@ -73,6 +73,7 @@ class Segment extends Model
 
     /**
      * Get the SegmentStatistics associated with the Segment
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Model, SegmentStatistic>
      */
     public function objects(): BelongsToMany

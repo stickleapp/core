@@ -7,8 +7,8 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Actions\ExportSegment as ExportSegmentAction;
-use StickleApp\Core\Models\Segment;
 use StickleApp\Core\Contracts\Segment as SegmentContract;
+use StickleApp\Core\Models\Segment;
 
 class ExportSegment implements ShouldQueue
 {

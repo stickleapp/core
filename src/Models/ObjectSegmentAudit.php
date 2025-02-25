@@ -77,7 +77,7 @@ class ObjectSegmentAudit extends Model
 
     /**
      * Get the Segment associated with the audit
-     * 
+     *
      * @return BelongsTo<Segment, ObjectSegmentAudit>
      */
     public function segment(): BelongsTo

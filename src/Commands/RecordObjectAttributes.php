@@ -7,10 +7,10 @@ namespace StickleApp\Core\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
+use Illuminate\Database\Eloquent\Model;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use StickleApp\Core\Traits\StickleEntity;
-use Illuminate\Database\Eloquent\Model;
 
 final class RecordObjectAttributes extends Command implements Isolatable
 {
