@@ -12,7 +12,7 @@ use DateTimeInterface;
 interface AnalyticsRepository
 {
     /**
-     * @param  array<int, string>  $properties
+     * @param array<int, string>  $properties
      */
     public function saveEvent(
         string $model,

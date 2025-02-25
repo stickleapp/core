@@ -10,6 +10,7 @@ use Illuminate\Contracts\Console\Isolatable;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use StickleApp\Core\Traits\StickleEntity;
+use Illuminate\Database\Eloquent\Model;
 
 final class RecordObjectAttributes extends Command implements Isolatable
 {
@@ -45,6 +46,7 @@ final class RecordObjectAttributes extends Command implements Isolatable
         $classes = $this->getClassesWithTraits([StickleEntity::class], $directory, $namespace);
 
         foreach ($classes as $class) {
+            /** @var Model $object */
             $object = new $class;
             $builder = $class::query()->leftJoin(
                 "{$this->prefix}object_attributes", function ($join) use ($object) {
@@ -75,6 +77,7 @@ final class RecordObjectAttributes extends Command implements Isolatable
 
     /**
      * @param  array<int, string>  $checkForTraits
+     * @return array<int, string>
      */
     private function getClassesWithTraits(array $checkForTraits, string $modelsDirectory, string $modelsNamespace): array
     {

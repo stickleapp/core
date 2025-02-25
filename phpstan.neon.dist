@@ -9,7 +9,7 @@ parameters:
         - database/
 
     # Level 10 is the highest level
-    level: 5
+    level: 6
 
     ignoreErrors:
         - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder<Illuminate\\Database\\Eloquent\\Model>::hasJoin\(\).#'
@@ -17,6 +17,7 @@ parameters:
         - '#Method StickleApp\\Core\\Models\\ObjectAttributesAudit::attributable\(\) should return#'
         - '#Method StickleApp\\Core\\Models\\Segment::segmentStatistics\(\) should return#'
         - '#Method StickleApp\\Core\\Models\\ObjectSegmentAudit::segment\(\)#'
+        - '#Method StickleApp\\Core\\Models\\Segment::objects\(\) should return#'
 
     excludePaths:
         - src/Commands/Configure.php

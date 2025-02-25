@@ -8,6 +8,7 @@ use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Actions\ExportSegment as ExportSegmentAction;
 use StickleApp\Core\Models\Segment;
+use StickleApp\Core\Contracts\Segment as SegmentContract;
 
 class ExportSegment implements ShouldQueue
 {
@@ -47,9 +48,11 @@ class ExportSegment implements ShouldQueue
     {
         Log::debug('ExportSegment Job', ['segment_id' => $this->segment->id]);
 
+        /** @var SegmentContract $segment */
+        $segment = new $this->segment->as_class;
         $exportFilename = $exportSegment(
             segmentId: $this->segment->id,
-            segmentDefinition: new $this->segment->as_class
+            segmentDefinition: $segment
         );
 
         ImportSegment::dispatch(

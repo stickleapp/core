@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Jobs\RecordSegmentStatistic as RecordSegmentStatisticJob;
 use StickleApp\Core\Models\Segment;
+use Illuminate\Database\Eloquent\Model;
+use StickleApp\Core\Traits\StickleEntity;
 
 final class RecordSegmentStatistics extends Command implements Isolatable
 {
@@ -86,6 +88,8 @@ final class RecordSegmentStatistics extends Command implements Isolatable
 
     /**
      * Get the attributes to record for each segment
+     * @param Collection<int, Segment> $segments
+     * @return array<string, array{model: string, attribute: string}>
      */
     private function getAttributesToRecord(Collection $segments): array
     {
