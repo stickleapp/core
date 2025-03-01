@@ -25,15 +25,15 @@ it('has observed attributes', function () {
 
 it('observed properties log changes', function () {
 
-    $user = User::factory()->create();
-    $user->user_rating = 1;
+    $user = User::factory()->create([
+        'user_rating' => 1,
+    ]);
+
+    $user->user_rating = 3;
     $user->save();
 
-    // $user->user_rating = 3;
-    // $user->save();
+    $user->user_rating = 5;
+    $user->save();
 
-    // $user->user_rating = 5;
-    // $user->save();
-
-    // expect($user->getObservedAttributes())->toBeArray();
+    expect($user->objectAttributesAudits()->where('attribute', 'user_rating')->count())->toBe(3);
 });

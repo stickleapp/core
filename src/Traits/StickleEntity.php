@@ -7,10 +7,13 @@ namespace StickleApp\Core\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Models\ObjectAttribute;
+use StickleApp\Core\Models\ObjectAttributesAudit;
 
 trait StickleEntity
 {
@@ -114,6 +117,11 @@ trait StickleEntity
     public function objectAttribute(): HasOne
     {
         return $this->hasOne(ObjectAttribute::class, 'object_uid')->where('model', self::class);
+    }
+
+    public function objectAttributesAudits(): HasMany
+    {
+        return $this->hasMany(ObjectAttributesAudit::class, 'object_uid')->where('model', self::class);
     }
 
     /**

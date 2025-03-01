@@ -6,8 +6,13 @@ use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @property string $model
+ * @property string $as_class
+ */
 class Segment extends Model
 {
     /**
@@ -19,18 +24,8 @@ class Segment extends Model
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't popoulate in Factory
          */
-        $this->table = $this->prefix.'segments';
+        $this->table = Config::string('stickle.database.tablePrefix').'segments';
     }
-
-    /**
-     * @var class-string
-     */
-    public $model;
-
-    /**
-     * @var string
-     */
-    public $as_class;
 
     /**
      * The attributes that are mass assignable.
@@ -72,8 +67,9 @@ class Segment extends Model
     }
 
     /**
-     * Get the SegmentStatistics associated with the Segment
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Model, SegmentStatistic>
+     * Get the Objects associated with this Segment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Model, Model>
      */
     public function objects(): BelongsToMany
     {
@@ -82,6 +78,6 @@ class Segment extends Model
             "{$this->prefix}object_segment",
             'segment_id',
             'object_uid')
-            ->join('users', DB::raw('users.id::string'), '=', "{$this->prefix}object_segment.object_uid");
+            ->join($this->model, DB::raw($this->model.'.id::string'), '=', "{$this->prefix}object_segment.object_uid");
     }
 }

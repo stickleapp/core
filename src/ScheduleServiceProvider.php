@@ -13,7 +13,6 @@ class ScheduleServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-
         /**
          * Schedule the creation of partitions
          */

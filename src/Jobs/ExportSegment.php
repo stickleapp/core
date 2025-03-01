@@ -7,8 +7,8 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Actions\ExportSegment as ExportSegmentAction;
-use StickleApp\Core\Models\Segment;
 use StickleApp\Core\Contracts\Segment as SegmentContract;
+use StickleApp\Core\Models\Segment;
 
 class ExportSegment implements ShouldQueue
 {
@@ -26,27 +26,28 @@ class ExportSegment implements ShouldQueue
      */
     public $uniqueFor = 60; // TODO: SET IN CONFIG
 
-    /**
-     * Get the unique ID for the job.
-     */
-    public function uniqueId(): string
-    {
-        return (string) $this->segment->id;
-    }
+    // /**
+    //  * Get the unique ID for the job.
+    //  */
+    // public function uniqueId(): string
+    // {
+    //     return (string) $this->segment->id;
+    // }
 
-    /**
-     * Get the middleware the job should pass through.
-     *
-     * @return array<int, object>
-     */
-    public function middleware(): array
-    {
-        return [new WithoutOverlapping(class_basename($this).(string) $this->segment->id)];
-    }
+    // /**
+    //  * Get the middleware the job should pass through.
+    //  *
+    //  * @return array<int, object>
+    //  */
+    // public function middleware(): array
+    // {
+    //     return [new WithoutOverlapping(class_basename($this).(string) $this->segment->id)];
+    // }
 
     public function handle(ExportSegmentAction $exportSegment): void
     {
-        Log::debug('ExportSegment Job', ['segment_id' => $this->segment->id]);
+
+        Log::debug('ExportSegment Job', ['segment' => $this->segment]);
 
         /** @var SegmentContract $segment */
         $segment = new $this->segment->as_class;

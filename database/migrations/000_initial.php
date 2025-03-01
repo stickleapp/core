@@ -7,18 +7,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    //     protected string $prefix;
-
-    // public function __construct(
-    //     ?string $prefix = null
-    // ) {
-    //     $this->prefix = $prefix ?? '';
-    // }
-
-    // public function __construct(
-    //     #[Config('stickle.database.tablePrefix')] protected ?string $prefix = null,
-    // ) {}
-
     /**
      * Run the migrations.
      *

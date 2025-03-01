@@ -31,7 +31,6 @@ class ObjectAttributeObserver
                 'value_old' => Arr::get($changes, 'value_old'),
                 'value_new' => Arr::get($changes, 'value_new'),
             ]);
-
             ObjectAttributeChanged::dispatch(
                 $objectAttribute->model,
                 $objectAttribute->object_uid,

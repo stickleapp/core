@@ -102,14 +102,14 @@ eof;
 
         $cmd =
             'PGPASSWORD='.
-            Config::string('database.connections.pgsql.password').
+            DB::connection()->getConfig('password').
             ' psql '.
             ' -h '.
-            Config::string('database.connections.pgsql.host').
+            DB::connection()->getConfig('host').
             ' -U '.
-            Config::string('database.connections.pgsql.username').
+            DB::connection()->getConfig('username').
             ' -d '.
-            Config::string('database.connections.pgsql.database').
+            DB::connection()->getConfig('database').
             ' -c "'.
             $sql.
             '"';

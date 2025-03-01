@@ -62,6 +62,24 @@ final class CreatePartitions extends Command implements Isolatable
          */
         $startDate = Carbon::parse($periodStart);
 
+        // Adjust start date to the beginning of the specified interval
+        switch (strtolower($interval)) {
+            case 'day':
+                $startDate = $startDate->startOfDay();
+                break;
+            case 'week':
+                $startDate = $startDate->startOfWeek(Carbon::MONDAY); // ISO week starts on Monday
+                break;
+            case 'month':
+                $startDate = $startDate->startOfMonth();
+                break;
+            case 'year':
+                $startDate = $startDate->startOfYear();
+                break;
+            default:
+                $this->info("Unknown interval type: $interval. Using date as is.");
+        }
+
         $finished = false;
 
         $i = 0;

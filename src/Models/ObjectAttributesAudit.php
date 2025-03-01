@@ -2,9 +2,9 @@
 
 namespace StickleApp\Core\Models;
 
-use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Config;
 
 class ObjectAttributesAudit extends Model
 {
@@ -14,12 +14,11 @@ class ObjectAttributesAudit extends Model
      * Creates a new analytics repository instance.
      */
     public function __construct(
-        #[ConfigAttribute('stickle.database.tablePrefix')] protected ?string $prefix = null,
     ) {
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't popoulate in Factory
          */
-        $this->table = $this->prefix.'object_attributes_audit';
+        $this->table = Config::string('stickle.database.tablePrefix').'object_attributes_audit';
     }
 
     /**

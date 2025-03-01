@@ -50,6 +50,6 @@ test('Delta creates correct sql', function () {
     $filter->target->applyJoin($builder);
 
     expect($builder->toSql())->toBe(
-        sprintf('select * from "users" left join (select "model", "object_uid",  SUM(event_count) OVER (PARTITION BY model, object_uid ORDER BY day RANGE BETWEEN INTERVAL \'59 day\' PRECEDING AND INTERVAL \'30 day\' PRECEDING) - SUM(event_count) OVER (PARTITION BY model, object_uid ORDER BY day RANGE BETWEEN INTERVAL \'29 day\' PRECEDING AND CURRENT ROW) - AS delta  from "%sevents_rollup_1day" where "event_name" = ?) as "24b0ef4445b20b487319ce60bf964967" on "24b0ef4445b20b487319ce60bf964967"."object_uid" = "users"."object_uid" and "24b0ef4445b20b487319ce60bf964967"."model" = "users"."model"', $prefix)
+        sprintf('select * from "users" left join (select "model", "object_uid",  SUM(event_count) OVER (PARTITION BY model, object_uid ORDER BY day RANGE BETWEEN INTERVAL \'59 day\' PRECEDING AND INTERVAL \'30 day\' PRECEDING) - SUM(event_count) OVER (PARTITION BY model, object_uid ORDER BY day RANGE BETWEEN INTERVAL \'29 day\' PRECEDING AND CURRENT ROW) - AS delta  from "%sevents_rollup_1day" where "event_name" = ?) as "bc82afdebd9ac472984ca6b93bba2a74" on "bc82afdebd9ac472984ca6b93bba2a74"."object_uid" = "users"."object_uid" and "bc82afdebd9ac472984ca6b93bba2a74"."model" = "users"."model"', $prefix)
     );
 });
