@@ -1,6 +1,3 @@
-env:
-  STICKLE_TABLE_PREFIX: "stc_"
-
 name: PHPStan
 
 on:
@@ -9,6 +6,9 @@ on:
       - "**.php"
       - "phpstan.neon.dist"
       - ".github/workflows/phpstan.yml"
+
+env:
+  STICKLE_TABLE_PREFIX: "stc_"
 
 jobs:
   phpstan:
