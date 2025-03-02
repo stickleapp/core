@@ -24,6 +24,11 @@ jobs:
           php-version: "8.3"
           coverage: none
 
+      - name: Debug environment variables
+        run: |
+          echo "Printing all environment variables:"
+          env | sort
+
       - name: Install composer dependencies
         uses: ramsey/composer-install@v3
 
