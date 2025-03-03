@@ -15,7 +15,8 @@ return new class extends Migration
     public function up()
     {
 
-        $prefix = Config::string('stickle.database.tablePrefix');
+        // $prefix = Config::string('stickle.database.tablePrefix');
+        $prefix = config('stickle.database.tablePrefix');
 
         // object attributes
         Schema::create(("{$prefix}object_attributes"), function (Blueprint $table) {
@@ -113,7 +114,8 @@ return new class extends Migration
      */
     public function down()
     {
-        $prefix = Config::string('stickle.database.tablePrefix');
+        // $prefix = Config::string('stickle.database.tablePrefix');
+        $prefix = config('stickle.database.tablePrefix');
 
         Schema::dropIfExists("{$prefix}segment_statistic_exports");
         Schema::dropIfExists("{$prefix}segments");

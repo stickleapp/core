@@ -12,7 +12,8 @@ return new class extends Migration
      */
     public function up()
     {
-        $prefix = Config::string('stickle.database.tablePrefix');
+        // $prefix = Config::string('stickle.database.tablePrefix');
+        $prefix = config('stickle.database.tablePrefix');
 
         \DB::connection()->getPdo()->exec("
 DROP TABLE IF EXISTS {$prefix}segment_statistics;
@@ -42,7 +43,8 @@ CREATE UNIQUE INDEX {$prefix}segment_statistics_segment_id_attribute_recorded_at
      */
     public function down()
     {
-        $prefix = Config::string('stickle.database.tablePrefix');
+        // $prefix = Config::string('stickle.database.tablePrefix');
+        $prefix = config('stickle.database.tablePrefix');
 
         Schema::dropIfExists("{$prefix}segment_statistics");
     }

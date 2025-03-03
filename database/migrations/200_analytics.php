@@ -14,7 +14,8 @@ return new class extends Migration
      */
     public function up()
     {
-        $prefix = Config::string('stickle.database.tablePrefix');
+        // $prefix = Config::string('stickle.database.tablePrefix');
+        $prefix = config('stickle.database.tablePrefix');
 
         Schema::create("{$prefix}rollups", function (Blueprint $table) {
             $table->text('name')->nullable(false);
@@ -495,8 +496,8 @@ CREATE UNIQUE INDEX {$prefix}sessions_rollup_1day_unique_idx ON {$prefix}session
      */
     public function down()
     {
-        $prefix = Config::string('stickle.database.tablePrefix');
-
+        // $prefix = Config::string('stickle.database.tablePrefix');
+        $prefix = config('stickle.database.tablePrefix');
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}sessions_rollup_1day CASCADE");
         Schema::dropIfExists("{$prefix}requests");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1min CASCADE");

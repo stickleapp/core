@@ -12,7 +12,8 @@ return new class extends Migration
      */
     public function up()
     {
-        $prefix = Config::string('stickle.database.tablePrefix');
+        // $prefix = Config::string('stickle.database.tablePrefix');
+        $prefix = config('stickle.database.tablePrefix');
 
         $sql = <<<'eof'
 CREATE OR REPLACE FUNCTION process_object_segment_audit() RETURNS TRIGGER AS $process_object_segment_audit$
@@ -172,7 +173,8 @@ eof;
      */
     public function down()
     {
-        $prefix = Config::string('stickle.database.tablePrefix');
+        // $prefix = Config::string('stickle.database.tablePrefix');
+        $prefix = config('stickle.database.tablePrefix');
 
         $sql = <<<'eof'
 DROP FUNCTION IF EXISTS f_activate_object_segments(segmentId INT, tempTable VARCHAR);
