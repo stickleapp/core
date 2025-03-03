@@ -6,7 +6,6 @@ use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -24,7 +23,7 @@ class Segment extends Model
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't popoulate in Factory
          */
-        $this->table = Config::string('stickle.database.tablePrefix').'segments';
+        $this->table = config('stickle.database.tablePrefix').'segments';
     }
 
     /**

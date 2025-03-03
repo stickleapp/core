@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Models\ObjectAttribute;
@@ -28,7 +27,7 @@ trait StickleEntity
     public static function scopeStickle(Builder $builder, Filter $filter)
     {
 
-        $prefix = Config::string('stickle.database.tablePrefix');
+        $prefix = config('stickle.database.tablePrefix');
 
         /**
          * We'll need this join for the filters but do not want to add it twice
@@ -48,7 +47,7 @@ trait StickleEntity
      */
     public static function scopeOrStickle(Builder $builder, Filter $filter)
     {
-        $prefix = Config::string('stickle.database.tablePrefix');
+        $prefix = config('stickle.database.tablePrefix');
 
         /**
          * We'll need this join for the filters but do not want to add it twice

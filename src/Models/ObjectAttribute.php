@@ -4,7 +4,6 @@ namespace StickleApp\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Facades\Config;
 
 /**
  * @property string $model
@@ -20,7 +19,7 @@ class ObjectAttribute extends Model
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't popoulate in Factory
          */
-        $this->table = Config::string('stickle.database.tablePrefix').'object_attributes';
+        $this->table = config('stickle.database.tablePrefix').'object_attributes';
     }
 
     /**

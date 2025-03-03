@@ -3,7 +3,6 @@
 namespace StickleApp\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Config;
 
 class SegmentStatisticExport extends Model
 {
@@ -15,7 +14,7 @@ class SegmentStatisticExport extends Model
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't popoulate in Factory
          */
-        $this->table = Config::string('stickle.database.tablePrefix').'segment_statistics_export';
+        $this->table = config('stickle.database.tablePrefix').'segment_statistics_export';
     }
 
     /**
