@@ -17,6 +17,8 @@ class TestCase extends Orchestra
 {
     use RefreshDatabase;
 
+    private static $latestResponse = null;
+
     protected $tablePrefix;
 
     protected function setUp(): void
