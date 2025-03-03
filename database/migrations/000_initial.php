@@ -14,7 +14,6 @@ return new class extends Migration
      */
     public function up()
     {
-
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');
 
