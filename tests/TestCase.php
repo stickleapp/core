@@ -5,7 +5,6 @@ namespace StickleApp\Core\Tests;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Config;
 use Orchestra\Testbench\Attributes\WithMigration;
 use Orchestra\Testbench\TestCase as Orchestra;
 use StickleApp\Core\CoreServiceProvider;
@@ -17,7 +16,7 @@ class TestCase extends Orchestra
 {
     use RefreshDatabase;
 
-    protected static $latestResponse = null;
+    // protected static $latestResponse = null;
 
     protected $tablePrefix;
 
@@ -25,7 +24,7 @@ class TestCase extends Orchestra
     {
         parent::setUp();
 
-        $this->tablePrefix = Config::string('stickle.database.tablePrefix');
+        $this->tablePrefix = config('stickle.database.tablePrefix');
 
         $date = now()->subWeeks(1);
 
