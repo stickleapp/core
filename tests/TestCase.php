@@ -10,7 +10,6 @@ use Orchestra\Testbench\TestCase as Orchestra;
 use StickleApp\Core\CoreServiceProvider;
 
 use function Orchestra\Testbench\artisan;
-use function Orchestra\Testbench\workbench_path;
 
 #[WithMigration]
 class TestCase extends Orchestra
@@ -59,12 +58,15 @@ class TestCase extends Orchestra
     public function getEnvironmentSetUp($app)
     {
         config()->set('database.default', 'pgsql');
+
+        // $migration = include __DIR__.'/../database/migrations/initial_structure.php';
+        // $migration->up();
     }
 
-    // protected function defineDatabaseMigrations()
-    // {
-    //     $this->loadMigrationsFrom(
-    //         workbench_path('database/migrations')
-    //     );
-    // }
+    protected function defineDatabaseMigrations()
+    {
+        $this->loadMigrationsFrom(
+            workbench_path('database/migrations')
+        );
+    }
 }
