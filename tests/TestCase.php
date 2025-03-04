@@ -64,11 +64,11 @@ class TestCase extends Orchestra
         // $migration->up();
     }
 
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadMigrationsFrom([
-            workbench_path('database/migrations'),
-            'vendor/orchestra/testbench-core/laravel/migrations',
-        ]);
-    }
+    // protected function defineDatabaseMigrations()
+    // {
+    //     $this->loadMigrationsFrom(
+    //         workbench_path('database/migrations'),
+    //         'vendor/orchestra/testbench-core/laravel/migrations'
+    //     );
+    // }
 }
