@@ -64,22 +64,15 @@ class TestCase extends Orchestra
         // $migration->up();
     }
 
-    // /**
-    //  * Define database migrations.
-    //  *
-    //  * @return void
-    //  */
-    // protected function defineDatabaseMigrations()
-    // {
-
-    //     $this->loadMigrationsFrom(
-    //         workbench_path('database/migrations')
-    //     );
-
-    //     artisan($this, 'migrate');
-
-    //     $this->beforeApplicationDestroyed(
-    //         fn () => artisan($this, 'migrate:rollback')
-    //     );
-    // }
+    /**
+     * Define database migrations.
+     *
+     * @return void
+     */
+    protected function defineDatabaseMigrations()
+    {
+        $this->loadMigrationsFrom(
+            workbench_path('database/migrations')
+        );
+    }
 }
