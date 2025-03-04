@@ -5,7 +5,7 @@ use StickleApp\Core\Filters\Targets\Boolean;
 
 test('boolean() sets target as Boolean', function () {
 
-    $prefix = Config::string('stickle.database.tablePrefix');
+    $prefix = ('stickle.database.tablePrefix');
 
     $filter = Filter::boolean('a_column');
 
@@ -15,7 +15,7 @@ test('boolean() sets target as Boolean', function () {
 
 test('Casts target property as boolean', function () {
 
-    $prefix = Config::string('stickle.database.tablePrefix');
+    $prefix = ('stickle.database.tablePrefix');
 
     $filter = Filter::boolean('a_column');
 

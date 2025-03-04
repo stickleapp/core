@@ -5,7 +5,7 @@ use StickleApp\Core\Filters\Targets\Text;
 
 test('text() sets target as text', function () {
 
-    $prefix = Config::string('stickle.database.tablePrefix');
+    $prefix = ('stickle.database.tablePrefix');
 
     $filter = Filter::text('a_column');
 
@@ -15,7 +15,7 @@ test('text() sets target as text', function () {
 
 test('Casts target property as boolean', function () {
 
-    $prefix = Config::string('stickle.database.tablePrefix');
+    $prefix = ('stickle.database.tablePrefix');
 
     $filter = Filter::text('a_column');
 

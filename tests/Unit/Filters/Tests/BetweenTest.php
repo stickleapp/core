@@ -5,7 +5,7 @@ use Workbench\App\Models\User;
 
 test('Creates correct sql for text', function () {
 
-    $prefix = Config::string('stickle.database.tablePrefix');
+    $prefix = ('stickle.database.tablePrefix');
 
     $filter = Filter::text('a_column')
         ->between('a', 'b');
@@ -25,7 +25,7 @@ test('Creates correct sql for text', function () {
 
 test('Creates correct sql for number', function () {
 
-    $prefix = Config::string('stickle.database.tablePrefix');
+    $prefix = ('stickle.database.tablePrefix');
 
     $filter = Filter::number('a_column')
         ->between(1, 3);
@@ -44,7 +44,7 @@ test('Creates correct sql for number', function () {
 
 test('Creates correct sql for date', function () {
 
-    $prefix = Config::string('stickle.database.tablePrefix');
+    $prefix = ('stickle.database.tablePrefix');
 
     $filter = Filter::date('a_column')
         ->between('2024-11-01', '2024-12-01');
