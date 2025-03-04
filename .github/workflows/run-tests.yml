@@ -9,15 +9,6 @@ on:
       - "composer.json"
       - "composer.lock"
 
-env:
-  STICKLE_TABLE_PREFIX: "stc_"
-  DB_CONNECTION: pgsql
-  DB_HOST: 127.0.0.1
-  DB_PORT: 5432
-  DB_DATABASE: stickle-core
-  DB_USERNAME: postgres
-  DB_PASSWORD: postgres
-
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -25,7 +16,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
         php: [8.3, 8.2]
         laravel: [11.*]
         stability: [prefer-lowest, prefer-stable]
@@ -34,27 +25,7 @@ jobs:
             testbench: 9.*
             carbon: ^2.63
 
-    name:
-      P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
-
-      # Service containers to run with `container-job`
-    services:
-      # Label used to access the service container
-      postgres:
-        # Docker Hub image
-        image: postgres
-        # Provide the password for postgres
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: stickle-core
-
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
     steps:
       - name: Checkout code
@@ -80,20 +51,8 @@ jobs:
       - name: List Installed Dependencies
         run: composer show -D
 
-      # Verify PostgreSQL connection
-      - name: Verify PostgreSQL connection
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client
-          PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d stickle-core -c "SELECT 1;"
+      - name: Start Postgres
+        run: sudo systemctl start postgresql.service
 
       - name: Execute tests
         run: vendor/bin/pest --ci
-        env:
-          STICKLE_TABLE_PREFIX: "stc_"
-          DB_CONNECTION: pgsql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 5432
-          DB_DATABASE: stickle-core
-          DB_USERNAME: postgres
-          DB_PASSWORD: postgres
