@@ -27,6 +27,23 @@ jobs:
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
+    services:
+      postgres:
+        image: postgres
+
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
+
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,8 +68,12 @@ jobs:
       - name: List Installed Dependencies
         run: composer show -D
 
-      - name: Start Postgres
-        run: sudo systemctl start postgresql.service
+      # Verify PostgreSQL connection
+      - name: Verify PostgreSQL connection
+        run: |
+          apt-get update
+          apt-get install -y postgresql-client
+          PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d postgres -c "SELECT 1;"
 
       - name: Execute tests
         run: vendor/bin/pest --ci
