@@ -61,10 +61,10 @@ class TestCase extends Orchestra
         config()->set('database.default', 'pgsql');
     }
 
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadMigrationsFrom(
-            workbench_path('database/migrations')
-        );
-    }
+    // protected function defineDatabaseMigrations()
+    // {
+    //     $this->loadMigrationsFrom(
+    //         workbench_path('database/migrations')
+    //     );
+    // }
 }
