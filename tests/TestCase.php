@@ -56,10 +56,30 @@ class TestCase extends Orchestra
         ];
     }
 
-    protected function defineDatabaseMigrations()
+    public function getEnvironmentSetUp($app)
     {
-        $this->loadMigrationsFrom(
-            workbench_path('database/migrations')
-        );
+        config()->set('database.default', 'pgsql');
+
+        // $migration = include __DIR__.'/../database/migrations/initial_structure.php';
+        // $migration->up();
     }
+
+    // /**
+    //  * Define database migrations.
+    //  *
+    //  * @return void
+    //  */
+    // protected function defineDatabaseMigrations()
+    // {
+
+    //     $this->loadMigrationsFrom(
+    //         workbench_path('database/migrations')
+    //     );
+
+    //     artisan($this, 'migrate');
+
+    //     $this->beforeApplicationDestroyed(
+    //         fn () => artisan($this, 'migrate:rollback')
+    //     );
+    // }
 }
