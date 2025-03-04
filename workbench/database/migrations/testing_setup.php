@@ -7,11 +7,6 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * @var string
-     */
-    private $prefix = 'lc_';
-
-    /**
      * Run the migrations.
      *
      * @return void

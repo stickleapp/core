@@ -5,7 +5,7 @@ use StickleApp\Core\Filters\Targets\Datetime;
 
 test('boolean() sets target as Datetime', function () {
 
-    $prefix = ('stickle.database.tablePrefix');
+    $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::datetime('a_column');
 
@@ -15,7 +15,7 @@ test('boolean() sets target as Datetime', function () {
 
 test('Casts target property as datetime', function () {
 
-    $prefix = ('stickle.database.tablePrefix');
+    $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::datetime('a_column');
 

@@ -52,10 +52,17 @@ class Base
     {
         $testClass = 'StickleApp\Core\Filters\Tests\\'.ucfirst($method);
 
+        /**
+         * HasDeltaFilters (increased, decreased) will changge the `Target`
+         * from EventCount to EventCountDelta
+         */
         if (method_exists($this->target, $method)) {
             if ($newTargetType = $this->target->$method(...$arguments)) {
                 $this->target = $newTargetType;
             }
+            /**
+             * I'm not sure what this is for..  "between"
+             */
         } elseif (isset($this->test)) {
             if (method_exists($this->test, $method)) {
                 $this->test->$method(...$arguments);

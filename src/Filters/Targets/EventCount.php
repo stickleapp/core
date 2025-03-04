@@ -32,9 +32,7 @@ class EventCount extends FilterTarget
 
     public function joinKey(): ?string
     {
-        $subJoin = $this->subJoin();
-
-        return md5($subJoin->toSql().json_encode($subJoin->getBindings()));
+        return md5($this->subJoin()->toSql().json_encode($this->subJoin()->getBindings()));
     }
 
     private function subJoin(): QueryBuilder

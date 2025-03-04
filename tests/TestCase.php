@@ -12,7 +12,7 @@ use StickleApp\Core\CoreServiceProvider;
 use function Orchestra\Testbench\artisan;
 use function Orchestra\Testbench\workbench_path;
 
-#[WithMigration('laravel')]
+#[WithMigration]
 class TestCase extends Orchestra
 {
     use RefreshDatabase;
@@ -56,19 +56,19 @@ class TestCase extends Orchestra
         ];
     }
 
-    // public function getEnvironmentSetUp($app)
-    // {
-    //     config()->set('database.default', 'pgsql');
+    public function getEnvironmentSetUp($app)
+    {
+        config()->set('database.default', 'pgsql');
 
-    //     // $migration = include __DIR__.'/../database/migrations/initial_structure.php';
-    //     // $migration->up();
-    // }
+        // $migration = include __DIR__.'/../database/migrations/initial_structure.php';
+        // $migration->up();
+    }
 
-    /**
-     * Define database migrations.
-     *
-     * @return void
-     */
+    // /**
+    //  * Define database migrations.
+    //  *
+    //  * @return void
+    //  */
     // protected function defineDatabaseMigrations()
     // {
 
