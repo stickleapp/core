@@ -12,7 +12,7 @@ on:
 env:
   STICKLE_TABLE_PREFIX: "stc_"
   DB_CONNECTION: pgsql
-  DB_HOST: localhost
+  DB_HOST: 127.0.0.1
   DB_PORT: 5432
   DB_DATABASE: stickle-core
   DB_USERNAME: postgres
@@ -89,3 +89,11 @@ jobs:
 
       - name: Execute tests
         run: vendor/bin/pest --ci
+        env:
+          STICKLE_TABLE_PREFIX: "stc_"
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: stickle-core
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
