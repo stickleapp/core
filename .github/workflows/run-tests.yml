@@ -11,6 +11,7 @@ on:
 
 env:
   STICKLE_TABLE_PREFIX: "stc_"
+  DB_CONNECTION: pgsql
   DB_HOST: localhost
   DB_PORT: 5432
   DB_DATABASE: stickle-core
@@ -78,6 +79,13 @@ jobs:
 
       - name: List Installed Dependencies
         run: composer show -D
+
+      # Verify PostgreSQL connection
+      - name: Verify PostgreSQL connection
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -d stickle-core -c "SELECT 1;"
 
       - name: Execute tests
         run: vendor/bin/pest --ci
