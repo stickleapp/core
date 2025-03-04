@@ -12,7 +12,7 @@ use StickleApp\Core\CoreServiceProvider;
 use function Orchestra\Testbench\artisan;
 use function Orchestra\Testbench\workbench_path;
 
-#[WithMigration]
+#[WithMigration('laravel')]
 class TestCase extends Orchestra
 {
     use RefreshDatabase;
