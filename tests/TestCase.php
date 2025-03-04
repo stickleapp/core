@@ -9,6 +9,7 @@ use Orchestra\Testbench\Attributes\WithMigration;
 use Orchestra\Testbench\TestCase as Orchestra;
 use StickleApp\Core\CoreServiceProvider;
 
+use function Orchestra\Testbench\artisan; 
 use function Orchestra\Testbench\workbench_path;
 
 #[WithMigration]
@@ -72,6 +73,21 @@ class TestCase extends Orchestra
     {
         $this->loadMigrationsFrom(
             workbench_path('database/migrations')
+        );
+    }
+
+=
+    /**
+     * Define database migrations.
+     *
+     * @return void
+     */
+    protected function defineDatabaseMigrations() 
+    {
+        artisan($this, 'migrate');
+
+        $this->beforeApplicationDestroyed(
+            fn () => artisan($this, 'migrate:rollback')
         );
     }
 }
