@@ -25,6 +25,10 @@ it('has observed attributes', function () {
 
 it('observed properties log changes', function () {
 
+    // Dump the columns from the users table
+    $columns = \Schema::getColumnListing('users');
+    dd($columns);
+
     $user = User::factory()->create([
         'user_rating' => 1,
     ]);
