@@ -24,11 +24,11 @@ it('has observed attributes', function () {
 });
 
 it('observed properties log changes', function () {
-    dd([
-        config('database.connections.pgsql.host'),
-        config('database.connections.pgsql.username'),
-        config('database.connections.pgsql.password'),
-    ]);
+    // dd([
+    //     config('database.connections.pgsql.host'),
+    //     config('database.connections.pgsql.username'),
+    //     config('database.connections.pgsql.password'),
+    // ]);
     $user = User::factory()->create([
         'user_rating' => 1,
     ]);
