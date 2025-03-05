@@ -29,13 +29,6 @@ class TestCase extends Orchestra
         // Load your custom migrations
         $this->loadMigrationsFrom(workbench_path('database/migrations'));
 
-        // dd([
-        //     config('database.connections.pgsql.host'),
-        //     config('database.connections.pgsql.username'),
-        //     config('database.connections.pgsql.password'),
-        //     config('database.connections.pgsql.database'),
-        // ]);
-
         $this->tablePrefix = config('stickle.database.tablePrefix');
 
         $date = now()->subWeeks(1);
