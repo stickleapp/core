@@ -29,6 +29,10 @@ class TestCase extends Orchestra
         // Load your custom migrations
         $this->loadMigrationsFrom(workbench_path('database/migrations'));
 
+        // Dump the columns from the users table
+        $columns = \Schema::getColumnListing('users');
+        dd($columns);
+
         $this->tablePrefix = config('stickle.database.tablePrefix');
 
         $date = now()->subWeeks(1);
