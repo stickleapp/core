@@ -33,6 +33,7 @@ class TestCase extends Orchestra
             config('database.connections.pgsql.host'),
             config('database.connections.pgsql.username'),
             config('database.connections.pgsql.password'),
+            config('database.connections.pgsql.database'),
         ]);
 
         $this->tablePrefix = config('stickle.database.tablePrefix');
