@@ -5,14 +5,14 @@ namespace StickleApp\Core\Tests;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use Orchestra\Testbench\Attributes\WithMigration;
+// use Orchestra\Testbench\Attributes\WithMigration;
 use Orchestra\Testbench\TestCase as Orchestra;
 use StickleApp\Core\CoreServiceProvider;
 
 use function Orchestra\Testbench\artisan;
 use function Orchestra\Testbench\workbench_path;
 
-#[WithMigration]
+// #[WithMigration]
 class TestCase extends Orchestra
 {
     use RefreshDatabase;
@@ -24,6 +24,12 @@ class TestCase extends Orchestra
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Load Laravel's default migrations
+        $this->loadLaravelMigrations();
+
+        // Load your custom migrations
+        $this->loadMigrationsFrom(workbench_path('database/migrations'));
 
         $this->tablePrefix = config('stickle.database.tablePrefix');
 
@@ -74,5 +80,14 @@ class TestCase extends Orchestra
     //     $this->loadMigrationsFrom(
     //         workbench_path('database/migrations')
     //     );
+    // }
+
+    // protected function defineDatabaseMigrations()
+    // {
+    //     // Load Laravel's default migrations
+    //     $this->loadLaravelMigrations();
+
+    //     // // Load your custom migrations
+    //     // $this->loadMigrationsFrom(workbench_path('database/migrations'));
     // }
 }
