@@ -5,14 +5,12 @@ namespace StickleApp\Core\Tests;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-// use Orchestra\Testbench\Attributes\WithMigration;
 use Orchestra\Testbench\TestCase as Orchestra;
 use StickleApp\Core\CoreServiceProvider;
 
 use function Orchestra\Testbench\artisan;
 use function Orchestra\Testbench\workbench_path;
 
-// #[WithMigration]
 class TestCase extends Orchestra
 {
     use RefreshDatabase;

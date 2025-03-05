@@ -14,6 +14,7 @@ return new class extends Migration
     public function up()
     {
 
+        dd('asdfasdf');
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('parent_id')->nullable(true);
