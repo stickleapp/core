@@ -14,6 +14,10 @@ Route::middleware(['web'])->group(function () {
         ->name('stickle::live');
     Route::view('/stickle/users', 'stickle::pages/users')
         ->name('stickle::users');
+    Route::view('/stickle/users/{id}', 'stickle::pages/user')
+        ->name('stickle::user');
+    Route::view('/stickle/groups', 'stickle::pages/groups')
+        ->name('stickle::groups');
     Route::view('/stickle/groups/{id}', 'stickle::pages/group')
         ->name('stickle::group');
 

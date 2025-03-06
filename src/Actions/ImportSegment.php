@@ -39,7 +39,9 @@ class ImportSegment
 
         $this->executeQuery($segmentId, $tempTableName);
 
-        unlink($localFilename);
+        if (file_exists($localFilename)) {
+            unlink($localFilename);
+        }
     }
 
     public function executeQuery(int $segmentId, string $tempTableName): void

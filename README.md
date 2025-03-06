@@ -1,4 +1,4 @@
-Stickle is a package for Laravel that helps you analyze and interact with your customer base.
+Stickle is a package for Laravel that helps you analyze--and interact with--your customer base.
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/stickleapp/core.svg?style=flat-square)](https://packagist.org/packages/stickleapp/core)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/stickleapp/core/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/stickleapp/core/actions?query=workflow%3Arun-tests+branch%3Amain)

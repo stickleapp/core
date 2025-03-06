@@ -27,6 +27,8 @@ class RequestLogger
             $request,
         ]);
 
+        //  x-livewire? telescope? check example repo
+
         $data = [
             'model' => get_class($request->user()),
             'object_uid' => $request->user()->id,
