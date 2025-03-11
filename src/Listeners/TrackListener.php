@@ -5,7 +5,6 @@ namespace StickleApp\Core\Listeners;
 use DateTime;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use StickleApp\Core\Contracts\AnalyticsRepository;
 use StickleApp\Core\Events\Track;
 
@@ -19,6 +18,8 @@ class TrackListener implements ShouldQueue
     public function handle(Track $event): void
     {
         Log::debug('TrackListener->handle()', [$event]);
+
+        Log::debug('TrackListener->handle() - save event', [$event]);
 
         $this->repository->saveEvent(
             model: data_get($event->data, 'model'),
@@ -38,10 +39,9 @@ class TrackListener implements ShouldQueue
          * i_did_a_thing => IDidAThingListener
          * IDidAThing => IDidAThingListener
          */
-        $listenerClass = config('stickle.paths.listeners').
-            '\\'.
-            Str::studly(class_basename(data_get($event->data, 'event'))).
-            'Listener';
+        Log::debug('TrackListener->handle() - listeners', [$event]);
+
+        $listenerClass = $this->listenerName($event);
 
         Log::info('Listener class name: ', [$listenerClass]);
 
@@ -60,5 +60,17 @@ class TrackListener implements ShouldQueue
         }
 
         $listener->handle($event);
+    }
+
+    /**
+     * Format the name of the listener class file that -- should it exist --
+     * will handle this event
+     */
+    public function listenerName(Track $event): string
+    {
+        return config('stickle.paths.listeners').
+            '\\'.
+            Str::studly(class_basename(data_get($event->data, 'event'))).
+            'Listener';
     }
 }

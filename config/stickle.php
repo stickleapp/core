@@ -118,6 +118,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Broadcast
+    |--------------------------------------------------------------------------
+    |
+    | Settings for the broadcasting of events
+    */
+    'broadcasting' => [
+        'channels' => [
+            'firehose' => env('STICKLE_BROADCASTING_CHANNEL_FIREHOSE', 'stickle.firehose'),
+            'object' => env('STICKLE_BROADCASTING_CHANNEL_OBJECT', 'stickle.object.%s.%s'),
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Tracking
     |--------------------------------------------------------------------------
     |

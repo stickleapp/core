@@ -2,6 +2,7 @@
 
 namespace StickleApp\Core\Events;
 
+use Illuminate\Container\Attributes\Config;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -14,7 +15,9 @@ class Track
      *
      * @param  array<mixed>  $data
      */
-    public function __construct(public array $data) {}
+    public function __construct(
+        public array $data
+    ) {}
 
     /**
      * Get the channels the event should broadcast on.
@@ -23,8 +26,17 @@ class Track
      */
     public function broadcastOn(): array
     {
+        
         return [
-            // new PrivateChannel('channel-name'),
+            new PrivateChannel(
+                config('stickle.broadcasting.channel.firehose')
+            ),
+            new PrivateChannel(
+                sprintf(config('stickle.broadcasting.channel.object'), 
+                    data_get($this->data, 'model'), 
+                    data_get($this->data, 'object_uid')
+                )
+            ),
         ];
     }
 }

@@ -44,13 +44,13 @@ class AuthenticatableEventListener implements ShouldQueue
             event: get_class($event),
         );
 
-        TrackEvent::dispatch([
-            'model' => get_class($event->user),
-            'object_uid' => $event->user->id,
-            'sessionUid' => $this->request->session()->getId(),
-            'event' => 'Auth'.(new \ReflectionClass($event))->getShortName(),
-            'timestamp' => $timestamp,
-        ]);
+        // TrackEvent::dispatch([
+        //     'model' => get_class($event->user),
+        //     'object_uid' => $event->user->id,
+        //     'session_uid' => $this->request->session()->getId(),
+        //     'event' => 'Auth'.(new \ReflectionClass($event))->getShortName(),
+        //     'timestamp' => $timestamp,
+        // ]);
     }
 
     /**

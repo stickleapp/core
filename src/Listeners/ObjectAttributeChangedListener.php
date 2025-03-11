@@ -36,7 +36,11 @@ class ObjectAttributeChangedListener implements ShouldQueue
         }
     }
 
-    private function listenerName(string $model, string $attribute): string
+    /**
+     * Format the name of the listener class file that -- should it exist --
+     * will handle this event
+     */
+    public function listenerName(string $model, string $attribute): string
     {
         $model = str_replace(' ', '', ucwords(str_replace('_', ' ', $model)));
         $attribute = str_replace(' ', '', ucwords(str_replace('_', ' ', $attribute)));
