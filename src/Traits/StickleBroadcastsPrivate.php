@@ -10,7 +10,7 @@ trait StickleBroadcastsPrivate
     {
         Broadcast::private($this->channels())
             ->to($this->to())
-            ->with($this->with())   
+            ->with($this->with())
             ->broadcast($event);
 
         parent::handle($event);
