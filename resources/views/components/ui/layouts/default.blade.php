@@ -28,6 +28,25 @@
         <!-- Simple-DataTables -->
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
 
+        <!-- Pusher -->
+        <script src="https://js.pusher.com/8.4/pusher.min.js"></script>
+
+        <!-- Echo -->
+        <script src="https://cdn.jsdelivr.net/npm/laravel-echo@2.0.2/dist/echo.iife.min.js"></script>
+
+        <script>
+            window.Pusher = Pusher;
+            window.Echo = new Echo({
+                broadcaster: "reverb",
+                key: '{{ config("broadcasting.connections.reverb.key") }}',
+                wsHost: '{{ config("broadcasting.connections.reverb.options.host") }}',
+                wsPort: '{{ config("broadcasting.connections.reverb.options.port") }}',
+                wssPort:
+                    '{{ config("broadcasting.connections.reverb.options.port") }}',
+                forceTLS: true,
+                enabledTransports: ["ws", "wss"],
+            });
+        </script>
         @stack('scripts')
     </head>
     <body class="h-full">

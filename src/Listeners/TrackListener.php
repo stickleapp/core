@@ -5,6 +5,7 @@ namespace StickleApp\Core\Listeners;
 use DateTime;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use StickleApp\Core\Contracts\AnalyticsRepository;
 use StickleApp\Core\Events\Track;
 

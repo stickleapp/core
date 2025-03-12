@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use SplFileInfo;
 use Workbench\App\Commands\SendTestRequests;
+use Illuminate\Support\Facades\Broadcast;
 
 class WorkbenchServiceProvider extends ServiceProvider
 {
@@ -20,6 +21,8 @@ class WorkbenchServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        Broadcast::routes();
 
         if ($this->app->runningInConsole()) {
             $this->commands(

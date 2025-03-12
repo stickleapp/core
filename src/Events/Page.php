@@ -2,10 +2,12 @@
 
 namespace StickleApp\Core\Events;
 
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class Page
+class Page implements ShouldBroadcast
 {
     use Dispatchable, SerializesModels;
 
@@ -24,7 +26,20 @@ class Page
     public function broadcastOn(): array
     {
         return [
-            // new PrivateChannel('channel-name'),
+            new Channel(
+                config('stickle.broadcasting.channels.firehose')
+            ),
+            // new Channel(
+            //     sprintf(config('stickle.broadcasting.channels.object'),
+            //         str_replace('\\', '-', data_get($this->data, 'model')),
+            //         data_get($this->data, 'object_uid')
+            //     )
+            // ),
         ];
+    }
+
+    public function broadcastAs(): string
+    {
+        return 'page';
     }
 }

@@ -226,12 +226,10 @@
 
 <script>
     if (window.Echo) {
-        Echo.private(`orders.${orderId}`).listen(
-            "OrderShipmentStatusUpdated",
-            (e) => {
-                console.log(e.order);
-            }
-        );
+        window.Echo.channel("stickle.firehose").listen("page", (e) => {
+            debugger;
+            console.log(e);
+        });
     } else {
         console.error(
             "Please initialize a window.Echo object. https://laravel.com/docs/11.x/broadcasting#client-side-installation"

@@ -1,12 +1,13 @@
 <x-stickle-ui-default-layout>
-    <div class="w-full  p-4">
+    <div class="w-full p-4">
         <!-- Full-width row -->
         <div class="bg-white shadow-md">
-            <x-stickle-segment-chart 
-                type="line" 
-                title="Active Users" 
-                segment-id="7" 
-                attribute="count">
+            <x-stickle-segment-chart
+                type="line"
+                title="Active Users"
+                segment-id="7"
+                attribute="count"
+            >
             </x-stickle-segment-chart>
         </div>
     </div>
@@ -21,9 +22,7 @@
         <!-- 2/3 Column -->
         <div id="column1" class="w-full md:w-2/3 p-4 md:block">
             <div class="bg-white p-6 shadow-md">
-                <x-stickle-segment-table 
-                    title="Active Users"
-                    segment-id="7">
+                <x-stickle-segment-table title="Active Users" segment-id="7">
                 </x-stickle-segment-table>
             </div>
         </div>
@@ -32,21 +31,28 @@
         <div id="column2" class="w-full md:w-1/3 p-4 md:block hidden">
             <div class="bg-white p-6 shadow-md">
                 <!-- Column 2 content here -->
-                <x-stickle-events-timeline></x-stickle-events-timeline>
+                <x-stickle-events-timeline
+                    :channel="config('stickle.broadcasting.channels.firehose')"
+                ></x-stickle-events-timeline>
             </div>
         </div>
     </div>
 </x-stickle-ui-default-layout>
 
 <script>
-    document.querySelectorAll('.tab-button').forEach(button => {
-        button.addEventListener('click', () => {
-            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
+    document.querySelectorAll(".tab-button").forEach((button) => {
+        button.addEventListener("click", () => {
+            document
+                .querySelectorAll(".tab-button")
+                .forEach((btn) => btn.classList.remove("active"));
+            button.classList.add("active");
 
-            document.querySelectorAll('.md\\:block').forEach(column => column.classList.add('hidden'));
-            document.querySelector(button.getAttribute('data-target')).classList.remove('hidden');
+            document
+                .querySelectorAll(".md\\:block")
+                .forEach((column) => column.classList.add("hidden"));
+            document
+                .querySelector(button.getAttribute("data-target"))
+                .classList.remove("hidden");
         });
     });
 </script>
-

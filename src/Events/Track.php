@@ -2,11 +2,12 @@
 
 namespace StickleApp\Core\Events;
 
-use Illuminate\Container\Attributes\Config;
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class Track
+class Track implements ShouldBroadcast
 {
     use Dispatchable, SerializesModels;
 
@@ -26,17 +27,22 @@ class Track
      */
     public function broadcastOn(): array
     {
-        
+
         return [
-            new PrivateChannel(
-                config('stickle.broadcasting.channel.firehose')
+            new Channel(
+                config('stickle.broadcasting.channels.firehose')
             ),
-            new PrivateChannel(
-                sprintf(config('stickle.broadcasting.channel.object'), 
-                    data_get($this->data, 'model'), 
+            new Channel(
+                sprintf(config('stickle.broadcasting.channels.object'),
+                    str_replace('\\', '-', data_get($this->data, 'model')),
                     data_get($this->data, 'object_uid')
                 )
             ),
         ];
+    }
+
+    public function broadcastAs(): string
+    {
+        return 'track';
     }
 }

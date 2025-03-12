@@ -147,6 +147,8 @@ You can access a test page at the URL specified in the terminal.
 
 `vendor/bin/testbench stickle:process-segment-events`
 
+`./vendor/bin/testbench workbench:send-test-requests`
+
 files
 `vendor/orchestra/testbench-core/laravel/storage/app` (CSV temp exports)
 `tail -f vendor/orchestra/testbench-core/laravel/storage/logs/laravel.log` (Logs)

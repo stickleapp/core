@@ -15,6 +15,7 @@ class EventTimeline extends Component
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
+        public string $channel,
         public ?string $title
     ) {}
 

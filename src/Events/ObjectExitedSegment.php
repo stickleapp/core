@@ -3,13 +3,14 @@
 namespace StickleApp\Core\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use StickleApp\Core\Models\Segment;
 
-class ObjectExitedSegment
+class ObjectExitedSegment implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -26,7 +27,15 @@ class ObjectExitedSegment
     public function broadcastOn(): array
     {
         return [
-            // new PrivateChannel('channel-name'),
+            new Channel(
+                config('stickle.broadcasting.channels.firehose')
+            ),
+            new Channel(
+                sprintf(config('stickle.broadcasting.channels.object'),
+                    str_replace('\\', '-', data_get($this->data, 'model')),
+                    data_get($this->data, 'object_uid')
+                )
+            ),
         ];
     }
 }

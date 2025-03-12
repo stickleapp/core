@@ -2,14 +2,10 @@
 
 use Illuminate\Support\Facades\Broadcast;
 
-Broadcast::channel('Admin', function ($user) {
-    return ($user->is_admin) ? $user : false;
+Broadcast::channel(config('stickle.broadcasting.channels.firehose'), function ($user) {
+    return true; // ($user->is_admin) ? $user : false;
 });
 
-Broadcast::channel('Private.{id}', function ($user, $id) {
-    return ((int) $user->id === (int) $id) ? true : false;
-});
-
-Broadcast::channel('Presence.{id}', function ($user, $id) {
-    return ((int) $user->id === (int) $id) ? $model : false;
+Broadcast::channel(config('stickle.broadcasting.channels.object'), function ($user, $model, $id) {
+    return true; // ($user->is_admin) ? $user : false;
 });

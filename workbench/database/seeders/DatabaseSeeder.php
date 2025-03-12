@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $prefix = Config::string('stickle.database.tablePrefix');
+        $prefix = config('stickle.database.tablePrefix');
 
         $date = now()->subDays(25)->toDateString();
 
