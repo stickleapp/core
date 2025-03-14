@@ -100,19 +100,16 @@ trait StickleEntity
 
     }
 
+    /**
+     * This attribute is used to define which attributes should be tracked
+     * 
+     * It is defined on the parent model
+     */
     public function getObservedAttributes()
     {
         return $this->observedAttributes ?? [];
     }
-
-    /**
-     * Gets the one-to-one ObjectAttribute relationship
-     * ... applies to the models with this trait
-     */
-    // public function objectAttribute(): MorphOne
-    // {
-    //     return $this->morphOne(static::class, 'attributable');
-    // }
+    
     public function objectAttribute(): HasOne
     {
         return $this->hasOne(ObjectAttribute::class, 'object_uid')->where('model', self::class);

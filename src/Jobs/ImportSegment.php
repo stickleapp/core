@@ -19,8 +19,6 @@ class ImportSegment implements ShouldQueue
 
     /**
      * The number of seconds after which the job's unique lock will be released.
-     *
-     * @var int
      */
     public $uniqueFor = 60; // TODO: SET IN CONFIG
 
@@ -29,7 +27,7 @@ class ImportSegment implements ShouldQueue
      */
     public function uniqueId(): string
     {
-        return (string) $this->segmentId;
+        return md5(get_class($this).(string) $this->segment->id);
     }
 
     /**
@@ -39,7 +37,7 @@ class ImportSegment implements ShouldQueue
      */
     public function middleware(): array
     {
-        return [new WithoutOverlapping((string) $this->segmentId)];
+        return [new WithoutOverlapping($this->uniqueId())];
     }
 
     /**

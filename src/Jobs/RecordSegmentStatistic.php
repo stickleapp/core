@@ -9,7 +9,6 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Actions\RecordSegmentStatistic as RecordSegmentStatisticAction;
-use StickleApp\Core\Models\Segment;
 
 class RecordSegmentStatistic implements ShouldQueue
 {
@@ -22,28 +21,26 @@ class RecordSegmentStatistic implements ShouldQueue
 
     /**
      * The number of seconds after which the job's unique lock will be released.
-     *
-     * var int
      */
-    // public $uniqueFor = 60; // TODO: SET IN CONFIG
+    public int $uniqueFor = 120;
 
     /**
      * Get the unique ID for the job.
      */
-    // public function uniqueId(): string
-    // {
-    //     return $this->segment->id;
-    // }
+    public function uniqueId(): string
+    {
+        return md5(get_class($this).(string) $this->segment->id);
+    }
 
     /**
      * Get the middleware the job should pass through.
      *
      * return array<int, object>
      */
-    // public function middleware(): array
-    // {
-    //     return [new WithoutOverlapping($this->segment->id)];
-    // }
+    public function middleware(): array
+    {
+        return [new WithoutOverlapping($this->uniqueId())];
+    }
 
     public function handle(RecordSegmentStatisticAction $recordSegmentStatisticAction): void
     {

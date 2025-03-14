@@ -13,10 +13,8 @@ class Identify implements ShouldBroadcast
 
     /**
      * Create a new event instance.
-     *
-     * @param  array<mixed>  $data
      */
-    public function __construct(public array $data) {}
+    public function __construct(public array $payload) {}
 
     /**
      * Get the channels the event should broadcast on.
@@ -31,8 +29,8 @@ class Identify implements ShouldBroadcast
             ),
             new Channel(
                 sprintf(config('stickle.broadcasting.channels.object'),
-                    str_replace('\\', '-', data_get($this->data, 'model')),
-                    data_get($this->data, 'object_uid')
+                    str_replace('\\', '-', data_get($this->payload, 'model')),
+                    data_get($this->payload, 'object_uid')
                 )
             ),
         ];

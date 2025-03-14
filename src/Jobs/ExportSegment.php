@@ -21,28 +21,26 @@ class ExportSegment implements ShouldQueue
 
     /**
      * The number of seconds after which the job's unique lock will be released.
-     *
-     * @var int
      */
-    public $uniqueFor = 60; // TODO: SET IN CONFIG
+    public $uniqueFor = 120;
 
-    // /**
-    //  * Get the unique ID for the job.
-    //  */
-    // public function uniqueId(): string
-    // {
-    //     return (string) $this->segment->id;
-    // }
+    /**
+     * Get the unique ID for the job.
+     */
+    public function uniqueId(): string
+    {
+        return md5(get_class($this).(string) $this->segment->id);
+    }
 
-    // /**
-    //  * Get the middleware the job should pass through.
-    //  *
-    //  * @return array<int, object>
-    //  */
-    // public function middleware(): array
-    // {
-    //     return [new WithoutOverlapping(class_basename($this).(string) $this->segment->id)];
-    // }
+    /**
+     * Get the middleware the job should pass through.
+     *
+     * @return array<int, object>
+     */
+    public function middleware(): array
+    {
+        return [new WithoutOverlapping($this->uniqueId())];
+    }
 
     public function handle(ExportSegmentAction $exportSegment): void
     {

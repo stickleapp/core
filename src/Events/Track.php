@@ -17,7 +17,7 @@ class Track implements ShouldBroadcast
      * @param  array<mixed>  $data
      */
     public function __construct(
-        public array $data
+        public array $payload
     ) {}
 
     /**
@@ -34,15 +34,10 @@ class Track implements ShouldBroadcast
             ),
             new Channel(
                 sprintf(config('stickle.broadcasting.channels.object'),
-                    str_replace('\\', '-', data_get($this->data, 'model')),
-                    data_get($this->data, 'object_uid')
+                    str_replace('\\', '-', data_get($this->payload, 'model')),
+                    data_get($this->payload, 'object_uid')
                 )
             ),
         ];
-    }
-
-    public function broadcastAs(): string
-    {
-        return 'track';
     }
 }

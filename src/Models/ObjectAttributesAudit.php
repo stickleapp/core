@@ -14,8 +14,9 @@ class ObjectAttributesAudit extends Model
      */
     public function __construct(
     ) {
+
         /**
-         * We aren't using the Attribute\Config trait b/c it doesn't popoulate in Factory
+         * We aren't using the Attribute\Config trait b/c it doesn't populate in Factory
          */
         $this->table = config('stickle.database.tablePrefix').'object_attributes_audit';
     }

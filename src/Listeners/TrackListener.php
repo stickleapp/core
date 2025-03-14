@@ -23,12 +23,12 @@ class TrackListener implements ShouldQueue
         Log::debug('TrackListener->handle() - save event', [$event]);
 
         $this->repository->saveEvent(
-            model: data_get($event->data, 'model'),
-            objectUid: data_get($event->data, 'object_uid'),
-            sessionUid: data_get($event->data, 'session_uid'),
-            timestamp: data_get($event->data, 'timestamp', new DateTime),
-            event: data_get($event->data, 'event'),
-            properties: data_get($event->data, 'properties'),
+            model: data_get($event->payload, 'model'),
+            objectUid: data_get($event->payload, 'object_uid'),
+            sessionUid: data_get($event->payload, 'session_uid'),
+            timestamp: data_get($event->payload, 'timestamp', new DateTime),
+            event: data_get($event->payload, 'event'),
+            properties: data_get($event->payload, 'properties'),
         );
 
         /**
@@ -71,7 +71,7 @@ class TrackListener implements ShouldQueue
     {
         return config('stickle.paths.listeners').
             '\\'.
-            Str::studly(class_basename(data_get($event->data, 'event'))).
+            Str::studly(class_basename(data_get($event->payload, 'event'))).
             'Listener';
     }
 }

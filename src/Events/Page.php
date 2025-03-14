@@ -13,10 +13,8 @@ class Page implements ShouldBroadcast
 
     /**
      * Create a new event instance.
-     *
-     * @param  array<mixed>  $data
      */
-    public function __construct(public array $data) {}
+    public function __construct(public array $payload) {}
 
     /**
      * Get the channels the event should broadcast on.
@@ -29,17 +27,17 @@ class Page implements ShouldBroadcast
             new Channel(
                 config('stickle.broadcasting.channels.firehose')
             ),
-            // new Channel(
-            //     sprintf(config('stickle.broadcasting.channels.object'),
-            //         str_replace('\\', '-', data_get($this->data, 'model')),
-            //         data_get($this->data, 'object_uid')
-            //     )
-            // ),
+            new Channel(
+                sprintf(config('stickle.broadcasting.channels.object'),
+                    str_replace('\\', '-', data_get($this->payload, 'model')),
+                    data_get($this->payload, 'object_uid')
+                )
+            ),
         ];
     }
 
-    public function broadcastAs(): string
-    {
-        return 'page';
-    }
+    // public function broadcastAs(): string
+    // {
+    //     return 'page';
+    // }
 }

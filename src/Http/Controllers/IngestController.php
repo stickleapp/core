@@ -68,6 +68,7 @@ class IngestController
             switch ($item['type']) {
                 case 'page':
                     $data = array_merge($item, [
+                        'user' => $request->user(),
                         'model' => $model,
                         'object_uid' => $objectUid,
                         'session_uid' => $request->session()->getId(),
@@ -87,6 +88,7 @@ class IngestController
                     break;
                 case 'track':
                     $data = array_merge($item, [
+                        'user' => $request->user(),
                         'model' => $model,
                         'object_uid' => $objectUid,
                         'session_uid' => $request->session()->getId(),

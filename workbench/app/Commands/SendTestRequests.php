@@ -5,7 +5,6 @@ namespace Workbench\App\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Workbench\App\Models\User;
 
 class SendTestRequests extends Command
@@ -155,8 +154,7 @@ class SendTestRequests extends Command
                         'email' => $user->email,
                         'password' => 'password',
                     ])->get('http://127.0.0.1:8000'.$url);
-
-                    Log::info('Request to '.$url.' for user '.$user->email.' returned status '.$response->status());
+                    sleep(5);
                 }
 
                 $randomEvents = collect($this->events)->shuffle()->take(20);
@@ -166,11 +164,10 @@ class SendTestRequests extends Command
                         'email' => $user->email,
                         'password' => 'password',
                     ])->post('http://127.0.0.1:8000/users/'.$user->id.'/'.$event);
+                    sleep(5);
                 }
 
             }
-
-            sleep(5);
         }
     }
 }

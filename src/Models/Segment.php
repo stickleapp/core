@@ -21,7 +21,7 @@ class Segment extends Model
         #[ConfigAttribute('stickle.database.tablePrefix')] protected ?string $prefix = null,
     ) {
         /**
-         * We aren't using the Attribute\Config trait b/c it doesn't popoulate in Factory
+         * We aren't using the Attribute\Config trait b/c it doesn't populate in Factory
          */
         $this->table = config('stickle.database.tablePrefix').'segments';
     }

@@ -21,19 +21,19 @@ class PageListener implements ShouldQueue
         Log::debug('PageListener->handle()', [$event]);
 
         $this->repository->saveRequest(
-            model: Arr::get($event->data, 'model'),
-            objectUid: Arr::get($event->data, 'object_uid'),
-            sessionUid: Arr::get($event->data, 'session_uid'),
-            timestamp: Arr::get($event->data, 'timestamp', new DateTime),
-            url: Arr::get($event->data, 'url'),
-            path: Arr::get($event->data, 'path'),
-            host: Arr::get($event->data, 'host'),
-            search: Arr::get($event->data, 'search'),
-            queryParams: Arr::get($event->data, 'query_params'),
-            utmSource: Arr::get($event->data, 'utm_source'),
-            utmMedium: Arr::get($event->data, 'utm_medium'),
-            utmCampaign: Arr::get($event->data, 'utm_campaign'),
-            utmContent: Arr::get($event->data, 'utm_content')
+            model: Arr::get($event->payload, 'model'),
+            objectUid: Arr::get($event->payload, 'object_uid'),
+            sessionUid: Arr::get($event->payload, 'session_uid'),
+            timestamp: Arr::get($event->payload, 'timestamp', new DateTime),
+            url: Arr::get($event->payload, 'url'),
+            path: Arr::get($event->payload, 'path'),
+            host: Arr::get($event->payload, 'host'),
+            search: Arr::get($event->payload, 'search'),
+            queryParams: Arr::get($event->payload, 'query_params'),
+            utmSource: Arr::get($event->payload, 'utm_source'),
+            utmMedium: Arr::get($event->payload, 'utm_medium'),
+            utmCampaign: Arr::get($event->payload, 'utm_campaign'),
+            utmContent: Arr::get($event->payload, 'utm_content')
         );
     }
 }
