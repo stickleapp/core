@@ -22,7 +22,7 @@ class ExportSegment implements ShouldQueue
     /**
      * The number of seconds after which the job's unique lock will be released.
      */
-    public $uniqueFor = 120;
+    public int $uniqueFor = 120;
 
     /**
      * Get the unique ID for the job.

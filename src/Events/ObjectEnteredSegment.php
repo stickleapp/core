@@ -32,8 +32,8 @@ class ObjectEnteredSegment implements ShouldBroadcast
             ),
             new Channel(
                 sprintf(config('stickle.broadcasting.channels.object'),
-                    str_replace('\\', '-', data_get($this->data, 'model')),
-                    data_get($this->object->id, 'object_uid')
+                    str_replace('\\', '-', get_class($this->object)),
+                    $this->object->getKey()
                 )
             ),
         ];

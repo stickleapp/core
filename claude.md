@@ -26,9 +26,10 @@ StickleApp Core follows a Laravel-centric architecture with:
 
 ## Data Storage
 
--   Uses PostgreSQL with partitioned tables for analytics data
--   Leverages JSON columns for flexible attribute storage
--   Implements efficient time-series data storage patterns
+-   **Primary Data Store**: At the moment, Stickle supports only Postgres.
+-   **JSONB Columns**: Leverages JSON columns for flexible attribute storage
+-   **Table Partitioning**: Stickle uses time-based partitioning for events, requests, and statistics tables to maintain performance with large datasets.
+-   **Roll-up Tables**: Stickle implements multi-interval data aggregation (1min, 5min, 1hr, 1day) with incremental updates for efficient querying of time-series data
 
 ## Key Components
 
@@ -50,6 +51,14 @@ Extension points for StickleApp / Core include:
 -   **Custom attribute listeners**: Developers can listen for changes to specific attributes defined in the `observedAttributes` model. This is done by creating a Laravel Listener with a specific naming structure `{ModelName}{AttributeName}Listener` in the configured listeners namespace.
 -   **Custom event listeners**: Similar to attribute listeners, developers can create classes like {EventName}Listener to respond to custom events tracked via the JavaScript SDK or server-side tracking. These let developers create custom business logic in response to user actions.
 -   **Re-usable components**: Stickle provides Blade components that Developers can re-use in admin panels. These include Model and Segment charts and lists. They have few dependencies that can be loaded using external JS files hosted on a CDN (Alpine.js, Chart.js, Simple Datatables, Pusher, Echo)
+
+## UI Components
+
+StickleApp includes a growing set of UI components for building analytics dashboards:
+
+-   **Charts**: Line and table charts to display model and segment metrics over time
+-   **Tables**: Interactive data tables for displaying segment members and statistics
+-   **Timelines**: Real-time event streams for monitoring user activity individually and within segments
 
 ## Usage Examples
 

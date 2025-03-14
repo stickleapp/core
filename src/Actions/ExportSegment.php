@@ -18,7 +18,8 @@ class ExportSegment
 
         $builder = $segmentDefinition->toBuilder();
 
-        $builder->selectRaw($builder->getModel()->getTable().'.'.$builder->getModel()->getKeyName().' as object_uid')
+        $builder
+            ->selectRaw($builder->getModel()->getTable().'.'.$builder->getModel()->getKeyName().' as object_uid')
             ->selectRaw("{$segmentId} as segment_id");
 
         $csvFile = tmpfile();

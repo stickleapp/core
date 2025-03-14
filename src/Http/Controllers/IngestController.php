@@ -53,7 +53,7 @@ class IngestController
 
         if (! $model = $this->model(
             data_get($validated, 'model'),
-            get_class($request->user())
+            $request->user()
         )) {
             throw new \Exception('Model class not specified');
         }

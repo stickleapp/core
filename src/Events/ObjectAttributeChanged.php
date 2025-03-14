@@ -36,8 +36,8 @@ class ObjectAttributeChanged implements ShouldBroadcast
             ),
             new Channel(
                 sprintf(config('stickle.broadcasting.channels.object'),
-                    str_replace('\\', '-', data_get($this->model, 'model')),
-                    data_get($this->objectUid, 'object_uid')
+                    str_replace('\\', '-', $this->model),
+                    $this->objectUid
                 )
             ),
         ];

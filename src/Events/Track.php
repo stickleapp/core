@@ -2,11 +2,8 @@
 
 namespace StickleApp\Core\Events;
 
-<<<<<<< HEAD
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-=======
->>>>>>> 386eb3ab89b47c386c9afe9360a7debf5a1ac19e
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -16,8 +13,7 @@ class Track implements ShouldBroadcast
 
     /**
      * Create a new event instance.
-     *
-     * @param  array<mixed>  $data
+     * @param array<mixed> $payload 
      */
     public function __construct(
         public array $payload

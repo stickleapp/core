@@ -17,7 +17,7 @@ class RecordSegmentStatistic implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public ?int $segmentId, public ?string $attribute) {}
+    public function __construct(public int $segmentId, public string $attribute) {}
 
     /**
      * The number of seconds after which the job's unique lock will be released.
@@ -29,13 +29,13 @@ class RecordSegmentStatistic implements ShouldQueue
      */
     public function uniqueId(): string
     {
-        return md5(get_class($this).(string) $this->segment->id);
+        return md5(get_class($this).(string) $this->segmentId);
     }
 
     /**
      * Get the middleware the job should pass through.
      *
-     * return array<int, object>
+     * @return array<int, object>
      */
     public function middleware(): array
     {

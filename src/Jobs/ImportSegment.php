@@ -20,14 +20,14 @@ class ImportSegment implements ShouldQueue
     /**
      * The number of seconds after which the job's unique lock will be released.
      */
-    public $uniqueFor = 60; // TODO: SET IN CONFIG
+    public int $uniqueFor = 60; // TODO: SET IN CONFIG
 
     /**
      * Get the unique ID for the job.
      */
     public function uniqueId(): string
     {
-        return md5(get_class($this).(string) $this->segment->id);
+        return md5(get_class($this).(string) $this->segmentId);
     }
 
     /**
