@@ -3,11 +3,11 @@
 namespace Workbench\App\Providers;
 
 use Illuminate\Foundation\Events\DiscoverEvents;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use SplFileInfo;
 use Workbench\App\Commands\SendTestRequests;
-use Illuminate\Support\Facades\Broadcast;
 
 class WorkbenchServiceProvider extends ServiceProvider
 {
