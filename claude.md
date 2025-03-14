@@ -45,10 +45,11 @@ Extension points are elements of a software system designed to allow developers 
 Extension points for StickleApp / Core include:
 
 -   **Models**: Models (typically `User`) can be assigned the `StickleEntity` trait. This enables developers to use custom filters via a Eloquent scopes (`scopeStickle` and `orScopeStickle`)
--   **Custom segments**: Developers can create Segments which define a subset of `StickleEntity` models using standard Eloquent filters or Stickle filters appended to Eloquent builders using the added scopes
+-   **Custom segments**: Developers can create extend the `StickleApp\Core\Contracts\Segment` abstract class to create Segments which are subsets of `StickleEntity` models. They can use standard Eloquent filters or Stickle filters (`StickleApp\Core\Filters`) appended to Eloquent builders using the added scopes.
 -   **Segment Event Listeners**: Developers can listen for when models enter and exit segments
--   **Custom attribute listeners**: Developers can listen for changes to specific attributes defined in the `observedAttributes` model.
--   **Custom event listeners**: Developers can define listeners to client-side events.
+-   **Custom attribute listeners**: Developers can listen for changes to specific attributes defined in the `observedAttributes` model. This is done by creating a Laravel Listener with a specific naming structure `{ModelName}{AttributeName}Listener` in the configured listeners namespace.
+-   **Custom event listeners**: Similar to attribute listeners, developers can create classes like {EventName}Listener to respond to custom events tracked via the JavaScript SDK or server-side tracking. These let developers create custom business logic in response to user actions.
+-   **Re-usable components**: Stickle provides Blade components that Developers can re-use in admin panels. These include Model and Segment charts and lists. They have few dependencies that can be loaded using external JS files hosted on a CDN (Alpine.js, Chart.js)
 
 ## Usage Examples
 
