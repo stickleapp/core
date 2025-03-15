@@ -17,7 +17,8 @@ class RequestReceived implements ShouldBroadcast
 
     /**
      * Create a new event instance.
-     * @param array<mixed> $payload
+     *
+     * @param  array<mixed>  $payload
      */
     public function __construct(public array $payload) {}
 
