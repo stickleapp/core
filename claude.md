@@ -169,7 +169,7 @@ The Live Dashboard View shows users that are currently active at the moment.
     -   Document all available components
     -   Provide example implementations
     -   Include customization options
--   [ ] Implement extendable security (as middleware?) to control access to UI
+-   [ ] Implement customizabl security (as middleware?) to control access to UI
 
 ## Integration with Laravel Echo and Broadcasting
 

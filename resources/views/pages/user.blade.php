@@ -34,7 +34,9 @@
         <div id="column2" class="w-full md:w-1/2 p-4 md:block hidden">
             <div class="bg-white p-6 shadow-md">
                 <!-- Column 2 content here -->
-                <x-stickle-events-timeline></x-stickle-events-timeline>
+                <x-stickle-events-timeline
+                    :channel="config('stickle.broadcasting.channels.firehose')"
+                ></x-stickle-events-timeline>
             </div>
         </div>
     </div>
