@@ -16,7 +16,7 @@ Route::middleware(['web'])->group(function () {
         ->name('stickle::users');
     Route::view('/stickle/users/{id}', 'stickle::pages/user')
         ->name('stickle::user');
-        
+
     /** Installation Demo */
     Route::view('/stickle-demo', 'stickle::demo/index')
         ->name('stickle::demo/index');
