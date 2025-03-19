@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StickleApp\Core\Views\Components\UI\Layouts;
 
 use Illuminate\View\Component;

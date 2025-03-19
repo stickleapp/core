@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StickleApp\Core\Jobs;
 
 use Illuminate\Contracts\Queue\ShouldQueue;

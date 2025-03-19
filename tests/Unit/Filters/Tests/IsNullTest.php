@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use StickleApp\Core\Filters\Base as Filter;
 use Workbench\App\Models\User;
 

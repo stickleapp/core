@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Filters\Targets\Number;
 

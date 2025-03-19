@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StickleApp\Core\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;

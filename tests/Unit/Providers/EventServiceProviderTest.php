@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use StickleApp\Core\Events\Identify;
 use StickleApp\Core\EventServiceProvider;
 

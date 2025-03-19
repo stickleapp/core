@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StickleApp\Core\Models;
 
 use Illuminate\Container\Attributes\Config as ConfigAttribute;

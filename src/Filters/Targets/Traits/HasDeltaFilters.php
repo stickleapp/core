@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StickleApp\Core\Filters\Targets\Traits;
 
 use DateTimeInterface;
