@@ -19,8 +19,8 @@ use StickleApp\Core\Commands\RollupSessionsCommand;
 use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
 use StickleApp\Core\Middleware\InjectJavascriptTrackingCode;
 use StickleApp\Core\Middleware\RequestLogger;
-use StickleApp\Core\Models\ObjectAttributeModel;
-use StickleApp\Core\Models\SegmentModel;
+use StickleApp\Core\Models\ObjectAttribute;
+use StickleApp\Core\Models\Segment;
 use StickleApp\Core\Observers\ObjectAttributeObserver;
 use StickleApp\Core\Repositories\PostgresAnalyticsRepository;
 use StickleApp\Core\Views\Components\Demo\Layouts\DefaultLayout as DemoDefaultLayout;
@@ -49,16 +49,16 @@ final class CoreServiceProvider extends ServiceProvider
     {
         $kernel = $this->app->make(Kernel::class);
 
-        ObjectAttributeModel::observe(ObjectAttributeObserver::class);
+        ObjectAttribute::observe(ObjectAttributeObserver::class);
 
         /** Allows URLs using Segment Class instead of ID */
         Route::bind('segment', function (string $value) {
 
             if (is_numeric($value)) {
-                return SegmentModel::findOrFail($value);
+                return Segment::findOrFail($value);
             }
 
-            return SegmenModel::where('as_class', $value)->firstOrFail();
+            return Segment::where('as_class', $value)->firstOrFail();
         });
 
         if (config('stickle.tracking.server.loadMiddleware') === true) {

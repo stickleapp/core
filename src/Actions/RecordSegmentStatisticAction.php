@@ -7,8 +7,8 @@ namespace StickleApp\Core\Actions;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use StickleApp\Core\Models\SegmentStatisticExportModel;
-use StickleApp\Core\Models\SegmentStatisticModel;
+use StickleApp\Core\Models\SegmentStatistic;
+use StickleApp\Core\Models\SegmentStatisticExport;
 
 class RecordSegmentStatisticAction
 {
@@ -24,13 +24,13 @@ class RecordSegmentStatisticAction
         /** @var \Illuminate\Support\Collection<int, \stdClass> $items */
         $items = $builder->get();
 
-        SegmentStatisticModel::upsert(
+        SegmentStatistic::upsert(
             $items->toArray(),
             uniqueBy: ['segment_id', 'attribute', 'recorded_at'],
             update: ['value', 'value_avg', 'value_sum', 'value_min', 'value_max', 'value_count']
         );
 
-        SegmentStatisticExportModel::updateOrCreate(
+        SegmentStatisticExport::updateOrCreate(
             [
                 'segment_id' => $segmentId,
                 'attribute' => $attribute,

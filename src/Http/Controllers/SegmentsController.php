@@ -4,13 +4,13 @@ namespace StickleApp\Core\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use StickleApp\Core\Models\SegmentModel;
+use StickleApp\Core\Models\Segment;
 
 class SegmentsController
 {
     public function index(Request $request): JsonResponse
     {
-        $segments = SegmentModel::all();
+        $segments = Segment::all();
 
         return response()->json($segments);
     }

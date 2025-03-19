@@ -45,7 +45,7 @@ class ImportSegmentJob implements ShouldQueue
      */
     public function handle(ImportSegmentAction $importSegment): void
     {
-        Log::debug('ImportSegment Job', ['segment_id' => $this->segmentId, 'exportFilename' => $this->exportFilename]);
+        Log::debug('ImportSegmentJob', ['segment_id' => $this->segmentId, 'exportFilename' => $this->exportFilename]);
 
         $importSegment(
             segmentId: $this->segmentId,

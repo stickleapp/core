@@ -4,7 +4,7 @@ namespace StickleApp\Core\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use StickleApp\Core\Models\SegmentStatisticModel;
+use StickleApp\Core\Models\SegmentStatistic;
 
 class SegmentStatisticsController
 {
@@ -18,7 +18,7 @@ class SegmentStatisticsController
 
         $dateTo = $request->date('date_to');
 
-        $segmentStatistics = SegmentStatisticModel::where('segment_id', $segmentId)
+        $segmentStatistics = SegmentStatistic::where('segment_id', $segmentId)
             ->where('attribute', $attribute)
             ->when($dateFrom, function ($query) use ($dateFrom) {
                 return $query->where('recorded_at', '>=', $dateFrom->startOfDay());

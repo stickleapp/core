@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 use StickleApp\Core\Filters\Base as Filter;
-use StickleApp\Core\Models\ObjectAttributeModel;
-use StickleApp\Core\Models\ObjectAttributesAuditModel;
+use StickleApp\Core\Models\ObjectAttribute;
+use StickleApp\Core\Models\ObjectAttributesAudit;
 
 trait StickleEntity
 {
@@ -112,12 +112,12 @@ trait StickleEntity
 
     public function objectAttribute(): HasOne
     {
-        return $this->hasOne(ObjectAttributeModel::class, 'object_uid')->where('model', self::class);
+        return $this->hasOne(ObjectAttribute::class, 'object_uid')->where('model', self::class);
     }
 
     public function objectAttributesAudits(): HasMany
     {
-        return $this->hasMany(ObjectAttributesAuditModel::class, 'object_uid')->where('model', self::class);
+        return $this->hasMany(ObjectAttributesAudit::class, 'object_uid')->where('model', self::class);
     }
 
     /**

@@ -8,7 +8,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use StickleApp\Core\Models\SegmentModel;
+use StickleApp\Core\Models\Segment;
 
 class ObjectEnteredSegment implements ShouldBroadcast
 {
@@ -17,7 +17,7 @@ class ObjectEnteredSegment implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct(public Model $object, public SegmentModel $segment) {}
+    public function __construct(public Model $object, public Segment $segment) {}
 
     /**
      * Get the channels the event should broadcast on.

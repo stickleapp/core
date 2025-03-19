@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
  * @property string $model
  * @property string $as_class
  */
-class SegmentModel extends Model
+class Segment extends Model
 {
     /**
      * Creates a new analytics repository instance.

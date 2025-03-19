@@ -8,7 +8,7 @@ use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Actions\ExportSegmentAction;
 use StickleApp\Core\Contracts\SegmentContract;
-use StickleApp\Core\Models\SegmentModel;
+use StickleApp\Core\Models\Segment;
 
 class ExportSegmentJob implements ShouldQueue
 {
@@ -17,7 +17,7 @@ class ExportSegmentJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public SegmentModel $segment) {}
+    public function __construct(public Segment $segment) {}
 
     /**
      * The number of seconds after which the job's unique lock will be released.
@@ -54,7 +54,7 @@ class ExportSegmentJob implements ShouldQueue
             segmentDefinition: $segment
         );
 
-        ImportSegment::dispatch(
+        ImportSegmentJob::dispatch(
             $this->segment->id,
             $exportFilename
         );
