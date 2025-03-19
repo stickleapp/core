@@ -8,19 +8,19 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use StickleApp\Core\Commands\Configure;
-use StickleApp\Core\Commands\CreatePartitions;
-use StickleApp\Core\Commands\DropPartitions;
-use StickleApp\Core\Commands\ExportSegments;
-use StickleApp\Core\Commands\ProcessSegmentEvents;
-use StickleApp\Core\Commands\RecordObjectAttributes;
-use StickleApp\Core\Commands\RecordSegmentStatistics;
-use StickleApp\Core\Commands\RollupSessions;
-use StickleApp\Core\Contracts\AnalyticsRepository;
+use StickleApp\Core\Commands\ConfigureCommand;
+use StickleApp\Core\Commands\CreatePartitionsCommand;
+use StickleApp\Core\Commands\DropPartitionsCommand;
+use StickleApp\Core\Commands\ExportSegmentsCommand;
+use StickleApp\Core\Commands\ProcessSegmentEventsCommand;
+use StickleApp\Core\Commands\RecordObjectAttributesCommand;
+use StickleApp\Core\Commands\RecordSegmentStatisticsCommand;
+use StickleApp\Core\Commands\RollupSessionsCommand;
+use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
 use StickleApp\Core\Middleware\InjectJavascriptTrackingCode;
 use StickleApp\Core\Middleware\RequestLogger;
-use StickleApp\Core\Models\ObjectAttribute;
-use StickleApp\Core\Models\Segment;
+use StickleApp\Core\Models\ObjectAttributeModel;
+use StickleApp\Core\Models\SegmentModel;
 use StickleApp\Core\Observers\ObjectAttributeObserver;
 use StickleApp\Core\Repositories\PostgresAnalyticsRepository;
 use StickleApp\Core\Views\Components\Demo\Layouts\DefaultLayout as DemoDefaultLayout;
@@ -42,23 +42,23 @@ final class CoreServiceProvider extends ServiceProvider
         /**
          * Bind the Analytics Repository
          */
-        $this->app->bind(AnalyticsRepository::class, PostgresAnalyticsRepository::class);
+        $this->app->bind(AnalyticsRepositoryContract::class, PostgresAnalyticsRepository::class);
     }
 
     public function boot(Kernel $kernel): void
     {
         $kernel = $this->app->make(Kernel::class);
 
-        ObjectAttribute::observe(ObjectAttributeObserver::class);
+        ObjectAttributeModel::observe(ObjectAttributeObserver::class);
 
         /** Allows URLs using Segment Class instead of ID */
         Route::bind('segment', function (string $value) {
 
             if (is_numeric($value)) {
-                return Segment::findOrFail($value);
+                return SegmentModel::findOrFail($value);
             }
 
-            return Segment::where('as_class', $value)->firstOrFail();
+            return SegmenModel::where('as_class', $value)->firstOrFail();
         });
 
         if (config('stickle.tracking.server.loadMiddleware') === true) {
@@ -72,14 +72,14 @@ final class CoreServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands(
                 commands: [
-                    RollupSessions::class,
-                    CreatePartitions::class,
-                    DropPartitions::class,
-                    ExportSegments::class,
-                    RecordObjectAttributes::class,
-                    RecordSegmentStatistics::class,
-                    ProcessSegmentEvents::class,
-                    Configure::class,
+                    RollupSessionsCommand::class,
+                    CreatePartitionsCommand::class,
+                    DropPartitionsCommand::class,
+                    ExportSegmentsCommand::class,
+                    RecordObjectAttributesCommand::class,
+                    RecordSegmentStatisticsCommand::class,
+                    ProcessSegmentEventsCommand::class,
+                    ConfigureCommand::class,
                 ],
             );
         }

@@ -5,13 +5,13 @@ namespace Workbench\App\Segments;
 use Illuminate\Database\Eloquent\Builder;
 use StickleApp\Core\Attributes\SegmentName;
 use StickleApp\Core\Attributes\SegmentRefreshInterval;
-use StickleApp\Core\Contracts\Segment;
+use StickleApp\Core\Contracts\SegmentContract;
 use StickleApp\Core\Filters\Base as Filter;
 use Workbench\App\Models\User;
 
 #[SegmentName('Monthly Active Users')]
 #[SegmentRefreshInterval(30)]
-class MonthlyActiveUsers extends Segment
+class MonthlyActiveUsers extends SegmentContract
 {
     public string $model = User::class;
 

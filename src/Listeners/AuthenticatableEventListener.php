@@ -16,14 +16,14 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use StickleApp\Core\Contracts\AnalyticsRepository;
+use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
 
 class AuthenticatableEventListener implements ShouldQueue
 {
     /**
      * Create the event listener.
      */
-    public function __construct(public Request $request, public AnalyticsRepository $repository) {}
+    public function __construct(public Request $request, public AnalyticsRepositoryContract $repository) {}
 
     public function onEvent(mixed $event): void
     {

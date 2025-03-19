@@ -12,7 +12,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use StickleApp\Core\Traits\StickleEntity;
 
-final class RecordObjectAttributes extends Command implements Isolatable
+final class RecordObjectAttributesCommand extends Command implements Isolatable
 {
     /**
      * @var string

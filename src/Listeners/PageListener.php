@@ -6,7 +6,7 @@ use DateTime;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
-use StickleApp\Core\Contracts\AnalyticsRepository;
+use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
 use StickleApp\Core\Events\Page;
 
 class PageListener implements ShouldQueue
@@ -14,7 +14,7 @@ class PageListener implements ShouldQueue
     /**
      * Create the event listener.
      */
-    public function __construct(readonly AnalyticsRepository $repository) {}
+    public function __construct(readonly AnalyticsRepositoryContract $repository) {}
 
     public function handle(Page $event): void
     {

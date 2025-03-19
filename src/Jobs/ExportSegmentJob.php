@@ -6,18 +6,18 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Log;
-use StickleApp\Core\Actions\ExportSegment as ExportSegmentAction;
-use StickleApp\Core\Contracts\Segment as SegmentContract;
-use StickleApp\Core\Models\Segment;
+use StickleApp\Core\Actions\ExportSegmentAction;
+use StickleApp\Core\Contracts\SegmentContract;
+use StickleApp\Core\Models\SegmentModel;
 
-class ExportSegment implements ShouldQueue
+class ExportSegmentJob implements ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(public Segment $segment) {}
+    public function __construct(public SegmentModel $segment) {}
 
     /**
      * The number of seconds after which the job's unique lock will be released.

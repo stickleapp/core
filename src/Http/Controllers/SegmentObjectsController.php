@@ -4,7 +4,7 @@ namespace StickleApp\Core\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use StickleApp\Core\Models\Segment;
+use StickleApp\Core\Models\SegmentModel;
 
 class SegmentObjectsController
 {
@@ -12,7 +12,7 @@ class SegmentObjectsController
     {
         $segmentId = $request->integer('segment_id');
 
-        $segment = Segment::findOrFail($segmentId);
+        $segment = SegmentModel::findOrFail($segmentId);
 
         return response()->json($segment->objects()->get());
     }

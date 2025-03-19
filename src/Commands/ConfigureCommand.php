@@ -12,7 +12,7 @@ use function Laravel\Prompts\suggest;
 use function Laravel\Prompts\table;
 use function Laravel\Prompts\text;
 
-class Configure extends Command
+class ConfigureCommand extends Command
 {
     /**
      * The name and signature of the console command.

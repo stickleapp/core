@@ -7,13 +7,13 @@ namespace StickleApp\Core\Contracts;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-abstract class FilterTest
+abstract class FilterTestContract
 {
     /**
      * @param  Builder<Model>  $builder
      * @return Builder<Model>
      */
-    public function applyFilter(Builder $builder, FilterTarget $target, string $operator): Builder
+    public function applyFilter(Builder $builder, FilterTargetContract $target, string $operator): Builder
     {
         throw new \Exception('Method applyFilter must be implemented');
     }

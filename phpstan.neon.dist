@@ -13,11 +13,11 @@ parameters:
     ignoreErrors:
         - '#Unable to resolve the template type TRelatedModel in call to method Illuminate\\Database\\Eloquent\\Model::belongsToMany\(\)#'
         - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder<Illuminate\\Database\\Eloquent\\Model>::hasJoin\(\).#'
-        - '#Method StickleApp\\Core\\Models\\ObjectAttribute::attributable\(\) should return#'
-        - '#Method StickleApp\\Core\\Models\\ObjectAttributesAudit::attributable\(\) should return#'
-        - '#Method StickleApp\\Core\\Models\\Segment::segmentStatistics\(\) should return#'
-        - '#Method StickleApp\\Core\\Models\\ObjectSegmentAudit::segment\(\)#'
-        - '#Method StickleApp\\Core\\Models\\Segment::objects\(\) should return#'
+        - '#Method StickleApp\\Core\\Models\\ObjectAttributeModel::attributable\(\) should return#'
+        - '#Method StickleApp\\Core\\Models\\ObjectAttributesAuditModel::attributable\(\) should return#'
+        - '#Method StickleApp\\Core\\Models\\SegmentModel::segmentStatistics\(\) should return#'
+        - '#Method StickleApp\\Core\\Models\\ObjectSegmentAuditModel::segment\(\)#'
+        - '#Method StickleApp\\Core\\Models\\SegmentModel::objects\(\) should return#'
 
     excludePaths:
         - src/Commands/Configure.php

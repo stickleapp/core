@@ -3,8 +3,8 @@
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use StickleApp\Core\Actions\ExportSegment;
-use StickleApp\Core\Contracts\Segment;
+use StickleApp\Core\Actions\ExportSegmentAction;
+use StickleApp\Core\Contracts\SegmentContract;
 
 beforeEach(function () {
     Storage::fake('local');
@@ -13,7 +13,7 @@ beforeEach(function () {
 it('exports segment data to a CSV file', function () {
 
     // Create a mock segment definition
-    $segmentDefinition = Mockery::mock(Segment::class);
+    $segmentDefinition = Mockery::mock(SegmentContract::class);
 
     // Mock the model
     $mockModel = Mockery::mock(Model::class);
@@ -43,7 +43,7 @@ it('exports segment data to a CSV file', function () {
     $segmentDefinition->shouldReceive('toBuilder')->andReturn($mockBuilder);
 
     // Execute the action
-    $action = new ExportSegment;
+    $action = new ExportSegmentAction;
     $filename = $action(1, $segmentDefinition);
 
     // Assert the format of the filename
@@ -58,7 +58,7 @@ it('exports segment data to a CSV file', function () {
 
 it('formats filename correctly', function () {
 
-    $action = new ExportSegment;
+    $action = new ExportSegmentAction;
 
     $filename = $action->formatFilename(99);
 
@@ -71,7 +71,7 @@ it('formats filename correctly', function () {
 it('handles empty segments', function () {
 
     // Create a mock segment definition
-    $segmentDefinition = Mockery::mock(Segment::class);
+    $segmentDefinition = Mockery::mock(SegmentContract::class);
 
     // Mock the model
     $mockModel = Mockery::mock(Model::class);
@@ -91,7 +91,7 @@ it('handles empty segments', function () {
     $segmentDefinition->shouldReceive('toBuilder')->andReturn($mockBuilder);
 
     // Execute the action
-    $action = new ExportSegment;
+    $action = new ExportSegmentAction;
     $filename = $action(1, $segmentDefinition);
 
     // Assert the file was stored even though the segment is empty

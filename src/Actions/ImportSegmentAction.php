@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class ImportSegment
+class ImportSegmentAction
 {
     public function __invoke(
         int $segmentId,

@@ -9,7 +9,7 @@ use DateTimeInterface;
 /**
  * @internal
  */
-interface AnalyticsRepository
+interface AnalyticsRepositoryContract
 {
     /**
      * @param  array<int, string>  $properties

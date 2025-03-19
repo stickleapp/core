@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /** Attributes: Name / Refresh Every / Description */
-abstract class Segment
+abstract class SegmentContract
 {
     public string $name;
 

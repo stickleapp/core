@@ -10,7 +10,7 @@ use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\DB;
 
-final class CreatePartitions extends Command implements Isolatable
+final class CreatePartitionsCommand extends Command implements Isolatable
 {
     /**
      * @var string

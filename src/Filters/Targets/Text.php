@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace StickleApp\Core\Filters\Targets;
 
 use Illuminate\Container\Attributes\Config;
-use StickleApp\Core\Contracts\FilterTarget;
+use StickleApp\Core\Contracts\FilterTargetContract;
 
-class Text extends FilterTarget
+class Text extends FilterTargetContract
 {
     public function __construct(
         #[Config('stickle.database.tablePrefix')] protected ?string $prefix,

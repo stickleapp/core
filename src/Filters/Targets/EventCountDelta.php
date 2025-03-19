@@ -10,10 +10,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
-use StickleApp\Core\Contracts\FilterTarget;
+use StickleApp\Core\Contracts\FilterTargetContract;
 use StickleApp\Core\Filters\Targets\Traits\HasDeltaFilters;
 
-class EventCountDelta extends FilterTarget
+class EventCountDelta extends FilterTargetContract
 {
     use HasDeltaFilters;
 

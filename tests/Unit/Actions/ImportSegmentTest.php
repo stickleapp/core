@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Storage;
-use StickleApp\Core\Actions\ImportSegment;
+use StickleApp\Core\Actions\ImportSegmentAction;
 
 beforeEach(function () {
     Storage::fake('local');
@@ -15,7 +15,7 @@ it('imports segment data from CSV', function () {
     Storage::disk('local')->put($exportFilename, $csvContent);
 
     // Create a partial mock of ImportSegment
-    $importSegment = Mockery::mock(ImportSegment::class)->makePartial();
+    $importSegment = Mockery::mock(ImportSegmentAction::class)->makePartial();
 
     // Mock the methods that would interact with the database
     $importSegment->shouldReceive('createTmpTable')->once()->andReturn(null);
@@ -34,7 +34,7 @@ it('imports segment data from CSV', function () {
 });
 
 it('throws exception when file is missing', function () {
-    $importSegment = new ImportSegment;
+    $importSegment = new ImportSegmentAction;
     $nonExistentFile = 'segment-1-does-not-exist.csv';
 
     expect(fn () => $importSegment(1, $nonExistentFile))
@@ -42,7 +42,7 @@ it('throws exception when file is missing', function () {
 });
 
 it('formats temp table name correctly', function () {
-    $importSegment = new ImportSegment;
+    $importSegment = new ImportSegmentAction;
     $filename = 'segment-1-2025-03-05-120000.csv';
 
     $result = $importSegment->tempTableName($filename);
@@ -51,7 +51,7 @@ it('formats temp table name correctly', function () {
 });
 
 it('formats local filename correctly', function () {
-    $importSegment = new ImportSegment;
+    $importSegment = new ImportSegmentAction;
     $exportFilename = 'segment-1-2025-03-05-120000.csv';
 
     $result = $importSegment->localFilename($exportFilename);

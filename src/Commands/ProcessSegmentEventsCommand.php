@@ -9,9 +9,9 @@ use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Events\ObjectEnteredSegment;
 use StickleApp\Core\Events\ObjectExitedSegment;
-use StickleApp\Core\Models\ObjectSegmentAudit;
+use StickleApp\Core\Models\ObjectSegmentAuditModel;
 
-final class ProcessSegmentEvents extends Command implements Isolatable
+final class ProcessSegmentEventsCommand extends Command implements Isolatable
 {
     /**
      * @var string
@@ -41,7 +41,7 @@ final class ProcessSegmentEvents extends Command implements Isolatable
         /**
          * Retrieve the unprocessed object_segment events
          */
-        $builder = ObjectSegmentAudit::with('segment')
+        $builder = ObjectSegmentAuditModel::with('segment')
             ->where(function ($query) {
                 $query->whereNull('event_processed_at');
             })

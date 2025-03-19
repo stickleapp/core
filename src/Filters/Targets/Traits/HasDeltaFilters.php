@@ -3,7 +3,7 @@
 namespace StickleApp\Core\Filters\Targets\Traits;
 
 use DateTimeInterface;
-use StickleApp\Core\Contracts\FilterTarget;
+use StickleApp\Core\Contracts\FilterTargetContract;
 
 trait HasDeltaFilters
 {
@@ -11,12 +11,12 @@ trait HasDeltaFilters
      * @param  array<DateTimeInterface>  $currentPeriod
      * @param  array<DateTimeInterface>  $previousPeriod
      */
-    public function increased(?array $currentPeriod, ?array $previousPeriod): FilterTarget
+    public function increased(?array $currentPeriod, ?array $previousPeriod): FilterTargetContract
     {
         if (substr(class_basename($this), -5) === 'Count') {
             $newClass = get_class($this).'Delta';
 
-            /** @var FilterTarget $filterTarget */
+            /** @var FilterTargetContract $filterTarget */
             $filterTarget = new $newClass(
                 config('stickle.database.tablePrefix'),
                 $this->event,
@@ -34,12 +34,12 @@ trait HasDeltaFilters
      * @param  array<DateTimeInterface>  $currentPeriod
      * @param  array<DateTimeInterface>  $previousPeriod
      */
-    public function decreased(?array $currentPeriod, ?array $previousPeriod): FilterTarget
+    public function decreased(?array $currentPeriod, ?array $previousPeriod): FilterTargetContract
     {
         if (substr(class_basename($this), -5) === 'Count') {
             $newClass = get_class($this).'Delta';
 
-            /** @var FilterTarget $filterTarget */
+            /** @var FilterTargetContract $filterTarget */
             $filterTarget = new $newClass(
                 config('stickle.database.tablePrefix'),
                 $this->event,

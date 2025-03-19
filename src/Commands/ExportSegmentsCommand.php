@@ -14,9 +14,9 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
 use StickleApp\Core\Jobs\ExportSegment;
-use StickleApp\Core\Models\Segment;
+use StickleApp\Core\Models\SegmentModel;
 
-final class ExportSegments extends Command implements Isolatable
+final class ExportSegmentsCommand extends Command implements Isolatable
 {
     /**
      * @var string
@@ -60,13 +60,13 @@ final class ExportSegments extends Command implements Isolatable
          * Insert any segments from this analysis into the `segments` table.
          * If the segment already exists, ignore it.
          */
-        Segment::insertOrIgnore($segments);
+        SegmentModel::insertOrIgnore($segments);
 
         /**
          * Return a list of segments to export considering the export_interval
          * and the last_exported_at timestamp.
          */
-        $segments = Segment::where("{$this->prefix}segments.last_exported_at", null)
+        $segments = SegmentModel::where("{$this->prefix}segments.last_exported_at", null)
             ->orWhere("{$this->prefix}segments.last_exported_at", '<', DB::raw("NOW() - INTERVAL '1 minute' * export_interval"))
             ->limit((int) $this->argument('limit'))
             ->get();

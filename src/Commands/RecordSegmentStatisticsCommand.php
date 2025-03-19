@@ -12,9 +12,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Jobs\RecordSegmentStatistic as RecordSegmentStatisticJob;
-use StickleApp\Core\Models\Segment;
+use StickleApp\Core\Models\SegmentModel;
 
-final class RecordSegmentStatistics extends Command implements Isolatable
+final class RecordSegmentStatisticsCommand extends Command implements Isolatable
 {
     /**
      * @var string
@@ -48,7 +48,7 @@ final class RecordSegmentStatistics extends Command implements Isolatable
 
         $limit = $this->argument('limit') ?? 10;
 
-        $segments = Segment::all();
+        $segments = SegmentModel::all();
 
         $statistics = $this->getAttributesToRecord($segments);
 

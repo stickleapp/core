@@ -6,15 +6,15 @@ namespace StickleApp\Core\Actions;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use StickleApp\Core\Contracts\Segment;
+use StickleApp\Core\Contracts\SegmentContract;
 
-class ExportSegment
+class ExportSegmentAction
 {
     public function __invoke(
         int $segmentId,
-        Segment $segmentDefinition
+        SegmentContract $segmentDefinition
     ): string {
-        Log::info('ExportSegment', [$segmentId]);
+        Log::info('ExportSegmentAction', [$segmentId]);
 
         $builder = $segmentDefinition->toBuilder();
 

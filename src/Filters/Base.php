@@ -6,14 +6,14 @@ namespace StickleApp\Core\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use StickleApp\Core\Contracts\FilterTarget;
-use StickleApp\Core\Contracts\FilterTest;
+use StickleApp\Core\Contracts\FilterTargetContract;
+use StickleApp\Core\Contracts\FilterTestContract;
 
 class Base
 {
-    public FilterTest $test;
+    public FilterTestContract $test;
 
-    final public function __construct(public FilterTarget $target) {}
+    final public function __construct(public FilterTargetContract $target) {}
 
     /**
      * This handles the first call to Filter::targetName()
@@ -31,7 +31,7 @@ class Base
             throw new \Exception("Target class $targetClass does not exist");
         }
 
-        /** @var FilterTarget */
+        /** @var FilterTargetContract */
         $target = new $targetClass(
             config('stickle.database.tablePrefix'),
             ...$arguments
@@ -68,7 +68,7 @@ class Base
                 $this->test->$method(...$arguments);
             }
         } elseif (class_exists($testClass)) {
-            /** @var FilterTest */
+            /** @var FilterTestContract */
             $test = new $testClass(...$arguments);
             $this->test = $test;
         } else {

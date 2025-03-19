@@ -4,8 +4,10 @@ namespace StickleApp\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SegmentStatisticExport extends Model
+class SegmentStatisticModel extends Model
 {
+    public $timestamps = false;
+
     /**
      * Creates a new analytics repository instance.
      */
@@ -14,7 +16,7 @@ class SegmentStatisticExport extends Model
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't populate in Factory
          */
-        $this->table = config('stickle.database.tablePrefix').'segment_statistics_export';
+        $this->table = config('stickle.database.tablePrefix').'segment_statistics';
     }
 
     /**
@@ -23,6 +25,11 @@ class SegmentStatisticExport extends Model
     protected $fillable = [
         'segment_id',
         'attribute',
-        'last_recorded_at',
+        'value',
+        'value_count',
+        'value_sum',
+        'value_min',
+        'value_max',
+        'value_avg',
     ];
 }

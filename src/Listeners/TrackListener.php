@@ -6,7 +6,7 @@ use DateTime;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use StickleApp\Core\Contracts\AnalyticsRepository;
+use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
 use StickleApp\Core\Events\Track;
 
 class TrackListener implements ShouldQueue
@@ -14,7 +14,7 @@ class TrackListener implements ShouldQueue
     /**
      * Create the event listener.
      */
-    public function __construct(readonly AnalyticsRepository $repository) {}
+    public function __construct(readonly AnalyticsRepositoryContract $repository) {}
 
     public function handle(Track $event): void
     {

@@ -7,12 +7,12 @@ namespace StickleApp\Core\Repositories;
 use DateTimeInterface;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Support\Facades\DB;
-use StickleApp\Core\Contracts\AnalyticsRepository;
+use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
 
 /**
  * @internal
  */
-final class PostgresAnalyticsRepository implements AnalyticsRepository
+final class PostgresAnalyticsRepository implements AnalyticsRepositoryContract
 {
     /**
      * Creates a new analytics repository instance.

@@ -9,7 +9,7 @@ use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
 
-final class RollupSessions extends Command implements Isolatable
+final class RollupSessionsCommand extends Command implements Isolatable
 {
     /**
      * @var string

@@ -6,9 +6,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Log;
-use StickleApp\Core\Actions\ImportSegment as ImportSegmentAction;
+use StickleApp\Core\Actions\ImportSegmentAction;
 
-class ImportSegment implements ShouldQueue
+class ImportSegmentJob implements ShouldQueue
 {
     use Queueable;
 

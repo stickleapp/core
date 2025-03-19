@@ -7,7 +7,7 @@ namespace StickleApp\Core\Contracts;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-abstract class FilterTarget
+abstract class FilterTargetContract
 {
     public function joinKey(): ?string
     {

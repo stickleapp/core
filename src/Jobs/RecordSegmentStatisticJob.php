@@ -8,9 +8,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Log;
-use StickleApp\Core\Actions\RecordSegmentStatistic as RecordSegmentStatisticAction;
+use StickleApp\Core\Actions\RecordSegmentStatisticAction;
 
-class RecordSegmentStatistic implements ShouldQueue
+class RecordSegmentStatisticJob implements ShouldQueue
 {
     use Queueable;
 
