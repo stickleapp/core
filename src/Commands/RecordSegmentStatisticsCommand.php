@@ -99,7 +99,7 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
             if (in_array($model, $return)) {
                 continue;
             }
-            // @phpstan-ignore method.notFound
+
             $observedAttributes = (new $model)->getObservedAttributes();
             $observedAttributes[] = 'count';
             foreach ($observedAttributes as $attribute) {

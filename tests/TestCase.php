@@ -56,6 +56,8 @@ class TestCase extends Orchestra
     public function getEnvironmentSetUp($app)
     {
         config()->set('database.default', 'pgsql');
+
+        // This fixes a bug in GitHub Actions runner. But find out why it's needed.
         $app['config']->set('stickle.broadcasting.channels.object', 'stickle.object.%s.%s');
 
         // $migration = include __DIR__.'/../database/migrations/initial_structure.php';
