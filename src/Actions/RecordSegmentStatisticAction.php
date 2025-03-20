@@ -17,7 +17,7 @@ class RecordSegmentStatisticAction
         string $attribute
     ): void {
 
-        Log::info('RecordSegmentStatisticAction', [$segmentId, $attribute]);
+        Log::info(self::class, func_get_args());
 
         $builder = $this->builder($segmentId, $attribute);
 
@@ -25,7 +25,9 @@ class RecordSegmentStatisticAction
         $items = $builder->get();
 
         SegmentStatistic::upsert(
-            $items->toArray(),
+            $items->map(function ($model) {
+                return (array) $model;
+            })->toArray(),
             uniqueBy: ['segment_id', 'attribute', 'recorded_at'],
             update: ['value', 'value_avg', 'value_sum', 'value_min', 'value_max', 'value_count']
         );

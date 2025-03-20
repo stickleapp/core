@@ -16,8 +16,7 @@ final class RollupSessionsCommand extends Command implements Isolatable
      *
      * vendor/bin/testbench stickle:drop-partition lc_events_rollup_1day public week '2024-10-01'
      */
-    protected $signature = 'stickle:rollup-sessions
-                            {start_date : First date to consider}';
+    protected $signature = 'stickle:rollup-sessions {start_date : First date to consider}';
 
     /**
      * @var string
@@ -38,6 +37,8 @@ final class RollupSessionsCommand extends Command implements Isolatable
      */
     public function handle(): void
     {
+
+        Log::info(self::class, func_get_args());
 
         $startDate = $this->argument('start_date');
 

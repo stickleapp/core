@@ -15,8 +15,9 @@ class ImportSegmentAction
         string $exportFilename
     ): void {
 
-        // Retrieve from storage
+        Log::info(self::class, func_get_args());
 
+        // Retrieve from storage
         /** @var string $disk * */
         $disk = config('stickle.filesystem.disk');
         $storage = Storage::disk($disk);

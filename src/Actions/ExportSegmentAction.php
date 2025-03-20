@@ -14,7 +14,8 @@ class ExportSegmentAction
         int $segmentId,
         SegmentContract $segmentDefinition
     ): string {
-        Log::info('ExportSegmentAction', [$segmentId]);
+
+        Log::info(self::class, func_get_args());
 
         $builder = $segmentDefinition->toBuilder();
 

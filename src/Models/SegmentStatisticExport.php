@@ -16,7 +16,7 @@ class SegmentStatisticExport extends Model
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't populate in Factory
          */
-        $this->table = config('stickle.database.tablePrefix').'segment_statistics_export';
+        $this->table = config('stickle.database.tablePrefix').'segment_statistic_exports';
     }
 
     /**
