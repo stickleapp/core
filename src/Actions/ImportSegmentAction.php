@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace StickleApp\Core\Actions;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 
 class ImportSegmentAction
 {

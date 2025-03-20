@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
-use Illuminate\Support\Facades\Log;
 
 final class RollupSessionsCommand extends Command implements Isolatable
 {
