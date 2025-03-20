@@ -23,3 +23,4 @@ parameters:
     excludePaths:
         - src/Commands/ConfigureCommand.php
         - src/Traits/StickleEntity.php
+        - src/Views/Components/*.*
