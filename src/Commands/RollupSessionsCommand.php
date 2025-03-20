@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
+use Illuminate\Support\Facades\Log;
 
 final class RollupSessionsCommand extends Command implements Isolatable
 {
@@ -37,8 +38,6 @@ final class RollupSessionsCommand extends Command implements Isolatable
      */
     public function handle(): void
     {
-
-        Log::info(self::class, func_get_args());
 
         $startDate = $this->argument('start_date');
 
@@ -76,7 +75,8 @@ INSERT INTO {$this->prefix}sessions_rollup_1day (
     GROUP BY
         model,
         object_uid,
-        first_day;
+        first_day
+ON CONFLICT (model, object_uid, day) DO UPDATE SET session_count = EXCLUDED.session_count;
 sql;
 
         \DB::statement(sprintf($sql, $startDate->toDateString(), $startDate->toDateString()));
