@@ -48,6 +48,6 @@ class ObjectAttributeChangedListener implements ShouldQueue
 
         $attribute = str_replace(' ', '', ucwords(str_replace('_', ' ', $attribute)));
 
-        return config('stickle.paths.listeners').'\\'.$model.$attribute.'Listener';
+        return config('stickle.namespaces.listeners').'\\'.$model.$attribute.'Listener';
     }
 }

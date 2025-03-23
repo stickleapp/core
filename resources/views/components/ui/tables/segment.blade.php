@@ -5,7 +5,7 @@
                 {{ $heading ?? "Models" }}
             </h1>
             <p class="mt-2 text-sm text-gray-700">
-                {{ $description ?? "A list of models in the segment." }}
+                {{ $subheading ?? "A list of models in the segment." }}
             </p>
         </div>
     </div>

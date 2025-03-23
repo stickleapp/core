@@ -88,10 +88,10 @@ return [
     |
     | Where are certain items located in your Laravel project
     */
-    'paths' => [
-        'segments' => env('STICKLE_PATH_SEGMENTS', 'App\Segments'),
-        'listeners' => env('STICKLE_PATH_LISTENERS', 'App\Listeners'),
-        'models' => env('STICKLE_PATH_MODELS', 'App\Models'),
+    'namespaces' => [
+        'segments' => env('STICKLE_NAMESPACES_SEGMENTS', 'Workbench\App\Segments'),
+        'listeners' => env('STICKLE_NAMESPACES_LISTENERS', 'Workbench\App\Listeners'),
+        'models' => env('STICKLE_NAMESPACES_MODELS', 'Workbench\App\Models'),
     ],
 
     'storage' => [

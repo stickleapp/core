@@ -8,11 +8,11 @@ StickleApp is a customer analytics and engagement package for Laravel that helps
 
 ## Key Features
 
--   **User Behavior Tracking**: Tracks page views and custom events
+-   **User Behavior Tracking**: Tracks pageviews and custom events
 -   **Customer Attribute Auditing**: Tracks model attributes over time
 -   **Customer Segment Tracking**: Define segments in code and track segment statistics over time
--   **Event-Driven Architecture**: Trigger events and broadcast them to web users via websockets
--   **Customer Analytics**: Stickle provides a reporting UI for viewing user events and KPIs.
+-   **Event Coordination**: Listen for and trigger events and broadcast them to web users via websockets.
+-   **Customer Analytics Reporting**: Stickle provides a reporting UI for viewing user events and KPIs.
 
 ## Architecture
 
@@ -32,14 +32,6 @@ StickleApp Core follows a Laravel-centric architecture with:
 -   **Table Partitioning**: Stickle uses time-based partitioning for events, requests, and statistics tables to maintain performance with large datasets.
 -   **Roll-up Tables**: Stickle implements multi-interval data aggregation (1min, 5min, 1hr, 1day) with incremental updates for efficient querying of time-series data
 
-## Key Components
-
--   **Tracking**: Client and server-side tracking via middleware and/or a javascript tracking snippet
--   **Segments**: Grouping users by defined criteria using both standard and custom Eloquent filters
--   **Attributes**: Storing and auditing changes to user/group properties
--   **Events**: Listening and responding to user actions
--   **Statistics**: Aggregating metrics for reporting and analysis
-
 ## Extension Points
 
 Extension points are elements of a software system designed to allow developers to extend or customize the functionality without modifying the core code. They're intentional interfaces or mechanisms where the system is designed to be extended.
@@ -47,10 +39,10 @@ Extension points are elements of a software system designed to allow developers 
 Extension points for StickleApp / Core include:
 
 -   **Models**: Models (typically `User`) can be assigned the `StickleEntity` trait. This enables developers to use custom filters via a Eloquent scopes (`scopeStickle` and `orScopeStickle`)
--   **Custom segments**: Developers can create extend the `StickleApp\Core\Contracts\SegmentContract` abstract class to create Segments which are subsets of `StickleEntity` models. They can use standard Eloquent filters or Stickle filters (`StickleApp\Core\Filters`) appended to Eloquent builders using the added scopes.
--   **Segment Event Listeners**: Developers can listen for when models enter and exit segments
--   **Custom attribute listeners**: Developers can listen for changes to specific attributes defined in the `observedAttributes` model. This is done by creating a Laravel Listener with a specific naming structure `{ModelName}{AttributeName}Listener` in the configured listeners namespace.
--   **Custom event listeners**: Similar to attribute listeners, developers can create classes like {EventName}Listener to respond to custom events tracked via the JavaScript SDK or server-side tracking. These let developers create custom business logic in response to user actions.
+-   **Custom segments**: Developers can create extend the `StickleApp\Core\Contracts\SegmentContract` abstract class to create Segments which are subsets of models with the `StickleEntity` trait. They can use standard Eloquent filters or Stickle filters (`StickleApp\Core\Filters`) appended to Eloquent builders using the added scopes (`scopeStickle` and `orScopeStickle`).
+-   **Segment Event Listeners**: Developers can listen for when models enter and exit segments and trigger actions.
+-   **Custom attribute listeners**: Developers can listen for changes to specific attributes defined in the `observedAttributes` attribute of `StickleEntity` models. This is done by creating a Laravel Listener with a specific naming structure `{ModelName}{AttributeName}Listener` in the configured listeners namespace.
+-   **Custom event listeners**: Similar to attribute listeners, developers can create classes like `{EventName}Listener` to respond to custom events tracked via the JavaScript SDK or server-side tracking. These let developers create custom business logic in response to user actions.
 -   **Re-usable components**: Stickle provides Blade components that Developers can re-use in admin panels. These include Model and Segment charts and lists. They have few dependencies that can be loaded using external JS files hosted on a CDN (Alpine.js, Chart.js, Simple Datatables, Pusher, Echo)
 
 ## UI Components
@@ -60,8 +52,6 @@ StickleApp includes a growing set of UI components for building analytics dashbo
 -   **Charts**: Line and table charts to display model and segment metrics over time
 -   **Tables**: Interactive data tables for displaying segment members and statistics
 -   **Timelines**: Real-time event streams for monitoring user activity individually and within segments
-
-## To-Do List
 
 # StickleApp UI Implementation To-Do List
 
@@ -90,7 +80,7 @@ The Live Dashboard View shows users that are currently active at the moment.
     -   Add time period selectors (1h, 6h, 24h, 7d)
     -   Implement real-time updates via broadcasting
 
-## StickleEntity Model Index Views (`/stickle/{class-basename}`}, ie. `/stickle/users`)
+## StickleEntity Model Index Views (`/stickle/{class-basename}` ie. `/stickle/users`)
 
 `/resources/views/pages/models.blade.php`
 
@@ -105,7 +95,7 @@ The Live Dashboard View shows users that are currently active at the moment.
     -   Show summary statistics for all observed attributes
     -   Include trend indicators (up/down from previous period)
 
-## Segment Management Views (`/stickle/{class-basename}/segments`}, ie. `/stickle/users/segments`)
+## Segment Management Views (`/stickle/{class-basename}/segments` ie. `/stickle/users/segments`)
 
 `/resources/views/pages/segments.blade.php`
 
@@ -113,7 +103,7 @@ The Live Dashboard View shows users that are currently active at the moment.
     -   Show object count and key metrics per segment
     -   Include last refresh timestamp
 
-## Segment Detail View (`/stickle/{class-basename}/segments/{segmentId}`}, ie. `/stickle/users/segments/12`)
+## Segment Detail View (`/stickle/{class-basename}/segments/{segmentId}` ie. `/stickle/users/segments/12`)
 
 `/resources/views/pages/segment.blade.php`
 
@@ -131,7 +121,7 @@ The Live Dashboard View shows users that are currently active at the moment.
         -   Additional filtering and date range options
         -   Download chart as image/data
 
-## Entity Detail Views
+## Entity Detail Views ('/stickle/{class-basename}/{objectUid}')
 
 `/resources/views/pages/model.blade.php`
 
@@ -170,6 +160,8 @@ The Live Dashboard View shows users that are currently active at the moment.
     -   Provide example implementations
     -   Include customization options
 -   [ ] Implement customizabl security (as middleware?) to control access to UI
+-   [ ] Implement a search functionality
+    -   Use fulltext searching or meliasearch?
 
 ## Integration with Laravel Echo and Broadcasting
 

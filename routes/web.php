@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -12,10 +13,22 @@ Route::middleware(['web'])->group(function () {
         ->name('stickle::index');
     Route::view('/stickle/live', 'stickle::pages/live')
         ->name('stickle::live');
-    Route::view('/stickle/users', 'stickle::pages/users')
-        ->name('stickle::users');
-    Route::view('/stickle/users/{id}', 'stickle::pages/user')
-        ->name('stickle::user');
+    Route::view('/stickle/{modelName}/segments/{segmentId}', 'stickle::pages/segment')
+        ->name('stickle::segments')
+        ->where('modelName', '[^/]+');
+    Route::view('/stickle/{modelName}/segments', 'stickle::pages/segments')
+        ->name('stickle::segments')
+        ->where('modelName', '[^/]+');
+    Route::view('/stickle/{modelName}/{modelUid}', 'stickle::pages/model')
+        ->name('stickle::model')
+        ->where('modelName', '[^/]+');
+    Route::get('/stickle/{model}', function (Request $request) {
+        return view('stickle::pages/models', [
+            'model' => $request->route('model'),
+        ]);
+    })
+        ->name('stickle::models')
+        ->where('model', '[^/]+');
 
     /** Installation Demo */
     Route::view('/stickle-demo', 'stickle::demo/index')
