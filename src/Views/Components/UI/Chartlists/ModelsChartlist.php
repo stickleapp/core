@@ -17,7 +17,7 @@ class ModelsChartList extends Component
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
-        public string $model,        
+        public string $model,
         public ?string $heading,
         public ?string $description,
     ) {}
@@ -28,5 +28,12 @@ class ModelsChartList extends Component
     public function render(): View
     {
         return view('stickle::components/ui/chartlists/models');
+    }
+
+    public function endpoint(): string
+    {
+        return url()->query(
+            $this->apiPrefix.'/model-object-attributes'
+        );
     }
 }

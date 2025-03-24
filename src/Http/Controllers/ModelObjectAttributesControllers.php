@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use StickleApp\Core\Http\Controllers\Requests\ModelObjectsIndexRequest;
 
-class ModelObjectsController
+class ModelObjectAttributesController
 {
     public function index(ModelObjectsIndexRequest $request): JsonResponse
     {
@@ -26,25 +26,23 @@ class ModelObjectsController
         // Check if the class uses the StickleEntity trait
         $reflection = new \ReflectionClass($class);
         $traits = [];
+
+        // Get all traits including those from parent classes
         $currentClass = $reflection;
         while ($currentClass) {
             $traitNames = array_keys($currentClass->getTraits());
             $traits = array_merge($traits, $traitNames);
             $currentClass = $currentClass->getParentClass();
         }
+
         $stickleEntityTrait = 'StickleApp\\Core\\Traits\\StickleEntity';
         if (! in_array($stickleEntityTrait, $traits)) {
             return response()->json(['error' => 'Model does not use StickleEntity trait'], 400);
         }
 
-        $search = data_get($validated, 'search'); // Get search term if provided
+        // // Get the observed attributes
+        // $observedAttributes = $class::getObservedAttributes();
 
-        $builder = $class::query()->when($search, function ($q) use ($search) {
-            return $q->where(function ($subQuery) use ($search) {
-                $subQuery->where('name', 'ILIKE', "%{$search}%");
-            });
-        });
-
-        return response()->json($builder->paginate($request->integer('per_page', 15)));
+        return response()->json();
     }
 }
