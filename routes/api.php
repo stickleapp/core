@@ -2,9 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use StickleApp\Core\Http\Controllers\IngestController;
+use StickleApp\Core\Http\Controllers\ModelObjectsController;
 use StickleApp\Core\Http\Controllers\SegmentObjectsController;
 use StickleApp\Core\Http\Controllers\SegmentStatisticsController;
-use StickleApp\Core\Http\Controllers\ModelObjectsController;
+
 /**
  * API Routes
  */

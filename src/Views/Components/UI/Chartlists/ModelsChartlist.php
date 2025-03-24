@@ -17,7 +17,7 @@ class ModelsChartList extends Component
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
-        public string $model,        
+        public string $model,
         public ?string $heading,
         public ?string $description,
     ) {}
