@@ -107,7 +107,7 @@ trait StickleEntity
      */
     public function getObservedAttributes()
     {
-        return $this->observedAttributes ?? [];
+        return self::observedAttributes ?? [];
     }
 
     public function objectAttribute(): HasOne

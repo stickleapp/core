@@ -57,7 +57,7 @@ class User extends Authenticatable
     /**
      * Specify the attributes that should be observed (via Observable)
      */
-    public array $observedAttributes = [
+    public static array $observedAttributes = [
         'user_rating',
         'order_count',
         'order_item_count',

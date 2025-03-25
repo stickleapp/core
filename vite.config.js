@@ -1,43 +1,26 @@
 import { defineConfig } from "vite";
-import { resolve } from "path";
+import laravel from "laravel-vite-plugin";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-    build: {
-        // Output directory for the bundled files
-        outDir: "build",
-
-        // Ensure we generate clean builds
-        emptyOutDir: true,
-
-        // Configure the library mode for package bundling
-        lib: {
-            // Entry point is your app.js file
-            entry: resolve(__dirname, "resources/js/main.js"),
-
-            // Output name for your bundle
-            name: "app",
-
-            // Specify the formats you want to support
-            formats: ["es", "umd"],
-
-            // Output filename pattern
-            fileName: (format) => `app.${format}.js`,
-        },
-
-        // Rollup specific options
-        rollupOptions: {
-            // No external dependencies - Laravel Echo will be bundled
-            output: {
-                // Configure output options as needed
-                manualChunks: undefined,
-            },
-        },
-    },
-
-    // Resolve configuration for importing files
-    resolve: {
-        alias: {
-            "@": resolve(__dirname, "resources/js"),
+    plugins: [
+        tailwindcss(),
+        laravel({
+            input: ["resources/css/app.css", "resources/js/app.js"],
+            publicDirectory: "./vendor/orchestra/testbench-core/laravel/public", // Ensure this points to your package's public directory
+            // Specify the build directory for testbench
+            buildDirectory: "build",
+            refresh: true,
+        }),
+    ],
+    server: {
+        // Make Vite accessible from other devices on your network
+        host: "0.0.0.0",
+        // Set the correct port
+        port: 5173,
+        // Ensure HMR works correctly
+        hmr: {
+            host: "localhost",
         },
     },
 });

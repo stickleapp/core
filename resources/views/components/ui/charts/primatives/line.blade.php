@@ -1,19 +1,9 @@
-<div>
-    <div class="sm:flex sm:items-center mb-8">
-        <div class="sm:flex-auto p-6">
-            <h1 class="text-base font-semibold text-gray-900">Users</h1>
-            <p class="mt-2 text-sm text-gray-700">
-                A list of all the users in your account including their name,
-                title, email and role.
-            </p>
-        </div>
-    </div>
-    <canvas id="chart-canvas"></canvas>
-</div>
+<canvas id="chart-canvas"></canvas>
 
 <script>
     document.addEventListener("DOMContentLoaded", async function () {
-        const endpoint = "{!! $endpoint !!}";
+        const endpoint =
+            "http://127.0.0.1:8000/stickle/api/segment-statistics?segment_id=7&attribute=count&date_from=2025-02-23";
 
         const headers = new Headers({
             "Content-Type": "application/json",

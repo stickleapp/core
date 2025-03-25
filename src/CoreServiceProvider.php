@@ -24,13 +24,16 @@ use StickleApp\Core\Models\Segment;
 use StickleApp\Core\Observers\ObjectAttributeObserver;
 use StickleApp\Core\Repositories\PostgresAnalyticsRepository;
 use StickleApp\Core\Views\Components\Demo\Layouts\DefaultLayout as DemoDefaultLayout;
-use StickleApp\Core\Views\Components\UI\Chartlists\ModelsChartList;
+use StickleApp\Core\Views\Components\UI\Chartlists\ModelsChartlist;
+use StickleApp\Core\Views\Components\UI\Charts\ModelChartWrapper;
 use StickleApp\Core\Views\Components\UI\Charts\SegmentChart;
 use StickleApp\Core\Views\Components\UI\Layouts\DefaultLayout as UIDefaultLayout;
 use StickleApp\Core\Views\Components\UI\Tables\ModelsTable;
 use StickleApp\Core\Views\Components\UI\Tables\Primatives\PaginationSimple;
 use StickleApp\Core\Views\Components\UI\Tables\SegmentTable;
 use StickleApp\Core\Views\Components\UI\Timelines\EventTimeline;
+use StickleApp\Core\Views\Components\UI\Charts\ModelsChart;
+use StickleApp\Core\Views\Components\UI\Charts\Primatives\LineChart;
 
 final class CoreServiceProvider extends ServiceProvider
 {
@@ -98,11 +101,13 @@ final class CoreServiceProvider extends ServiceProvider
         Blade::component('stickle-demo-default-layout', DemoDefaultLayout::class);
         Blade::component('stickle-ui-default-layout', UIDefaultLayout::class);
         Blade::component('stickle-segment-chart', SegmentChart::class);
-        Blade::component('stickle-models-chartlist', ModelsChartList::class);
         Blade::component('stickle-segment-table', SegmentTable::class);
         Blade::component('stickle-models-table', ModelsTable::class);
         Blade::component('stickle-events-timeline', EventTimeline::class);
         Blade::component('stickle-pagination-simple', PaginationSimple::class);
+        Blade::component('stickle-chartlists-models', ModelsChartlist::class);
+        Blade::component('stickle-charts-models', ModelsChart::class);
+        Blade::component('stickle-charts-primatives-line', LineChart::class);
 
         /**
          * Publish resources used by this package
@@ -126,5 +131,9 @@ final class CoreServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadRoutesFrom(__DIR__.'/../routes/channels.php');
+
+        // if (file_exists($buildPath = $this->app->basePath('public/build/manifest.json'))) {
+        //     Vite::useManifestFromBuildDirectory('build');
+        // }
     }
 }

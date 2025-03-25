@@ -7,6 +7,7 @@ namespace StickleApp\Core\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use StickleApp\Core\Http\Controllers\Requests\ModelObjectsIndexRequest;
+use StickleApp\Core\Support\ClassUtils;
 
 class ModelObjectsController
 {
@@ -23,17 +24,7 @@ class ModelObjectsController
             return response()->json(['error' => 'Model not found'], 404);
         }
 
-        // Check if the class uses the StickleEntity trait
-        $reflection = new \ReflectionClass($class);
-        $traits = [];
-        $currentClass = $reflection;
-        while ($currentClass) {
-            $traitNames = array_keys($currentClass->getTraits());
-            $traits = array_merge($traits, $traitNames);
-            $currentClass = $currentClass->getParentClass();
-        }
-        $stickleEntityTrait = 'StickleApp\\Core\\Traits\\StickleEntity';
-        if (! in_array($stickleEntityTrait, $traits)) {
+        if (! ClassUtils::usesTrait($class, 'StickleApp\\Core\\Traits\\StickleEntity')) {
             return response()->json(['error' => 'Model does not use StickleEntity trait'], 400);
         }
 
