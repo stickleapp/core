@@ -107,7 +107,7 @@ trait StickleEntity
      */
     public function getObservedAttributes()
     {
-        return self::observedAttributes ?? [];
+        return (property_exists(get_parent_class($this), 'observedAttributes')) ? self::$observedAttributes : [];
     }
 
     public function objectAttribute(): HasOne
