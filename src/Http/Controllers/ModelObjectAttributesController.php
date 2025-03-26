@@ -37,7 +37,7 @@ class ModelObjectAttributesController
                 'primaryAggregate' => null, // placeholder
                 'chartType' => 'line', // placeholder
             ];
-        }, $class::$observedAttributes);
+        }, $class::$stickleTrackedAttributes);
 
         return response()->json($formattedAttributes);
     }

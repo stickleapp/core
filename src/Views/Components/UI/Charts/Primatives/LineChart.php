@@ -17,6 +17,8 @@ class LineChart extends Component
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
+        public string $key,
+        public string $endpoint,
         public ?string $title
     ) {}
 

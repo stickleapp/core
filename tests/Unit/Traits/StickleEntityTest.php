@@ -21,8 +21,11 @@ it('can call stickle()', function () {
 });
 
 it('has observed attributes', function () {
-    $user = new User;
-    expect($user->getObservedAttributes())->toBeArray();
+    expect(User::getStickleObservedAttributes())->toBeArray();
+});
+
+it('has tracked attributes', function () {
+    expect(User::getStickleTrackedAttributes())->toBeArray();
 });
 
 it('observed properties log changes', function () {

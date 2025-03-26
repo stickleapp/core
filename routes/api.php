@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use StickleApp\Core\Http\Controllers\IngestController;
 use StickleApp\Core\Http\Controllers\ModelObjectAttributesController;
 use StickleApp\Core\Http\Controllers\ModelObjectsController;
+use StickleApp\Core\Http\Controllers\ModelObjectsStatisticsController;
 use StickleApp\Core\Http\Controllers\SegmentObjectsController;
 use StickleApp\Core\Http\Controllers\SegmentStatisticsController;
 
@@ -23,6 +24,9 @@ Route::middleware(['api'])->group(function () {
 
     Route::get('/stickle/api/model-objects', [ModelObjectsController::class, 'index'])
         ->name('model-objects');
+
+    Route::get('/stickle/api/model-objects-statistics', [ModelObjectsStatisticsController::class, 'index'])
+        ->name('model-objects-statistics');
 
     Route::get('/stickle/api/model-object-attributes', [ModelObjectAttributesController::class, 'index'])
         ->name('model-object-attributes');

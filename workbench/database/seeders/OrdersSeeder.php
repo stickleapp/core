@@ -18,16 +18,16 @@ class OrdersSeeder extends Seeder
         DB::table('orders')->truncate();
         DB::table('order_items')->truncate();
 
-        $users = DB::table('users')->get();
+        $customers = DB::table('customers')->get();
 
-        foreach ($users as $user) {
+        foreach ($customers as $customer) {
             Order::factory()
                 ->count(rand(1, 5))
                 ->has(OrderItemFactory::new()->count(rand(1, 5)))
                 // ->for($user) // don't know why this one doesn't work
                 ->create(
                     [
-                        'user_id' => $user->id,
+                        'customer_id' => $customer->id,
                     ]
                 );
         }

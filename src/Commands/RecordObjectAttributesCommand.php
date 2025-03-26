@@ -68,7 +68,7 @@ final class RecordObjectAttributesCommand extends Command implements Isolatable
 
             foreach ($builder->cursor() as $trackable) {
                 dispatch(function () use ($trackable) {
-                    $attributes = $trackable->getObservedAttributes();
+                    $attributes = $trackable->getStickableTrackedAttributes();
                     $trackable->trackable_attributes = $trackable->only($attributes);
                 });
             }

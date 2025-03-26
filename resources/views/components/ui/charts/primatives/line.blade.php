@@ -1,9 +1,8 @@
-<canvas id="chart-canvas"></canvas>
+<canvas id="{{ $key }}"></canvas>
 
 <script>
     document.addEventListener("DOMContentLoaded", async function () {
-        const endpoint =
-            "http://127.0.0.1:8000/stickle/api/segment-statistics?segment_id=7&attribute=count&date_from=2025-02-23";
+        const endpoint = "{!! $endpoint !!}";
 
         const headers = new Headers({
             "Content-Type": "application/json",

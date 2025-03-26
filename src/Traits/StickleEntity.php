@@ -83,7 +83,7 @@ trait StickleEntity
          */
         static::created(function (Model $model) {
 
-            $observableAttributeKeys = $model->getObservedAttributes();
+            $observableAttributeKeys = $model->getStickleObservedAttributes();
 
             $model->trackable_attributes = $model->only($observableAttributeKeys);
         });
@@ -93,7 +93,7 @@ trait StickleEntity
          */
         static::updated(function (Model $model) {
 
-            $observableAttributeKeys = array_intersect($model->getObservedAttributes(), array_keys($model->getDirty()));
+            $observableAttributeKeys = array_intersect($model::getStickleObservedAttributes(), array_keys($model->getDirty()));
 
             $model->trackable_attributes = $model->only($observableAttributeKeys);
         });
@@ -101,13 +101,19 @@ trait StickleEntity
     }
 
     /**
-     * This attribute is used to define which attributes should be tracked
+     * This attribute is used to define which attributes should be watched for changes
      *
      * It is defined on the parent model
      */
-    public function getObservedAttributes()
+    public static function getStickleObservedAttributes()
     {
-        return (property_exists(get_parent_class($this), 'observedAttributes')) ? self::$observedAttributes : [];
+
+        return (property_exists(static::class, 'stickleObservedAttributes')) ? static::$stickleObservedAttributes : [];
+    }
+
+    public static function getStickleTrackedAttributes()
+    {
+        return (property_exists(static::class, 'stickleTrackedAttributes')) ? static::$stickleTrackedAttributes : [];
     }
 
     public function objectAttribute(): HasOne

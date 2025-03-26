@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use StickleApp\Core\Attributes\ModelAttributeDescription;
 use StickleApp\Core\Traits\StickleEntity;
 use Workbench\Database\Factories\CustomerFactory;
 
@@ -57,8 +56,17 @@ class Customer extends Model
     /**
      * Specify the attributes that should be observed (via Observable)
      */
-    public array $observedAttributes = [
-        'mrr',
+    public array $stickleObservedAttributes = [
+        'order_count',
+        'order_item_count',
+    ];
+
+    /**
+     * Specify the attributes that should be observed (via Observable)
+     */
+    public array $stickleTrackedAttributes = [
+        'order_count',
+        'order_item_count',
     ];
 
     public function children(): hasMany
@@ -86,20 +94,13 @@ class Customer extends Model
         return $this->hasManyThrough(OrderItem::class, Order::class);
     }
 
-    #[ModelAttributeDescription('How many orders has this user placed?')]
     public function getOrderCountAttribute(): int
     {
         return $this->orders()->count();
     }
 
-    #[ModelAttributeDescription('How many items has this user purchased?')]
     public function getOrderItemCountAttribute(): int
     {
         return $this->orderItems()->count();
-    }
-
-    public function getItemsPurchasedAttribute()
-    {
-        return $this->items_purchased;
     }
 }

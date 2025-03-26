@@ -100,9 +100,9 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
                 continue;
             }
 
-            $observedAttributes = (new $model)->getObservedAttributes();
-            $observedAttributes[] = 'count';
-            foreach ($observedAttributes as $attribute) {
+            $stickleTrackedAttributes = $model::getStickleObservedAttributes();
+            $stickleTrackedAttributes[] = 'count';
+            foreach ($stickleTrackedAttributes as $attribute) {
                 $return[md5($model.$attribute)] = [
                     'model' => $model,
                     'attribute' => $attribute,

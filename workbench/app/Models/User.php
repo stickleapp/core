@@ -6,6 +6,10 @@ namespace Workbench\App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use StickleApp\Core\Attributes\StickleAttributeMetadata;
+use StickleApp\Core\Enums\ChartType;
+use StickleApp\Core\Enums\DataType;
+use StickleApp\Core\Enums\PrimaryAggregate;
 use StickleApp\Core\Traits\StickleEntity;
 use Workbench\Database\Factories\UserFactory;
 
@@ -55,16 +59,30 @@ class User extends Authenticatable
     ];
 
     /**
-     * Specify the attributes that should be observed (via Observable)
+     * Specify the attributes that should be observed for changes
      */
-    public static array $observedAttributes = [
+    public static array $stickleObservedAttributes = [
         'user_rating',
-        'order_count',
-        'order_item_count',
-        // 'total_spend',
-        // 'last_order_total',
-        // 'last_order_item_count',
     ];
+
+    /**
+     * Specify the attributes that should be tracked over time
+     */
+    public static array $stickleTrackedAttributes = [
+        'user_rating',
+    ];
+
+    #[StickleAttributeMetadata([
+        'label' => 'User Star Rating',
+        'description' => 'The 1 to 5 star rating of the user.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::INTEGER,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getUserRatingAttribute($value): ?int
+    {
+        return $value;
+    }
 
     public function customer(): BelongsTo
     {

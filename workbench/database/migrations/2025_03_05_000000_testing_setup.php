@@ -32,7 +32,7 @@ return new class extends Migration
             $table->foreign('customer_id')->references('id')->on('customers');
         });
 
-        // Schema::table('customr_user', function (Blueprint $table) {
+        // Schema::table('customer_user', function (Blueprint $table) {
         //     $table->unsignedBigInteger('customer_id')->nullable(false);
         //     $table->unsignedBigInteger('user_id')->nullable(false);
         //     $table->timestamps();
@@ -43,12 +43,12 @@ return new class extends Migration
 
         Schema::create(('orders'), function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('customer_id');
             $table->text('status')->nullable(false);
             $table->datetime('order_date');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('customer_id')->references('id')->on('customers');
         });
 
         Schema::create(('order_items'), function (Blueprint $table) {
