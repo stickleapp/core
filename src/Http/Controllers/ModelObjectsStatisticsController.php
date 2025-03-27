@@ -58,6 +58,6 @@ class ModelObjectsStatisticsController
                 'COUNT(*) as count'
             );
 
-        return response()->json($builder->first());
+        return response()->json($builder->get());
     }
 }

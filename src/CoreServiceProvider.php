@@ -26,6 +26,7 @@ use StickleApp\Core\Repositories\PostgresAnalyticsRepository;
 use StickleApp\Core\Views\Components\Demo\Layouts\DefaultLayout as DemoDefaultLayout;
 use StickleApp\Core\Views\Components\UI\Chartlists\ModelsChartlist;
 use StickleApp\Core\Views\Components\UI\Charts\ModelsChart;
+use StickleApp\Core\Views\Components\UI\Charts\Primatives\InfoChart;
 use StickleApp\Core\Views\Components\UI\Charts\Primatives\LineChart;
 use StickleApp\Core\Views\Components\UI\Charts\SegmentChart;
 use StickleApp\Core\Views\Components\UI\Layouts\DefaultLayout as UIDefaultLayout;
@@ -107,6 +108,7 @@ final class CoreServiceProvider extends ServiceProvider
         Blade::component('stickle-chartlists-models', ModelsChartlist::class);
         Blade::component('stickle-charts-models', ModelsChart::class);
         Blade::component('stickle-charts-primatives-line', LineChart::class);
+        Blade::component('stickle-charts-primatives-info', InfoChart::class);
 
         /**
          * Publish resources used by this package

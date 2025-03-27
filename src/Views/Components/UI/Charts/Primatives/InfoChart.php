@@ -8,7 +8,7 @@ use Illuminate\Container\Attributes\Config;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 
-class LineChart extends Component
+class InfoChart extends Component
 {
     /**
      * Create the component instance.
@@ -26,6 +26,6 @@ class LineChart extends Component
      */
     public function render(): View
     {
-        return view('stickle::components/ui/charts/primatives/line');
+        return view('stickle::components/ui/charts/primatives/info');
     }
 }
