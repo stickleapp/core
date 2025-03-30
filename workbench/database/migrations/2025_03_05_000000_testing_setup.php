@@ -21,6 +21,11 @@ return new class extends Migration
             $table->unsignedBigInteger('parent_id')->nullable(true);
             $table->text('name')->nullable(false);
 
+            $table->string('stripe_id')->nullable()->index();
+            $table->string('pm_type')->nullable();
+            $table->string('pm_last_four', 4)->nullable();
+            $table->timestamp('trial_ends_at')->nullable();
+
             $table->timestamps();
 
             $table->foreign('parent_id')->references('id')->on('customers');
@@ -28,7 +33,7 @@ return new class extends Migration
 
         Schema::table('users', function (Blueprint $table) {
             $table->unsignedBigInteger('customer_id')->nullable(true);
-            $table->integer('user_rating')->nullable(true);
+            $table->string('user_type')->nullable(false);
             $table->foreign('customer_id')->references('id')->on('customers');
         });
 
@@ -41,26 +46,54 @@ return new class extends Migration
         //     $table->foreign('customer_id')->references('id')->on('customers');
         // });
 
-        Schema::create(('orders'), function (Blueprint $table) {
+        Schema::create(('tickets'), function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('customer_id');
-            $table->text('status')->nullable(false);
-            $table->datetime('order_date');
+            $table->text('title')->nullable(false);
+            $table->text('description')->nullable(true);
+            $table->text('status')->nullable(true);
+            $table->integer('rating')->nullable(true);
+            $table->text('priority')->nullable(true);
+            $table->bigInteger('assigned_to_id')->nullable(false);
+            $table->bigInteger('created_by_id')->nullable(false);
+            $table->timestamp('resolved_at')->nullable(true);
+            $table->integer('resolved_in_seconds')->storedAs(
+                'EXTRACT(EPOCH FROM (resolved_at - created_at))::integer'
+            )->nullable();
             $table->timestamps();
 
             $table->foreign('customer_id')->references('id')->on('customers');
+            $table->foreign('assigned_to_id')->references('id')->on('users');
+            $table->foreign('created_by_id')->references('id')->on('users');
         });
 
-        Schema::create(('order_items'), function (Blueprint $table) {
+        // Schema::table(('tickets'), function (Blueprint $table) {});
+
+        Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('order_id');
-            $table->text('item_name')->nullable(false);
-            $table->text('item_number')->nullable(false);
-            $table->integer('quantity')->nullable(false);
-            $table->integer('price_cents')->nullable(false);
+            $table->foreignId('customer_id');
+            $table->string('type');
+            $table->string('stripe_id')->unique();
+            $table->string('stripe_status');
+            $table->string('stripe_price')->nullable();
+            $table->integer('quantity')->nullable();
+            $table->timestamp('trial_ends_at')->nullable();
+            $table->timestamp('ends_at')->nullable();
             $table->timestamps();
 
-            $table->foreign('order_id')->references('id')->on('orders');
+            $table->index(['customer_id', 'stripe_status']);
+        });
+
+        Schema::create('subscription_items', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('subscription_id');
+            $table->string('stripe_id')->unique();
+            $table->string('stripe_product');
+            $table->string('stripe_price');
+            $table->integer('quantity')->nullable();
+            $table->timestamps();
+
+            $table->index(['subscription_id', 'stripe_price']);
         });
     }
 
@@ -71,12 +104,25 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_items');
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('subscription_items');
+
+        Schema::dropIfExists('subscriptions');
+
+        Schema::dropIfExists('tickets');
 
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('customer_id');
-            $table->dropColumn('user_rating');
+            $table->dropIndex([
+                'stripe_id',
+            ]);
+
+            $table->dropColumn([
+                'customer_id',
+                'user_type',
+                'stripe_id',
+                'pm_type',
+                'pm_last_four',
+                'trial_ends_at',
+            ]);
         });
         Schema::dropIfExists('customers');
     }

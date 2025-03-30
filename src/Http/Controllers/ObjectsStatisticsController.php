@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use StickleApp\Core\Support\ClassUtils;
 
-class ModelObjectsStatisticsController
+class ObjectsStatisticsController
 {
     public function index(Request $request): JsonResponse
     {
@@ -39,23 +39,23 @@ class ModelObjectsStatisticsController
                 $join->where("{$prefix}object_attributes.model", '=', get_class($model));
             })
             ->selectRaw(
-                "AVG((jsonb_extract_path_text({$prefix}object_attributes.model_attributes, ?))::float) as avg",
+                "AVG((jsonb_extract_path_text({$prefix}object_attributes.model_attributes, ?))::float) as valu_avg",
                 [$attribute]
             )
             ->selectRaw(
-                "MIN((jsonb_extract_path_text({$prefix}object_attributes.model_attributes, ?))::float) as min",
+                "MIN((jsonb_extract_path_text({$prefix}object_attributes.model_attributes, ?))::float) as value_min",
                 [$attribute]
             )
             ->selectRaw(
-                "MAX((jsonb_extract_path_text({$prefix}object_attributes.model_attributes, ?))::float) as max",
+                "MAX((jsonb_extract_path_text({$prefix}object_attributes.model_attributes, ?))::float) as value_max",
                 [$attribute]
             )
             ->selectRaw(
-                "SUM((jsonb_extract_path_text({$prefix}object_attributes.model_attributes, ?))::float) as sum",
+                "SUM((jsonb_extract_path_text({$prefix}object_attributes.model_attributes, ?))::float) as value_sum",
                 [$attribute]
             )
             ->selectRaw(
-                'COUNT(*) as count'
+                'COUNT(*) as value_count'
             );
 
         return response()->json($builder->get());

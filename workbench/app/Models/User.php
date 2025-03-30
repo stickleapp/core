@@ -11,6 +11,7 @@ use StickleApp\Core\Enums\ChartType;
 use StickleApp\Core\Enums\DataType;
 use StickleApp\Core\Enums\PrimaryAggregate;
 use StickleApp\Core\Traits\StickleEntity;
+use Workbench\App\Enums\UserType;
 use Workbench\Database\Factories\UserFactory;
 
 class User extends Authenticatable
@@ -36,6 +37,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'user_type',
     ];
 
     /**
@@ -56,13 +58,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'user_type' => UserType::class,
     ];
 
     /**
      * Specify the attributes that should be observed for changes
      */
     public static array $stickleObservedAttributes = [
-        'user_rating',
+
     ];
 
     /**
@@ -70,10 +73,33 @@ class User extends Authenticatable
      */
     public static array $stickleTrackedAttributes = [
         'user_rating',
+        'ticket_count',
+        'open_ticket_count',
+        'closed_ticket_count',
+        'tickets_resolved_last_7_days',
+        'tickets_resolved_last_30_days',
+        'average_resolution_time',
+        'average_resolution_time_7_days',
+        'average_resolution_time_30_days',
     ];
 
+    public function ticketsAssigned()
+    {
+        return $this->hasMany(Ticket::class, 'assigned_to_id');
+    }
+
+    public function ticketsCreated()
+    {
+        return $this->hasMany(Ticket::class, 'created_by_id');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
     #[StickleAttributeMetadata([
-        'label' => 'User Star Rating',
+        'label' => 'User Rating',
         'description' => 'The 1 to 5 star rating of the user.',
         'chartType' => ChartType::LINE,
         'dataType' => DataType::INTEGER,
@@ -81,11 +107,122 @@ class User extends Authenticatable
     ])]
     public function getUserRatingAttribute($value): ?int
     {
-        return $value;
+        return $this->tickets()
+            ->whereStatus('resolved')
+            ->avg('rating');
     }
 
-    public function customer(): BelongsTo
+    #[StickleAttributeMetadata([
+        'label' => 'Ticket Count',
+        'description' => 'The total number of tickets for the customer.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::INTEGER,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getTicketCountAttribute(): int
     {
-        return $this->belongsTo(Customer::class);
+        return $this->tickets()->count();
+    }
+
+    #[StickleAttributeMetadata([
+        'label' => 'Open Ticket Count',
+        'description' => 'The total number of open tickets for the customer.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::INTEGER,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getOpenTicketCountAttribute(): int
+    {
+        return $this->tickets()
+            ->whereStatus('open')
+            ->count();
+    }
+
+    #[StickleAttributeMetadata([
+        'label' => 'Resolved Ticket Count',
+        'description' => 'The total number of closed tickets for the customer.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::INTEGER,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getResolvedTicketCountAttribute(): int
+    {
+        return $this->tickets()
+            ->whereStatus('resolved')
+            ->count();
+    }
+
+    #[StickleAttributeMetadata([
+        'label' => 'Tickets Resolved (Last 30 Days)',
+        'description' => 'The total number of tickets closed by the customer in the last 30 days.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::INTEGER,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getTicketsResolvedLast30DaysAttribute(): int
+    {
+        return $this->tickets()
+            ->whereStatus('resolved')
+            ->where('resolved_at', '>=', now()->subDays(30))
+            ->count();
+    }
+
+    #[StickleAttributeMetadata([
+        'label' => 'Tickets Resolved (Last 7 Days)',
+        'description' => 'The total number of tickets closed by the customer in the last 7 days.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::INTEGER,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getTicketsResolvedLast7DaysAttribute(): int
+    {
+        return $this->tickets()
+            ->whereStatus('resolved')
+            ->where('resolved_at', '>=', now()->subDays(7))
+            ->count();
+    }
+
+    #[StickleAttributeMetadata([
+        'label' => 'Average Resolution Time',
+        'description' => 'The average resolution time for the customer.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::TIME,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getAverageResolutionTimeAttribute(): float
+    {
+        return $this->tickets()
+            ->whereStatus('resolved')
+            ->avg('resolved_in_seconds');
+    }
+
+    #[StickleAttributeMetadata([
+        'label' => 'Average Resolution Time Last 30 Days',
+        'description' => 'The average resolution time for the customer in the last 30 days.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::TIME,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getAverageResolutionTime30DaysAttribute(): float
+    {
+        return $this->tickets()
+            ->whereStatus('resolved')
+            ->where('resolved_at', '>=', now()->subDays(30))
+            ->avg('resolved_in_seconds');
+    }
+
+    #[StickleAttributeMetadata([
+        'label' => 'Average Resolution Time Last 7 Days',
+        'description' => 'The average resolution time for the customer in the last 7 days.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::TIME,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getAverageResolutionTime7DaysAttribute(): float
+    {
+        return $this->tickets()
+            ->whereStatus('resolved')
+            ->where('resolved_at', '>=', now()->subDays(7))
+            ->avg('resolved_in_seconds');
     }
 }

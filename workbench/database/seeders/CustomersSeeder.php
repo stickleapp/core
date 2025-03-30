@@ -27,6 +27,7 @@ class CustomersSeeder extends Seeder
                 ->createQuietly(
                     [
                         'parent_id' => $customer->id,
+                        'created_at' => now()->subDays(rand(1, 5 * 365)),
                     ]
                 );
         });

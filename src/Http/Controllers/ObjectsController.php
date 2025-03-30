@@ -6,12 +6,13 @@ namespace StickleApp\Core\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
-use StickleApp\Core\Http\Controllers\Requests\ModelObjectsIndexRequest;
+use StickleApp\Core\Http\Controllers\Requests\ObjectsIndexRequest;
 use StickleApp\Core\Support\ClassUtils;
+use StickleApp\Core\Traits\StickleEntity;
 
-class ModelObjectsController
+class ObjectsController
 {
-    public function index(ModelObjectsIndexRequest $request): JsonResponse
+    public function index(ObjectsIndexRequest $request): JsonResponse
     {
 
         $validated = $request->validated();
@@ -24,7 +25,7 @@ class ModelObjectsController
             return response()->json(['error' => 'Model not found'], 404);
         }
 
-        if (! ClassUtils::usesTrait($class, 'StickleApp\\Core\\Traits\\StickleEntity')) {
+        if (! ClassUtils::usesTrait($class, StickleEntity::class)) {
             return response()->json(['error' => 'Model does not use StickleEntity trait'], 400);
         }
 

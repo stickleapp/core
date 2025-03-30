@@ -1,10 +1,12 @@
 <x-stickle-ui-default-layout>
+    <h1 class="scroll-m-20 text-3xl font-bold tracking-tight pb-8">
+        {{ \Illuminate\Support\Str::plural(\Illuminate\Support\Str::title(str_replace('_', ' ', $model))) }}
+    </h1>
+
     <div class="w-full flex flex-col md:flex-row">
         <!-- Navigation for medium screens -->
-        <div class="md:hidden flex justify-left space-x-4 p-4">
-            <button class="tab-button" data-target="#column1">
-                {{ $model }}
-            </button>
+        <div class="md:hidden flex justify-left space-x-4">
+            <button class="tab-button" data-target="#column1">List</button>
             <button class="tab-button" data-target="#column2">
                 Statistics
             </button>
@@ -12,7 +14,7 @@
         </div>
 
         <!-- 2/3 Column -->
-        <div id="column1" class="w-full md:w-3/5 p-4 md:block">
+        <div id="column1" class="w-full md:w-3/5 md:block">
             <div class="bg-white p-6 shadow-md">
                 <x-stickle-models-table
                     :heading="\Illuminate\Support\Str::of($model)->headline()"
@@ -26,8 +28,8 @@
         <!-- 1/3 Column -->
         <div id="column2" class="w-full md:w-2/5 p-4 md:block hidden">
             <!-- Column 2 content here -->
-            <x-stickle-models-chartlist :model="$model">
-            </x-stickle-models-chartlist>
+            <x-stickle-chartlists-models :model="$model">
+            </x-stickle-chartlists-models>
         </div>
     </div>
 </x-stickle-ui-default-layout>

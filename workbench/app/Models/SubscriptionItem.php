@@ -5,18 +5,18 @@ namespace Workbench\App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Workbench\Database\Factories\OrderItemFactory;
+use Workbench\Database\Factories\SubscriptionItemFactory;
 
-class OrderItem extends Model
+class SubscriptionItem extends Model
 {
     use HasFactory;
 
     /**
-     * The order the item belongs to
+     * Customer the order belongs to.
      */
-    public function Order(): BelongsTo
+    public function subscription(): BelongsTo
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Subscription::class);
     }
 
     /**
@@ -24,6 +24,6 @@ class OrderItem extends Model
      */
     protected static function newFactory()
     {
-        return OrderItemFactory::new();
+        return SubscriptionItemFactory::new();
     }
 }

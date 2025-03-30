@@ -30,7 +30,7 @@ INSERT INTO {$prefix}object_attributes_audit (
     value_new,
     timestamp)
 SELECT 
-    '\App\Models\Customer' AS model,
+    'Workbench\App\Models\Customer' AS model,
     object_uid, 
     attribute, 
     random() * 100 AS value_old,
@@ -58,7 +58,7 @@ INSERT INTO {$prefix}object_attributes_audit (
     value_new,
     timestamp)
 SELECT 
-    '\App\Models\User' AS model,
+    'Workbench\App\Models\User' AS model,
     object_uid, 
     attribute, 
     random() * 100 AS value_old,

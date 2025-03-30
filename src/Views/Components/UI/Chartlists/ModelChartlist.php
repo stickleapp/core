@@ -10,7 +10,7 @@ use Illuminate\View\Component;
 use Illuminate\View\View;
 use StickleApp\Core\Support\ClassUtils;
 
-class ModelsChartlist extends Component
+class ModelChartlist extends Component
 {
     /**
      * Create the component instance.
@@ -20,6 +20,7 @@ class ModelsChartlist extends Component
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
         public string $model,
+        public string $uid,
         public ?string $heading,
         public ?string $description,
     ) {}
@@ -29,7 +30,7 @@ class ModelsChartlist extends Component
      */
     public function render(): View
     {
-        return view('stickle::components/ui/chartlists/models-chartlist');
+        return view('stickle::components/ui/chartlists/model-chartlist');
     }
 
     public function chartData(): array

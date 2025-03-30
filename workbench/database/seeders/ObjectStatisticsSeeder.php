@@ -24,7 +24,7 @@ class ObjectStatisticsSeeder extends Seeder
         $sql = <<<sql
 INSERT INTO {$prefix}object_statistics (model, object_uid, attribute, value_min, value_max, value_avg, value_count, value_sum, recorded_at)
 SELECT 
-    '\App\Models\Customer' AS model,
+    'Workbench\App\Models\Customer' AS model,
     object_uid, 
     attribute, 
     random() * 100 AS value_min, 
@@ -56,7 +56,7 @@ ON CONFLICT DO NOTHING;
 
 INSERT INTO {$prefix}object_statistics (model, object_uid, attribute, value_min, value_max, value_avg, value_count, value_sum, recorded_at)
 SELECT 
-    '\App\Models\User' AS model,
+    'Workbench\App\Models\User' AS model,
     object_uid, 
     attribute, 
     random() * 100 AS value_min, 

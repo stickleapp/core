@@ -4,10 +4,10 @@
     >
         <h3 class="">{{ $label }}</h3>
     </div>
-    <div class="p-6 pt-0">
-        <x-stickle-charts-primatives-info
+    <div class="p-0">
+        <x-stickle-charts-primatives-line
             :endpoint="$endpoint()"
             :$key
-        ></x-stickle-charts-primatives-info>
+        ></x-stickle-charts-primatives-line>
     </div>
 </div>

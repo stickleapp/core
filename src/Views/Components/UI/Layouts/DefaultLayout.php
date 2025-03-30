@@ -6,6 +6,7 @@ namespace StickleApp\Core\Views\Components\UI\Layouts;
 
 use Illuminate\View\Component;
 use Illuminate\View\View;
+use StickleApp\Core\Support\ClassUtils;
 
 class DefaultLayout extends Component
 {
@@ -15,5 +16,13 @@ class DefaultLayout extends Component
     public function render(): View
     {
         return view('stickle::components/ui/layouts/default');
+    }
+
+    public function models(): array
+    {
+        return ClassUtils::getClassesWithTrait(
+            config('stickle.namespaces.models'),
+            \StickleApp\Core\Traits\StickleEntity::class
+        );
     }
 }

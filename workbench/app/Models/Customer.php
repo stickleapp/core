@@ -6,8 +6,8 @@ namespace Workbench\App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use StickleApp\Core\Traits\StickleEntity;
+use Workbench\App\Enums\UserType;
 use Workbench\Database\Factories\CustomerFactory;
 
 class Customer extends Model
@@ -56,51 +56,189 @@ class Customer extends Model
     /**
      * Specify the attributes that should be observed (via Observable)
      */
-    public array $stickleObservedAttributes = [
-        'order_count',
-        'order_item_count',
+    public static array $stickleObservedAttributes = [
+        'mrr',
     ];
 
     /**
      * Specify the attributes that should be observed (via Observable)
      */
-    public array $stickleTrackedAttributes = [
-        'order_count',
-        'order_item_count',
+    public static array $stickleTrackedAttributes = [
+        'mrr',
+        'ticket_count',
+        'open_ticket_count',
+        'tickets_closed_last_30_days',
+        'tickets_closed_last_7_days',
+        'average_resolution_time',
+        'average_resolution_time_30_days',
+        'average_resolution_time_7_days',
     ];
 
+    /**
+     * Child accounts in a parent <> child relationship.
+     *
+     * For instance: Microsoft may have Microsoft EU, Microsoft US
+     */
     public function children(): hasMany
     {
         return $this->hasMany(self::class, 'parent_id');
     }
 
+    /**
+     * Parent account in a parent <> child relationship.
+     *
+     * For instance: Microsoft EU may have Microsoft as a parent account
+     */
     public function parent(): hasMany
     {
         return $this->belongsTo(self::class, 'parent_id');
     }
 
-    public function users(): BelongsToMany
+    /**
+     * The users that belong to the customer.
+     */
+    public function users(): hasMany
     {
         return $this->hasMany(User::class);
     }
 
-    public function orders(): HasMany
+    public function tickets(): HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Ticket::class);
     }
 
-    public function orderItems(): HasManyThrough
+    public function customer(): BelongsTo
     {
-        return $this->hasManyThrough(OrderItem::class, Order::class);
+        return $this->belongsTo(Customer::class);
     }
 
-    public function getOrderCountAttribute(): int
+    public function endUsers(): HasMany
     {
-        return $this->orders()->count();
+        return $this->hasMany(User::class)
+            ->where('user_type', UserType::END_USER);
     }
 
-    public function getOrderItemCountAttribute(): int
+    public function agents(): HasMany
     {
-        return $this->orderItems()->count();
+        return $this->hasMany(User::class)
+            ->where('user_type', UserType::AGENT);
+    }
+
+    public function admins(): HasMany
+    {
+        return $this->hasMany(User::class)
+            ->where('user_type', UserType::ADMIN);
+    }
+
+    #[StickleAttributeMetadata([
+        'label' => 'Ticket Count',
+        'description' => 'The total number of tickets for the customer.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::INTEGER,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getTicketCountAttribute(): int
+    {
+        return $this->tickets()->count();
+    }
+
+    #[StickleAttributeMetadata([
+        'label' => 'Open Ticket Count',
+        'description' => 'The total number of open tickets for the customer.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::INTEGER,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getOpenTicketCountAttribute(): int
+    {
+        return $this->tickets()
+            ->whereStatus('open')
+            ->count();
+    }
+
+    #[StickleAttributeMetadata([
+        'label' => 'Tickets Closed (Last 30 Days)',
+        'description' => 'The total number of tickets closed by the customer in the last 30 days.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::INTEGER,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getTicketsClosedLast30DaysAttribute(): int
+    {
+        return $this->tickets()
+            ->whereStatus('resolved')
+            ->where('resolved_at', '>=', now()->subDays(30))
+            ->count();
+    }
+
+    #[StickleAttributeMetadata([
+        'label' => 'Tickets Closed (Last 7 Days)',
+        'description' => 'The total number of tickets closed by the customer in the last 7 days.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::INTEGER,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getTicketsClosedLast7DaysAttribute(): int
+    {
+        return $this->tickets()
+            ->whereStatus('resolved')
+            ->where('resolved_at', '>=', now()->subDays(7))
+            ->count();
+    }
+
+    #[StickleAttributeMetadata([
+        'label' => 'Average Resolution Time (All-time)',
+        'description' => 'The average resolution time for the customer.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::TIME,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getAverageResolutionTimeAttribute(): float
+    {
+        return $this->tickets()
+            ->whereStatus('resolved')
+            ->avg('resolved_in_seconds');
+    }
+
+    #[StickleAttributeMetadata([
+        'label' => 'Average Ticket Resolution Time (Last 30 Days)',
+        'description' => 'The average resolution time for the customer in the last 30 days.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::TIME,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getAverageResolutionTime30DaysAttribute(): float
+    {
+        return $this->tickets()
+            ->whereStatus('resolved')
+            ->where('resolved_at', '>=', now()->subDays(30))
+            ->avg('resolved_in_seconds');
+    }
+
+    #[StickleAttributeMetadata([
+        'label' => 'Average Ticket Resolution Time (Last 7 Days)',
+        'description' => 'The average resolution time for the customer in the last 7 days.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::TIME,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getAverageResolutionTime7DaysAttribute(): float
+    {
+        return $this->tickets()
+            ->whereStatus('resolved')
+            ->where('resolved_at', '>=', now()->subDays(7))
+            ->avg('resolved_in_seconds');
+    }
+
+    #[StickleAttributeMetadata([
+        'label' => 'Monthly Recurring Revenue',
+        'description' => 'The total monthly recurring revenue for the customer.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::CURRENCY,
+        'primaryAggregate' => PrimaryAggregate::SUM,
+    ])]
+    public function getMrrAttribute(): float
+    {
+        return 893;
     }
 }

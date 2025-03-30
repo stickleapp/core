@@ -10,9 +10,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use StickleApp\Core\Attributes\StickleAttributeMetadata;
 use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Models\ObjectAttribute;
 use StickleApp\Core\Models\ObjectAttributesAudit;
+use StickleApp\Core\Models\ObjectStatistic;
+use StickleApp\Core\Support\AttributeUtils;
 
 trait StickleEntity
 {
@@ -108,12 +112,20 @@ trait StickleEntity
     public static function getStickleObservedAttributes()
     {
 
-        return (property_exists(static::class, 'stickleObservedAttributes')) ? static::$stickleObservedAttributes : [];
+        if (property_exists(static::class, 'stickleObservedAttributes') && isset(static::$stickleObservedAttributes)) {
+            return static::$stickleObservedAttributes;
+        }
+
+        return [];
     }
 
     public static function getStickleTrackedAttributes()
     {
-        return (property_exists(static::class, 'stickleTrackedAttributes')) ? static::$stickleTrackedAttributes : [];
+        if (property_exists(static::class, 'stickleTrackedAttributes') && isset(static::$stickleTrackedAttributes)) {
+            return static::$stickleTrackedAttributes;
+        }
+
+        return [];
     }
 
     public function objectAttribute(): HasOne
@@ -124,6 +136,11 @@ trait StickleEntity
     public function objectAttributesAudits(): HasMany
     {
         return $this->hasMany(ObjectAttributesAudit::class, 'object_uid')->where('model', self::class);
+    }
+
+    public function objectStatistics(): HasMany
+    {
+        return $this->hasMany(ObjectStatistic::class, 'object_uid')->where('model', self::class);
     }
 
     /**
@@ -168,5 +185,36 @@ trait StickleEntity
                 }
             }
         );
+    }
+
+    public static function getStickleChartData(): array
+    {
+
+        // Get the attributes that are tracked by StickleTrait as keys with empty arrays as values
+        $trackedAttributes = static::getStickleTrackedAttributes();
+
+        // Get the metadata [ 'attribute' => [ 'chartType' => 'line', 'label' => 'Attribute', 'description' => 'Description', 'dataType' => 'string', 'primaryAggregateType' => 'sum' ] ]
+        $metadata = AttributeUtils::getAttributesForClass(
+            static::class,
+            StickleAttributeMetadata::class
+        );
+
+        // Directly build chart data for tracked attributes
+        $chartData = [];
+        foreach ($trackedAttributes as $attribute) {
+            $meta = $metadata[$attribute] ?? [];
+            $chartData[] = [
+                'key' => $attribute,
+                'model' => static::class,
+                'attribute' => $attribute,
+                'chartType' => $meta['chartType'] ?? \StickleApp\Core\Enums\ChartType::LINE,
+                'label' => $meta['label'] ?? Str::title(str_replace('_', ' ', $attribute)),
+                'description' => $meta['description'] ?? null,
+                'dataType' => $meta['dataType'] ?? null,
+                'primaryAggregateType' => $meta['primaryAggregateType'] ?? null,
+            ];
+        }
+
+        return $chartData;
     }
 }

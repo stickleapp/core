@@ -23,16 +23,17 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CustomersSeeder::class,
             UsersSeeder::class,
+            SubscriptionsSeeder::class,
+            TicketsSeeder::class,
             ObjectSegmentsSeeder::class,
             ObjectAttributesSeeder::class,
             ObjectAttributesAuditSeeder::class,
             ObjectStatisticsSeeder::class,
             EventsSeeder::class,
             RequestsSeeder::class,
-            OrdersSeeder::class,
+            SessionsSeeder::class,
             SegmentsSeeder::class,
             SegmentStatisticsSeeder::class,
-            SessionsSeeder::class,
         ]);
     }
 }

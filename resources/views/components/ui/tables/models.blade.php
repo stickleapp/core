@@ -28,7 +28,7 @@
                         type="search"
                         x-model="$store.tableData.searchTerm"
                         @keyup.enter="fetchData()"
-                        class="block w-full p-2 pl-10 text-sm border rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500"
+                        class="block w-full p-2 pl-10 text-sm rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Search..."
                     />
                 </div>
@@ -45,17 +45,16 @@
 
     <!-- Data Table Component -->
     <div x-data="dataTable()">
-        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="overflow-hidden">
             <!-- Table Header with Sorting -->
-            <div class="flex justify-between items-center p-4 border-b">
-                <h2 class="text-lg font-semibold">Data Table</h2>
+            <div class="flex justify-between items-center p-4">
                 <div class="flex items-center space-x-2">
                     <label class="text-sm text-gray-600">Sort by:</label>
                     <select
                         x-model="sortBy"
                         @change="updateSort()"
                         :disabled="$store.tableData.isLoading"
-                        class="border rounded p-1 text-sm"
+                        class="rounded p-1 text-sm"
                     >
                         <template x-for="column in columns">
                             <option
@@ -67,7 +66,7 @@
                     <button
                         @click="sortDirection = sortDirection === 'asc' ? 'desc' : 'asc'; updateSort()"
                         :disabled="$store.tableData.isLoading"
-                        class="p-1 border rounded"
+                        class="p-1 rounded"
                     >
                         <span
                             x-text="sortDirection === 'asc' ? '↑' : '↓'"
@@ -115,8 +114,16 @@
                                 >
                                     <td
                                         class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                                        x-text="item[column.key]"
-                                    ></td>
+                                    >
+                                        <a
+                                            :href="modelUrl('{{
+                                                $model
+                                            }}', item)"
+                                            ><span
+                                                x-text="item[column.key]"
+                                            ></span
+                                        ></a>
+                                    </td>
                                 </template>
                             </tr>
                         </template>
@@ -294,6 +301,11 @@
                     this.sortBy,
                     this.sortDirection
                 );
+            },
+
+            modelUrl(className, model) {
+                // TODO: uid / not id?
+                return className + "/" + model.id;
             },
         };
     }

@@ -6,26 +6,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Workbench\Database\Factories\OrderFactory;
+use Workbench\Database\Factories\SubscriptionFactory;
 
-class Order extends Model
+class Subscription extends Model
 {
     use HasFactory;
 
     /**
-     * Items for the order.
+     * Customer the order belongs to.
      */
-    public function orderItems(): HasMany
+    public function customer(): BelongsTo
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->belongsTo(Customer::class);
     }
 
-    /**
-     * User the order belongs to.
-     */
-    public function User(): BelongsTo
+    public function subscriptionItems(): HasMany
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(SubscriptionItem::class);
     }
 
     /**
@@ -33,6 +30,6 @@ class Order extends Model
      */
     protected static function newFactory()
     {
-        return OrderFactory::new();
+        return SubscriptionFactory::new();
     }
 }

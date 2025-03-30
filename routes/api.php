@@ -2,9 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use StickleApp\Core\Http\Controllers\IngestController;
-use StickleApp\Core\Http\Controllers\ModelObjectAttributesController;
-use StickleApp\Core\Http\Controllers\ModelObjectsController;
-use StickleApp\Core\Http\Controllers\ModelObjectsStatisticsController;
+use StickleApp\Core\Http\Controllers\ObjectsController;
+use StickleApp\Core\Http\Controllers\ObjectsStatisticsController;
+use StickleApp\Core\Http\Controllers\ObjectStatisticsController;
 use StickleApp\Core\Http\Controllers\SegmentObjectsController;
 use StickleApp\Core\Http\Controllers\SegmentStatisticsController;
 
@@ -22,12 +22,15 @@ Route::middleware(['api'])->group(function () {
     Route::get('/stickle/api/segment-objects', [SegmentObjectsController::class, 'index'])
         ->name('segment-objects');
 
-    Route::get('/stickle/api/model-objects', [ModelObjectsController::class, 'index'])
-        ->name('model-objects');
+    Route::get('/stickle/api/objects', [ObjectsController::class, 'index'])
+        ->name('objects');
 
-    Route::get('/stickle/api/model-objects-statistics', [ModelObjectsStatisticsController::class, 'index'])
-        ->name('model-objects-statistics');
+    Route::get('/stickle/api/objects-statistics', [ObjectsStatisticsController::class, 'index'])
+        ->name('objects-statistics');
 
-    Route::get('/stickle/api/model-object-attributes', [ModelObjectAttributesController::class, 'index'])
-        ->name('model-object-attributes');
+    Route::get('/stickle/api/object-statistics', [ObjectStatisticsController::class, 'index'])
+        ->name('object-statistics');
+
+    Route::get('/stickle/api/object-attributes', [ObjectAttributesController::class, 'index'])
+        ->name('object-attributes');
 });

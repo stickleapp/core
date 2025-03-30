@@ -10,4 +10,6 @@ enum DataType: string
     case BOOLEAN = 'boolean';
     case DATE = 'date';
     case DATETIME = 'datetime';
+    case CURRENCY = 'currency';
+    case TIME = 'time';
 }

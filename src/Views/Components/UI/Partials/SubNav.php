@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace StickleApp\Core\Views\Components\UI\Tables;
+namespace StickleApp\Core\Views\Components\UI\Partials;
 
 use Illuminate\Container\Attributes\Config;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 
-class ModelsTable extends Component
+class SubNav extends Component
 {
     /**
      * Create the component instance.
@@ -17,9 +17,6 @@ class ModelsTable extends Component
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
-        public string $model,
-        public ?string $heading,
-        public ?string $subheading,
     ) {}
 
     /**
@@ -27,13 +24,6 @@ class ModelsTable extends Component
      */
     public function render(): View
     {
-        return view('stickle::components/ui/tables/models');
-    }
-
-    public function endpoint(): string
-    {
-        return url()->query(
-            $this->apiPrefix.'/objects'
-        );
+        return view('stickle::components/ui/partials/subnav');
     }
 }

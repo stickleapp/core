@@ -18,6 +18,7 @@ class AttributeUtils
      */
     public static function getAttributesForClass(string $className, string $attributeClass): array
     {
+
         if (! class_exists($className)) {
             throw new \Exception('Class not found');
         }
@@ -38,8 +39,15 @@ class AttributeUtils
 
                 $attributeName = lcfirst($matches[1]);
 
-                // Convert from camelCase to snake_case
-                $attributeName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $attributeName));
+                // First, add underscore before each uppercase letter
+                $pattern = '/(?<!^)[A-Z]/';
+                $attributeName = preg_replace($pattern, '_$0', $attributeName);
+
+                // Then add underscore before numeric sequences
+                $pattern = '/([a-zA-Z])(\d+)/';
+                $attributeName = preg_replace($pattern, '$1_$2', $attributeName);
+
+                $attributeName = strtolower($attributeName);
 
                 $attributes = $method->getAttributes($attributeClass);
 
