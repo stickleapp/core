@@ -54,8 +54,9 @@ return new class extends Migration
             $table->text('status')->nullable(true);
             $table->integer('rating')->nullable(true);
             $table->text('priority')->nullable(true);
-            $table->bigInteger('assigned_to_id')->nullable(false);
+            $table->bigInteger('assigned_to_id')->nullable(true);
             $table->bigInteger('created_by_id')->nullable(false);
+            $table->bigInteger('resolved_by_id')->nullable(true);
             $table->timestamp('resolved_at')->nullable(true);
             $table->integer('resolved_in_seconds')->storedAs(
                 'EXTRACT(EPOCH FROM (resolved_at - created_at))::integer'
@@ -65,6 +66,7 @@ return new class extends Migration
             $table->foreign('customer_id')->references('id')->on('customers');
             $table->foreign('assigned_to_id')->references('id')->on('users');
             $table->foreign('created_by_id')->references('id')->on('users');
+            $table->foreign('resolved_by_id')->references('id')->on('users');
         });
 
         // Schema::table(('tickets'), function (Blueprint $table) {});

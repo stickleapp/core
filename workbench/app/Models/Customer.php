@@ -67,11 +67,10 @@ class Customer extends Model
         'mrr',
         'ticket_count',
         'open_ticket_count',
+        'closed_ticket_count',
         'tickets_closed_last_30_days',
-        'tickets_closed_last_7_days',
         'average_resolution_time',
         'average_resolution_time_30_days',
-        'average_resolution_time_7_days',
     ];
 
     /**
@@ -110,6 +109,11 @@ class Customer extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
     }
 
     public function endUsers(): HasMany
@@ -157,6 +161,20 @@ class Customer extends Model
     }
 
     #[StickleAttributeMetadata([
+        'label' => 'Tickets Closed',
+        'description' => 'The total number of tickets closed.',
+        'chartType' => ChartType::LINE,
+        'dataType' => DataType::INTEGER,
+        'primaryAggregate' => PrimaryAggregate::AVG,
+    ])]
+    public function getTicketsClosedAttribute(): int
+    {
+        return $this->tickets()
+            ->whereStatus('resolved')
+            ->count();
+    }
+
+    #[StickleAttributeMetadata([
         'label' => 'Tickets Closed (Last 30 Days)',
         'description' => 'The total number of tickets closed by the customer in the last 30 days.',
         'chartType' => ChartType::LINE,
@@ -193,7 +211,7 @@ class Customer extends Model
         'dataType' => DataType::TIME,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getAverageResolutionTimeAttribute(): float
+    public function getAverageResolutionTimeAttribute(): ?float
     {
         return $this->tickets()
             ->whereStatus('resolved')
@@ -207,7 +225,7 @@ class Customer extends Model
         'dataType' => DataType::TIME,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getAverageResolutionTime30DaysAttribute(): float
+    public function getAverageResolutionTime30DaysAttribute(): ?float
     {
         return $this->tickets()
             ->whereStatus('resolved')
@@ -222,12 +240,25 @@ class Customer extends Model
         'dataType' => DataType::TIME,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getAverageResolutionTime7DaysAttribute(): float
+    public function getAverageResolutionTime7DaysAttribute(): ?float
     {
         return $this->tickets()
             ->whereStatus('resolved')
             ->where('resolved_at', '>=', now()->subDays(7))
             ->avg('resolved_in_seconds');
+    }
+
+    /**
+     * Their current active subscription plan.
+     */
+    public function getPlanAttribute(): string
+    {
+        return $this->subscriptions()
+            ->where('stripe_status', 'active')
+            ->latest()
+            ->first()
+            ?->plan
+            ?? '';
     }
 
     #[StickleAttributeMetadata([
@@ -237,8 +268,13 @@ class Customer extends Model
         'dataType' => DataType::CURRENCY,
         'primaryAggregate' => PrimaryAggregate::SUM,
     ])]
-    public function getMrrAttribute(): float
+    public function getMrrAttribute(): ?float
     {
-        return 893;
+        return match ($this->plan) {
+            'basic' => 49,
+            'pro' => 99,
+            'enterprise' => 199,
+            default => 0,
+        };
     }
 }

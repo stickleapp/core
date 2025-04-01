@@ -7,9 +7,69 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Workbench\App\Models\Customer;
+use Workbench\App\Models\User;
 
 class ObjectAttributesSeeder extends Seeder
 {
+
+//   "__users": {
+//     "user_rating": {
+//       "value": null,
+//       "min": 1,
+//       "max": 5,
+//       "avg": 4.78,
+//       "count": 23
+//     },
+//     "order_count": {
+//       "value": null,
+//       "min": 1,
+//       "max": 8,
+//       "avg": 1.2,
+//       "count": 14
+//     },
+//     "order_item_count": {
+//       "value": null,
+//       "min": 1,
+//       "max": 47,
+//       "avg": 1.92,
+//       "count": 14
+//     }
+//   },
+//   "__groups": {
+//     "mrr": {
+//       "value": null,
+//       "min": 188,
+//       "max": 599,
+//       "avg": 478,
+//       "count": 3
+//     },
+//     "__users": {
+//       "user_rating": {
+//         "value": null,
+//         "min": 1,
+//         "max": 5,
+//         "avg": 4.78,
+//         "count": 23
+//       },
+//       "order_count": {
+//         "value": null,
+//         "min": 1,
+//         "max": 12,
+//         "avg": 1.2,
+//         "count": 23
+//       },
+//       "order_item_count": {
+//         "value": null,
+//         "min": 1,
+//         "max": 78,
+//         "avg": 2.2,
+//         "count": 23
+//       }
+//     }
+//   }
+// }'::jsonb AS model_attributes,
+  
     /**
      * Seed the application's database.
      */
@@ -21,112 +81,51 @@ class ObjectAttributesSeeder extends Seeder
 
         Artisan::call("stickle:create-partitions {$prefix}object_attributes_audit public week '{$date}' 2");
 
-        $sql = <<<sql
-DELETE FROM {$prefix}object_attributes;
-INSERT INTO {$prefix}object_attributes (
-	model,
-	object_uid,
-	model_attributes,
-	synced_at,
-	created_at,
-	updated_at
-)
-SELECT
-	'Workbench\App\Models\Customer' as model,
-	customers.id AS object_uid,
-	'{
-  "mrr": 99,
-  "__users": {
-    "user_rating": {
-      "value": null,
-      "min": 1,
-      "max": 5,
-      "avg": 4.78,
-      "count": 23
-    },
-    "order_count": {
-      "value": null,
-      "min": 1,
-      "max": 8,
-      "avg": 1.2,
-      "count": 14
-    },
-    "order_item_count": {
-      "value": null,
-      "min": 1,
-      "max": 47,
-      "avg": 1.92,
-      "count": 14
-    }
-  },
-  "__groups": {
-    "mrr": {
-      "value": null,
-      "min": 188,
-      "max": 599,
-      "avg": 478,
-      "count": 3
-    },
-    "__users": {
-      "user_rating": {
-        "value": null,
-        "min": 1,
-        "max": 5,
-        "avg": 4.78,
-        "count": 23
-      },
-      "order_count": {
-        "value": null,
-        "min": 1,
-        "max": 12,
-        "avg": 1.2,
-        "count": 23
-      },
-      "order_item_count": {
-        "value": null,
-        "min": 1,
-        "max": 78,
-        "avg": 2.2,
-        "count": 23
-      }
-    }
-  }
-}'::jsonb AS model_attributes,
-	CURRENT_TIMESTAMP as synced_at,
-	CURRENT_TIMESTAMP as created_at,
-	CURRENT_TIMESTAMP as updated_at
-FROM
-	customers
-ON CONFLICT (modeL, object_uid) 
-DO UPDATE SET
-  model_attributes = EXCLUDED.model_attributes;
+        DB::table("{$prefix}object_attributes")->truncate();
 
-INSERT INTO {$prefix}object_attributes (
-	model,
-	object_uid,
-	model_attributes,
-	synced_at,
-	created_at,
-	updated_at
-)
-SELECT
-	'Workbench\App\Models\User' as model,
-	users.id AS object_uid,
-	CASE WHEN LENGTH(users.id::TEXT) = 4 THEN '{"user_rating":1, "order_count": 3, "order_item_count": 8}'::jsonb
-        WHEN LENGTH(users.id::TEXT) = 3 THEN '{"user_rating":2, "order_count": 2, "order_item_count": 5}'::jsonb
-        WHEN LENGTH(users.id::TEXT) = 2 THEN '{"user_rating":3, "order_count": 6, "order_item_count": 18}'::jsonb 
-        ELSE '{}'::jsonb
-    END AS model_attributes,
-	CURRENT_TIMESTAMP as synced_at,
-	CURRENT_TIMESTAMP as created_at,
-	CURRENT_TIMESTAMP as updated_at
-FROM
-	users
-ON CONFLICT (modeL, object_uid) 
-DO UPDATE SET
-  model_attributes = EXCLUDED.model_attributes;
-sql;
+        $customers = Customer::has('users')->get()->take(500);
 
-        DB::unprepared($sql);
+        $stickleTrackedAttributes = Customer::$stickleTrackedAttributes ?? [];
+
+        foreach ($customers as $customer) {
+
+            $attributes = [];
+
+            foreach ($stickleTrackedAttributes as $attribute) {
+              $attributes[$attribute] = $customer->{$attribute} ?? null;
+            }
+
+            // Replace insert with upsert to handle conflicts
+            DB::table("{$prefix}object_attributes")->insert([
+              'model' => 'Workbench\App\Models\Customer',
+              'object_uid' => $customer->id,
+              'model_attributes' => json_encode($attributes),
+              'synced_at' => now(),
+              'created_at' => now(),
+              'updated_at' => now(),
+            ]);
+
+            $users = $customer->users;
+
+            $stickleTrackedAttributes = User::$stickleTrackedAttributes ?? [];
+
+            foreach  ($users as $user) {
+                $attributes = [];
+
+                foreach ($stickleTrackedAttributes as $attribute) {
+                  $attributes[$attribute] = $user->{$attribute} ?? null;
+                }
+
+                // Replace insert with upsert to handle conflicts
+                DB::table("{$prefix}object_attributes")->insert([
+                  'model' => 'Workbench\App\Models\User',
+                  'object_uid' => $user->id,
+                  'model_attributes' => json_encode($attributes),
+                  'synced_at' => now(),
+                  'created_at' => now(),
+                  'updated_at' => now(),
+                ]);
+            }
+        }
     }
 }

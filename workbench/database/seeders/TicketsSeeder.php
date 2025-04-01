@@ -25,12 +25,14 @@ class TicketsSeeder extends Seeder
             for ($i = 0; $i < $batchCount; $i++) {
                 $createdAt = new Carbon(fake()->dateTimeBetween($customer->created_at, now()));
                 $resolvedAt = fake()->optional(.9)->dateTimeBetween($createdAt, (clone $createdAt)->addMinutes(rand(10, 2000)));
+                $agent = $customer->agents->random();
                 Ticket::factory()
                     ->create(
                         [
                             'customer_id' => $customer->id,
                             'created_by_id' => $customer->endUsers->random()->id,
-                            'assigned_to_id' => $customer->agents->random()->id,
+                            'assigned_to_id' => $agent->id,
+                            'resolved_by_id' => ($resolvedAt) ? $agent->id : null,
                             'created_at' => $createdAt,
                             'resolved_at' => $resolvedAt,
                             'rating' => $resolvedAt ? fake()->numberBetween(1, 5) : null,

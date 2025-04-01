@@ -31,7 +31,7 @@ class TicketFactory extends Factory
         $customer = Customer::has('users')->inRandomOrder()->first();
 
         return [
-            'status' => ['open', 'pending', 'in-progressed', 'resolved'][fake()->numberBetween(0, 3)],
+            'status' => ['open', 'pending', 'in-progress', 'resolved'][fake()->numberBetween(0, 3)],
             'title' => fake()->sentence(),
             'description' => fake()->paragraph(),
             'priority' => ['low', 'medium', 'high'][fake()->numberBetween(0, 2)],

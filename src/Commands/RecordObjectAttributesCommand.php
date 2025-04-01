@@ -43,11 +43,12 @@ final class RecordObjectAttributesCommand extends Command implements Isolatable
         $directory = $this->argument('directory');
         $namespace = $this->argument('namespace');
 
-        $classes = $this->getClassesWithTraits([StickleEntity::class], $directory, $namespace);
+        $classes = $this->getClassesWithTrait(StickleEntity::class, $directory, $namespace);
 
         foreach ($classes as $class) {
             /** @var Model $object */
             $object = new $class;
+
             $builder = $class::query()->leftJoin(
                 "{$this->prefix}object_attributes", function ($join) use ($object) {
                     $join->on(
@@ -64,11 +65,11 @@ final class RecordObjectAttributesCommand extends Command implements Isolatable
             )->where(function ($query) {
                 $query->where('synced_at', '<', now()->subMinutes(360))
                     ->orWhereNull('synced_at');
-            })->limit(1000)->select('users.*');
+            })->limit(1000)->select("{$object->getTable()}.*");
 
             foreach ($builder->cursor() as $trackable) {
                 dispatch(function () use ($trackable) {
-                    $attributes = $trackable->getStickableTrackedAttributes();
+                    $attributes = $trackable->getStickleTrackedAttributes();
                     $trackable->trackable_attributes = $trackable->only($attributes);
                 });
             }
@@ -76,24 +77,28 @@ final class RecordObjectAttributesCommand extends Command implements Isolatable
     }
 
     /**
-     * @param  array<int, string>  $checkForTraits
+     * @param  class-string  $checkForTrait
      * @return array<int, string>
      */
-    private function getClassesWithTraits(array $checkForTraits, string $modelsDirectory, string $modelsNamespace): array
+    private function getClassesWithTrait(string $checkForTrait, string $modelsDirectory, string $modelsNamespace): array
     {
         $results = [];
 
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($modelsDirectory));
-
+        $a = [];
         foreach ($files as $file) {
+
             if ($file->isFile() && $file->getExtension() === 'php') {
+
                 $className = $modelsNamespace.'\\'.str_replace(
                     ['/', '.php'],
                     ['\\', ''],
                     substr($file->getRealPath(), strlen($modelsDirectory) + 1)
                 );
+                $a[] = $className;
                 $traits = class_uses($className);
-                if ($traits && in_array($checkForTraits, $traits)) {
+
+                if ($traits && array_key_exists($checkForTrait, $traits)) {
                     $results[] = $className;
                 }
             }

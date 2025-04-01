@@ -41,43 +41,29 @@ FROM
         FROM 
         {$prefix}object_attributes,
         (VALUES 
-            ('mrr'), 
             ('__users.user_rating'), 
-            ('__users.order_count'), 
-            ('__users.order_item_count'), 
+            ('__users.ticket_count'),
+            ('__users.open_ticket_count'),
+            ('__users.closed_ticket_count'),
+            ('__users.tickets_closed_last_30_days'),
+            ('__users.average_resolution_time'),
+            ('__users.average_resolution_time_30_days'),
             ('__groups.mrr'), 
+            ('__groups.ticket_count'),
+            ('__groups.open_ticket_count'),
+            ('__groups.closed_ticket_count'),
+            ('__groups.tickets_closed_last_30_days'),
+            ('__groups.average_resolution_time'),
+            ('__groups.average_resolution_time_30_days'),
             ('__groups.__users.user_rating'), 
-            ('__groups.__users.order_count'), 
-            ('__groups.__users.order_item_count')
+            ('__groups.__users.ticket_count'),
+            ('__groups.__users.open_ticket_count'),
+            ('__groups.__users.closed_ticket_count'),
+            ('__groups.__users.tickets_closed_last_30_days'),
+            ('__groups.__users.average_resolution_time'),
+            ('__groups.__users.average_resolution_time_30_days'),
         ) AS attributes(attribute)
         WHERE model = 'Workbench\App\Models\Customer'
-    ) AS series
-ON CONFLICT DO NOTHING;
-
-INSERT INTO {$prefix}object_statistics (model, object_uid, attribute, value_min, value_max, value_avg, value_count, value_sum, recorded_at)
-SELECT 
-    'Workbench\App\Models\User' AS model,
-    object_uid, 
-    attribute, 
-    random() * 100 AS value_min, 
-    random() * 100 AS value_max, 
-    random() * 100 AS value_avg, 
-    (random() * 100)::int AS value_count, 
-    (random() * 1000) AS value_sum,
-    date::date AS recorded_at
-FROM 
-    (SELECT 
-        object_uid, 
-        attribute, 
-        generate_series(now()::date - interval '24 days', now()::date, interval '1 day') AS date
-        FROM 
-        {$prefix}object_attributes,
-        (VALUES 
-            ('user_rating'), 
-            ('order_count'), 
-            ('order_item_count')
-        ) AS attributes(attribute)
-        WHERE model = 'Workbench\App\Models\User'
     ) AS series
 ON CONFLICT DO NOTHING;
 sql;
