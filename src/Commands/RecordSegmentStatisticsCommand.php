@@ -41,8 +41,7 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
      */
     public function handle(): void
     {
-
-        Log::info('RecordSegmentStatistics Command', $this->arguments());
+        Log::info(self::class, $this->arguments());
 
         $segmentId = $this->argument('segmentId');
 

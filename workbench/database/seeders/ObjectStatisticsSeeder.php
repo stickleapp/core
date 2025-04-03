@@ -61,7 +61,7 @@ FROM
             ('__groups.__users.closed_ticket_count'),
             ('__groups.__users.tickets_closed_last_30_days'),
             ('__groups.__users.average_resolution_time'),
-            ('__groups.__users.average_resolution_time_30_days'),
+            ('__groups.__users.average_resolution_time_30_days')
         ) AS attributes(attribute)
         WHERE model = 'Workbench\App\Models\Customer'
     ) AS series

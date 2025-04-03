@@ -36,7 +36,7 @@ final class ProcessSegmentEventsCommand extends Command implements Isolatable
      */
     public function handle(): void
     {
-        Log::debug('Processing Segment Events');
+        Log::info(self::class, $this->arguments());
 
         /**
          * Retrieve the unprocessed object_segment events

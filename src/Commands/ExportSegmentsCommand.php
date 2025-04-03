@@ -44,8 +44,7 @@ final class ExportSegmentsCommand extends Command implements Isolatable
      */
     public function handle(): void
     {
-
-        Log::info('ExportSegments Command', $this->arguments());
+        Log::info(self::class, $this->arguments());
 
         $directory = $this->argument('directory');
         $namespace = $this->argument('namespace');

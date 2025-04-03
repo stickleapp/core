@@ -15,6 +15,7 @@ use StickleApp\Core\Commands\ExportSegmentsCommand;
 use StickleApp\Core\Commands\ProcessSegmentEventsCommand;
 use StickleApp\Core\Commands\RecordObjectAttributesCommand;
 use StickleApp\Core\Commands\RecordSegmentStatisticsCommand;
+use StickleApp\Core\Commands\RecordObjectStatisticsCommand;
 use StickleApp\Core\Commands\RollupSessionsCommand;
 use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
 use StickleApp\Core\Middleware\InjectJavascriptTrackingCode;
@@ -86,6 +87,7 @@ final class CoreServiceProvider extends ServiceProvider
                     ExportSegmentsCommand::class,
                     RecordObjectAttributesCommand::class,
                     RecordSegmentStatisticsCommand::class,
+                    RecordObjectStatisticsCommand::class,
                     ProcessSegmentEventsCommand::class,
                     ConfigureCommand::class,
                 ],

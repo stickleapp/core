@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
+use  Illuminate\Support\Facades\Log;
 
 final class RollupSessionsCommand extends Command implements Isolatable
 {
@@ -37,6 +38,7 @@ final class RollupSessionsCommand extends Command implements Isolatable
      */
     public function handle(): void
     {
+        Log::info(self::class, $this->arguments());
 
         $startDate = $this->argument('start_date');
 

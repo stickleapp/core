@@ -9,6 +9,7 @@ use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 final class DropPartitionsCommand extends Command implements Isolatable
 {
@@ -42,6 +43,7 @@ final class DropPartitionsCommand extends Command implements Isolatable
      */
     public function handle(): void
     {
+        Log::info(self::class, $this->arguments());
 
         $existingTable = $this->argument('existing_table');
         $schema = $this->argument('schema');

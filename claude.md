@@ -9,8 +9,9 @@ StickleApp is a customer analytics and engagement package for Laravel that helps
 ## Key Features
 
 -   **User Behavior Tracking**: Tracks pageviews and custom events
--   **Customer Attribute Auditing**: Tracks model attributes over time
--   **Customer Segment Tracking**: Define segments in code and track segment statistics over time
+-   **Customer Attribute Auditing**: Tracks model attributes over time (`object_attributes_audit`)
+-   **Customer Statistic Tracking**: Tracks aggregates for object children--for instance users that belong to a customer or customers with child customer objects ('ACME Global and ACME US') (`object_statistics`)
+-   **Customer Segment Tracking**: Define segments in code and track segment statistics over time (`segment_statistics`)
 -   **Event Coordination**: Listen for and trigger events and broadcast them to web users via websockets.
 -   **Customer Analytics Reporting**: Stickle provides a reporting UI for viewing user events and KPIs.
 

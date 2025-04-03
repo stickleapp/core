@@ -145,6 +145,8 @@ You can access a test page at the URL specified in the terminal.
 
 `vendor/bin/testbench stickle:record-segment-statitics`
 
+'vendor/bin/testbench stickle:record-object-statitics'
+
 `vendor/bin/testbench stickle:process-segment-events`
 
 `./vendor/bin/testbench workbench:send-test-requests`

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace StickleApp\Core\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\info;
@@ -35,6 +36,9 @@ class ConfigureCommand extends Command
      */
     public function handle(): void
     {
+
+        Log::info(self::class, $this->arguments());
+
         $settings = [];
 
         info('Welcome to the Stickle configuration wizard!');

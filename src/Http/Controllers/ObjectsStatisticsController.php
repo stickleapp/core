@@ -39,7 +39,7 @@ class ObjectsStatisticsController
                 $join->where("{$prefix}object_attributes.model", '=', get_class($model));
             })
             ->selectRaw(
-                "AVG((jsonb_extract_path_text({$prefix}object_attributes.model_attributes, ?))::float) as valu_avg",
+                "AVG((jsonb_extract_path_text({$prefix}object_attributes.model_attributes, ?))::float) as value_avg",
                 [$attribute]
             )
             ->selectRaw(

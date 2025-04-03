@@ -5,6 +5,7 @@ namespace Workbench\App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use StickleApp\Core\Traits\StickleEntity;
 use Workbench\App\Enums\UserType;
@@ -73,12 +74,11 @@ class Customer extends Model
         'average_resolution_time_30_days',
     ];
 
-    /**
-     * Child accounts in a parent <> child relationship.
-     *
-     * For instance: Microsoft may have Microsoft EU, Microsoft US
-     */
-    public function children(): hasMany
+    #[StickleRelationshipMetadata([
+        'label' => 'Child Customers',
+        'description' => 'The child accounts of the customer.',
+    ])]
+    public function children(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id');
     }
@@ -88,15 +88,16 @@ class Customer extends Model
      *
      * For instance: Microsoft EU may have Microsoft as a parent account
      */
-    public function parent(): hasMany
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');
     }
 
-    /**
-     * The users that belong to the customer.
-     */
-    public function users(): hasMany
+    #[StickleRelationshipMetadata([
+        'label' => 'Users of this Customer',
+        'description' => 'The users that belong to this customer.',
+    ])]
+    public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }
@@ -104,11 +105,6 @@ class Customer extends Model
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
-    }
-
-    public function customer(): BelongsTo
-    {
-        return $this->belongsTo(Customer::class);
     }
 
     public function subscriptions(): HasMany

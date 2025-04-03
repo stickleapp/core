@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Support;
 
+use Illuminate\Database\Eloquent\ModelInspector;
+use Illuminate\Foundation\Application;
 use ReflectionClass;
 
 class ClassUtils
@@ -143,5 +145,100 @@ class ClassUtils
         }
 
         return null;
+    }
+
+    /**
+     * Check if a $class has a method returning a subtype of Illuminate\Database\Eloquent\Relations\Relation
+     * that takes one of the $classes as an argument.
+     *
+     * Ie. This would return true becuase it returns a hasMany relationship with User as a parameter
+     * public function users(): hasMany
+     * {
+     *    return $this->hasMany(User::class);
+     *}
+     *
+     * @param  string  $class  The class name
+     * @param  array<int, string>  $relationshipClasses  The relationship classes to check against
+     * @return bool True if the class has a relationship with any of the specified classes, false otherwise
+     */
+    public static function hasRelationshipWith(Application $app, string $class, array $relationshipClasses, array $relatedClasses): bool
+    {
+
+        // Initialize the model inspector for the class
+        $inspector = new ModelInspector($app);
+
+        $info = $inspector->inspect(
+            $class
+        );
+
+        // Get all the relations defined on the model
+        $relations = $info['relations'];
+
+        // Replace the fqcn with the class name of $relationshipClasses
+        $relationshipClasses = array_map(function ($class) {
+            return class_basename($class);
+        }, $relationshipClasses);
+
+        // Check each relation to see if it relates to any of the specified classes
+        foreach ($relations as $relationInfo) {
+
+            $type = $relationInfo['type'];
+
+            $related = $relationInfo['related'];
+
+            if (in_array($related, $relatedClasses) && in_array($type, $relationshipClasses)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if a $class has a method returning a subtype of Illuminate\Database\Eloquent\Relations\Relation
+     * that takes one of the $classes as an argument.
+     *
+     * Ie. This would return true becuase it returns a hasMany relationship with User as a parameter
+     * public function users(): hasMany
+     * {
+     *    return $this->hasMany(User::class);
+     *}
+     *
+     * @param  string  $class  The class name
+     * @param  array<int, string>  $relationshipClasses  The relationship classes to check against
+     * @return bool True if the class has a relationship with any of the specified classes, false otherwise
+     */
+    public static function getRelationshipsWith(Application $app, string $class, array $relationshipClasses, array $relatedClasses): array
+    {
+
+        // Initialize the model inspector for the class
+        $inspector = new ModelInspector($app);
+
+        $info = $inspector->inspect(
+            $class
+        );
+
+        // Get all the relations defined on the model
+        $relations = $info['relations'];
+
+        // Replace the fqcn with the class name of $relationshipClasses
+        $relationshipClasses = array_map(function ($class) {
+            return class_basename($class);
+        }, $relationshipClasses);
+
+        $return = [];
+        // Check each relation to see if it relates to any of the specified classes
+        foreach ($relations as $relationInfo) {
+
+            $type = $relationInfo['type'];
+
+            $related = $relationInfo['related'];
+
+            if (in_array($related, $relatedClasses) && in_array($type, $relationshipClasses)) {
+                $return[] = $relationInfo;
+            }
+        }
+
+        return $return;
     }
 }

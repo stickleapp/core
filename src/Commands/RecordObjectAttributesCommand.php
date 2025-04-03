@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use StickleApp\Core\Traits\StickleEntity;
+use Illuminate\Support\Facades\Log;
 
 final class RecordObjectAttributesCommand extends Command implements Isolatable
 {
@@ -40,6 +41,9 @@ final class RecordObjectAttributesCommand extends Command implements Isolatable
      */
     public function handle(): void
     {
+        Log::info(self::class, $this->arguments());
+
+
         $directory = $this->argument('directory');
         $namespace = $this->argument('namespace');
 

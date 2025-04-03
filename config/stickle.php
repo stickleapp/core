@@ -73,16 +73,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Parent Child Relationship
-    |--------------------------------------------------------------------------
-    |
-    | Which models should be used for the various entities and what is the relationship
-    | between the group(S) and the user(s)
-    */
-    'relationship' => \Illuminate\Database\Eloquent\Relations\BelongsToMany::class,
-
-    /*
-    |--------------------------------------------------------------------------
     | Paths
     |--------------------------------------------------------------------------
     |
