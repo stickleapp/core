@@ -17,7 +17,7 @@ return new class extends Migration
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');
 
-       // object attributes
+        // object attributes
         Schema::create(("{$prefix}object_attributes"), function (Blueprint $table) {
             $table->id();
             $table->text('model')->nullable(false);
@@ -59,6 +59,6 @@ CREATE INDEX {$prefix}object_attributes_audit_model_object_uid_attribute_idx  ON
         $prefix = config('stickle.database.tablePrefix');
 
         Schema::dropIfExists("{$prefix}object_attributes_audit");
-        Schema::dropIfExists("{$prefix}object_attributes");        
+        Schema::dropIfExists("{$prefix}object_attributes");
     }
 };

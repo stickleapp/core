@@ -5,7 +5,6 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 
-
 return new class extends Migration
 {
     /**
@@ -79,7 +78,6 @@ return new class extends Migration
             $table->index('object_uid');
             $table->index('segment_id');
         });
-
 
         $sql = <<<'eof'
 CREATE OR REPLACE FUNCTION process_object_segment_audit() RETURNS TRIGGER AS $process_object_segment_audit$
@@ -241,7 +239,6 @@ eof;
     {
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');
-
 
         $sql = <<<'eof'
 DROP FUNCTION IF EXISTS f_activate_object_segments(segmentId INT, tempTable VARCHAR);

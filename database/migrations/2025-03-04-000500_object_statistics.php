@@ -17,7 +17,7 @@ return new class extends Migration
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');
 
-        Schema::create("{$prefix}object_statistic_exports", function (Blueprint $table) use ($prefix) {
+        Schema::create("{$prefix}object_statistic_exports", function (Blueprint $table) {
             $table->id();
             $table->text('model')->nullable(false);
             $table->text('attribute')->nullable(false);
