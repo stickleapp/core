@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace StickleApp\Core\Observers;
 
 use Illuminate\Support\Arr;
+use StickleApp\Core\Events\ModelAttributeChanged;
 use StickleApp\Core\Models\ModelAttributeAudit;
 use StickleApp\Core\Models\ModelAttributes;
-use StickleApp\Core\Events\ModelAttributeChanged;
 
 class ModelAttributesObserver
 {
