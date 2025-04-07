@@ -157,9 +157,9 @@ class ClassUtils
      *    return $this->hasMany(User::class);
      *}
      *
-     * @param string  $class  The class name
-     * @param array<int, string>  $relationshipClasses  The relationship classes to check against
-     * @param array<int, string>  $relatedClasses  The related classes to check against
+     * @param  string  $class  The class name
+     * @param  array<int, string>  $relationshipClasses  The relationship classes to check against
+     * @param  array<int, string>  $relatedClasses  The related classes to check against
      * @return bool True if the class has a relationship with any of the specified classes, false otherwise
      */
     public static function hasRelationshipWith(Application $app, string $class, array $relationshipClasses, array $relatedClasses): bool

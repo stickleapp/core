@@ -9,9 +9,8 @@ use Attribute;
 #[Attribute(Attribute::TARGET_METHOD)]
 class StickleRelationshipMetadata
 {
-
     /**
-     * @param array<string, mixed> $value
+     * @param  array<string, mixed>  $value
      */
     public function __construct(public array $value) {}
 }
