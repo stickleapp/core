@@ -13,8 +13,13 @@ use StickleApp\Core\Commands\CreatePartitionsCommand;
 use StickleApp\Core\Commands\DropPartitionsCommand;
 use StickleApp\Core\Commands\ExportSegmentsCommand;
 use StickleApp\Core\Commands\ProcessSegmentEventsCommand;
+<<<<<<< HEAD
 use StickleApp\Core\Commands\RecordModelAttributesCommand;
 use StickleApp\Core\Commands\RecordModelRelationshipStatisticsCommand;
+=======
+use StickleApp\Core\Commands\RecordObjectAttributesCommand;
+use StickleApp\Core\Commands\RecordObjectStatisticsCommand;
+>>>>>>> 4a8290cedd927491a35310724eae633096ca9bd6
 use StickleApp\Core\Commands\RecordSegmentStatisticsCommand;
 use StickleApp\Core\Commands\RollupSessionsCommand;
 use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
