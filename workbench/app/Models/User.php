@@ -74,6 +74,7 @@ class User extends Authenticatable
      * Specify the attributes that should be tracked over time
      */
     public static array $stickleTrackedAttributes = [
+        'user_level', // store in db
         'user_rating',
         'ticket_count',
         'open_ticket_count',

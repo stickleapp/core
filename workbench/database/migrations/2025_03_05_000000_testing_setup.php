@@ -34,6 +34,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->unsignedBigInteger('customer_id')->nullable(true);
             $table->string('user_type')->nullable(false);
+            $table->integer('user_level')->nullable(false)->default(0);
             $table->foreign('customer_id')->references('id')->on('customers');
         });
 
@@ -113,17 +114,8 @@ return new class extends Migration
         Schema::dropIfExists('tickets');
 
         Schema::table('users', function (Blueprint $table) {
-            $table->dropIndex([
-                'stripe_id',
-            ]);
-
             $table->dropColumn([
-                'customer_id',
-                'user_type',
-                'stripe_id',
-                'pm_type',
-                'pm_last_four',
-                'trial_ends_at',
+                'customer_id', 'user_type',
             ]);
         });
         Schema::dropIfExists('customers');

@@ -72,7 +72,7 @@ FROM
         FROM 
         {$prefix}model_attributes,
         (VALUES 
-            ('user_rating')
+            ('user_rating', 'user_level')
         ) AS attributes(attribute)
         WHERE model = 'Workbench\App\Models\User'
     ) AS series

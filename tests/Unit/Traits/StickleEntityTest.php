@@ -31,14 +31,14 @@ it('has tracked attributes', function () {
 it('observed properties log changes', function () {
 
     $user = User::factory()->create([
-        'user_rating' => 1,
+        'user_level' => 1,
     ]);
 
-    $user->user_rating = 3;
+    $user->user_level = 3;
     $user->save();
 
-    $user->user_rating = 5;
+    $user->user_level = 5;
     $user->save();
 
-    expect($user->modelAttributeAudits()->where('attribute', 'user_rating')->count())->toBe(3);
+    expect($user->modelAttributeAudits()->where('attribute', 'user_level')->count())->toBe(3);
 });

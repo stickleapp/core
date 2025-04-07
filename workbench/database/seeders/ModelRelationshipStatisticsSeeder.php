@@ -75,6 +75,7 @@ FROM
         {$prefix}model_attributes,
         (VALUES 
             ('user_rating'), 
+            ('user_level'), 
             ('ticket_count'),
             ('open_ticket_count'),
             ('closed_ticket_count'),
