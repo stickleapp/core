@@ -49,30 +49,30 @@ class RecordSegmentStatisticAction
 
         /** "count" is a special case */
         if ($attribute === 'count') {
-            return DB::table("{$prefix}object_segment")
+            return DB::table("{$prefix}model_segment")
                 ->where('segment_id', $segmentId)
-                ->select("{$prefix}object_segment.segment_id")
+                ->select("{$prefix}model_segment.segment_id")
                 ->selectRaw('? AS attribute', [$attribute])
-                ->selectRaw("COUNT({$prefix}object_segment.segment_id) AS value")
+                ->selectRaw("COUNT({$prefix}model_segment.segment_id) AS value")
                 ->selectRaw('CURRENT_DATE AS recorded_at')
-                ->groupBy("{$prefix}object_segment.segment_id", 'attribute');
+                ->groupBy("{$prefix}model_segment.segment_id", 'attribute');
         }
 
-        return DB::table("{$prefix}object_segment")
-            ->join("{$prefix}segments", "{$prefix}object_segment.segment_id", '=', "{$prefix}segments.id")
-            ->join("{$prefix}object_attributes", function ($join) use ($prefix) {
-                $join->on("{$prefix}object_attributes.model", '=', "{$prefix}segments.model");
-                $join->on("{$prefix}object_attributes.object_uid", '=', "{$prefix}object_segment.object_uid");
+        return DB::table("{$prefix}model_segment")
+            ->join("{$prefix}segments", "{$prefix}model_segment.segment_id", '=', "{$prefix}segments.id")
+            ->join("{$prefix}model_attributes", function ($join) use ($prefix) {
+                $join->on("{$prefix}model_attributes.model", '=', "{$prefix}segments.model");
+                $join->on("{$prefix}model_attributes.object_uid", '=', "{$prefix}model_segment.object_uid");
             })
-            ->where("{$prefix}object_segment.segment_id", $segmentId)
-            ->groupBy("{$prefix}object_segment.segment_id", 'attribute')
-            ->select("{$prefix}object_segment.segment_id")
+            ->where("{$prefix}model_segment.segment_id", $segmentId)
+            ->groupBy("{$prefix}model_segment.segment_id", 'attribute')
+            ->select("{$prefix}model_segment.segment_id")
             ->selectRaw('? AS attribute', [$attribute])
-            ->selectRaw("AVG(({$prefix}object_attributes.model_attributes->>?)::float) AS value_avg", [$attribute])
-            ->selectRaw("SUM(({$prefix}object_attributes.model_attributes->>?)::float) AS value_sum", [$attribute])
-            ->selectRaw("MIN(({$prefix}object_attributes.model_attributes->>?)::float) AS value_min", [$attribute])
-            ->selectRaw("MAX(({$prefix}object_attributes.model_attributes->>?)::float) AS value_max", [$attribute])
-            ->selectRaw("COUNT({$prefix}object_attributes.model_attributes->>?) AS value_count", [$attribute])
+            ->selectRaw("AVG(({$prefix}model_attributes.model_attributes->>?)::float) AS value_avg", [$attribute])
+            ->selectRaw("SUM(({$prefix}model_attributes.model_attributes->>?)::float) AS value_sum", [$attribute])
+            ->selectRaw("MIN(({$prefix}model_attributes.model_attributes->>?)::float) AS value_min", [$attribute])
+            ->selectRaw("MAX(({$prefix}model_attributes.model_attributes->>?)::float) AS value_max", [$attribute])
+            ->selectRaw("COUNT({$prefix}model_attributes.model_attributes->>?) AS value_count", [$attribute])
             ->selectRaw('CURRENT_DATE AS recorded_at');
     }
 }

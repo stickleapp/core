@@ -10,7 +10,7 @@ use Illuminate\View\Component;
 use Illuminate\View\View;
 use StickleApp\Core\Support\ClassUtils;
 
-class ModelChartlist extends Component
+class ModelRelationshipChartlist extends Component
 {
     /**
      * Create the component instance.
@@ -19,7 +19,8 @@ class ModelChartlist extends Component
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
-        public object $model,
+        public string $model,
+        public string $uid,
         public ?string $heading,
         public ?string $description,
     ) {}
@@ -29,22 +30,22 @@ class ModelChartlist extends Component
      */
     public function render(): View
     {
-        return view('stickle::components/ui/chartlists/model-chartlist');
+        return view('stickle::components/ui/chartlists/model-relationship-chartlist');
     }
 
     public function chartData(): array
     {
 
-        // $class = config('stickle.namespaces.models').'\\'.Str::ucfirst($this->model);
+        $class = config('stickle.namespaces.models').'\\'.Str::ucfirst($this->model);
 
-        // if (! class_exists($class)) {
-        //     throw new \Exception('Model not found');
-        // }
+        if (! class_exists($class)) {
+            throw new \Exception('Model not found');
+        }
 
-        // if (! ClassUtils::usesTrait($model, 'StickleApp\\Core\\Traits\\StickleEntity')) {
-        //     throw new \Exception('Model does not use StickleTrait.');
-        // }
+        if (! ClassUtils::usesTrait($class, 'StickleApp\\Core\\Traits\\StickleEntity')) {
+            throw new \Exception('Model does not use StickleTrait.');
+        }
 
-        return $this->model::getStickleChartData();
+        return $class::getStickleChartData();
     }
 }

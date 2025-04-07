@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Workbench\App\Models\Customer;
 use Workbench\App\Models\User;
 
-class ObjectAttributesSeeder extends Seeder
+class ModelAttributeSeeder extends Seeder
 {
     //   "__users": {
     //     "user_rating": {
@@ -78,11 +78,11 @@ class ObjectAttributesSeeder extends Seeder
 
         $date = now()->subDays(25)->toDateString();
 
-        Artisan::call("stickle:create-partitions {$prefix}object_attributes_audit public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$prefix}model_attribute_audit public week '{$date}' 2");
 
-        DB::table("{$prefix}object_attributes")->truncate();
+        DB::table("{$prefix}model_attributes")->truncate();
 
-        $customers = Customer::has('users')->get(); // ->take(250);
+        $customers = Customer::has('users')->get()->take(24);
 
         $stickleTrackedAttributes = Customer::$stickleTrackedAttributes ?? [];
 
@@ -95,7 +95,7 @@ class ObjectAttributesSeeder extends Seeder
             }
 
             // Replace insert with upsert to handle conflicts
-            DB::table("{$prefix}object_attributes")->insert([
+            DB::table("{$prefix}model_attributes")->insert([
                 'model' => 'Workbench\App\Models\Customer',
                 'object_uid' => $customer->id,
                 'model_attributes' => json_encode($attributes),
@@ -116,7 +116,7 @@ class ObjectAttributesSeeder extends Seeder
                 }
 
                 // Replace insert with upsert to handle conflicts
-                DB::table("{$prefix}object_attributes")->insert([
+                DB::table("{$prefix}model_attributes")->insert([
                     'model' => 'Workbench\App\Models\User',
                     'object_uid' => $user->id,
                     'model_attributes' => json_encode($attributes),

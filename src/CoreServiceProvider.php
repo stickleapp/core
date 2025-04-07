@@ -13,21 +13,23 @@ use StickleApp\Core\Commands\CreatePartitionsCommand;
 use StickleApp\Core\Commands\DropPartitionsCommand;
 use StickleApp\Core\Commands\ExportSegmentsCommand;
 use StickleApp\Core\Commands\ProcessSegmentEventsCommand;
-use StickleApp\Core\Commands\RecordObjectAttributesCommand;
+use StickleApp\Core\Commands\RecordModelAttributesCommand;
+use StickleApp\Core\Commands\RecordModelRelationshipStatisticsCommand;
 use StickleApp\Core\Commands\RecordSegmentStatisticsCommand;
-use StickleApp\Core\Commands\RecordObjectStatisticsCommand;
 use StickleApp\Core\Commands\RollupSessionsCommand;
 use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
 use StickleApp\Core\Middleware\InjectJavascriptTrackingCode;
 use StickleApp\Core\Middleware\RequestLogger;
-use StickleApp\Core\Models\ObjectAttribute;
+use StickleApp\Core\Models\ModelAttributes;
 use StickleApp\Core\Models\Segment;
-use StickleApp\Core\Observers\ObjectAttributeObserver;
+use StickleApp\Core\Observers\ModelAttributesObserver;
 use StickleApp\Core\Repositories\PostgresAnalyticsRepository;
 use StickleApp\Core\Views\Components\Demo\Layouts\DefaultLayout as DemoDefaultLayout;
 use StickleApp\Core\Views\Components\UI\Chartlists\ModelChartlist;
+use StickleApp\Core\Views\Components\UI\Chartlists\ModelRelationshipChartlist;
 use StickleApp\Core\Views\Components\UI\Chartlists\ModelsChartlist;
 use StickleApp\Core\Views\Components\UI\Charts\ModelChart;
+use StickleApp\Core\Views\Components\UI\Charts\ModelRelationshipsChart;
 use StickleApp\Core\Views\Components\UI\Charts\ModelsChart;
 use StickleApp\Core\Views\Components\UI\Charts\Primatives\InfoChart;
 use StickleApp\Core\Views\Components\UI\Charts\Primatives\LineChart;
@@ -58,7 +60,7 @@ final class CoreServiceProvider extends ServiceProvider
     {
         $kernel = $this->app->make(Kernel::class);
 
-        ObjectAttribute::observe(ObjectAttributeObserver::class);
+        ModelAttributes::observe(ModelAttributesObserver::class);
 
         /** Allows URLs using Segment Class instead of ID */
         Route::bind('segment', function (string $value) {
@@ -85,9 +87,9 @@ final class CoreServiceProvider extends ServiceProvider
                     CreatePartitionsCommand::class,
                     DropPartitionsCommand::class,
                     ExportSegmentsCommand::class,
-                    RecordObjectAttributesCommand::class,
+                    RecordModelAttributesCommand::class,
                     RecordSegmentStatisticsCommand::class,
-                    RecordObjectStatisticsCommand::class,
+                    RecordModelRelationshipStatisticsCommand::class,
                     ProcessSegmentEventsCommand::class,
                     ConfigureCommand::class,
                 ],
@@ -111,8 +113,10 @@ final class CoreServiceProvider extends ServiceProvider
         Blade::component('stickle-pagination-simple', PaginationSimple::class);
         Blade::component('stickle-chartlists-models', ModelsChartlist::class);
         Blade::component('stickle-chartlists-model', ModelChartlist::class);
+        Blade::component('stickle-chartlists-model-relationships', ModelRelationshipChartlist::class);
         Blade::component('stickle-charts-models', ModelsChart::class);
         Blade::component('stickle-charts-model', ModelChart::class);
+        Blade::component('stickle-charts-model-relationships', ModelRelationshipsChart::class);
         Blade::component('stickle-charts-primatives-line', LineChart::class);
         Blade::component('stickle-charts-primatives-info', InfoChart::class);
 

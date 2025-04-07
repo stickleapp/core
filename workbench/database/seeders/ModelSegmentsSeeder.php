@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Artisan;
 
 // use Illuminate\Support\Facades\DB;
 
-class ObjectSegmentsSeeder extends Seeder
+class ModelSegmentsSeeder extends Seeder
 {
     /**
      * Seed the application's database.

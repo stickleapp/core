@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
-class ObjectAttributesAuditSeeder extends Seeder
+class ModelAttributeAuditSeeder extends Seeder
 {
     /**
      * Seed the application's database.
@@ -19,10 +19,10 @@ class ObjectAttributesAuditSeeder extends Seeder
 
         $date = now()->subDays(25)->toDateString();
 
-        Artisan::call("stickle:create-partitions {$prefix}object_attributes_audit public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$prefix}model_attribute_audit public week '{$date}' 2");
 
         $sql = <<<sql
-INSERT INTO {$prefix}object_attributes_audit (
+INSERT INTO {$prefix}model_attribute_audit (
     model, 
     object_uid, 
     attribute,
@@ -40,9 +40,9 @@ FROM
     (SELECT 
         object_uid, 
         attribute, 
-        generate_series(now()::date - interval '24 days', now()::date, interval '1 day') AS date
+        generate_series(now()::date - interval '12 days', now()::date, interval '1 day') AS date
         FROM 
-        {$prefix}object_attributes,
+        {$prefix}model_attributes,
         (VALUES 
             ('mrr')
         ) AS attributes(attribute)
@@ -50,7 +50,7 @@ FROM
     ) AS series
 ON CONFLICT DO NOTHING;
 
-INSERT INTO {$prefix}object_attributes_audit (
+INSERT INTO {$prefix}model_attribute_audit (
     model, 
     object_uid, 
     attribute,
@@ -68,13 +68,11 @@ FROM
     (SELECT 
         object_uid, 
         attribute, 
-        generate_series(now()::date - interval '24 days', now()::date, interval '1 day') AS date
+        generate_series(now()::date - interval '12 days', now()::date, interval '1 day') AS date
         FROM 
-        {$prefix}object_attributes,
+        {$prefix}model_attributes,
         (VALUES 
-            ('user_rating'), 
-            ('order_count'), 
-            ('order_item_count')
+            ('user_rating')
         ) AS attributes(attribute)
         WHERE model = 'Workbench\App\Models\User'
     ) AS series

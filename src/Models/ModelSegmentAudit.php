@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ObjectSegmentAudit extends Model
+class ModelSegmentAudit extends Model
 {
     public $timestamps = false;
 
@@ -20,7 +20,7 @@ class ObjectSegmentAudit extends Model
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't populate in Factory
          */
-        $this->table = config('stickle.database.tablePrefix').'object_segment_audit';
+        $this->table = config('stickle.database.tablePrefix').'model_segment_audit';
     }
 
     /**
@@ -78,7 +78,7 @@ class ObjectSegmentAudit extends Model
     /**
      * Get the Segment associated with the audit
      *
-     * @return BelongsTo<Segment, ObjectSegmentAudit>
+     * @return BelongsTo<Segment, ModelSegmentAudit>
      */
     public function segment(): BelongsTo
     {

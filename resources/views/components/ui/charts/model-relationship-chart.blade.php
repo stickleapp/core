@@ -5,7 +5,6 @@
         <h3 class="">{{ $label }}</h3>
     </div>
     <div class="p-0">
-        <div>$99</div>
         <x-stickle-charts-primatives-line
             :endpoint="$endpoint()"
             :$key

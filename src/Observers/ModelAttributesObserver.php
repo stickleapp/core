@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace StickleApp\Core\Observers;
 
 use Illuminate\Support\Arr;
-use StickleApp\Core\Events\ObjectAttributeChanged;
-use StickleApp\Core\Models\ObjectAttribute;
-use StickleApp\Core\Models\ObjectAttributesAudit;
+use StickleApp\Core\Models\ModelAttributeAudit;
+use StickleApp\Core\Models\ModelAttributes;
 
-class ObjectAttributeObserver
+class ModelAttributesObserver
 {
     /**
-     * Handle the ObjectAttribute "saved" event.
+     * Handle the ModelAttributes "saved" event.
      */
-    public function saved(ObjectAttribute $objectAttribute): void
+    public function saved(ModelAttributes $objectAttribute): void
     {
 
         $from = $objectAttribute->getOriginal('model_attributes');
@@ -24,7 +23,7 @@ class ObjectAttributeObserver
 
         foreach ($diff as $property => $changes) {
             // This may be slow
-            ObjectAttributesAudit::firstOrCreate([
+            ModelAttributeAudit::firstOrCreate([
                 'model' => $objectAttribute->model,
                 'object_uid' => $objectAttribute->object_uid,
                 'attribute' => $property,
@@ -33,7 +32,7 @@ class ObjectAttributeObserver
                 'value_old' => Arr::get($changes, 'value_old'),
                 'value_new' => Arr::get($changes, 'value_new'),
             ]);
-            ObjectAttributeChanged::dispatch(
+            ModelAttributesChanged::dispatch(
                 $objectAttribute->model,
                 $objectAttribute->object_uid,
                 $property,

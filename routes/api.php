@@ -2,10 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use StickleApp\Core\Http\Controllers\IngestController;
-use StickleApp\Core\Http\Controllers\ObjectsController;
-use StickleApp\Core\Http\Controllers\ObjectsStatisticsController;
-use StickleApp\Core\Http\Controllers\ObjectStatisticsController;
-use StickleApp\Core\Http\Controllers\SegmentObjectsController;
+// use StickleApp\Core\Http\Controllers\ModelAttributesController;
+use StickleApp\Core\Http\Controllers\ModelRelationshipStatisticsController;
+use StickleApp\Core\Http\Controllers\ModelsController;
+use StickleApp\Core\Http\Controllers\ModelsStatisticsController;
+use StickleApp\Core\Http\Controllers\SegmentModelsController;
 use StickleApp\Core\Http\Controllers\SegmentStatisticsController;
 
 /**
@@ -19,18 +20,18 @@ Route::middleware(['api'])->group(function () {
     Route::get('/stickle/api/segment-statistics', [SegmentStatisticsController::class, 'index'])
         ->name('segment-statistics');
 
-    Route::get('/stickle/api/segment-objects', [SegmentObjectsController::class, 'index'])
-        ->name('segment-objects');
+    Route::get('/stickle/api/segment-models', [SegmentModelsController::class, 'index'])
+        ->name('segment-models');
 
-    Route::get('/stickle/api/objects', [ObjectsController::class, 'index'])
-        ->name('objects');
+    Route::get('/stickle/api/models', [ModelsController::class, 'index'])
+        ->name('models');
 
-    Route::get('/stickle/api/objects-statistics', [ObjectsStatisticsController::class, 'index'])
-        ->name('objects-statistics');
+    Route::get('/stickle/api/models-statistics', [ModelsStatisticsController::class, 'index'])
+        ->name('models-statistics');
 
-    Route::get('/stickle/api/object-statistics', [ObjectStatisticsController::class, 'index'])
-        ->name('object-statistics');
+    Route::get('/stickle/api/model-relationship-statistics', [ModelRelationshipStatisticsController::class, 'index'])
+        ->name('model-relationship-statistics');
 
-    Route::get('/stickle/api/object-attributes', [ObjectAttributesController::class, 'index'])
-        ->name('object-attributes');
+    // Route::get('/stickle/api/model-attributes', [ModelAttributesController::class, 'index'])
+    //     ->name('model-attributes');
 });

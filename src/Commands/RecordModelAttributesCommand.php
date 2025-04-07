@@ -8,17 +8,17 @@ use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use StickleApp\Core\Traits\StickleEntity;
-use Illuminate\Support\Facades\Log;
 
-final class RecordObjectAttributesCommand extends Command implements Isolatable
+final class RecordModelAttributesCommand extends Command implements Isolatable
 {
     /**
      * @var string
      */
-    protected $signature = 'stickle:record-object-attributes {directory : The full path where the Model classes are stored.}
+    protected $signature = 'stickle:record-model-attributes {directory : The full path where the Model classes are stored.}
                                                     {namespace : The namespace of the Model classes.}
                                                     {limit : The maximum number of models to record.}';
 
@@ -43,7 +43,6 @@ final class RecordObjectAttributesCommand extends Command implements Isolatable
     {
         Log::info(self::class, $this->arguments());
 
-
         $directory = $this->argument('directory');
         $namespace = $this->argument('namespace');
 
@@ -54,14 +53,14 @@ final class RecordObjectAttributesCommand extends Command implements Isolatable
             $object = new $class;
 
             $builder = $class::query()->leftJoin(
-                "{$this->prefix}object_attributes", function ($join) use ($object) {
+                "{$this->prefix}model_attributes", function ($join) use ($object) {
                     $join->on(
-                        "{$this->prefix}object_attributes.object_uid",
+                        "{$this->prefix}model_attributes.object_uid",
                         '=',
-                        \DB::raw($object->getTable().'.'.$object->getKeyName().'::text')
+                        \DB::raw($model->getTable().'.'.$model->getKeyName().'::text')
                     );
                     $join->where(
-                        "{$this->prefix}object_attributes.model",
+                        "{$this->prefix}model_attributes.model",
                         '=',
                         $object::class
                     );
@@ -69,7 +68,7 @@ final class RecordObjectAttributesCommand extends Command implements Isolatable
             )->where(function ($query) {
                 $query->where('synced_at', '<', now()->subMinutes(360))
                     ->orWhereNull('synced_at');
-            })->limit(1000)->select("{$object->getTable()}.*");
+            })->limit(1000)->select("{$model->getTable()}.*");
 
             foreach ($builder->cursor() as $trackable) {
                 dispatch(function () use ($trackable) {

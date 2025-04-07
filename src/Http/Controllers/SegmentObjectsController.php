@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use StickleApp\Core\Models\Segment;
 
-class SegmentObjectsController
+class SegmentModelsController
 {
     public function index(Request $request): JsonResponse
     {

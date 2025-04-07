@@ -9,13 +9,14 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use StickleApp\Core\Attributes\StickleAttributeMetadata;
 use StickleApp\Core\Filters\Base as Filter;
-use StickleApp\Core\Models\ObjectAttribute;
-use StickleApp\Core\Models\ObjectAttributesAudit;
-use StickleApp\Core\Models\ObjectStatistic;
+use StickleApp\Core\Models\ModelAttributeAudit;
+use StickleApp\Core\Models\ModelAttributes;
+use StickleApp\Core\Models\ModelRelationshipStatistic;
 use StickleApp\Core\Support\AttributeUtils;
 
 trait StickleEntity
@@ -36,10 +37,10 @@ trait StickleEntity
         /**
          * We'll need this join for the filters but do not want to add it twice
          */
-        if (! $builder->hasJoin("{$prefix}object_attributes")) {
-            $builder->leftJoin("{$prefix}object_attributes", function ($join) use ($prefix) {
-                $join->on("{$prefix}object_attributes.object_uid", '=', DB::raw(self::getTableName().'.id::text'));
-                $join->where("{$prefix}object_attributes.model", '=', self::class);
+        if (! $builder->hasJoin("{$prefix}model_attributes")) {
+            $builder->leftJoin("{$prefix}model_attributes", function ($join) use ($prefix) {
+                $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw(self::getTableName().'.id::text'));
+                $join->where("{$prefix}model_attributes.model", '=', self::class);
             });
         }
 
@@ -56,10 +57,10 @@ trait StickleEntity
         /**
          * We'll need this join for the filters but do not want to add it twice
          */
-        if (! $builder->hasJoin("{$prefix}object_attributes")) {
-            $builder->leftJoin("{$prefix}object_attributes", function ($join) use ($prefix) {
-                $join->on("{$prefix}object_attributes.object_uid", '=', DB::raw(self::getTableName().'.id::text'));
-                $join->where("{$prefix}object_attributes.model", '=', self::class);
+        if (! $builder->hasJoin("{$prefix}model_attributes")) {
+            $builder->leftJoin("{$prefix}model_attributes", function ($join) use ($prefix) {
+                $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw(self::getTableName().'.id::text'));
+                $join->where("{$prefix}model_attributes.model", '=', self::class);
             });
         }
 
@@ -80,6 +81,53 @@ trait StickleEntity
                     return $join->table === $table;
                 }
             });
+        });
+
+        Builder::macro('joinRelationship', function (Relation $relation, string $alias, string $joinType = 'inner') {
+
+            $relatedTable = $relation->getRelated()->getTable();
+            $parentTable = $relation->getParent()->getTable();
+
+            // Handle different relationship types
+            if ($relation instanceof \Illuminate\Database\Eloquent\Relations\HasOneOrMany) {
+                $foreignKey = $relation->getQualifiedForeignKeyName();
+                $localKey = $relation->getQualifiedParentKeyName();
+            } elseif ($relation instanceof \Illuminate\Database\Eloquent\Relations\BelongsTo) {
+                $foreignKey = $relation->getQualifiedForeignKeyName();
+                $localKey = $relation->getQualifiedOwnerKeyName();
+            } else {
+                throw new \Exception('Unsupported relation type: '.get_class($relation));
+            }
+
+            // If the related table is aliased, we need to adjust the foreign key
+            $foreignKey = str_replace($relatedTable, $alias, $relation->getQualifiedForeignKeyName());
+
+            // Get the basic query constraints (like where clauses) from the relation
+            $baseQuery = $relation->getQuery();
+            $wheres = $baseQuery->getQuery()->wheres;
+
+            // Apply the join
+            $tableToJoin = $alias ? "$relatedTable as $alias" : $relatedTable;
+            $joinTable = $alias ? $alias : $relatedTable;
+
+            $this->join($tableToJoin, function ($join) use ($foreignKey, $localKey, $wheres, $joinTable) {
+                $join->on($foreignKey, '=', $localKey);
+
+                // Apply any additional constraints from the relationship
+                foreach ($wheres as $where) {
+                    if ($where['type'] === 'Basic') {
+                        // Adjust column name if it doesn't include a table prefix
+                        $column = $where['column'];
+                        if (strpos($column, '.') === false) {
+                            $column = "$joinTable.$column";
+                        }
+
+                        $join->where($column, $where['operator'], $where['value'], $where['boolean']);
+                    }
+                }
+            }, null, null, $joinType);
+
+            return $this;
         });
 
         /**
@@ -128,26 +176,26 @@ trait StickleEntity
         return [];
     }
 
-    public function objectAttribute(): HasOne
+    public function objectAttributes(): HasOne
     {
-        return $this->hasOne(ObjectAttribute::class, 'object_uid')->where('model', self::class);
+        return $this->hasOne(ModelAttributes::class, 'object_uid')->where('model', self::class);
     }
 
     public function objectAttributesAudits(): HasMany
     {
-        return $this->hasMany(ObjectAttributesAudit::class, 'object_uid')->where('model', self::class);
+        return $this->hasMany(ModelAttributeAudit::class, 'object_uid')->where('model', self::class);
     }
 
     public function objectStatistics(): HasMany
     {
-        return $this->hasMany(ObjectStatistic::class, 'object_uid')->where('model', self::class);
+        return $this->hasMany(ModelRelationshipStatistic::class, 'object_uid')->where('model', self::class);
     }
 
     /**
      * Mutator that allows you to set:
      * `$trackedModel->trackable_attributes = ['key' => 'value', 'key2' => 'value2']`
      *
-     * It will retrieve or create the one-to-one relationship with the ObjectAttribute model
+     * It will retrieve or create the one-to-one relationship with the ModelAttributes model
      * and merge the provided attributes with the existing ones and persist it to the database
      */
     protected function trackableAttributes(): Attribute

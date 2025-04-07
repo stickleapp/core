@@ -10,7 +10,10 @@ use StickleApp\Core\Http\Controllers\Requests\ObjectsIndexRequest;
 use StickleApp\Core\Support\ClassUtils;
 use StickleApp\Core\Traits\StickleEntity;
 
-class ObjectsController
+/**
+ * Endpoint to  retrieve models that use the StickleEntity trait.
+ */
+class ModelsController
 {
     public function index(ObjectsIndexRequest $request): JsonResponse
     {

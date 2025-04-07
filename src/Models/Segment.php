@@ -76,9 +76,9 @@ class Segment extends Model
     {
         return $this->belongsToMany(
             $this->model,
-            "{$this->prefix}object_segment",
+            "{$this->prefix}model_segment",
             'segment_id',
             'object_uid')
-            ->join($this->model, DB::raw($this->model.'.id::string'), '=', "{$this->prefix}object_segment.object_uid");
+            ->join($this->model, DB::raw($this->model.'.id::string'), '=', "{$this->prefix}model_segment.object_uid");
     }
 }

@@ -9,7 +9,7 @@ use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Events\ObjectEnteredSegment;
 use StickleApp\Core\Events\ObjectExitedSegment;
-use StickleApp\Core\Models\ObjectSegmentAudit;
+use StickleApp\Core\Models\ModelSegmentAudit;
 
 final class ProcessSegmentEventsCommand extends Command implements Isolatable
 {
@@ -21,7 +21,7 @@ final class ProcessSegmentEventsCommand extends Command implements Isolatable
     /**
      * @var string
      */
-    protected $description = 'Triggger events for new inserts/deletes into the object_segment table.';
+    protected $description = 'Triggger events for new inserts/deletes into the model_segment table.';
 
     /**
      * Create a new command instance.
@@ -39,9 +39,9 @@ final class ProcessSegmentEventsCommand extends Command implements Isolatable
         Log::info(self::class, $this->arguments());
 
         /**
-         * Retrieve the unprocessed object_segment events
+         * Retrieve the unprocessed model_segment events
          */
-        $builder = ObjectSegmentAudit::with('segment')
+        $builder = ModelSegmentAudit::with('segment')
             ->where(function ($query) {
                 $query->whereNull('event_processed_at');
             })

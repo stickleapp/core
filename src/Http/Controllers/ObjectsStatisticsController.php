@@ -10,7 +10,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use StickleApp\Core\Support\ClassUtils;
 
-class ObjectsStatisticsController
+/**
+ * Endpoint to retrieve aggregate statistics for a group of models. Attribute
+ * must be included in the 'stickleTrackedAttributes' array in the model.
+ */
+class ModelsStatisticsController
 {
     public function index(Request $request): JsonResponse
     {
@@ -34,24 +38,24 @@ class ObjectsStatisticsController
         $model = $class::query()->getModel();
 
         $builder = $class::query()
-            ->join("{$prefix}object_attributes", function ($join) use ($prefix, $model) {
-                $join->on("{$prefix}object_attributes.object_uid", '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
-                $join->where("{$prefix}object_attributes.model", '=', get_class($model));
+            ->join("{$prefix}model_attributes", function ($join) use ($prefix, $model) {
+                $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
+                $join->where("{$prefix}model_attributes.model", '=', get_class($model));
             })
             ->selectRaw(
-                "AVG((jsonb_extract_path_text({$prefix}object_attributes.model_attributes, ?))::float) as value_avg",
+                "AVG((jsonb_extract_path_text({$prefix}model_attributes.model_attributes, ?))::float) as value_avg",
                 [$attribute]
             )
             ->selectRaw(
-                "MIN((jsonb_extract_path_text({$prefix}object_attributes.model_attributes, ?))::float) as value_min",
+                "MIN((jsonb_extract_path_text({$prefix}model_attributes.model_attributes, ?))::float) as value_min",
                 [$attribute]
             )
             ->selectRaw(
-                "MAX((jsonb_extract_path_text({$prefix}object_attributes.model_attributes, ?))::float) as value_max",
+                "MAX((jsonb_extract_path_text({$prefix}model_attributes.model_attributes, ?))::float) as value_max",
                 [$attribute]
             )
             ->selectRaw(
-                "SUM((jsonb_extract_path_text({$prefix}object_attributes.model_attributes, ?))::float) as value_sum",
+                "SUM((jsonb_extract_path_text({$prefix}model_attributes.model_attributes, ?))::float) as value_sum",
                 [$attribute]
             )
             ->selectRaw(

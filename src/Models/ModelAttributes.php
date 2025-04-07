@@ -7,20 +7,21 @@ namespace StickleApp\Core\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class ObjectAttributesAudit extends Model
+/**
+ * @property string $model
+ * @property string $object_uid
+ */
+class ModelAttributes extends Model
 {
-    public $timestamps = false;
-
     /**
      * Creates a new analytics repository instance.
      */
     public function __construct(
     ) {
-
         /**
-         * We aren't using the Attribute\Config trait b/c it doesn't populate in Factory
+         * We aren't using the Attribute\Config trait b/c it doesn't popoulate in Factory
          */
-        $this->table = config('stickle.database.tablePrefix').'object_attributes_audit';
+        $this->table = config('stickle.database.tablePrefix').'model_attributes';
     }
 
     /**
@@ -29,9 +30,8 @@ class ObjectAttributesAudit extends Model
     protected $fillable = [
         'object_uid',
         'model',
-        'attribute',
-        'value_old',
-        'value_new',
+        'model_attributes',
+        'synced_at',
     ];
 
     /**
@@ -42,17 +42,17 @@ class ObjectAttributesAudit extends Model
 
     /**
      * Get the attributes that should be cast.
+     *
+     * Why doesn't casts() function work?
      */
-    protected function casts(): array
-    {
-        return [
-        ];
-    }
+    protected $casts = [
+        'model_attributes' => 'array',
+    ];
 
     /**
      * Get the parent attributable model
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo<Model, Model>
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo<Model, ModelAttributes>
      */
     public function attributable(): MorphTo
     {

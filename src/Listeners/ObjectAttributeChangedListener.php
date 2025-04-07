@@ -6,25 +6,24 @@ namespace StickleApp\Core\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
-use StickleApp\Core\Events\ObjectAttributeChanged;
 
-class ObjectAttributeChangedListener implements ShouldQueue
+class ModelAttributesChangedListener implements ShouldQueue
 {
     /**
      * Create the event listener.
      */
     public function __construct() {}
 
-    public function handle(ObjectAttributeChanged $event): void
+    public function handle(ModelAttributeChanged $event): void
     {
-        Log::debug('ObjectAttributeChangedListener->handle()', [$event]);
+        Log::debug('ModelAttributesChangedListener->handle()', [$event]);
 
         /**
          * Look for a listener Model + Attribute + Listener
          */
         $class = $this->listenerName($event->model, $event->attribute);
 
-        Log::debug('ObjectAttributeChanged Class', [$class]);
+        Log::debug('ModelAttributesChanged Class', [$class]);
 
         if (class_exists($class)) {
             Log::debug('TrackEvent Class Exists', [$class]);
@@ -34,7 +33,7 @@ class ObjectAttributeChangedListener implements ShouldQueue
             }
             $listener->handle($event);
         } else {
-            Log::debug('ObjectAttributeChanged Listener Does Not Exist', [$class]);
+            Log::debug('ModelAttributesChanged Listener Does Not Exist', [$class]);
         }
     }
 

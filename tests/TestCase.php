@@ -38,7 +38,7 @@ class TestCase extends Orchestra
         Artisan::call("stickle:create-partitions {$this->tablePrefix}requests_rollup_1hr public week '{$date}' 2");
         Artisan::call("stickle:create-partitions {$this->tablePrefix}requests_rollup_1day public week '{$date}' 2");
         Artisan::call("stickle:create-partitions {$this->tablePrefix}sessions_rollup_1day public week '{$date}' 2");
-        Artisan::call("stickle:create-partitions {$this->tablePrefix}object_attributes_audit public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$this->tablePrefix}model_attribute_audit public week '{$date}' 2");
 
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'StickleApp\\Core\\Laravelstickle\\Database\\Factories\\'.class_basename($modelName).'Factory'

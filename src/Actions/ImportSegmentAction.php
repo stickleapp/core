@@ -52,12 +52,12 @@ class ImportSegmentAction
     -- +----------------------------------------------------------------------------
     -- + "DEACTIVATE" STATUSES
     -- +----------------------------------------------------------------------------
-    SELECT f_deactivate_object_segments({$segmentId}, '{$tempTableName}');
+    SELECT f_deactivate_model_segments({$segmentId}, '{$tempTableName}');
     
     -- +----------------------------------------------------------------------------
     -- + UPSERT RECORDS
     -- +----------------------------------------------------------------------------
-    SELECT f_activate_object_segments({$segmentId}, '{$tempTableName}');
+    SELECT f_activate_model_segments({$segmentId}, '{$tempTableName}');
     
     -- +----------------------------------------------------------------------------
     -- + DELETE TEMP TABLE

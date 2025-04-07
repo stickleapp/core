@@ -45,7 +45,7 @@ SELECT
     ) AS properties,
     CURRENT_TIMESTAMP - (random() * interval '19 days') AS timestamp
 FROM
-    generate_series(1,1e1) AS s;
+    generate_series(1,1e3) AS s;
 
 -- ----------------------------------------------------------------------------
 -- RUN AGGREGATION QUERIES

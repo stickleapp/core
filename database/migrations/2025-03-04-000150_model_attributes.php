@@ -17,8 +17,8 @@ return new class extends Migration
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');
 
-       // object attributes
-        Schema::create(("{$prefix}object_attributes"), function (Blueprint $table) {
+        // model attributes
+        Schema::create(("{$prefix}model_attributes"), function (Blueprint $table) {
             $table->id();
             $table->text('model')->nullable(false);
             $table->text('object_uid')->nullable(false);
@@ -33,8 +33,8 @@ return new class extends Migration
         });
 
         \DB::connection()->getPdo()->exec("
-DROP TABLE IF EXISTS {$prefix}object_attributes_audit;
-CREATE TABLE {$prefix}object_attributes_audit (
+DROP TABLE IF EXISTS {$prefix}model_attribute_audit;
+CREATE TABLE {$prefix}model_attribute_audit (
     id BIGSERIAL,
     model TEXT NOT NULL,
     object_uid TEXT NOT NULL,
@@ -43,8 +43,8 @@ CREATE TABLE {$prefix}object_attributes_audit (
     value_new TEXT NULL,
     timestamp TIMESTAMPTZ DEFAULT NOW() NOT NULL
 ) PARTITION BY RANGE (timestamp);
-CREATE INDEX {$prefix}object_attributes_audit_timestamp_idx  ON {$prefix}object_attributes_audit (timestamp);
-CREATE INDEX {$prefix}object_attributes_audit_model_object_uid_attribute_idx  ON {$prefix}object_attributes_audit (model, object_uid, attribute);
+CREATE INDEX {$prefix}model_attribute_audit_timestamp_idx  ON {$prefix}model_attribute_audit (timestamp);
+CREATE INDEX {$prefix}model_attribute_audit_model_object_uid_attribute_idx  ON {$prefix}model_attribute_audit (model, object_uid, attribute);
 ");
     }
 
@@ -58,7 +58,7 @@ CREATE INDEX {$prefix}object_attributes_audit_model_object_uid_attribute_idx  ON
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');
 
-        Schema::dropIfExists("{$prefix}object_attributes_audit");
-        Schema::dropIfExists("{$prefix}object_attributes");        
+        Schema::dropIfExists("{$prefix}model_attribute_audit");
+        Schema::dropIfExists("{$prefix}model_attributes");
     }
 };

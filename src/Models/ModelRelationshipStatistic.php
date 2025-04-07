@@ -6,7 +6,7 @@ namespace StickleApp\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ObjectStatistic extends Model
+class ModelRelationshipStatistic extends Model
 {
     public $timestamps = false;
 
@@ -18,7 +18,7 @@ class ObjectStatistic extends Model
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't populate in Factory
          */
-        $this->table = config('stickle.database.tablePrefix').'object_statistics';
+        $this->table = config('stickle.database.tablePrefix').'model_relationship_statistics';
     }
 
     /**

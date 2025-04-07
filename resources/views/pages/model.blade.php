@@ -2,13 +2,15 @@
     <h1
         class="scroll-m-20 text-xl md:text-3xl md:font-bold tracking-tight pb-4 md:pb-8"
     >
-        {{ $object->name }}
+        {{ $model->name }}
     </h1>
 
     <!-- Navigation for medium screens -->
     <div class="w-full flex justify-left space-x-4 p-4 md:hidden">
         <button class="tab-button" data-target="#statistics">Statistics</button>
         <button class="tab-button" data-target="#events">Events</button>
+        <button class="tab-button" data-target="#users">Users</button>
+        <button class="tab-button" data-target="#children">Children</button>
     </div>
 
     <div class="w-full flex flex-col md:flex-row">
@@ -25,7 +27,7 @@
         <!-- 1/3 Column -->
         <div id="statistics" class="w-full md:w-2/5 pb-4 md:block hidden">
             <!-- Column 2 content here -->
-            <x-stickle-chartlists-model :model="$model" :uid="$object->id">
+            <x-stickle-chartlists-model :model="$object">
             </x-stickle-chartlists-model>
         </div>
     </div>

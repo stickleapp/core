@@ -134,7 +134,7 @@ class IngestController
         }
 
         if ($object && property_exists($object, 'id')) {
-            return $object->id;
+            return $model->id;
         }
 
         return null;

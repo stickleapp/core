@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use StickleApp\Core\Support\ClassUtils;
 
-class ObjectStatisticsController
+class ModelRelationshipStatisticsController
 {
     public function index(Request $request): JsonResponse
     {
@@ -31,7 +31,7 @@ class ObjectStatisticsController
 
         $object = $class::findOrFail($request->string('uid'));
 
-        $builder = $object->objectStatistics()->where('attribute', $request->string('attribute'));
+        $builder = $model->objectStatistics()->where('attribute', $request->string('attribute'));
 
         return response()->json($builder->paginate(30));
     }

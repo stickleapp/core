@@ -18,17 +18,17 @@ class DatabaseSeeder extends Seeder
 
         $date = now()->subDays(25)->toDateString();
 
-        Artisan::call("stickle:create-partitions {$prefix}object_attributes_audit public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$prefix}model_attribute_audit public week '{$date}' 2");
 
         $this->call([
             CustomersSeeder::class,
             UsersSeeder::class,
             SubscriptionsSeeder::class,
             TicketsSeeder::class,
-            ObjectSegmentsSeeder::class,
-            ObjectAttributesSeeder::class,
-            ObjectAttributesAuditSeeder::class,
-            ObjectStatisticsSeeder::class,
+            ModelSegmentsSeeder::class,
+            ModelAttributeSeeder::class,
+            ModelAttributeAuditSeeder::class,
+            ModelRelationshipStatisticsSeeder::class,
             EventsSeeder::class,
             RequestsSeeder::class,
             SessionsSeeder::class,
