@@ -7,6 +7,7 @@ namespace StickleApp\Core\Observers;
 use Illuminate\Support\Arr;
 use StickleApp\Core\Models\ModelAttributeAudit;
 use StickleApp\Core\Models\ModelAttributes;
+use StickleApp\Core\Events\ModelAttributeChanged;
 
 class ModelAttributesObserver
 {
@@ -32,7 +33,7 @@ class ModelAttributesObserver
                 'value_old' => Arr::get($changes, 'value_old'),
                 'value_new' => Arr::get($changes, 'value_new'),
             ]);
-            ModelAttributesChanged::dispatch(
+            ModelAttributeChanged::dispatch(
                 $objectAttribute->model,
                 $objectAttribute->object_uid,
                 $property,
