@@ -17,11 +17,7 @@ return new class extends Migration
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');
 
-<<<<<<< HEAD:database/migrations/2025-03-04-000500_model_relationship_statistics.php
         Schema::create("{$prefix}model_relationship_statistic_exports", function (Blueprint $table) {
-=======
-        Schema::create("{$prefix}object_statistic_exports", function (Blueprint $table) {
->>>>>>> 4a8290cedd927491a35310724eae633096ca9bd6:database/migrations/2025-03-04-000500_object_statistics.php
             $table->id();
             $table->text('model')->nullable(false);
             $table->text('relationship')->nullable(false);
