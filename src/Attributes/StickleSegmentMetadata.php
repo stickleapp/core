@@ -9,5 +9,8 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS)]
 class StickleSegmentMetadata
 {
+    /**
+     * @param array<string, mixed> $value
+     */
     public function __construct(public array $value) {}
 }

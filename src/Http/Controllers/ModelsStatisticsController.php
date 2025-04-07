@@ -24,7 +24,7 @@ class ModelsStatisticsController
 
         $model = $request->string('model');
 
-        $class = config('stickle.namespaces.models').'\\'.Str::ucfirst($model);
+        $class = config('stickle.namespaces.models').'\\'.Str::ucfirst((string) $model);
 
         if (! class_exists($class)) {
             return response()->json(['error' => 'Model not found'], 404);

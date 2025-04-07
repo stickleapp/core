@@ -81,7 +81,7 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
 
         DB::statement($tempTableSql);
 
-        DB::table('temp_attributes')->insert(array_values($attributes));
+        DB::table('temp_attributes')->insert($attributes);
 
         $rows = DB::table('temp_attributes')
             ->leftJoin("{$this->prefix}model_relationship_statistic_exports", function ($query) {
@@ -102,10 +102,10 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
 
         foreach ($rows as $row) {
             RecordModelRelationshipStatisticJob::dispatch(
-                model: $row->model,
-                relationship: $row->relationship,
-                related: $row->related,
-                attribute: $row->attribute
+                $row->model,
+                $row->relationship,
+                $row->related,
+                $row->attribute
             );
         }
     }

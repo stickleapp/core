@@ -6,7 +6,7 @@ namespace StickleApp\Core\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
-use StickleApp\Core\Http\Controllers\Requests\ObjectsIndexRequest;
+use StickleApp\Core\Http\Controllers\Requests\ModelsIndexRequest;
 use StickleApp\Core\Support\ClassUtils;
 use StickleApp\Core\Traits\StickleEntity;
 
@@ -15,14 +15,14 @@ use StickleApp\Core\Traits\StickleEntity;
  */
 class ModelsController
 {
-    public function index(ObjectsIndexRequest $request): JsonResponse
+    public function index(ModelsIndexRequest $request): JsonResponse
     {
 
         $validated = $request->validated();
 
         $model = data_get($validated, 'model');
 
-        $class = config('stickle.namespaces.models').'\\'.Str::ucfirst($model);
+        $class = config('stickle.namespaces.models').'\\'.Str::ucfirst((string) $model);
 
         if (! class_exists($class)) {
             return response()->json(['error' => 'Model not found'], 404);

@@ -127,13 +127,13 @@ class IngestController
         return null;
     }
 
-    private function objectUid(?string $explicit, ?object $object): ?string
+    private function objectUid(?string $explicit, ?object $model): ?string
     {
         if ($explicit) {
             return $explicit;
         }
 
-        if ($object && property_exists($object, 'id')) {
+        if ($model && property_exists($model, 'id')) {
             return $model->id;
         }
 

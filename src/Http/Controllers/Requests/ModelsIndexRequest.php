@@ -4,7 +4,7 @@ namespace StickleApp\Core\Http\Controllers\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ObjectsIndexRequest extends FormRequest
+class ModelsIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

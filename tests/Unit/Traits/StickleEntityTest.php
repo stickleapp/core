@@ -40,5 +40,5 @@ it('observed properties log changes', function () {
     $user->user_rating = 5;
     $user->save();
 
-    expect($user->objectAttributesAudits()->where('attribute', 'user_rating')->count())->toBe(3);
+    expect($user->modelAttributeAudits()->where('attribute', 'user_rating')->count())->toBe(3);
 });

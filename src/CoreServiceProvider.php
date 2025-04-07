@@ -29,7 +29,7 @@ use StickleApp\Core\Views\Components\UI\Chartlists\ModelChartlist;
 use StickleApp\Core\Views\Components\UI\Chartlists\ModelRelationshipChartlist;
 use StickleApp\Core\Views\Components\UI\Chartlists\ModelsChartlist;
 use StickleApp\Core\Views\Components\UI\Charts\ModelChart;
-use StickleApp\Core\Views\Components\UI\Charts\ModelRelationshipsChart;
+use StickleApp\Core\Views\Components\UI\Charts\ModelRelationshipChart;
 use StickleApp\Core\Views\Components\UI\Charts\ModelsChart;
 use StickleApp\Core\Views\Components\UI\Charts\Primatives\InfoChart;
 use StickleApp\Core\Views\Components\UI\Charts\Primatives\LineChart;
@@ -113,10 +113,10 @@ final class CoreServiceProvider extends ServiceProvider
         Blade::component('stickle-pagination-simple', PaginationSimple::class);
         Blade::component('stickle-chartlists-models', ModelsChartlist::class);
         Blade::component('stickle-chartlists-model', ModelChartlist::class);
-        Blade::component('stickle-chartlists-model-relationships', ModelRelationshipChartlist::class);
+        Blade::component('stickle-chartlists-model-relationship', ModelRelationshipChartlist::class);
         Blade::component('stickle-charts-models', ModelsChart::class);
         Blade::component('stickle-charts-model', ModelChart::class);
-        Blade::component('stickle-charts-model-relationships', ModelRelationshipsChart::class);
+        Blade::component('stickle-charts-model-relationship', ModelRelationshipChart::class);
         Blade::component('stickle-charts-primatives-line', LineChart::class);
         Blade::component('stickle-charts-primatives-info', InfoChart::class);
 

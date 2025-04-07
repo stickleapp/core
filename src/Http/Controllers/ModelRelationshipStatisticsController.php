@@ -19,7 +19,7 @@ class ModelRelationshipStatisticsController
 
         $model = $request->string('model');
 
-        $class = config('stickle.namespaces.models').'\\'.Str::ucfirst($model);
+        $class = config('stickle.namespaces.models').'\\'.Str::ucfirst((string) $model);
 
         if (! class_exists($class)) {
             return response()->json(['error' => 'Model not found'], 404);
@@ -29,9 +29,9 @@ class ModelRelationshipStatisticsController
             return response()->json(['error' => 'Model does not use StickleEntity trait'], 400);
         }
 
-        $object = $class::findOrFail($request->string('uid'));
+        $model = $class::findOrFail($request->string('uid'));
 
-        $builder = $model->objectStatistics()->where('attribute', $request->string('attribute'));
+        $builder = $model->modelRelationshipStatistics()->where('attribute', $request->string('attribute'));
 
         return response()->json($builder->paginate(30));
     }

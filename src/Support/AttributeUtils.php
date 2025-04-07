@@ -14,7 +14,7 @@ class AttributeUtils
      *
      * @param  string  $className  The class to inspect
      * @param  string  $attributeClass  The attribute class to look for (e.g., StickleAttributeMetadata::class)
-     * @return array Map of attribute name to metadata value
+     * @return array<string, mixed> Map of attribute name to metadata value
      */
     public static function getAttributesForClass(string $className, string $attributeClass): array
     {
@@ -73,7 +73,7 @@ class AttributeUtils
      * @param  string  $className  The class to inspect
      * @param  string  $attributeClass  The attribute class to look for
      * @param  string  $attributeName  The attribute name to find
-     * @return array|null The metadata or null if not found
+     * @return array<string, mixed>|null The metadata or null if not found
      */
     public static function getAttributeForClass(string $className, string $attributeClass, string $attributeName): ?array
     {
@@ -87,7 +87,7 @@ class AttributeUtils
      *
      * @param  object  $object  The object to inspect
      * @param  string  $attributeClass  The attribute class to look for
-     * @return array Map of attribute name to metadata value
+     * @return array<string, mixed> Map of attribute name to metadata value
      */
     public static function getAttributesForObject(object $object, string $attributeClass): array
     {
@@ -100,7 +100,7 @@ class AttributeUtils
      * @param  object  $object  The object to inspect
      * @param  string  $attributeClass  The attribute class to look for
      * @param  string  $attributeName  The attribute name to find
-     * @return array|null The metadata or null if not found
+     * @return array<string, mixed>|null The metadata or null if not found
      */
     public static function getAttributeForObject(object $object, string $attributeClass, string $attributeName): ?array
     {

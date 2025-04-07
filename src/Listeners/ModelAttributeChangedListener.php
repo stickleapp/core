@@ -6,6 +6,7 @@ namespace StickleApp\Core\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
+use StickleApp\Core\Events\ModelAttributeChanged;
 
 class ModelAttributeChangedListener implements ShouldQueue
 {

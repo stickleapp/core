@@ -7,8 +7,8 @@ namespace StickleApp\Core\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\Log;
-use StickleApp\Core\Events\ObjectEnteredSegment;
-use StickleApp\Core\Events\ObjectExitedSegment;
+use StickleApp\Core\Events\ModelEnteredSegment;
+use StickleApp\Core\Events\ModelExitedSegment;
 use StickleApp\Core\Models\ModelSegmentAudit;
 
 final class ProcessSegmentEventsCommand extends Command implements Isolatable
@@ -48,12 +48,12 @@ final class ProcessSegmentEventsCommand extends Command implements Isolatable
             // ->lazyById(1000, column: 'id')
             ->each(function ($item) {
                 if (data_get($item, 'operation') === 'ENTER') {
-                    ObjectEnteredSegment::dispatch(
+                    ModelEnteredSegment::dispatch(
                         $item->object,
                         $item->segment
                     );
                 } elseif (data_get($item, 'operation') === 'EXIT') {
-                    ObjectExitedSegment::dispatch(
+                    ModelExitedSegment::dispatch(
                         $item->object,
                         $item->segment
                     );

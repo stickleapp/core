@@ -35,7 +35,7 @@ class ClassUtils
      *
      * @param  string  $namespace  The namespace to search in
      * @param  string  $trait  The fully qualified trait name
-     * @return array List of class names that use the specified trait
+     * @return array<int, class-string> List of class names that use the specified trait
      */
     public static function getClassesWithTrait(string $namespace, string $trait): array
     {
@@ -67,7 +67,7 @@ class ClassUtils
      *
      * @param  string  $directory  The directory to search in
      * @param  string  $appendNamespace  Optional namespace prefix for found classes
-     * @return array List of class names in the directory
+     * @return array<int, class-string> List of class names that use the specified trait
      */
     public static function getClassesInDirectory(string $directory, string $appendNamespace = ''): array
     {
@@ -157,8 +157,9 @@ class ClassUtils
      *    return $this->hasMany(User::class);
      *}
      *
-     * @param  string  $class  The class name
-     * @param  array<int, string>  $relationshipClasses  The relationship classes to check against
+     * @param string  $class  The class name
+     * @param array<int, string>  $relationshipClasses  The relationship classes to check against
+     * @param array<int, string>  $relatedClasses  The related classes to check against
      * @return bool True if the class has a relationship with any of the specified classes, false otherwise
      */
     public static function hasRelationshipWith(Application $app, string $class, array $relationshipClasses, array $relatedClasses): bool
@@ -205,8 +206,9 @@ class ClassUtils
      *}
      *
      * @param  string  $class  The class name
-     * @param  array<int, string>  $relationshipClasses  The relationship classes to check against
-     * @return bool True if the class has a relationship with any of the specified classes, false otherwise
+     * @param  array<int, string>  $relationshipClasses  The eloquent relationship classes to allow
+     * @param  array<int, string>  $relatedClasses  The related classes to check against
+     * @return array<int, array<string, mixed>> True if the class has a relationship with any of the specified classes, false otherwise
      */
     public static function getRelationshipsWith(Application $app, string $class, array $relationshipClasses, array $relatedClasses): array
     {

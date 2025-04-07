@@ -12,14 +12,14 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use StickleApp\Core\Models\Segment;
 
-class ObjectExitedSegment implements ShouldBroadcast
+class ModelEnteredSegment implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public Model $object, public Segment $segment) {}
+    public function __construct(public Model $model, public Segment $segment) {}
 
     /**
      * Get the channels the event should broadcast on.
@@ -33,8 +33,8 @@ class ObjectExitedSegment implements ShouldBroadcast
                 config('stickle.broadcasting.channels.firehose')
             ),
             new Channel(
-                sprintf(config('stickle.broadcasting.channels.object'),
-                    str_replace('\\', '-', get_class($this->object)),
+                sprintf(config('stickle.broadcasting.channels.model'),
+                    str_replace('\\', '-', get_class($this->model)),
                     $this->model->getKey()
                 )
             ),

@@ -176,17 +176,17 @@ trait StickleEntity
         return [];
     }
 
-    public function objectAttributes(): HasOne
+    public function modelAttributes(): HasOne
     {
         return $this->hasOne(ModelAttributes::class, 'object_uid')->where('model', self::class);
     }
 
-    public function objectAttributesAudits(): HasMany
+    public function modelAttributeAudits(): HasMany
     {
         return $this->hasMany(ModelAttributeAudit::class, 'object_uid')->where('model', self::class);
     }
 
-    public function objectStatistics(): HasMany
+    public function modelRelationshipStatistics(): HasMany
     {
         return $this->hasMany(ModelRelationshipStatistic::class, 'object_uid')->where('model', self::class);
     }

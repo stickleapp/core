@@ -49,11 +49,11 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
         $classes = $this->getClassesWithTrait(StickleEntity::class, $directory, $namespace);
 
         foreach ($classes as $class) {
-            /** @var Model $object */
-            $object = new $class;
+            /** @var Object $model */
+            $model = new $class;
 
             $builder = $class::query()->leftJoin(
-                "{$this->prefix}model_attributes", function ($join) use ($object) {
+                "{$this->prefix}model_attributes", function ($join) use ($model) {
                     $join->on(
                         "{$this->prefix}model_attributes.object_uid",
                         '=',
@@ -62,7 +62,7 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
                     $join->where(
                         "{$this->prefix}model_attributes.model",
                         '=',
-                        $object::class
+                        $model::class
                     );
                 }
             )->where(function ($query) {
