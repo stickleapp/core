@@ -7,7 +7,6 @@ namespace StickleApp\Core\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -49,7 +48,7 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
         $classes = $this->getClassesWithTrait(StickleEntity::class, $directory, $namespace);
 
         foreach ($classes as $class) {
-            /** @var Object $model */
+            /** @var object $model */
             $model = new $class;
 
             $builder = $class::query()->leftJoin(
