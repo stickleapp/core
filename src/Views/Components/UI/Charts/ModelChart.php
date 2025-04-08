@@ -42,7 +42,7 @@ class ModelChart extends Component
     {
 
         return url()->query(
-            $this->apiPrefix.'/model-attributes-audit',
+            $this->apiPrefix.'/model-attribute-audit',
             [
                 'model' => get_class($this->model),
                 'uid' => $this->model->getKey(),

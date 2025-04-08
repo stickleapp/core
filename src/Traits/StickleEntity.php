@@ -250,6 +250,9 @@ trait StickleEntity
         // Directly build chart data for tracked attributes
         $chartData = [];
         foreach ($trackedAttributes as $attribute) {
+            if ($attribute !== 'user_rating') {
+                continue;
+            }
             $meta = $metadata[$attribute] ?? [];
             $chartData[] = [
                 'key' => $attribute,

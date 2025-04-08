@@ -1,6 +1,7 @@
 <div>
     @foreach ($chartData as $chart)
     <div class="mb-5">
+        <p>{{ md5(json_encode($chart)) }}</p>
         <x-stickle-charts-model
             :key="md5(json_encode($chart))"
             :model="$model"

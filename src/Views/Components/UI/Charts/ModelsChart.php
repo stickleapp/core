@@ -41,7 +41,7 @@ class ModelsChart extends Component
     public function endpoint(): string
     {
         return url()->query(
-            $this->apiPrefix.'/objects-statistics',
+            $this->apiPrefix.'/models-statistics',
             [
                 'model' => $this->model,
                 'attribute' => $this->attribute,

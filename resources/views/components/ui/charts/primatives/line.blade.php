@@ -5,9 +5,6 @@
 <script>
     function chartData{{ md5($endpoint) }}() {
         return {
-            init() {
-                this.query();
-            },
             query() {
                 let apiData;
                 fetch("{!! $endpoint !!}")
@@ -16,11 +13,11 @@
                         const apiResponse = data.data;
 
                         const labels = apiResponse.map(
-                            (item) => item.recorded_at
+                            (item) => item.timestamp
                         );
 
                         const dataSet1Data = apiResponse.map(
-                            (item) => item.value_avg
+                            (item) => item.value_new
                         );
 
                         const ctx = document

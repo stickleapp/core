@@ -27,7 +27,7 @@
         <!-- 1/3 Column -->
         <div id="statistics" class="w-full md:w-2/5 pb-4 md:block hidden">
             <!-- Column 2 content here -->
-            <x-stickle-chartlists-model :model="$object">
+            <x-stickle-chartlists-model :model="$model">
             </x-stickle-chartlists-model>
         </div>
     </div>

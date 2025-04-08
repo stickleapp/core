@@ -21,12 +21,12 @@ Route::middleware(['web'])->group(function () {
         ->where('modelName', '[^/]+');
     Route::get('/stickle/{model}/{uid}', function (Request $request) {
         $class = config('stickle.namespaces.models').'\\'.ucfirst($request->route('model'));
-        $object = $class::findOrFail($request->route('uid'));
+        $model = $class::findOrFail($request->route('uid'));
 
         return view('stickle::pages/model', [
             'model' => $request->route('model'),
             'uid' => $request->route('uid'),
-            'object' => $object,
+            'model' => $model,
         ]);
     })
         ->name('stickle::model')

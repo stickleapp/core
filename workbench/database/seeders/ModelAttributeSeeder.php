@@ -67,7 +67,7 @@ class ModelAttributeSeeder extends Seeder
     //       }
     //     }
     //   }
-    // }'::jsonb AS model_attributes,
+    // }'::jsonb AS data,
 
     /**
      * Seed the application's database.
@@ -98,7 +98,7 @@ class ModelAttributeSeeder extends Seeder
             DB::table("{$prefix}model_attributes")->insert([
                 'model' => 'Workbench\App\Models\Customer',
                 'object_uid' => $customer->id,
-                'model_attributes' => json_encode($attributes),
+                'data' => json_encode($attributes),
                 'synced_at' => now(),
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -119,7 +119,7 @@ class ModelAttributeSeeder extends Seeder
                 DB::table("{$prefix}model_attributes")->insert([
                     'model' => 'Workbench\App\Models\User',
                     'object_uid' => $user->id,
-                    'model_attributes' => json_encode($attributes),
+                    'data' => json_encode($attributes),
                     'synced_at' => now(),
                     'created_at' => now(),
                     'updated_at' => now(),

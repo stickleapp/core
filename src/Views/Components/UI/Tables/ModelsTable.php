@@ -33,7 +33,7 @@ class ModelsTable extends Component
     public function endpoint(): string
     {
         return url()->query(
-            $this->apiPrefix.'/objects'
+            $this->apiPrefix.'/models'
         );
     }
 }
