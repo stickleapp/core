@@ -16,7 +16,7 @@ class Text extends FilterTargetContract
 
     public function property(): ?string
     {
-        return "model_attributes->>'{$this->attribute}'";
+        return "data->>'{$this->attribute}'";
     }
 
     public function castProperty(): mixed

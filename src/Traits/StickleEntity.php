@@ -202,31 +202,31 @@ trait StickleEntity
     {
         return Attribute::make(
             get: function () {
-                $this->objectAttribute()
+                $this->modelAttributes()
                     ->firstOrNew(
                         [
                             'model' => self::class,
                             'object_uid' => $this->id,
                         ]
-                    )->model_attributes ?? [];
+                    )->data ?? [];
             },
             set: function ($value) {
                 if (is_array($value)) {
-                    $objectAttribute = $this
-                        ->objectAttribute()
+                    $modelAttributes = $this
+                        ->modelAttributes()
                         ->firstOrCreate(
                             [
                                 'model' => self::class,
                                 'object_uid' => $this->id,
                             ],
                             [
-                                'model_attributes' => [],
+                                'data' => [],
                             ]
                         );
-                    $existingAttributes = $objectAttribute->model_attributes ?? [];
-                    $objectAttribute->update(
+                    $existingAttributes = $modelAttributes->data ?? [];
+                    $modelAttributes->update(
                         [
-                            'model_attributes' => array_merge($existingAttributes, $value),
+                            'data' => array_merge($existingAttributes, $value),
                             'synced_at' => now(),
                         ]
                     );

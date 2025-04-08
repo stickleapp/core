@@ -67,7 +67,7 @@ class User extends Authenticatable
      * Specify the attributes that should be observed for changes
      */
     public static array $stickleObservedAttributes = [
-
+        'user_level',
     ];
 
     /**

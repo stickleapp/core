@@ -43,19 +43,19 @@ class ModelsStatisticsController
                 $join->where("{$prefix}model_attributes.model", '=', get_class($model));
             })
             ->selectRaw(
-                "AVG((jsonb_extract_path_text({$prefix}model_attributes.model_attributes, ?))::float) as value_avg",
+                "AVG((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_avg",
                 [$attribute]
             )
             ->selectRaw(
-                "MIN((jsonb_extract_path_text({$prefix}model_attributes.model_attributes, ?))::float) as value_min",
+                "MIN((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_min",
                 [$attribute]
             )
             ->selectRaw(
-                "MAX((jsonb_extract_path_text({$prefix}model_attributes.model_attributes, ?))::float) as value_max",
+                "MAX((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_max",
                 [$attribute]
             )
             ->selectRaw(
-                "SUM((jsonb_extract_path_text({$prefix}model_attributes.model_attributes, ?))::float) as value_sum",
+                "SUM((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_sum",
                 [$attribute]
             )
             ->selectRaw(

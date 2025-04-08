@@ -22,7 +22,7 @@ return new class extends Migration
             $table->id();
             $table->text('model')->nullable(false);
             $table->text('object_uid')->nullable(false);
-            $table->jsonb('model_attributes')->nullable(false);
+            $table->jsonb('data')->nullable(false);
             $table->timestamp('synced_at')->nullable(true);
             $table->timestamps();
 

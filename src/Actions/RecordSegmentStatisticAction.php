@@ -68,11 +68,11 @@ class RecordSegmentStatisticAction
             ->groupBy("{$prefix}model_segment.segment_id", 'attribute')
             ->select("{$prefix}model_segment.segment_id")
             ->selectRaw('? AS attribute', [$attribute])
-            ->selectRaw("AVG(({$prefix}model_attributes.model_attributes->>?)::float) AS value_avg", [$attribute])
-            ->selectRaw("SUM(({$prefix}model_attributes.model_attributes->>?)::float) AS value_sum", [$attribute])
-            ->selectRaw("MIN(({$prefix}model_attributes.model_attributes->>?)::float) AS value_min", [$attribute])
-            ->selectRaw("MAX(({$prefix}model_attributes.model_attributes->>?)::float) AS value_max", [$attribute])
-            ->selectRaw("COUNT({$prefix}model_attributes.model_attributes->>?) AS value_count", [$attribute])
+            ->selectRaw("AVG(({$prefix}model_attributes.data->>?)::float) AS value_avg", [$attribute])
+            ->selectRaw("SUM(({$prefix}model_attributes.data->>?)::float) AS value_sum", [$attribute])
+            ->selectRaw("MIN(({$prefix}model_attributes.data->>?)::float) AS value_min", [$attribute])
+            ->selectRaw("MAX(({$prefix}model_attributes.data->>?)::float) AS value_max", [$attribute])
+            ->selectRaw("COUNT({$prefix}model_attributes.data->>?) AS value_count", [$attribute])
             ->selectRaw('CURRENT_DATE AS recorded_at');
     }
 }

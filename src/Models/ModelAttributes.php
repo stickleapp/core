@@ -30,7 +30,7 @@ class ModelAttributes extends Model
     protected $fillable = [
         'object_uid',
         'model',
-        'model_attributes',
+        'data',
         'synced_at',
     ];
 
@@ -46,7 +46,7 @@ class ModelAttributes extends Model
      * Why doesn't casts() function work?
      */
     protected $casts = [
-        'model_attributes' => 'array',
+        'data' => 'array',
     ];
 
     /**

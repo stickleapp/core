@@ -14,19 +14,19 @@ class ModelAttributesObserver
     /**
      * Handle the ModelAttributes "saved" event.
      */
-    public function saved(ModelAttributes $objectAttribute): void
+    public function saved(ModelAttributes $modelAttribute): void
     {
 
-        $from = $objectAttribute->getOriginal('model_attributes');
-        $to = $objectAttribute->getAttribute('model_attributes');
+        $from = $modelAttribute->getOriginal('data');
+        $to = $modelAttribute->getAttribute('data');
 
         $diff = $this->getChangedAttributes($from, $to);
 
         foreach ($diff as $property => $changes) {
             // This may be slow
             ModelAttributeAudit::firstOrCreate([
-                'model' => $objectAttribute->model,
-                'object_uid' => $objectAttribute->object_uid,
+                'model' => $modelAttribute->model,
+                'object_uid' => $modelAttribute->object_uid,
                 'attribute' => $property,
                 'timestamp' => now(),
             ], [
@@ -34,8 +34,8 @@ class ModelAttributesObserver
                 'value_new' => Arr::get($changes, 'value_new'),
             ]);
             ModelAttributeChanged::dispatch(
-                $objectAttribute->model,
-                $objectAttribute->object_uid,
+                $modelAttribute->model,
+                $modelAttribute->object_uid,
                 $property,
                 Arr::get($changes, 'value_old'),
                 Arr::get($changes, 'value_new')
