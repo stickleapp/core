@@ -1,7 +1,7 @@
 <div>
     @foreach ($chartData as $chart)
     <div class="mb-5">
-        <x-stickle-charts-model-relationship
+        <x-stickle::ui.charts.model-relationship-chart
             :key="md5(json_encode($chart))"
             :model="$model"
             :uid="$uid"
@@ -13,7 +13,7 @@
             :data-type="data_get($chart, 'dataType')"
             :primary-aggregate="data_get($chart, 'primaryAggregate')"
         >
-        </x-stickle-charts-model-relationship>
+        </x-stickle::ui.charts.model-relationship-chart>
     </div>
     @endforeach
 </div>

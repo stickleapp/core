@@ -106,4 +106,39 @@ class AttributeUtils
     {
         return self::getAttributeForClass(get_class($object), $attributeClass, $attributeName);
     }
+
+    /**
+     * Get metadata for a specific attribute on a class method
+     *
+     * @param  string  $className  The class containing the method
+     * @param  string  $methodName  The method name to inspect
+     * @param  string  $attributeClass  The attribute class to look for
+     * @return mixed|null The attribute instance or null if not found
+     */
+    public static function getAttributeForClassMethod(string $className, string $methodName, string $attributeClass): mixed
+    {
+        if (! class_exists($className)) {
+            throw new \Exception('Class not found');
+        }
+
+        if (! class_exists($attributeClass)) {
+            throw new \Exception('Attribute not found');
+        }
+
+        $reflection = new ReflectionClass($className);
+
+        if (! $reflection->hasMethod($methodName)) {
+            throw new \Exception('Method not found');
+        }
+
+        $method = $reflection->getMethod($methodName);
+
+        $attributes = $method->getAttributes($attributeClass);
+
+        if (empty($attributes)) {
+            return [];
+        }
+
+        return $attributes[0]->newInstance();
+    }
 }

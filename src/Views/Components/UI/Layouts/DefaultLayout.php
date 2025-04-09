@@ -15,7 +15,7 @@ class DefaultLayout extends Component
      */
     public function render(): View
     {
-        return view('stickle::components/ui/layouts/default');
+        return view('stickle::components/ui/layouts/default-layout');
     }
 
     public function models(): array

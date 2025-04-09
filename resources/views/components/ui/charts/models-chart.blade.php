@@ -5,9 +5,9 @@
         <h3 class="">{{ $label }}</h3>
     </div>
     <div class="p-6 pt-0">
-        <x-stickle-charts-primatives-info
+        <x-stickle::ui.charts.primatives.info
             :endpoint="$endpoint()"
             :$key
-        ></x-stickle-charts-primatives-info>
+        ></x-stickle::ui.charts.primatives.info>
     </div>
 </div>

@@ -19,7 +19,7 @@ class ModelsChartlist extends Component
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
-        public string $model,
+        public string $class,
         public ?string $heading,
         public ?string $description,
     ) {}
@@ -35,7 +35,7 @@ class ModelsChartlist extends Component
     public function chartData(): array
     {
 
-        $class = config('stickle.namespaces.models').'\\'.Str::ucfirst($this->model);
+        $class = config('stickle.namespaces.models').'\\'.Str::ucfirst($this->class);
 
         if (! class_exists($class)) {
             throw new \Exception('Model not found');

@@ -1,9 +1,11 @@
-<x-stickle-demo-default-layout>
+<x-stickle::ui.layouts.default>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Stickle Demo') }}
+        <h2
+            class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
+        >
+            {{ __("Stickle Demo") }}
         </h2>
-    </x-slot>    
+    </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -14,14 +16,20 @@
                 </div>
 
                 <div class="col-span-1 h-[66vh] sm:rounded-lg border-2">
-                    <iframe src="{{ route('stickle::demo/admin') }}" class="w-full h-full"></iframe>
+                    <iframe
+                        src="{{ route('stickle::demo/admin') }}"
+                        class="w-full h-full"
+                    ></iframe>
                 </div>
 
                 <div class="col-span-1 h-[66vh] sm:rounded-lg border-2">
-                    <iframe src="{{ route('stickle::ui/index') }}" class="w-full h-full">
+                    <iframe
+                        src="{{ route('stickle::ui/index') }}"
+                        class="w-full h-full"
+                    >
                     </iframe>
                 </div>
             </div>
         </div>
     </div>
-</x-stickle-demo-default-layout>
+</x-stickle::ui.layouts.default>

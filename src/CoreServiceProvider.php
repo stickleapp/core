@@ -104,21 +104,23 @@ final class CoreServiceProvider extends ServiceProvider
         /**
          * Load resources used by this package
          */
-        Blade::component('stickle-demo-default-layout', DemoDefaultLayout::class);
-        Blade::component('stickle-ui-default-layout', UIDefaultLayout::class);
-        Blade::component('stickle-segment-chart', SegmentChart::class);
-        Blade::component('stickle-segment-table', SegmentTable::class);
-        Blade::component('stickle-models-table', ModelsTable::class);
-        Blade::component('stickle-events-timeline', EventTimeline::class);
-        Blade::component('stickle-pagination-simple', PaginationSimple::class);
-        Blade::component('stickle-chartlists-models', ModelsChartlist::class);
-        Blade::component('stickle-chartlists-model', ModelChartlist::class);
-        Blade::component('stickle-chartlists-model-relationship', ModelRelationshipChartlist::class);
-        Blade::component('stickle-charts-models', ModelsChart::class);
-        Blade::component('stickle-charts-model', ModelChart::class);
-        Blade::component('stickle-charts-model-relationship', ModelRelationshipChart::class);
-        Blade::component('stickle-charts-primatives-line', LineChart::class);
-        Blade::component('stickle-charts-primatives-info', InfoChart::class);
+        Blade::componentNamespace('StickleApp\\Core\\Views\\Components', 'stickle');
+
+        // Blade::component('stickle-demo-default-layout', DemoDefaultLayout::class);
+        // Blade::component('stickle-ui-default-layout', UIDefaultLayout::class);
+        // Blade::component('stickle-segment-chart', SegmentChart::class);
+        // Blade::component('stickle-segment-table', SegmentTable::class);
+        // Blade::component('stickle-models-table', ModelsTable::class);
+        // Blade::component('stickle-events-timeline', EventTimeline::class);
+        // Blade::component('stickle-pagination-simple', PaginationSimple::class);
+        // Blade::component('stickle-chartlists-models', ModelsChartlist::class);
+        // Blade::component('stickle-chartlists-model', ModelChartlist::class);
+        // Blade::component('stickle-chartlists-model-relationship', ModelRelationshipChartlist::class);
+        // Blade::component('stickle-charts-models', ModelsChart::class);
+        // Blade::component('stickle-charts-model', ModelChart::class);
+        // Blade::component('stickle-charts-model-relationship', ModelRelationshipChart::class);
+        // Blade::component('stickle-charts-primatives-line', LineChart::class);
+        // Blade::component('stickle-charts-primatives-info', InfoChart::class);
 
         /**
          * Publish resources used by this package

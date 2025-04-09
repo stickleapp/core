@@ -117,7 +117,7 @@
                                     >
                                         <a
                                             :href="modelUrl('{{
-                                                $model
+                                                $class
                                             }}', item)"
                                             ><span
                                                 x-text="item[column.key]"
@@ -156,7 +156,7 @@
         <p x-text="$store.tableData.error"></p>
     </div>
 
-    <x-stickle-pagination-simple></x-stickle-pagination-simple>
+    <x-stickle::ui.tables.primatives.pagination-simple></x-stickle::ui.tables.primatives.pagination-simple>
 </div>
 
 <script>
@@ -203,7 +203,7 @@
     function tableApp() {
         return {
             // API settings
-            apiUrl: "{!! $endpoint !!}", // Change this to your Laravel API endpoint
+            apiUrl: "{!! $endpoint() !!}", // Change this to your Laravel API endpoint
 
             init() {
                 // Initial data fetch
@@ -227,7 +227,7 @@
                 const params = new URLSearchParams({
                     page: store.currentPage,
                     per_page: store.perPage,
-                    model: "{{ $model }}",
+                    model: "{{ $class }}",
                 });
 
                 // Add search term if present

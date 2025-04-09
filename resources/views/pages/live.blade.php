@@ -1,14 +1,14 @@
-<x-stickle-ui-default-layout>
+<x-stickle::ui.layouts.default-layout>
     <div class="w-full p-4">
         <!-- Full-width row -->
         <div class="bg-white shadow-md">
-            <x-stickle-segment-chart
+            <x-stickle::ui.charts.segment
                 type="line"
                 title="Active Users"
                 segment-id="7"
                 attribute="count"
             >
-            </x-stickle-segment-chart>
+            </x-stickle::ui.charts.segment>
         </div>
     </div>
 
@@ -22,8 +22,11 @@
         <!-- 2/3 Column -->
         <div id="column1" class="w-full md:w-2/3 p-4 md:block">
             <div class="bg-white p-6 shadow-md">
-                <x-stickle-segment-table title="Active Users" segment-id="7">
-                </x-stickle-segment-table>
+                <x-stickle::ui.tables.segment
+                    title="Active Users"
+                    segment-id="7"
+                >
+                </x-stickle::ui.tables.segment>
             </div>
         </div>
 
@@ -31,13 +34,13 @@
         <div id="column2" class="w-full md:w-1/3 p-4 md:block hidden">
             <div class="bg-white p-6 shadow-md">
                 <!-- Column 2 content here -->
-                <x-stickle-events-timeline
+                <x-stickle::timelines.events
                     :channel="config('stickle.broadcasting.channels.firehose')"
-                ></x-stickle-events-timeline>
+                ></x-stickle::timelines.events>
             </div>
         </div>
     </div>
-</x-stickle-ui-default-layout>
+</x-stickle::ui.layouts.default-layout>
 
 <script>
     document.querySelectorAll(".tab-button").forEach((button) => {

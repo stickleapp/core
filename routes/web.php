@@ -19,28 +19,45 @@ Route::middleware(['web'])->group(function () {
     Route::view('/stickle/{modelName}/segments', 'stickle::pages/segments')
         ->name('stickle::segments')
         ->where('modelName', '[^/]+');
-    Route::get('/stickle/{model}/{uid}', function (Request $request) {
-        $class = config('stickle.namespaces.models').'\\'.ucfirst($request->route('model'));
+
+    Route::get(
+        '/stickle/{class}/{uid}/{relatedClass}',
+        function (Request $request) {
+            $class = config('stickle.namespaces.models').'\\'.ucfirst($request->route('class'));
+            $model = $class::findOrFail($request->route('uid'));
+
+            return view('stickle::pages/model-relationship', [
+                'class' => $request->route('class'),
+                'uid' => $request->route('uid'),
+                'model' => $model,
+                'relationship' => $request->route('relatedClass'),
+            ]);
+        })
+        ->name('stickle::model.relationship')
+        ->where('class', '[^/]+')
+        ->where('uid', '[^/]+')
+        ->where('relatedClass', '[^/]+');
+
+    Route::get('/stickle/{class}/{uid}', function (Request $request) {
+        $class = config('stickle.namespaces.models').'\\'.ucfirst($request->route('class'));
         $model = $class::findOrFail($request->route('uid'));
 
         return view('stickle::pages/model', [
-            'model' => $request->route('model'),
+            'class' => $request->route('class'),
             'uid' => $request->route('uid'),
             'model' => $model,
         ]);
     })
         ->name('stickle::model')
-        ->where('model', '[^/]+')
+        ->where('class', '[^/]+')
         ->where('uid', '[^/]+');
-    Route::get('/stickle/{model}', function (Request $request) {
-
+    Route::get('/stickle/{class}', function (Request $request) {
         return view('stickle::pages/models', [
-            'model' => $request->route('model'),
+            'class' => $request->route('class'),
         ]);
     })
         ->name('stickle::models')
         ->where('model', '[^/]+');
-
     /** Installation Demo */
     Route::view('/stickle-demo', 'stickle::demo/index')
         ->name('stickle::demo/index');

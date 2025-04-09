@@ -13,11 +13,13 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use StickleApp\Core\Attributes\StickleAttributeMetadata;
+use StickleApp\Core\Attributes\StickleRelationshipMetadata;
 use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Models\ModelAttributeAudit;
 use StickleApp\Core\Models\ModelAttributes;
 use StickleApp\Core\Models\ModelRelationshipStatistic;
 use StickleApp\Core\Support\AttributeUtils;
+use StickleApp\Core\Support\ClassUtils;
 
 trait StickleEntity
 {
@@ -189,6 +191,34 @@ trait StickleEntity
     public function modelRelationshipStatistics(): HasMany
     {
         return $this->hasMany(ModelRelationshipStatistic::class, 'object_uid')->where('model', self::class);
+    }
+
+    /**
+     * @return array<int, class-string>
+     */
+    public function stickleRelationships(): array
+    {
+        // Get all classes with the StickleEntity trait
+        $stickleEntityClasses = ClassUtils::getClassesWithTrait(
+            config('stickle.namespaces.models'),
+            \StickleApp\Core\Traits\StickleEntity::class
+        );
+
+        $relationships = ClassUtils::getRelationshipsWith(app(), self::class, [HasMany::class], $stickleEntityClasses);
+
+        array_walk($relationships, function (&$relationship) {
+            $attribute = AttributeUtils::getAttributeForClassMethod(
+                self::class,
+                $relationship['name'],
+                StickleRelationshipMetadata::class
+            );
+
+            if ($attribute) {
+                $relationship = array_merge($relationship, (array) $attribute->value);
+            }
+        });
+
+        return $relationships;
     }
 
     /**

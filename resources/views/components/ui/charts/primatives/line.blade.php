@@ -16,7 +16,7 @@
                             (item) => item.timestamp
                         );
 
-                        const dataSet1Data = apiResponse.map(
+                           const dataSet1Data = apiResponse.map(
                             (item) => item.value_new
                         );
 
@@ -32,11 +32,21 @@
                                     {
                                         data: dataSet1Data,
                                         backgroundColor:
-                                            "rgba(75, 192, 192, .7 )",
-                                        borderColor: "rgba(75, 192, 192, 1)",
+                                            "rgba(250, 204, 21, .7)",
+                                        borderColor:
+                                            "rgba(250, 204, 21, .7)",
                                         borderWidth: 2,
-                                        fill: true,
-                                        pointRadius: 0,
+                                        fill: false,
+
+                                        pointRadius: 2, // Size of the points (adjust as needed)
+                                        pointBackgroundColor: "white", // White center
+                                        pointBorderColor: "rgba(250, 204, 21, .7)", // Same as line color
+                                        pointBorderWidth: 1, // Border thickness
+                                        pointHoverRadius: 2, // Slightly larger on hover
+                                        pointHoverBackgroundColor: "white",
+                                        pointHoverBorderColor: "rgba(250, 204, 21, 1)", // Full opacity on hover
+                                        pointHoverBorderWidth: 1,
+
                                         tension: 0.4,
                                     },
                                 ],
