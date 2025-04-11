@@ -17,11 +17,11 @@ class CustomersSeeder extends Seeder
         DB::table('customers')->truncate();
 
         $customers = Customer::factory()
-            ->count(1000)
+            ->count(100)
             ->createQuietly();
 
         // Add some children to the customers
-        $customers->take(100)->each(function ($customer) {
+        $customers->each(function ($customer) {
             Customer::factory()
                 ->count(3)
                 ->createQuietly(

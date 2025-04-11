@@ -61,7 +61,7 @@ class RecordSegmentStatisticAction
         return DB::table("{$prefix}model_segment")
             ->join("{$prefix}segments", "{$prefix}model_segment.segment_id", '=', "{$prefix}segments.id")
             ->join("{$prefix}model_attributes", function ($join) use ($prefix) {
-                $join->on("{$prefix}model_attributes.model", '=', "{$prefix}segments.model");
+                $join->on("{$prefix}model_attributes.model_class", '=', "{$prefix}segments.model_class");
                 $join->on("{$prefix}model_attributes.object_uid", '=', "{$prefix}model_segment.object_uid");
             })
             ->where("{$prefix}model_segment.segment_id", $segmentId)

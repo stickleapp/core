@@ -27,7 +27,7 @@ class UsersSeeder extends Seeder
         ]);
 
         // Add some children to the customers
-        $customers = Customer::all()->take(950);
+        $customers = Customer::all();
         $customers->each(function ($customer) {
             User::factory()
                 ->count(rand(1, 5))

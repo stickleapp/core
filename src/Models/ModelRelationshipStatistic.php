@@ -25,7 +25,7 @@ class ModelRelationshipStatistic extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'model',
+        'model_class',
         'object_uid',
         'attribute',
         'value',

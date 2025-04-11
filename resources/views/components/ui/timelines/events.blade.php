@@ -64,7 +64,7 @@
 
         // Update listener for Echo
         if (window.Echo) {
-            window.Echo.channel("stickle.firehose").listenToAll(
+            window.Echo.channel("{{ $channel }}").listenToAll(
                 (eventName, data) => {
                     events.unshift({ name: eventName, data: data.payload });
                     if (events.length > 25) {

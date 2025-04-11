@@ -28,14 +28,14 @@ class EventsSeeder extends Seeder
         $sql = <<<SQL
 INSERT INTO {$prefix}events (
     object_uid, 
-    model, 
+    model_class, 
     session_uid, 
     event_name, 
     properties, 
     timestamp)
 SELECT
     (((SELECT MAX(id) FROM users) * random())+1)::INT::TEXT AS object_uid,
-    'Workbench\App\Models\User' AS model,
+    'User' AS model_class,
     'session_' || (random() * 90)::int::text AS session_uid,
     'event_' || (random() * 10)::int::text AS event_name,    
     jsonb_build_object(

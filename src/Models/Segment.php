@@ -33,7 +33,7 @@ class Segment extends Model
      */
     protected $fillable = [
         'segment_group_id',
-        'model',
+        'model_class',
         'definition',
         'export_interval',
         'last_exported_at',

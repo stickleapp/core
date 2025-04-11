@@ -14,22 +14,22 @@
         <!-- 2/3 Column -->
         <div id="events" class="w-full md:w-3/5 pr-4 md:block">
             <!-- Column 2 content here -->
-            <x-stickle::ui.tables.models-table
+            <x-stickle::ui.tables.models
                 :heading="\Illuminate\Support\Str::of($class)->headline()"
                 :subheading="sprintf('A full list of your %s.', \Illuminate\Support\Str::of($class)->plural())"
-                :class="$class"
+                :model-class="$modelClass"
             >
-            </x-stickle::ui.tables.models-table>
+            </x-stickle::ui.tables.models>
         </div>
 
         <!-- 1/3 Column -->
         <div id="statistics" class="w-full md:w-2/5 pl-4 md:block hidden">
             <!-- Column 2 content here -->
-            <x-stickle::ui.chartlists.model-relationship-chartlist
+            <x-stickle::ui.chartlists.model-relationship
                 :model="$model"
                 :relationship="$relationship"
             >
-            </x-stickle::ui.chartlists.model-relationship-chartlist>
+            </x-stickle::ui.chartlists.model-relationship>
         </div>
     </div>
 </x-stickle::ui.layouts.default-layout>

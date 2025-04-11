@@ -38,8 +38,8 @@ class AuthenticatableEventListener implements ShouldQueue
         $timestamp = new DateTime;
 
         $this->repository->saveEvent(
-            model: get_class($event->user),
-            objectUid: $event->user->id,
+            model: class_basename($event->user),
+            objectUid: (string) $event->user->id,
             sessionUid: $this->request->session()->getId(),
             timestamp: $timestamp,
             event: get_class($event),

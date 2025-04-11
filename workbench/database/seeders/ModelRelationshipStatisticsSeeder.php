@@ -22,9 +22,9 @@ class ModelRelationshipStatisticsSeeder extends Seeder
         Artisan::call("stickle:create-partitions {$prefix}model_relationship_statistics public week '{$date}' 2");
 
         $sql = <<<sql
-INSERT INTO {$prefix}model_relationship_statistics (model, object_uid, relationship, attribute, value_min, value_max, value_avg, value_count, value_sum, recorded_at)
+INSERT INTO {$prefix}model_relationship_statistics (model_class, object_uid, relationship, attribute, value_min, value_max, value_avg, value_count, value_sum, recorded_at)
 SELECT 
-    'Workbench\App\Models\Customer' AS model,
+    'Customer' AS model_class,
     object_uid, 
     'children' AS relationship,
     attribute, 
@@ -50,13 +50,13 @@ FROM
             ('average_resolution_time'),
             ('average_resolution_time_30_days')
         ) AS attributes(attribute)
-        WHERE model = 'Workbench\App\Models\Customer'
+        WHERE model_class = 'Customer'
     ) AS series
 ON CONFLICT DO NOTHING;
 
-INSERT INTO {$prefix}model_relationship_statistics (model, object_uid, relationship, attribute, value_min, value_max, value_avg, value_count, value_sum, recorded_at)
+INSERT INTO {$prefix}model_relationship_statistics (model_class, object_uid, relationship, attribute, value_min, value_max, value_avg, value_count, value_sum, recorded_at)
 SELECT 
-    'Workbench\App\Models\Customer' AS model,
+    'Customer' AS model_class,
     object_uid, 
     'users' AS relationship,
     attribute, 
@@ -83,7 +83,7 @@ FROM
             ('average_resolution_time'),
             ('average_resolution_time_30_days')
         ) AS attributes(attribute)
-        WHERE model = 'Workbench\App\Models\Customer'
+        WHERE model_class = 'Customer'
     ) AS series
 ON CONFLICT DO NOTHING;
 sql;

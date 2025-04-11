@@ -100,7 +100,7 @@ final class ExportSegmentsCommand extends Command implements Isolatable
                 $defaultProperties = $reflection->getDefaultProperties();
 
                 $results[] = [
-                    'model' => Arr::get($defaultProperties, 'model'),
+                    'model_class' => class_basename(Arr::get($defaultProperties, 'model')),
                     'as_class' => $className,
                     'as_json' => null,
                     'export_interval' => config('stickle.schedule.exportSegments'),

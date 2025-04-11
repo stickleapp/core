@@ -41,8 +41,8 @@ class EventCount extends FilterTargetContract
             ->where('event_name', $this->event)
             ->whereDate('day', '>=', Carbon::parse($this->startDate)->toDateString())
             ->whereDate('day', '<', Carbon::parse($this->endDate)->toDateString())
-            ->groupBy(['model', 'object_uid'])
-            ->select('model', 'object_uid', DB::raw('sum(event_count) as event_count'));
+            ->groupBy(['model_class', 'object_uid'])
+            ->select('model_class', 'object_uid', DB::raw('sum(event_count) as event_count'));
     }
 
     public function applyJoin(Builder $builder): Builder
@@ -63,7 +63,7 @@ class EventCount extends FilterTargetContract
             $this->joinKey(),
             function (JoinClause $join) use ($model) {
                 $join->on($this->joinKey().'.object_uid', '=', "{$model->getTable()}.object_uid");
-                $join->on($this->joinKey().'.model', '=', "{$model->getTable()}.model");
+                $join->on($this->joinKey().'.model_class', '=', "{$model->getTable()}.model_class");
             }
         );
 

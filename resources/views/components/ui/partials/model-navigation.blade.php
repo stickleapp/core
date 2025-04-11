@@ -39,7 +39,7 @@
         >
         @foreach($model->stickleRelationships() as $relationship)
             @php
-                $route = route('stickle::model.relationship', ['class' =>
+                $route = route('stickle::model.relationship', ['modelClass' =>
             strtolower(class_basename($model)), 'uid' => $model->id, 'relatedClass'
             => $relationship['name'] ]);
                 $current = ($route == url()->current()) ? true : false;

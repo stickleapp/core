@@ -19,20 +19,20 @@ return new class extends Migration
 
         Schema::create("{$prefix}model_relationship_statistic_exports", function (Blueprint $table) {
             $table->id();
-            $table->text('model')->nullable(false);
+            $table->text('model_class')->nullable(false);
             $table->text('relationship')->nullable(false);
             $table->text('attribute')->nullable(false);
             $table->timestamp('last_recorded_at')->nullable(false);
             $table->timestamps();
 
-            $table->unique(['model', 'relationship', 'attribute']);
+            $table->unique(['model_class', 'relationship', 'attribute']);
         });
 
         \DB::connection()->getPdo()->exec("
 DROP TABLE IF EXISTS {$prefix}model_relationship_statistics;
 CREATE TABLE {$prefix}model_relationship_statistics (
     id BIGSERIAL,
-    model TEXT NOT NULL,
+    model_class TEXT NOT NULL,
     object_uid TEXT NOT NULL,
     relationship TEXT NOT NULL,
     attribute TEXT NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE {$prefix}model_relationship_statistics (
 
 CREATE INDEX ON {$prefix}model_relationship_statistics (recorded_at);
 
-CREATE UNIQUE INDEX {$prefix}model_relationship_statistics_model_object_uid_attribute_recorded_at_unique ON {$prefix}model_relationship_statistics (model, object_uid,relationship, attribute, recorded_at);
+CREATE UNIQUE INDEX {$prefix}model_relationship_statistics_model_object_uid_attribute_recorded_at_unique ON {$prefix}model_relationship_statistics (model_class, object_uid,relationship, attribute, recorded_at);
 ");
     }
 

@@ -17,20 +17,19 @@ class ModelAttributeAuditController
 
         $attribute = $request->string('attribute');
 
-        $class = $request->string('model');
+        $modelClass = $request->string('model_class');
 
-        // $class = config('stickle.namespaces.models').'\\'.Str::ucfirst((string) $model);
-        $class = Str::ucfirst((string) $class);
+        $modelClass = Str::ucfirst((string) $modelClass);
 
-        if (! class_exists($class)) {
+        if (! class_exists($modelClass)) {
             return response()->json(['error' => 'Model not found'], 404);
         }
 
-        if (! ClassUtils::usesTrait($class, 'StickleApp\\Core\\Traits\\StickleEntity')) {
+        if (! ClassUtils::usesTrait($modelClass, 'StickleApp\\Core\\Traits\\StickleEntity')) {
             return response()->json(['error' => 'Model does not use StickleEntity trait'], 400);
         }
 
-        $model = $class::findOrFail($request->string('uid'));
+        $model = $modelClass::findOrFail($request->string('uid'));
 
         $builder = $model->modelAttributeAudits()->where('attribute', $request->string('attribute'));
 

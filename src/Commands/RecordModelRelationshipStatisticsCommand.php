@@ -45,7 +45,7 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
         $limit = $this->argument('limit') ?? 10;
 
         // Get all classes with the StickleEntity trait
-        $classes = ClassUtils::getClassesWithTrait(
+        $modelClasses = ClassUtils::getClassesWithTrait(
             config('stickle.namespaces.models'),
             \StickleApp\Core\Traits\StickleEntity::class
         );
@@ -61,13 +61,13 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
         //      [ 'Customer', 'users', [...User Tracked Attributes] ]
         // ]
         $attributes = [];
-        foreach ($classes as $class) {
-            $stickleTrackedAttributes = $class::getStickleTrackedAttributes();
-            if ($relationships = ClassUtils::getRelationshipsWith(app(), $class, [HasMany::class], $classes)) {
+        foreach ($modelClasses as $modelClass) {
+            $stickleTrackedAttributes = $modelClass::getStickleTrackedAttributes();
+            if ($relationships = ClassUtils::getRelationshipsWith(app(), $modelClass, [HasMany::class], $modelClasses)) {
                 foreach ($relationships as $relationship) {
                     foreach ($stickleTrackedAttributes as $attribute) {
                         $attributes[] = [
-                            'model' => $class,
+                            'model_class' => class_basename($modelClass),
                             'relationship' => $relationship['name'],
                             'related' => $relationship['related'],
                             'attribute' => $attribute,
@@ -77,7 +77,7 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
             }
         }
 
-        $tempTableSql = 'CREATE TEMP TABLE temp_attributes (model TEXT, relationship TEXT, related TEXT, attribute TEXT);';
+        $tempTableSql = 'CREATE TEMP TABLE temp_attributes (model_class TEXT, relationship TEXT, related TEXT, attribute TEXT);';
 
         DB::statement($tempTableSql);
 
@@ -85,12 +85,12 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
 
         $rows = DB::table('temp_attributes')
             ->leftJoin("{$this->prefix}model_relationship_statistic_exports", function ($query) {
-                $query->on("{$this->prefix}model_relationship_statistic_exports.model", '=', 'temp_attributes.model');
+                $query->on("{$this->prefix}model_relationship_statistic_exports.model_class", '=', 'temp_attributes.model');
                 $query->on("{$this->prefix}model_relationship_statistic_exports.relationship", '=', 'temp_attributes.relationship');
                 $query->on("{$this->prefix}model_relationship_statistic_exports.attribute", '=', 'temp_attributes.attribute');
             })
             ->select([
-                'temp_attributes.model',
+                'temp_attributes.model_class',
                 'temp_attributes.relationship',
                 'temp_attributes.related',
                 'temp_attributes.attribute',
@@ -102,7 +102,7 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
 
         foreach ($rows as $row) {
             RecordModelRelationshipStatisticJob::dispatch(
-                $row->model,
+                $row->model_class,
                 $row->relationship,
                 $row->related,
                 $row->attribute

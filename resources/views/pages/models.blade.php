@@ -1,6 +1,6 @@
 <x-stickle::ui.layouts.default-layout>
     <h1 class="scroll-m-20 text-3xl font-bold tracking-tight pb-8">
-        {{ \Illuminate\Support\Str::plural(\Illuminate\Support\Str::title(str_replace('_', ' ', $class))) }}
+        {{ \Illuminate\Support\Str::plural(\Illuminate\Support\Str::title(str_replace('_', ' ', $modelClass))) }}
     </h1>
 
     <div class="w-full flex flex-col md:flex-row">
@@ -16,20 +16,20 @@
         <!-- 2/3 Column -->
         <div id="column1" class="w-full md:w-3/5 md:block">
             <div class="bg-white p-6 shadow-md">
-                <x-stickle::ui.tables.models-table
-                    :heading="\Illuminate\Support\Str::of($class)->headline()"
-                    :subheading="sprintf('A full list of your %s.', \Illuminate\Support\Str::of($class)->plural())"
-                    :class="$class"
+                <x-stickle::ui.tables.models
+                    :heading="\Illuminate\Support\Str::of($modelClass)->headline()"
+                    :subheading="sprintf('A full list of your %s.', \Illuminate\Support\Str::of($modelClass)->plural())"
+                    :model-class="$modelClass"
                 >
-                </x-stickle::ui.tables.models-table>
+                </x-stickle::ui.tables.models>
             </div>
         </div>
 
         <!-- 1/3 Column -->
         <div id="column2" class="w-full md:w-2/5 p-4 md:block hidden">
             <!-- Column 2 content here -->
-            <x-stickle::ui.chartlists.models-chartlist :class="$class">
-            </x-stickle::ui.chartlists.models-chartlist>
+            <x-stickle::ui.chartlists.models :model-class="$modelClass">
+            </x-stickle::ui.chartlists.models>
         </div>
     </div>
 </x-stickle::ui.layouts.default-layout>

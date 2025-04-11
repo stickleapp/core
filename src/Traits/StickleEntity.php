@@ -42,7 +42,7 @@ trait StickleEntity
         if (! $builder->hasJoin("{$prefix}model_attributes")) {
             $builder->leftJoin("{$prefix}model_attributes", function ($join) use ($prefix) {
                 $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw(self::getTableName().'.id::text'));
-                $join->where("{$prefix}model_attributes.model", '=', self::class);
+                $join->where("{$prefix}model_attributes.model_class", '=', self::class);
             });
         }
 
@@ -62,7 +62,7 @@ trait StickleEntity
         if (! $builder->hasJoin("{$prefix}model_attributes")) {
             $builder->leftJoin("{$prefix}model_attributes", function ($join) use ($prefix) {
                 $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw(self::getTableName().'.id::text'));
-                $join->where("{$prefix}model_attributes.model", '=', self::class);
+                $join->where("{$prefix}model_attributes.model_class", '=', self::class);
             });
         }
 
@@ -180,17 +180,17 @@ trait StickleEntity
 
     public function modelAttributes(): HasOne
     {
-        return $this->hasOne(ModelAttributes::class, 'object_uid')->where('model', self::class);
+        return $this->hasOne(ModelAttributes::class, 'object_uid')->where('model_class', self::class);
     }
 
     public function modelAttributeAudits(): HasMany
     {
-        return $this->hasMany(ModelAttributeAudit::class, 'object_uid')->where('model', self::class);
+        return $this->hasMany(ModelAttributeAudit::class, 'object_uid')->where('model_class', self::class);
     }
 
     public function modelRelationshipStatistics(): HasMany
     {
-        return $this->hasMany(ModelRelationshipStatistic::class, 'object_uid')->where('model', self::class);
+        return $this->hasMany(ModelRelationshipStatistic::class, 'object_uid')->where('model_class', self::class);
     }
 
     /**
@@ -235,7 +235,7 @@ trait StickleEntity
                 $this->modelAttributes()
                     ->firstOrNew(
                         [
-                            'model' => self::class,
+                            'model_class' => class_basenname(self::class),
                             'object_uid' => $this->id,
                         ]
                     )->data ?? [];
@@ -246,7 +246,7 @@ trait StickleEntity
                         ->modelAttributes()
                         ->firstOrCreate(
                             [
-                                'model' => self::class,
+                                'model_class' => class_basename(self::class),
                                 'object_uid' => $this->id,
                             ],
                             [
@@ -270,7 +270,6 @@ trait StickleEntity
 
         // Get the attributes that are tracked by StickleTrait as keys with empty arrays as values
         $trackedAttributes = static::getStickleTrackedAttributes();
-
         // Get the metadata [ 'attribute' => [ 'chartType' => 'line', 'label' => 'Attribute', 'description' => 'Description', 'dataType' => 'string', 'primaryAggregateType' => 'sum' ] ]
         $metadata = AttributeUtils::getAttributesForClass(
             static::class,
@@ -280,13 +279,10 @@ trait StickleEntity
         // Directly build chart data for tracked attributes
         $chartData = [];
         foreach ($trackedAttributes as $attribute) {
-            if ($attribute !== 'user_rating') {
-                continue;
-            }
             $meta = $metadata[$attribute] ?? [];
             $chartData[] = [
                 'key' => $attribute,
-                'model' => static::class,
+                'modelClass' => static::class,
                 'attribute' => $attribute,
                 'chartType' => $meta['chartType'] ?? \StickleApp\Core\Enums\ChartType::LINE,
                 'label' => $meta['label'] ?? Str::title(str_replace('_', ' ', $attribute)),

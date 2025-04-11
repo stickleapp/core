@@ -18,7 +18,7 @@ class ModelAttributeChanged implements ShouldBroadcast
      * Create a new event instance.
      */
     public function __construct(
-        public string $model,
+        public string $modelClass,
         public string $objectUid,
         public string $attribute,
         public ?string $from = null,
@@ -38,7 +38,7 @@ class ModelAttributeChanged implements ShouldBroadcast
             ),
             new Channel(
                 sprintf(config('stickle.broadcasting.channels.object'),
-                    str_replace('\\', '-', $this->model),
+                    str_replace('\\', '-', strtolower($this->modelClass)),
                     $this->objectUid
                 )
             ),

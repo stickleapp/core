@@ -34,7 +34,7 @@ class ModelEnteredSegment implements ShouldBroadcast
             ),
             new Channel(
                 sprintf(config('stickle.broadcasting.channels.model'),
-                    str_replace('\\', '-', get_class($this->model)),
+                    str_replace('\\', '-', strtolower(get_class($this->model))),
                     $this->model->getKey()
                 )
             ),

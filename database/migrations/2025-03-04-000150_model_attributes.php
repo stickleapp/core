@@ -20,15 +20,15 @@ return new class extends Migration
         // model attributes
         Schema::create(("{$prefix}model_attributes"), function (Blueprint $table) {
             $table->id();
-            $table->text('model')->nullable(false);
+            $table->text('model_class')->nullable(false);
             $table->text('object_uid')->nullable(false);
             $table->jsonb('data')->nullable(false);
             $table->timestamp('synced_at')->nullable(true);
             $table->timestamps();
 
-            $table->unique(['model', 'object_uid']);
+            $table->unique(['model_class', 'object_uid']);
 
-            $table->index('model');
+            $table->index('model_class');
             $table->index('object_uid');
         });
 
@@ -36,7 +36,7 @@ return new class extends Migration
 DROP TABLE IF EXISTS {$prefix}model_attribute_audit;
 CREATE TABLE {$prefix}model_attribute_audit (
     id BIGSERIAL,
-    model TEXT NOT NULL,
+    model_class TEXT NOT NULL,
     object_uid TEXT NOT NULL,
     attribute TEXT NOT NULL,
     value_old TEXT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE {$prefix}model_attribute_audit (
     timestamp TIMESTAMPTZ DEFAULT NOW() NOT NULL
 ) PARTITION BY RANGE (timestamp);
 CREATE INDEX {$prefix}model_attribute_audit_timestamp_idx  ON {$prefix}model_attribute_audit (timestamp);
-CREATE INDEX {$prefix}model_attribute_audit_model_object_uid_attribute_idx  ON {$prefix}model_attribute_audit (model, object_uid, attribute);
+CREATE INDEX {$prefix}model_attribute_audit_model_object_uid_attribute_idx  ON {$prefix}model_attribute_audit (model_class, object_uid, attribute);
 ");
     }
 

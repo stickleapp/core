@@ -13,51 +13,53 @@ Route::middleware(['web'])->group(function () {
         ->name('stickle::index');
     Route::view('/stickle/live', 'stickle::pages/live')
         ->name('stickle::live');
-    Route::view('/stickle/{modelName}/segments/{segmentId}', 'stickle::pages/segment')
+    Route::view('/stickle/{modelClass}/segments/{segmentId}', 'stickle::pages/segment')
         ->name('stickle::segments')
-        ->where('modelName', '[^/]+');
-    Route::view('/stickle/{modelName}/segments', 'stickle::pages/segments')
+        ->where('modelClass', '[^/]+');
+    Route::view('/stickle/{modelClass}/segments', 'stickle::pages/segments')
         ->name('stickle::segments')
-        ->where('modelName', '[^/]+');
+        ->where('modelClass', '[^/]+');
 
     Route::get(
-        '/stickle/{class}/{uid}/{relatedClass}',
+        '/stickle/{modelClass}/{uid}/{relatedClass}',
         function (Request $request) {
-            $class = config('stickle.namespaces.models').'\\'.ucfirst($request->route('class'));
-            $model = $class::findOrFail($request->route('uid'));
+            $modelClass = config('stickle.namespaces.models').'\\'.ucfirst($request->route('modelClass'));
+            $model = $modelClass::findOrFail($request->route('uid'));
 
             return view('stickle::pages/model-relationship', [
-                'class' => $request->route('class'),
+                'modelClass' => $request->route('modelClass'),
                 'uid' => $request->route('uid'),
                 'model' => $model,
                 'relationship' => $request->route('relatedClass'),
             ]);
         })
         ->name('stickle::model.relationship')
-        ->where('class', '[^/]+')
+        ->where('modelClass', '[^/]+')
         ->where('uid', '[^/]+')
         ->where('relatedClass', '[^/]+');
 
-    Route::get('/stickle/{class}/{uid}', function (Request $request) {
-        $class = config('stickle.namespaces.models').'\\'.ucfirst($request->route('class'));
-        $model = $class::findOrFail($request->route('uid'));
+    Route::get('/stickle/{modelClass}/{uid}', function (Request $request) {
+        $modelClass = config('stickle.namespaces.models').'\\'.ucfirst($request->route('modelClass'));
+        $model = $modelClass::findOrFail($request->route('uid'));
 
         return view('stickle::pages/model', [
-            'class' => $request->route('class'),
+            'modelClass' => $request->route('modelClass'),
             'uid' => $request->route('uid'),
             'model' => $model,
         ]);
     })
         ->name('stickle::model')
-        ->where('class', '[^/]+')
+        ->where('modelClass', '[^/]+')
         ->where('uid', '[^/]+');
-    Route::get('/stickle/{class}', function (Request $request) {
+
+    Route::get('/stickle/{modelClass}', function (Request $request) {
         return view('stickle::pages/models', [
-            'class' => $request->route('class'),
+            'modelClass' => $request->route('modelClass'),
         ]);
     })
         ->name('stickle::models')
-        ->where('model', '[^/]+');
+        ->where('modelClass', '[^/]+');
+
     /** Installation Demo */
     Route::view('/stickle-demo', 'stickle::demo/index')
         ->name('stickle::demo/index');

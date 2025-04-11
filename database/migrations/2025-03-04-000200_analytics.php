@@ -92,7 +92,7 @@ VALUES ('{$prefix}events_rollup_1day', '{$prefix}events', '{$prefix}events_id_se
 CREATE TABLE {$prefix}events (
     id BIGSERIAL,
     object_uid TEXT NOT NULL,
-    model TEXT NOT NULL,
+    model_class TEXT NOT NULL,
     session_uid TEXT NULL,
     event_name TEXT NOT NULL,
     properties JSONB NULL,
@@ -102,43 +102,43 @@ CREATE INDEX ON public.{$prefix}events (timestamp);
 
 CREATE TABLE {$prefix}events_rollup_1min (
     object_uid TEXT NOT NULL,
-    model TEXT NOT NULL,
+    model_class TEXT NOT NULL,
     event_name TEXT NOT NULL,
     minute TIMESTAMPTZ NOT NULL,
     event_count bigint
 ) PARTITION BY RANGE (minute);
 CREATE INDEX ON {$prefix}events_rollup_1min (minute);
-CREATE UNIQUE INDEX {$prefix}events_rollup_1min_unique_idx ON {$prefix}events_rollup_1min(object_uid, model, event_name, minute);
+CREATE UNIQUE INDEX {$prefix}events_rollup_1min_unique_idx ON {$prefix}events_rollup_1min(object_uid, model_class, event_name, minute);
 
 CREATE TABLE {$prefix}events_rollup_5min (
     object_uid TEXT NOT NULL,
-    model TEXT NOT NULL,
+    model_class TEXT NOT NULL,
     event_name TEXT NOT NULL,
     minute TIMESTAMPTZ NOT NULL,
     event_count bigint
 ) PARTITION BY RANGE (minute);
 CREATE INDEX ON {$prefix}events_rollup_5min (minute);
-CREATE UNIQUE INDEX {$prefix}events_rollup_5min_unique_idx ON {$prefix}events_rollup_5min(object_uid, model, event_name, minute);
+CREATE UNIQUE INDEX {$prefix}events_rollup_5min_unique_idx ON {$prefix}events_rollup_5min(object_uid, model_class, event_name, minute);
 
 CREATE TABLE {$prefix}events_rollup_1hr (
     object_uid TEXT NOT NULL,
-    model TEXT NOT NULL,
+    model_class TEXT NOT NULL,
     event_name TEXT NOT NULL,
     hour TIMESTAMPTZ NOT NULL,
     event_count bigint
 ) PARTITION BY RANGE (hour);
 CREATE INDEX ON {$prefix}events_rollup_1hr (hour);
-CREATE UNIQUE INDEX {$prefix}events_rollup_1hr_unique_idx ON {$prefix}events_rollup_1hr(object_uid, model, event_name, hour);
+CREATE UNIQUE INDEX {$prefix}events_rollup_1hr_unique_idx ON {$prefix}events_rollup_1hr(object_uid, model_class, event_name, hour);
 
 CREATE TABLE {$prefix}events_rollup_1day (
     object_uid TEXT NOT NULL,
-    model TEXT NOT NULL,
+    model_class TEXT NOT NULL,
     event_name TEXT NOT NULL,
     day TIMESTAMPTZ NOT NULL,
     event_count bigint
 ) PARTITION BY RANGE (day);
 CREATE INDEX ON {$prefix}events_rollup_1day (day);
-CREATE UNIQUE INDEX {$prefix}events_rollup_1day_unique_idx ON {$prefix}events_rollup_1day(object_uid, model, event_name, day);
+CREATE UNIQUE INDEX {$prefix}events_rollup_1day_unique_idx ON {$prefix}events_rollup_1day(object_uid, model_class, event_name, day);
 
 -- ----------------------------------------------------------------------------
 -- EVENTS 1 MINUTE AGGREGATION
@@ -158,13 +158,13 @@ BEGIN
     /* aggregate the events, merge results if the entry already exists */
     INSERT INTO {$prefix}events_rollup_1min
         SELECT  object_uid,
-                model,
+                model_class,
                 event_name,
                 date_trunc('seconds', (timestamp - TIMESTAMP 'epoch') / 60) * 60 + TIMESTAMP 'epoch' AS minute,
                 count(*) as event_count
         FROM {$prefix}events WHERE {$prefix}events.id BETWEEN start_id AND end_id
-        GROUP BY object_uid, model, event_name, minute
-        ON CONFLICT (object_uid, model, event_name, minute)
+        GROUP BY object_uid, model_class, event_name, minute
+        ON CONFLICT (object_uid, model_class, event_name, minute)
         DO UPDATE
         SET event_count = {$prefix}events_rollup_1min.event_count + excluded.event_count;
 END; 
@@ -189,13 +189,13 @@ BEGIN
     /* aggregate the events, merge results if the entry already exists */
     INSERT INTO {$prefix}events_rollup_5min
         SELECT  object_uid,
-                model,
+                model_class,
                 event_name,
                 date_trunc('seconds', (timestamp - TIMESTAMP 'epoch') / 300) * 300 + TIMESTAMP 'epoch' AS minute,
                 count(*) as event_count
         FROM {$prefix}events WHERE {$prefix}events.id BETWEEN start_id AND end_id
-        GROUP BY object_uid, model, event_name, minute
-        ON CONFLICT (object_uid, model, event_name, minute)
+        GROUP BY object_uid, model_class, event_name, minute
+        ON CONFLICT (object_uid, model_class, event_name, minute)
         DO UPDATE
         SET event_count = {$prefix}events_rollup_5min.event_count + excluded.event_count;
 END; 
@@ -220,13 +220,13 @@ BEGIN
     /* aggregate the events, merge results if the entry already exists */
     INSERT INTO {$prefix}events_rollup_1hr
         SELECT  object_uid,
-                model,
+                model_class,
                 event_name,
                 date_trunc('hour', timestamp) as hour,
                 count(*) as event_count
         FROM {$prefix}events WHERE {$prefix}events.id BETWEEN start_id AND end_id
-        GROUP BY object_uid, model, event_name, hour
-        ON CONFLICT (object_uid, model, event_name, hour)
+        GROUP BY object_uid, model_class, event_name, hour
+        ON CONFLICT (object_uid, model_class, event_name, hour)
         DO UPDATE
         SET event_count = {$prefix}events_rollup_1hr.event_count + excluded.event_count;
 END;
@@ -251,13 +251,13 @@ BEGIN
     /* aggregate the events, merge results if the entry already exists */
     INSERT INTO {$prefix}events_rollup_1day
         SELECT  object_uid,
-                model,
+                model_class,
                 event_name,
                 date_trunc('day', timestamp) as day,
                 count(*) as event_count
         FROM {$prefix}events WHERE id BETWEEN start_id AND end_id
-        GROUP BY object_uid, model, event_name, day
-        ON CONFLICT (object_uid, model, event_name, day)
+        GROUP BY object_uid, model_class, event_name, day
+        ON CONFLICT (object_uid, model_class, event_name, day)
         DO UPDATE
         SET event_count = {$prefix}events_rollup_1day.event_count + excluded.event_count;
 END;
@@ -279,7 +279,7 @@ VALUES ('{$prefix}requests_rollup_1day', '{$prefix}requests', '{$prefix}requests
 CREATE TABLE {$prefix}requests (
     id BIGSERIAL,
     object_uid TEXT NOT NULL,
-    model TEXT NOT NULL,
+    model_class TEXT NOT NULL,
     session_uid TEXT NULL,
     offline BOOLEAN DEFAULT FALSE,
     url TEXT NULL,
@@ -297,7 +297,7 @@ CREATE INDEX ON public.{$prefix}requests (timestamp);
 
 CREATE TABLE {$prefix}requests_rollup_1min (
     object_uid TEXT NOT NULL,
-    model TEXT NOT NULL,
+    model_class TEXT NOT NULL,
     url TEXT NULL,
     path TEXT NULL,
     host TEXT NULL,
@@ -305,11 +305,11 @@ CREATE TABLE {$prefix}requests_rollup_1min (
     request_count bigint
 ) PARTITION BY RANGE (minute);
 CREATE INDEX ON public.{$prefix}requests_rollup_1min (minute);
-CREATE UNIQUE INDEX {$prefix}requests_rollup_1min_unique_idx ON {$prefix}requests_rollup_1min(object_uid, model, url, path, host, minute);
+CREATE UNIQUE INDEX {$prefix}requests_rollup_1min_unique_idx ON {$prefix}requests_rollup_1min(object_uid, model_class, url, path, host, minute);
 
 CREATE TABLE {$prefix}requests_rollup_5min (
     object_uid TEXT NOT NULL,
-    model TEXT NOT NULL,
+    model_class TEXT NOT NULL,
     url TEXT NULL,
     path TEXT NULL,
     host TEXT NULL,
@@ -317,11 +317,11 @@ CREATE TABLE {$prefix}requests_rollup_5min (
     request_count bigint
 ) PARTITION BY RANGE (minute);
 CREATE INDEX ON public.{$prefix}requests_rollup_5min (minute);
-CREATE UNIQUE INDEX {$prefix}requests_rollup_5min_unique_idx ON {$prefix}requests_rollup_5min(object_uid, model, url, path, host, minute);
+CREATE UNIQUE INDEX {$prefix}requests_rollup_5min_unique_idx ON {$prefix}requests_rollup_5min(object_uid, model_class, url, path, host, minute);
 
 CREATE TABLE {$prefix}requests_rollup_1hr (
     object_uid TEXT NOT NULL,
-    model TEXT NOT NULL,
+    model_class TEXT NOT NULL,
     url TEXT NULL,
     path TEXT NULL,
     host TEXT NULL,
@@ -329,11 +329,11 @@ CREATE TABLE {$prefix}requests_rollup_1hr (
     request_count bigint
 ) PARTITION BY RANGE (hour);
 CREATE INDEX ON public.{$prefix}requests_rollup_1hr (hour);
-CREATE UNIQUE INDEX {$prefix}requests_rollup_1hr_unique_idx ON {$prefix}requests_rollup_1hr(object_uid, model, url, path, host, hour);
+CREATE UNIQUE INDEX {$prefix}requests_rollup_1hr_unique_idx ON {$prefix}requests_rollup_1hr(object_uid, model_class, url, path, host, hour);
 
 CREATE TABLE {$prefix}requests_rollup_1day (
     object_uid TEXT NOT NULL,
-    model TEXT NOT NULL,
+    model_class TEXT NOT NULL,
     url TEXT NULL,
     path TEXT NULL,
     host TEXT NULL,
@@ -341,7 +341,7 @@ CREATE TABLE {$prefix}requests_rollup_1day (
     request_count bigint
 ) PARTITION BY RANGE (day);
 CREATE INDEX ON public.{$prefix}requests_rollup_1day (day);
-CREATE UNIQUE INDEX {$prefix}requests_rollup_1day_unique_idx ON {$prefix}requests_rollup_1day(object_uid, model, url, path, host, day);
+CREATE UNIQUE INDEX {$prefix}requests_rollup_1day_unique_idx ON {$prefix}requests_rollup_1day(object_uid, model_class, url, path, host, day);
 
 -- ----------------------------------------------------------------------------
 -- REQUESTS 1 MINUTE AGGREGATION
@@ -361,15 +361,15 @@ BEGIN
     /* aggregate the requests, merge results if the entry already exists */
     INSERT INTO {$prefix}requests_rollup_1min
         SELECT  object_uid,
-                model,
+                model_class,
                 url,
                 path,
                 host,
                 date_trunc('seconds', (timestamp - TIMESTAMP 'epoch') / 60) * 60 + TIMESTAMP 'epoch' AS minute,
                 count(*) as request_count
         FROM {$prefix}requests WHERE {$prefix}requests.id BETWEEN start_id AND end_id
-        GROUP BY object_uid, model, url, path, host, minute
-        ON CONFLICT (object_uid, model, url, path, host, minute)
+        GROUP BY object_uid, model_class, url, path, host, minute
+        ON CONFLICT (object_uid, model_class, url, path, host, minute)
         DO UPDATE
         SET request_count = {$prefix}requests_rollup_1min.request_count + excluded.request_count;
 END; 
@@ -394,15 +394,15 @@ BEGIN
     /* aggregate the requests, merge results if the entry already exists */
     INSERT INTO {$prefix}requests_rollup_5min
         SELECT  object_uid,
-                model,
+                model_class,
                 url,
                 path,
                 host,
                 date_trunc('seconds', (timestamp - TIMESTAMP 'epoch') / 300) * 300 + TIMESTAMP 'epoch' AS minute,
                 count(*) as request_count
         FROM {$prefix}requests WHERE {$prefix}requests.id BETWEEN start_id AND end_id
-        GROUP BY object_uid, model, url, path, host, minute
-        ON CONFLICT (object_uid, model, url, path, host, minute)
+        GROUP BY object_uid, model_class, url, path, host, minute
+        ON CONFLICT (object_uid, model_class, url, path, host, minute)
         DO UPDATE
         SET request_count = {$prefix}requests_rollup_5min.request_count + excluded.request_count;
 END; 
@@ -427,15 +427,15 @@ BEGIN
     /* aggregate the requests, merge results if the entry already exists */
     INSERT INTO {$prefix}requests_rollup_1hr
         SELECT  object_uid,
-                model,
+                model_class,
                 url,
                 path,
                 host,
                 date_trunc('hour', timestamp) as hour,
                 count(*) as request_count
         FROM {$prefix}requests WHERE {$prefix}requests.id BETWEEN start_id AND end_id
-        GROUP BY object_uid, model, url, path, host, hour
-        ON CONFLICT (object_uid, model, url, path, host, hour)
+        GROUP BY object_uid, model_class, url, path, host, hour
+        ON CONFLICT (object_uid, model_class, url, path, host, hour)
         DO UPDATE
         SET request_count = {$prefix}requests_rollup_1hr.request_count + excluded.request_count;
 END; 
@@ -460,15 +460,15 @@ BEGIN
     /* aggregate the requests, merge results if the entry already exists */
     INSERT INTO {$prefix}requests_rollup_1day
         SELECT  object_uid,
-                model,
+                model_class,
                 url,
                 path,
                 host,
                 date_trunc('day', timestamp) as day,
                 count(*) as request_count
         FROM {$prefix}requests WHERE {$prefix}requests.id BETWEEN start_id AND end_id
-        GROUP BY object_uid, model, url, path, host, day
-        ON CONFLICT (object_uid, model, url, path, host, day)
+        GROUP BY object_uid, model_class, url, path, host, day
+        ON CONFLICT (object_uid, model_class, url, path, host, day)
         DO UPDATE
         SET request_count = {$prefix}requests_rollup_1day.request_count + excluded.request_count;
 END; 
@@ -480,12 +480,12 @@ LANGUAGE plpgsql;
 -- ----------------------------------------------------------------------------
 CREATE TABLE {$prefix}sessions_rollup_1day (
     object_uid TEXT NOT NULL,
-    model TEXT NOT NULL,
+    model_class TEXT NOT NULL,
     day TIMESTAMPTZ NOT NULL,
     session_count INT NOT NULL
 ) PARTITION BY RANGE (day);
 CREATE INDEX ON {$prefix}sessions_rollup_1day (day);
-CREATE UNIQUE INDEX {$prefix}sessions_rollup_1day_unique_idx ON {$prefix}sessions_rollup_1day(object_uid, model, day);
+CREATE UNIQUE INDEX {$prefix}sessions_rollup_1day_unique_idx ON {$prefix}sessions_rollup_1day(object_uid, model_class, day);
 ");
     }
 

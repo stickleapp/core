@@ -22,7 +22,7 @@ class ModelsIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'model' => ['required', 'string'],
+            'model_class' => ['required', 'string'],
             'search' => ['nullable', 'string'],
             'per_page' => ['nullable', 'integer'],
         ];

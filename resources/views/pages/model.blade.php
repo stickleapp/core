@@ -14,15 +14,18 @@
         <!-- 2/3 Column -->
         <div id="events" class="w-full md:w-3/5 pr-4 md:block">
             <!-- Column 2 content here -->
-            <x-stickle::ui.chartlists.model-chartlist :model="$model">
-            </x-stickle::ui.chartlists.model-chartlist>
+            <x-stickle::ui.chartlists.model :model="$model">
+            </x-stickle::ui.chartlists.model>
         </div>
 
         <!-- 1/3 Column -->
         <div id="statistics" class="w-full md:w-2/5 pl-4 md:block hidden">
             <!-- Column 2 content here -->
             <x-stickle::ui.timelines.event-timeline
-                :channel="config('stickle.broadcasting.channels.firehose')"
+                :channel="sprintf(config('stickle.broadcasting.channels.object'),
+                    str_replace('\\', '-', strtolower(class_basename($model))),
+                    $model->getKey()
+                )"
             ></x-stickle::ui.timelines.event-timeline>
         </div>
     </div>

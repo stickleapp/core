@@ -46,38 +46,38 @@ final class RollupSessionsCommand extends Command implements Isolatable
 
         $sql = <<<sql
 INSERT INTO {$this->prefix}sessions_rollup_1day (
-    model, 
+    model_class, 
     object_uid, 
     day, 
     session_count
 )
     WITH first_session_events AS (
         SELECT
-            model,
+            model_class,
             object_uid,
             session_uid,
             MIN(DATE(timestamp)) AS first_day
         FROM
-            (SELECT model, object_uid, session_uid, timestamp FROM {$this->prefix}events WHERE timestamp >= '%s'
+            (SELECT model_class, object_uid, session_uid, timestamp FROM {$this->prefix}events WHERE timestamp >= '%s'
              UNION ALL
-             SELECT model, object_uid, session_uid, timestamp FROM {$this->prefix}requests WHERE offline = FALSE AND timestamp > '%s') AS combined
+             SELECT model_class, object_uid, session_uid, timestamp FROM {$this->prefix}requests WHERE offline = FALSE AND timestamp > '%s') AS combined
         GROUP BY
-            model,
+            model_class,
             object_uid,
             session_uid
     )
     SELECT
-        model,
+        model_class,
         object_uid,
         first_day AS day,
         COUNT(DISTINCT session_uid) AS session_count
     FROM
         first_session_events
     GROUP BY
-        model,
+        model_class,
         object_uid,
         first_day
-ON CONFLICT (model, object_uid, day) DO UPDATE SET session_count = EXCLUDED.session_count;
+ON CONFLICT (model_class, object_uid, day) DO UPDATE SET session_count = EXCLUDED.session_count;
 sql;
 
         \DB::statement(sprintf($sql, $startDate->toDateString(), $startDate->toDateString()));

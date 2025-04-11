@@ -23,14 +23,14 @@ class ModelAttributeAuditSeeder extends Seeder
 
         $sql = <<<sql
 INSERT INTO {$prefix}model_attribute_audit (
-    model, 
+    model_class, 
     object_uid, 
     attribute,
     value_old,
     value_new,
     timestamp)
 SELECT 
-    'Workbench\App\Models\Customer' AS model,
+    'Customer' AS model_class,
     object_uid, 
     attribute, 
     random() * 100 AS value_old,
@@ -44,21 +44,27 @@ FROM
         FROM 
         {$prefix}model_attributes,
         (VALUES 
-            ('mrr')
+            ('mrr'),
+            ('ticket_count'),
+            ('open_ticket_count'),
+            ('closed_ticket_count'),
+            ('tickets_closed_last_30_days'),
+            ('average_resolution_time'),
+            ('average_resolution_time_30_days')    
         ) AS attributes(attribute)
-        WHERE model = 'Workbench\App\Models\Customer'
+        WHERE model_class = 'Customer'
     ) AS series
 ON CONFLICT DO NOTHING;
 
 INSERT INTO {$prefix}model_attribute_audit (
-    model, 
+    model_class, 
     object_uid, 
     attribute,
     value_old,
     value_new,
     timestamp)
 SELECT 
-    'Workbench\App\Models\User' AS model,
+    'User' AS model_class,
     object_uid, 
     attribute, 
     random() * 100 AS value_old,
@@ -72,9 +78,16 @@ FROM
         FROM 
         {$prefix}model_attributes,
         (VALUES 
-            ('user_rating', 'user_level')
+            ('user_level'),
+            ('user_rating'),
+            ('ticket_count'),
+            ('open_ticket_count'),
+            ('closed_ticket_count'),
+            ('tickets_closed_last_30_days'),
+            ('average_resolution_time'),
+            ('average_resolution_time_30_days')  
         ) AS attributes(attribute)
-        WHERE model = 'Workbench\App\Models\User'
+        WHERE model_class = 'User'
     ) AS series
 ON CONFLICT DO NOTHING;
 sql;

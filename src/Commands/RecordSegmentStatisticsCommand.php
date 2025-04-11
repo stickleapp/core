@@ -51,14 +51,14 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
 
         $statistics = $this->getAttributesToRecord($segments);
 
-        $tempTableSql = 'CREATE TEMP TABLE temp_attributes (model VARCHAR(255), attribute VARCHAR(255));';
+        $tempTableSql = 'CREATE TEMP TABLE temp_attributes (model_class VARCHAR(255), attribute VARCHAR(255));';
 
         DB::statement($tempTableSql);
 
         DB::table('temp_attributes')->insert(array_values($statistics));
 
         $rows = DB::table('temp_attributes')
-            ->join("{$this->prefix}segments", "{$this->prefix}segments.model", '=', 'temp_attributes.model')
+            ->join("{$this->prefix}segments", "{$this->prefix}segments.model_class", '=', 'temp_attributes.model')
             ->leftJoin("{$this->prefix}segment_statistic_exports", function ($query) {
                 $query->on("{$this->prefix}segment_statistic_exports.segment_id", '=', "{$this->prefix}segments.id");
                 $query->on("{$this->prefix}segment_statistic_exports.attribute", '=', 'temp_attributes.attribute');
@@ -67,7 +67,7 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
                 return $query->where("{$this->prefix}segments.id", $segmentId);
             })
             ->select([
-                'temp_attributes.model',
+                'temp_attributes.model_class',
                 'temp_attributes.attribute',
                 "{$this->prefix}segments.id as segment_id",
                 'last_recorded_at',
@@ -88,7 +88,7 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
      * Get the attributes to record for each segment
      *
      * @param  Collection<int, Segment>  $segments
-     * @return array<string, array{model: string, attribute: string}>
+     * @return array<string, array{model_class: string, attribute: string}>
      */
     private function getAttributesToRecord(Collection $segments): array
     {
@@ -103,7 +103,7 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
             $stickleTrackedAttributes[] = 'count';
             foreach ($stickleTrackedAttributes as $attribute) {
                 $return[md5($model.$attribute)] = [
-                    'model' => $model,
+                    'model_class' => $model,
                     'attribute' => $attribute,
                 ];
             }

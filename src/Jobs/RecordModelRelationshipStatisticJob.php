@@ -18,7 +18,7 @@ class RecordModelRelationshipStatisticJob implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(
-        public string $model,
+        public string $modelClass,
         public string $relationship,
         public string $related,
         public string $attribute
@@ -51,16 +51,14 @@ class RecordModelRelationshipStatisticJob implements ShouldQueue
     {
 
         Log::info(self::class, [
-            'model' => $this->model,
+            'modelClass' => $this->modelClass,
             'relationship' => $this->relationship,
             'related' => $this->related,
             'attribute' => $this->attribute,
         ]);
-        if ($this->related == 'Workbench\App\Models\Customer') {
-            return;
-        }
+
         $recordModelRelationshipStatisticAction(
-            model: $this->model,
+            modelClass: $this->modelClass,
             attribute: $this->attribute,
             relationship: $this->relationship,
             related: $this->related

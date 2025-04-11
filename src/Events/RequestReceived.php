@@ -37,7 +37,7 @@ class RequestReceived implements ShouldBroadcast
             ),
             new Channel(
                 sprintf(config('stickle.broadcasting.channels.object'),
-                    str_replace('\\', '-', data_get($this->payload, 'model')),
+                    str_replace('\\', '-', strtolower(data_get($this->payload, 'model_class'))),
                     data_get($this->payload, 'object_uid')
                 )
             ),

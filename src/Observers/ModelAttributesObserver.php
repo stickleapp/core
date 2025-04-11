@@ -25,7 +25,7 @@ class ModelAttributesObserver
         foreach ($diff as $property => $changes) {
             // This may be slow
             ModelAttributeAudit::firstOrCreate([
-                'model' => $modelAttribute->model,
+                'model_class' => $modelAttribute->model_class,
                 'object_uid' => $modelAttribute->object_uid,
                 'attribute' => $property,
                 'timestamp' => now(),
@@ -34,7 +34,7 @@ class ModelAttributesObserver
                 'value_new' => Arr::get($changes, 'value_new'),
             ]);
             ModelAttributeChanged::dispatch(
-                $modelAttribute->model,
+                $modelAttribute->model_class,
                 $modelAttribute->object_uid,
                 $property,
                 Arr::get($changes, 'value_old'),

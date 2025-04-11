@@ -13,7 +13,7 @@ use StickleApp\Core\Models\ModelRelationshipStatisticExport;
 class RecordModelRelationshipStatisticAction
 {
     public function __invoke(
-        string $model,
+        string $modelClass,
         string $relationship,
         string $related,
         string $attribute
@@ -22,7 +22,7 @@ class RecordModelRelationshipStatisticAction
         Log::info(self::class, func_get_args());
 
         $builder = $this->builder(
-            model: $model,
+            modelClass: $modelClass,
             relationship: $relationship,
             related: $related,
             attribute: $attribute
@@ -32,16 +32,16 @@ class RecordModelRelationshipStatisticAction
         $items = $builder->get();
 
         ModelRelationshipStatistic::upsert(
-            $items->map(function ($model) {
-                return (array) $model;
+            $items->map(function ($item) {
+                return (array) $item;
             })->toArray(),
-            uniqueBy: ['model', 'object_uid', 'relationship', 'attribute', 'recorded_at'],
+            uniqueBy: ['model_class', 'object_uid', 'relationship', 'attribute', 'recorded_at'],
             update: ['value', 'value_avg', 'value_sum', 'value_min', 'value_max', 'value_count']
         );
 
         ModelRelationshipStatisticExport::updateOrCreate(
             [
-                'model' => $model,
+                'model_class' => $modelClass,
                 'relationship' => $relationship,
                 'attribute' => $attribute,
             ],
@@ -52,7 +52,7 @@ class RecordModelRelationshipStatisticAction
     }
 
     private function builder(
-        string $model,
+        string $modelClass,
         string $relationship,
         string $related,
         string $attribute
@@ -61,25 +61,25 @@ class RecordModelRelationshipStatisticAction
 
         $prefix = config('stickle.database.tablePrefix');
 
-        $modelInstance = $model::query()->getModel();
+        $model = $modelClass::query()->getModel();
 
-        $relatedInstance = $related::query()->getModel();
+        $relatedModel = $related::query()->getModel();
 
-        return $model::joinRelationship(
+        return $modelClass::joinRelationship(
             relation: (new $model)->$relationship(),
             alias: $relationship
         )
-            ->join("{$prefix}model_attributes", function ($join) use ($prefix, $relationship, $relatedInstance) {
-                $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw('"'.$relationship.'"."'.$relatedInstance->getKeyName().'"::text'));
-                $join->where("{$prefix}model_attributes.model", '=', get_class($relatedInstance));
+            ->join("{$prefix}model_attributes", function ($join) use ($prefix, $relationship, $relatedModel) {
+                $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw('"'.$relationship.'"."'.$relatedModel->getKeyName().'"::text'));
+                $join->where("{$prefix}model_attributes.model_class", '=', get_class($relatedModel));
             })
             ->groupBy(
-                "{$modelInstance->getTable()}.{$modelInstance->getKeyName()}"
+                "{$model->getTable()}.{$model->getKeyName()}"
             )
             ->selectRaw(
-                "'{$model}' AS model"
+                "'{$model}' AS model_class"
             )
-            ->selectRaw("{$modelInstance->getTable()}.{$modelInstance->getKeyName()} AS object_uid")
+            ->selectRaw("{$model->getTable()}.{$model->getKeyName()} AS object_uid")
             ->selectRaw(
                 "'{$relationship}' AS relationship"
             )

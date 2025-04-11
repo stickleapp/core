@@ -29,7 +29,7 @@ class RequestsSeeder extends Seeder
         $sql = <<<SQL
 INSERT INTO {$prefix}requests (
     object_uid, 
-    model, 
+    model_class, 
     session_uid, 
     url,
     path,
@@ -43,7 +43,7 @@ INSERT INTO {$prefix}requests (
     timestamp)
 SELECT
     (((SELECT MAX(id) FROM users) * random())+1)::INT::TEXT AS object_uid,
-    'Workbench\App\Models\User' AS model,
+    'User' AS model_class,
     'session_' || (random() * 90)::int::text AS session_uid,
     'http://example.com' AS url,
     '/path/to/page' AS path,

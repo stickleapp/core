@@ -96,7 +96,7 @@ class ModelAttributeSeeder extends Seeder
 
             // Replace insert with upsert to handle conflicts
             DB::table("{$prefix}model_attributes")->insert([
-                'model' => 'Workbench\App\Models\Customer',
+                'model_class' => 'Customer',
                 'object_uid' => $customer->id,
                 'data' => json_encode($attributes),
                 'synced_at' => now(),
@@ -117,7 +117,7 @@ class ModelAttributeSeeder extends Seeder
 
                 // Replace insert with upsert to handle conflicts
                 DB::table("{$prefix}model_attributes")->insert([
-                    'model' => 'Workbench\App\Models\User',
+                    'model_class' => 'User',
                     'object_uid' => $user->id,
                     'data' => json_encode($attributes),
                     'synced_at' => now(),

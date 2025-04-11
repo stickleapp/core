@@ -43,13 +43,13 @@ class EventCountDelta extends FilterTargetContract
         return \DB::table($this->prefix.'events_rollup_1day')
             ->where('event_name', $this->event)
             ->select(
-                'model',
+                'model_class',
                 'object_uid',
                 DB::raw(preg_replace('/\s+/', ' ', "
                     SUM(event_count)
-                        OVER (PARTITION BY model, object_uid ORDER BY day RANGE BETWEEN INTERVAL '59 day' PRECEDING AND INTERVAL '30 day' PRECEDING) -
+                        OVER (PARTITION BY model_class, object_uid ORDER BY day RANGE BETWEEN INTERVAL '59 day' PRECEDING AND INTERVAL '30 day' PRECEDING) -
                     SUM(event_count)
-                        OVER (PARTITION BY model, object_uid ORDER BY day RANGE BETWEEN INTERVAL '29 day' PRECEDING AND CURRENT ROW) -
+                        OVER (PARTITION BY model_class, object_uid ORDER BY day RANGE BETWEEN INTERVAL '29 day' PRECEDING AND CURRENT ROW) -
                     AS delta
                 "))
             );
@@ -72,7 +72,7 @@ class EventCountDelta extends FilterTargetContract
             $this->joinKey(),
             function (JoinClause $join) use ($model) {
                 $join->on($this->joinKey().'.object_uid', '=', "{$model->getTable()}.object_uid");
-                $join->on($this->joinKey().'.model', '=', "{$model->getTable()}.model");
+                $join->on($this->joinKey().'.model_class', '=', "{$model->getTable()}.model_class");
             }
         );
 

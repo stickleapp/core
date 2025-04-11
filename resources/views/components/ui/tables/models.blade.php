@@ -117,7 +117,7 @@
                                     >
                                         <a
                                             :href="modelUrl('{{
-                                                $class
+                                                $modelClass
                                             }}', item)"
                                             ><span
                                                 x-text="item[column.key]"
@@ -227,7 +227,7 @@
                 const params = new URLSearchParams({
                     page: store.currentPage,
                     per_page: store.perPage,
-                    model: "{{ $class }}",
+                    model_class: "{{ $modelClass }}",
                 });
 
                 // Add search term if present
@@ -303,9 +303,9 @@
                 );
             },
 
-            modelUrl(className, model) {
+            modelUrl(modelClass, model) {
                 // TODO: uid / not id?
-                return className + "/" + model.id;
+                return modelClass + "/" + model.id;
             },
         };
     }

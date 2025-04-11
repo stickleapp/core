@@ -59,7 +59,7 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
                         \DB::raw($model->getTable().'.'.$model->getKeyName().'::text')
                     );
                     $join->where(
-                        "{$this->prefix}model_attributes.model",
+                        "{$this->prefix}model_attributes.model_class",
                         '=',
                         $model::class
                     );

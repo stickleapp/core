@@ -28,7 +28,7 @@ class ModelAttributeAudit extends Model
      */
     protected $fillable = [
         'object_uid',
-        'model',
+        'model_class',
         'attribute',
         'value_old',
         'value_new',

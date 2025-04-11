@@ -23,7 +23,7 @@ class PageListener implements ShouldQueue
         Log::debug('PageListener->handle()', [$event]);
 
         $this->repository->saveRequest(
-            model: Arr::get($event->payload, 'model'),
+            model: Arr::get($event->payload, 'model_class'),
             objectUid: Arr::get($event->payload, 'object_uid'),
             sessionUid: Arr::get($event->payload, 'session_uid'),
             timestamp: Arr::get($event->payload, 'timestamp', new DateTime),

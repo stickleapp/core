@@ -11,7 +11,7 @@ use StickleApp\Core\Enums\AggregateType;
 use StickleApp\Core\Enums\ChartType;
 use StickleApp\Core\Enums\DataType;
 
-class ModelsChart extends Component
+class Model extends Component
 {
     /**
      * Create the component instance.
@@ -21,7 +21,7 @@ class ModelsChart extends Component
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
         public string $key,
-        public string $model,
+        public object $model,
         public string $attribute,
         public ChartType $chartType,
         public ?string $label,
@@ -35,15 +35,17 @@ class ModelsChart extends Component
      */
     public function render(): View
     {
-        return view('stickle::components/ui/charts/models-chart');
+        return view('stickle::components/ui/charts/model');
     }
 
     public function endpoint(): string
     {
+
         return url()->query(
-            $this->apiPrefix.'/models-statistics',
+            $this->apiPrefix.'/model-attribute-audit',
             [
-                'model' => $this->model,
+                'model_class' => class_basename($this->model),
+                'uid' => $this->model->getKey(),
                 'attribute' => $this->attribute,
                 'date_from' => now()->subDays(30)->toDateString(),
             ]

@@ -29,7 +29,7 @@ class ModelAttributes extends Model
      */
     protected $fillable = [
         'object_uid',
-        'model',
+        'model_class',
         'data',
         'synced_at',
     ];

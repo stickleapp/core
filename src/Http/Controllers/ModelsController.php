@@ -20,21 +20,21 @@ class ModelsController
 
         $validated = $request->validated();
 
-        $model = data_get($validated, 'model');
+        $modelClass = data_get($validated, 'model_class');
 
-        $class = config('stickle.namespaces.models').'\\'.Str::ucfirst((string) $model);
+        $modelClass = config('stickle.namespaces.models').'\\'.Str::ucfirst((string) $modelClass);
 
-        if (! class_exists($class)) {
+        if (! class_exists($modelClass)) {
             return response()->json(['error' => 'Model not found'], 404);
         }
 
-        if (! ClassUtils::usesTrait($class, StickleEntity::class)) {
+        if (! ClassUtils::usesTrait($modelClass, StickleEntity::class)) {
             return response()->json(['error' => 'Model does not use StickleEntity trait'], 400);
         }
 
         $search = data_get($validated, 'search'); // Get search term if provided
 
-        $builder = $class::query()->when($search, function ($q) use ($search) {
+        $builder = $modelClass::query()->when($search, function ($q) use ($search) {
             return $q->where(function ($subQuery) use ($search) {
                 $subQuery->where('name', 'ILIKE', "%{$search}%");
             });

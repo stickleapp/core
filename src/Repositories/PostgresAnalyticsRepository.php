@@ -33,7 +33,7 @@ final class PostgresAnalyticsRepository implements AnalyticsRepositoryContract
         ?array $properties = [],
     ): void {
         DB::table($this->prefix.'events')->insert([
-            'model' => $model,
+            'model_class' => $model,
             'object_uid' => $objectUid,
             'session_uid' => $sessionUid,
             'event_name' => $event,
@@ -61,7 +61,7 @@ final class PostgresAnalyticsRepository implements AnalyticsRepositoryContract
         ?string $utmContent = null
     ): void {
         DB::table($this->prefix.'requests')->insert([
-            'model' => $model,
+            'model_class' => $model,
             'object_uid' => $objectUid,
             'session_uid' => $sessionUid,
             'url' => $url,

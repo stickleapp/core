@@ -26,7 +26,7 @@ return new class extends Migration
         Schema::create("{$prefix}segments", function (Blueprint $table) use ($prefix) {
             $table->id();
             $table->unsignedBigInteger('segment_group_id')->nullable(true);
-            $table->text('model')->nullable(false);
+            $table->text('model_class')->nullable(false);
             $table->text('as_class')->nullable(true);
             $table->jsonb('as_json')->nullable(true);
             $table->integer('sort_order')->nullable(false)->default(0);
@@ -34,7 +34,7 @@ return new class extends Migration
             $table->timestamp('last_exported_at')->nullable(true);
             $table->timestamps();
 
-            $table->unique(['model', 'as_class']);
+            $table->unique(['model_class', 'as_class']);
             $table->foreign('segment_group_id')->references('id')->on("{$prefix}segment_groups");
             $table->index('segment_group_id');
         });

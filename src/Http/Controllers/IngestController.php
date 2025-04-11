@@ -53,8 +53,8 @@ class IngestController
 
         $dt = new Carbon;
 
-        if (! $model = $this->model(
-            data_get($validated, 'model'),
+        if (! $modelClass = $this->modelClass(
+            data_get($validated, 'model_class'),
             $request->user()
         )) {
             throw new \Exception('Model class not specified');
@@ -71,7 +71,7 @@ class IngestController
                 case 'page':
                     $data = array_merge($item, [
                         'user' => $request->user(),
-                        'model' => $model,
+                        'model_class' => $modelClass,
                         'object_uid' => $objectUid,
                         'session_uid' => $request->session()->getId(),
                         'url' => $request->fullUrl(),
@@ -91,7 +91,7 @@ class IngestController
                 case 'track':
                     $data = array_merge($item, [
                         'user' => $request->user(),
-                        'model' => $model,
+                        'model_class' => $modelClass,
                         'object_uid' => $objectUid,
                         'session_uid' => $request->session()->getId(),
                         'url' => $request->fullUrl(),
@@ -114,14 +114,14 @@ class IngestController
         return response()->noContent();
     }
 
-    private function model(?string $explicit, ?object $object): ?string
+    private function modelClass(?string $explicit, ?object $object): ?string
     {
         if ($explicit) {
             return $explicit;
         }
 
         if ($object) {
-            return get_class($object);
+            return class_basename($object);
         }
 
         return null;
@@ -130,11 +130,11 @@ class IngestController
     private function objectUid(?string $explicit, ?object $model): ?string
     {
         if ($explicit) {
-            return $explicit;
+            return (string) $explicit;
         }
 
         if ($model && property_exists($model, 'id')) {
-            return $model->id;
+            return (string) $model->id;
         }
 
         return null;

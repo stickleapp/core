@@ -23,7 +23,7 @@ class ModelRelationshipStatisticExport extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'model',
+        'model_class',
         'relationship',
         'attribute',
         'last_recorded_at',

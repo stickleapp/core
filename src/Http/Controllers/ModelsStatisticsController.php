@@ -22,25 +22,25 @@ class ModelsStatisticsController
 
         $attribute = $request->string('attribute');
 
-        $model = $request->string('model');
+        $modelClass = $request->string('model_class');
 
-        $class = config('stickle.namespaces.models').'\\'.Str::ucfirst((string) $model);
+        $modelClass = config('stickle.namespaces.models').'\\'.Str::ucfirst((string) $modelClass);
 
-        if (! class_exists($class)) {
+        if (! class_exists($modelClass)) {
             return response()->json(['error' => 'Model not found'], 404);
         }
 
-        if (! ClassUtils::usesTrait($class, 'StickleApp\\Core\\Traits\\StickleEntity')) {
+        if (! ClassUtils::usesTrait($modelClass, 'StickleApp\\Core\\Traits\\StickleEntity')) {
             return response()->json(['error' => 'Model does not use StickleEntity trait'], 400);
         }
 
         // Get the model instance
-        $model = $class::query()->getModel();
+        $model = $modelClass::query()->getModel();
 
-        $builder = $class::query()
+        $builder = $modelClass::query()
             ->join("{$prefix}model_attributes", function ($join) use ($prefix, $model) {
                 $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
-                $join->where("{$prefix}model_attributes.model", '=', get_class($model));
+                $join->where("{$prefix}model_attributes.model_class", '=', get_class($model));
             })
             ->selectRaw(
                 "AVG((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_avg",
