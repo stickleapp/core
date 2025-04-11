@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace StickleApp\Core\Views\Components\UI\Chartlists;
 
 use Illuminate\Container\Attributes\Config;
-use Illuminate\Support\Str;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 use StickleApp\Core\Support\ClassUtils;
