@@ -11,15 +11,13 @@
     </div>
 
     <div class="w-full flex flex-col md:flex-row">
-        <!-- 2/3 Column -->
-        <div id="events" class="w-full md:w-3/5 pr-4 md:block">
+        <div id="events" class="w-full md:w-1/2 pr-4 md:block">
             <!-- Column 2 content here -->
             <x-stickle::ui.chartlists.model :model="$model">
             </x-stickle::ui.chartlists.model>
         </div>
 
-        <!-- 1/3 Column -->
-        <div id="statistics" class="w-full md:w-2/5 pl-4 md:block hidden">
+        <div id="statistics" class="w-full md:w-1/2 pl-4 md:block hidden">
             <!-- Column 2 content here -->
             <x-stickle::ui.timelines.event-timeline
                 :channel="sprintf(config('stickle.broadcasting.channels.object'),

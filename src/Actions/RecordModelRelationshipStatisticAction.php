@@ -15,7 +15,7 @@ class RecordModelRelationshipStatisticAction
     public function __invoke(
         string $modelClass,
         string $relationship,
-        string $related,
+        string $relatedClass,
         string $attribute
     ): void {
 
@@ -24,7 +24,7 @@ class RecordModelRelationshipStatisticAction
         $builder = $this->builder(
             modelClass: $modelClass,
             relationship: $relationship,
-            related: $related,
+            relatedClass: $relatedClass,
             attribute: $attribute
         );
 
@@ -54,7 +54,7 @@ class RecordModelRelationshipStatisticAction
     private function builder(
         string $modelClass,
         string $relationship,
-        string $related,
+        string $relatedClass,
         string $attribute
     ): Builder {
         Log::info(self::class, func_get_args());
@@ -63,7 +63,7 @@ class RecordModelRelationshipStatisticAction
 
         $model = $modelClass::query()->getModel();
 
-        $relatedModel = $related::query()->getModel();
+        $relatedModel = $relatedClass::query()->getModel();
 
         return $modelClass::joinRelationship(
             relation: (new $model)->$relationship(),
@@ -71,7 +71,7 @@ class RecordModelRelationshipStatisticAction
         )
             ->join("{$prefix}model_attributes", function ($join) use ($prefix, $relationship, $relatedModel) {
                 $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw('"'.$relationship.'"."'.$relatedModel->getKeyName().'"::text'));
-                $join->where("{$prefix}model_attributes.model_class", '=', get_class($relatedModel));
+                $join->where("{$prefix}model_attributes.model_class", '=', class_basename($relatedModel));
             })
             ->groupBy(
                 "{$model->getTable()}.{$model->getKeyName()}"

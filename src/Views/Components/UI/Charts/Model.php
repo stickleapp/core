@@ -24,6 +24,7 @@ class Model extends Component
         public object $model,
         public string $attribute,
         public ChartType $chartType,
+        public mixed $currentValue,
         public ?string $label,
         public ?string $description,
         public ?DataType $dataType,

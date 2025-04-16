@@ -21,7 +21,7 @@ Route::middleware(['web'])->group(function () {
         ->where('modelClass', '[^/]+');
 
     Route::get(
-        '/stickle/{modelClass}/{uid}/{relatedClass}',
+        '/stickle/{modelClass}/{uid}/{relationship}',
         function (Request $request) {
             $modelClass = config('stickle.namespaces.models').'\\'.ucfirst($request->route('modelClass'));
             $model = $modelClass::findOrFail($request->route('uid'));
@@ -30,13 +30,13 @@ Route::middleware(['web'])->group(function () {
                 'modelClass' => $request->route('modelClass'),
                 'uid' => $request->route('uid'),
                 'model' => $model,
-                'relationship' => $request->route('relatedClass'),
+                'relationship' => $request->route('relationship'),
             ]);
         })
         ->name('stickle::model.relationship')
         ->where('modelClass', '[^/]+')
         ->where('uid', '[^/]+')
-        ->where('relatedClass', '[^/]+');
+        ->where('relationship', '[^/]+');
 
     Route::get('/stickle/{modelClass}/{uid}', function (Request $request) {
         $modelClass = config('stickle.namespaces.models').'\\'.ucfirst($request->route('modelClass'));

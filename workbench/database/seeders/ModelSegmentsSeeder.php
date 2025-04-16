@@ -15,6 +15,6 @@ class ModelSegmentsSeeder extends Seeder
      */
     public function run(): void
     {
-        Artisan::call('stickle:export-segments /Users/davidclaysmith/Projects/StickleApp/Core/workbench/app/Segments \\\\Workbench\\\\App\\\\Segments 10');
+        Artisan::call('stickle:export-segments /Users/davidclaysmith/Projects/StickleApp/Core/workbench/app/Segments Workbench\\\\App\\\\Segments 10');
     }
 }

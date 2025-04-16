@@ -40,7 +40,7 @@ class ModelsStatisticsController
         $builder = $modelClass::query()
             ->join("{$prefix}model_attributes", function ($join) use ($prefix, $model) {
                 $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
-                $join->where("{$prefix}model_attributes.model_class", '=', get_class($model));
+                $join->where("{$prefix}model_attributes.model_class", '=', class_basename($model));
             })
             ->selectRaw(
                 "AVG((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_avg",

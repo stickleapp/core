@@ -15,8 +15,8 @@
         <div id="events" class="w-full md:w-3/5 pr-4 md:block">
             <!-- Column 2 content here -->
             <x-stickle::ui.tables.models
-                :heading="\Illuminate\Support\Str::of($class)->headline()"
-                :subheading="sprintf('A full list of your %s.', \Illuminate\Support\Str::of($class)->plural())"
+                :heading="\Illuminate\Support\Str::of($relationship)->headline()"
+                :subheading="sprintf('A full list of your %s.', \Illuminate\Support\Str::of($relationship)->plural())"
                 :model-class="$modelClass"
             >
             </x-stickle::ui.tables.models>

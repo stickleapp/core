@@ -18,7 +18,7 @@ Route::post('/users/{user}/{event}', function (Request $request, User $user, str
     $dt = now();
     $data = [
         'user' => $user,
-        'model_class' => User::class,
+        'model_class' => class_basename(User::class),
         'object_uid' => (string) $user->id,
         'session_uid' => $request->session()->getId(),
         'timestamp' => $dt,

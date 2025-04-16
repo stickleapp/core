@@ -7,7 +7,7 @@ namespace StickleApp\Core\Views\Components\UI\Charts\Primatives;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 
-class LineChart extends Component
+class Delta extends Component
 {
     /**
      * Create the component instance.
@@ -15,10 +15,6 @@ class LineChart extends Component
      * @return void
      */
     public function __construct(
-        public string $key,
-        public ?array $apiData = null,
-        public ?string $color = 'rgba(250, 204, 21, .7)',
-        public ?string $hoverColor = 'rgba(250, 204, 21, 1)'
     ) {}
 
     /**
@@ -26,6 +22,6 @@ class LineChart extends Component
      */
     public function render(): View
     {
-        return view('stickle::components/ui/charts/primatives/line');
+        return view('stickle::components/ui/charts/primatives/delta');
     }
 }

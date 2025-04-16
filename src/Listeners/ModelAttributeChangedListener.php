@@ -22,19 +22,19 @@ class ModelAttributeChangedListener implements ShouldQueue
         /**
          * Look for a listener Model + Attribute + Listener
          */
-        $class = $this->listenerName($event->model, $event->attribute);
+        $modelClass = $this->listenerName($event->modelClass, $event->attribute);
 
-        Log::debug('ModelAttributeChanged Class', [$class]);
+        Log::debug('ModelAttributeChanged Class', [$modelClass]);
 
-        if (class_exists($class)) {
-            Log::debug('TrackEvent Class Exists', [$class]);
-            $listener = new $class;
+        if (class_exists($modelClass)) {
+            Log::debug('TrackEvent Class Exists', [$modelClass]);
+            $listener = new $modelClass;
             if (! method_exists($listener, 'handle')) {
-                throw new \Exception('$class Does Not Have Handle Method');
+                throw new \Exception('$modelClass Does Not Have Handle Method');
             }
             $listener->handle($event);
         } else {
-            Log::debug('ModelAttributeChanged Listener Does Not Exist', [$class]);
+            Log::debug('ModelAttributeChanged Listener Does Not Exist', [$modelClass]);
         }
     }
 
@@ -42,12 +42,12 @@ class ModelAttributeChangedListener implements ShouldQueue
      * Format the name of the listener class file that -- should it exist --
      * will handle this event
      */
-    public function listenerName(string $model, string $attribute): string
+    public function listenerName(string $modelClass, string $attribute): string
     {
-        $model = str_replace(' ', '', ucwords(str_replace('_', ' ', $model)));
+        $modelClass = str_replace(' ', '', ucwords(str_replace('_', ' ', $modelClass)));
 
         $attribute = str_replace(' ', '', ucwords(str_replace('_', ' ', $attribute)));
 
-        return config('stickle.namespaces.listeners').'\\'.$model.$attribute.'Listener';
+        return config('stickle.namespaces.listeners').'\\'.$modelClass.$attribute.'Listener';
     }
 }

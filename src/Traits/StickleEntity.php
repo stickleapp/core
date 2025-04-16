@@ -180,17 +180,17 @@ trait StickleEntity
 
     public function modelAttributes(): HasOne
     {
-        return $this->hasOne(ModelAttributes::class, 'object_uid')->where('model_class', self::class);
+        return $this->hasOne(ModelAttributes::class, 'object_uid')->where('model_class', class_basename(self::class));
     }
 
     public function modelAttributeAudits(): HasMany
     {
-        return $this->hasMany(ModelAttributeAudit::class, 'object_uid')->where('model_class', self::class);
+        return $this->hasMany(ModelAttributeAudit::class, 'object_uid')->where('model_class', class_basename(self::class));
     }
 
     public function modelRelationshipStatistics(): HasMany
     {
-        return $this->hasMany(ModelRelationshipStatistic::class, 'object_uid')->where('model_class', self::class);
+        return $this->hasMany(ModelRelationshipStatistic::class, 'object_uid')->where('model_class', class_basename(self::class));
     }
 
     /**

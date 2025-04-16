@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * @property string $model
+ * @property string $model_class
  * @property string $object_uid
  */
 class ModelAttributes extends Model

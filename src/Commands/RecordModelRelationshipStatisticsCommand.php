@@ -69,7 +69,7 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
                         $attributes[] = [
                             'model_class' => class_basename($modelClass),
                             'relationship' => $relationship['name'],
-                            'related' => $relationship['related'],
+                            'related_class' => $relationship['related'],
                             'attribute' => $attribute,
                         ];
                     }
@@ -77,7 +77,7 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
             }
         }
 
-        $tempTableSql = 'CREATE TEMP TABLE temp_attributes (model_class TEXT, relationship TEXT, related TEXT, attribute TEXT);';
+        $tempTableSql = 'CREATE TEMP TABLE temp_attributes (model_class TEXT, relationship TEXT, related_class TEXT, attribute TEXT);';
 
         DB::statement($tempTableSql);
 
@@ -92,7 +92,7 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
             ->select([
                 'temp_attributes.model_class',
                 'temp_attributes.relationship',
-                'temp_attributes.related',
+                'temp_attributes.related_class',
                 'temp_attributes.attribute',
                 'last_recorded_at',
             ])
@@ -104,7 +104,7 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
             RecordModelRelationshipStatisticJob::dispatch(
                 $row->model_class,
                 $row->relationship,
-                $row->related,
+                $row->related_class,
                 $row->attribute
             );
         }

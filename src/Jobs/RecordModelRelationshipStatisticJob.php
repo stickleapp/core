@@ -20,7 +20,7 @@ class RecordModelRelationshipStatisticJob implements ShouldQueue
     public function __construct(
         public string $modelClass,
         public string $relationship,
-        public string $related,
+        public string $relatedClass,
         public string $attribute
     ) {}
 
@@ -53,7 +53,7 @@ class RecordModelRelationshipStatisticJob implements ShouldQueue
         Log::info(self::class, [
             'modelClass' => $this->modelClass,
             'relationship' => $this->relationship,
-            'related' => $this->related,
+            'relatedClass' => $this->relatedClass,
             'attribute' => $this->attribute,
         ]);
 
@@ -61,7 +61,7 @@ class RecordModelRelationshipStatisticJob implements ShouldQueue
             modelClass: $this->modelClass,
             attribute: $this->attribute,
             relationship: $this->relationship,
-            related: $this->related
+            relatedClass: $this->relatedClass
         );
     }
 }

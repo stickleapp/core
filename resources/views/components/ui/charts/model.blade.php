@@ -1,36 +1,127 @@
-<div
-    class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 bg-white px-4 py-10 sm:px-6 xl:px-8 shadow-sm"
->
-    <dt class="text-sm/6 font-medium text-gray-500">{{ $label }}</dt>
-    <dd>
-        <div
-            class="inline-flex items-baseline rounded-full bg-green-100 px-2.5 py-0.5 text-sm font-medium text-green-800 md:mt-2 lg:mt-0"
-        >
-            <svg
-                class="mr-0.5 -ml-1 size-5 shrink-0 self-center text-green-500"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-                data-slot="icon"
-            >
-                <path
-                    fill-rule="evenodd"
-                    d="M10 17a.75.75 0 0 1-.75-.75V5.612L5.29 9.77a.75.75 0 0 1-1.08-1.04l5.25-5.5a.75.75 0 0 1 1.08 0l5.25 5.5a.75.75 0 1 1-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0 1 10 17Z"
-                    clip-rule="evenodd"
-                />
-            </svg>
-            <span class="sr-only"> Increased by </span>
-            2.02%
-        </div>
-    </dd>
-    <dd
-        class="w-full flex-none text-3xl/10 font-medium tracking-tight text-gray-900"
+<div x-data="chartData{{ md5($endpoint) }}()">
+    <div
+        class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 bg-white px-4 py-10 sm:px-6 xl:px-8 shadow-sm"
     >
-        $405,091.00
-    </dd>
-
-    <x-stickle::ui.charts.primatives.line
-        :endpoint="$endpoint()"
-        :$key
-    ></x-stickle::ui.charts.primatives.line>
+        <dt class="text-sm/6 font-medium text-gray-500">{{ $label }}</dt>
+        <dd>@include('stickle::components.ui.charts.primatives.delta')</dd>
+        @if($currentValue)
+        <dd
+            class="w-full flex-none text-3xl/10 font-medium tracking-tight text-gray-900"
+        >
+            {{ $currentValue }}
+        </dd>
+        @endif
+        <div>
+            <canvas x-ref="{{ $key }}" id="{{ $key }}"></canvas>
+        </div>
+    </div>
 </div>
+
+<script>
+    function chartData{{ md5($endpoint) }}() {
+        // Declare 'chart' with 'let' to prevent it from being reactive in Alpine.js.
+        // This is because Chart.js manipulates the DOM directly, which can conflict with Alpine.js's reactivity.
+        let chart;
+
+        const clearChartData = () => {
+            chart.data.labels.length = 0;
+            chart.data.datasets.forEach(dataset => {
+                dataset.data.length = 0;
+            });
+        };
+
+        const setChartData = (data) => {
+            chart.data.labels = data.time_series.map(row => row.timestamp);
+            chart.data.datasets[0].data = data.time_series.map(row => row.value);
+        };
+
+        const fetchChartData = async () => {
+            this.isLoading = true;
+            return await fetch("{!! $endpoint !!}")
+                .then((response) => response.json())
+                .then((data) => {
+                    return data;
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                })
+                .finally(() => {
+                    this.isLoading = false;
+                });
+        };
+
+        return {
+            isLoading: false,
+            delta: null,
+            async init() {
+                const data = await fetchChartData();
+                this.delta = data.delta;
+                if (!data) return;
+                this.renderChart(data);
+            },
+            async updateChart() {
+                clearChartData();
+                const data = await fetchChartData();
+                this.delta = data.delta;
+                if (!data) return;
+                setChartData(data);
+                chart.update();
+            },
+            async renderChart(data) {
+                chart = new Chart(this.$refs['{{ $key }}'], {
+                    type: "line",
+                    data: {
+                        labels: data.time_series.map(row => row.timestamp),
+                        datasets: [
+                            {
+                                data: data.time_series.map(row => row.value),
+                                backgroundColor: "rgba(250, 204, 21, .7)",
+                                borderColor: "rgba(250, 204, 21, .7)",
+                                borderWidth: 2,
+                                fill: false,
+
+                                pointRadius: 2, // Size of the points (adjust as needed)
+                                pointBackgroundColor: "white", // White center
+                                pointBorderColor: "rgba(250, 204, 21, .7)", // Same as line color
+                                pointBorderWidth: 1, // Border thickness
+                                pointHoverRadius: 2, // Slightly larger on hover
+                                pointHoverBackgroundColor: "white",
+                                pointHoverBorderColor: "rgba(250, 204, 21, 1)", // Full opacity on hover
+                                pointHoverBorderWidth: 1,
+
+                                tension: 0.4,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: false,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                display: false,
+                                grid: {
+                                    drawTicks: false,
+                                    drawBorder: false,
+                                    drawOnChartArea: false,
+                                },
+                            },
+                            y: {
+                                display: false,
+                                grid: {
+                                    drawTicks: false,
+                                    drawBorder: false,
+                                    drawOnChartArea: false,
+                                },
+                            },
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: false },
+                        },
+                        layout: { padding: 0 },
+                    }
+                });
+            }
+        }
+    }
+</script>
