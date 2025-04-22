@@ -7,13 +7,8 @@ namespace StickleApp\Core\Contracts;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-/** Attributes: Name / Refresh Every / Description */
 abstract class SegmentContract
 {
-    public string $name;
-
-    public int $exportInterval;
-
     public string $model;
 
     /**

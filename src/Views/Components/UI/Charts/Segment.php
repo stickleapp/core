@@ -7,6 +7,9 @@ namespace StickleApp\Core\Views\Components\UI\Charts;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\View\Component;
 use Illuminate\View\View;
+use StickleApp\Core\Enums\AggregateType;
+use StickleApp\Core\Enums\ChartType;
+use StickleApp\Core\Enums\DataType;
 
 class Segment extends Component
 {
@@ -17,10 +20,14 @@ class Segment extends Component
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
-        public string $type,
-        public int $segmentId,
+        public string $key,
+        public object $segment,
         public string $attribute,
-        public ?string $title
+        public ChartType $chartType,
+        public ?string $label,
+        public ?string $description,
+        public ?DataType $dataType,
+        public ?AggregateType $primaryAggregate
     ) {}
 
     /**
@@ -36,7 +43,7 @@ class Segment extends Component
         return url()->query(
             $this->apiPrefix.'/segment-statistics',
             [
-                'segment_id' => $this->segmentId,
+                'segment_id' => $this->segment->getKey(),
                 'attribute' => $this->attribute,
                 'date_from' => now()->subDays(30)->toDateString(),
             ]

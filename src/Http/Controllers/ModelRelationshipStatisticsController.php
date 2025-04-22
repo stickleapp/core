@@ -15,9 +15,11 @@ class ModelRelationshipStatisticsController
     {
         $prefix = config('stickle.database.tablePrefix');
 
-        $attribute = $request->string('attribute');
+        $attribute = $request->string('attribute')->toString();
 
-        $modelClass = $request->string('model_class');
+        $modelClass = $request->string('model_class')->toString();
+
+        $relationship = $request->string('relationship')->toString();
 
         $modelClass = config('stickle.namespaces.models').'\\'.Str::ucfirst((string) $modelClass);
 
@@ -29,7 +31,7 @@ class ModelRelationshipStatisticsController
             return response()->json(['error' => 'Model does not use StickleEntity trait'], 400);
         }
 
-        $model = $modelClass::findOrFail($request->string('uid'));
+        $model = $modelClass::findOrFail($request->string('uid')->toString());
 
         $builder = $model->modelRelationshipStatistics()->where('attribute', $request->string('attribute'));
 

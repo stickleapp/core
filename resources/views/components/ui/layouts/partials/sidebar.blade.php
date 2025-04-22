@@ -69,7 +69,9 @@
                             <ul role="list" class="space-y-1">
                                 <li>
                                     <a
-                                        href="#"
+                                        href="/stickle/{{
+                                            class_basename($className)
+                                        }}/segments"
                                         class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-400 hover:bg-gray-50 hover:text-indigo-600"
                                     >
                                         <span class="size-6"></span>

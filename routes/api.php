@@ -7,6 +7,7 @@ use StickleApp\Core\Http\Controllers\ModelRelationshipStatisticsController;
 use StickleApp\Core\Http\Controllers\ModelsController;
 use StickleApp\Core\Http\Controllers\ModelsStatisticsController;
 use StickleApp\Core\Http\Controllers\SegmentModelsController;
+use StickleApp\Core\Http\Controllers\SegmentsController;
 use StickleApp\Core\Http\Controllers\SegmentStatisticsController;
 
 /**
@@ -22,6 +23,9 @@ Route::middleware(['api'])->group(function () {
 
     Route::get('/stickle/api/segment-models', [SegmentModelsController::class, 'index'])
         ->name('segment-models');
+
+    Route::get('/stickle/api/segments', [SegmentsController::class, 'index'])
+        ->name('segments');
 
     Route::get('/stickle/api/models', [ModelsController::class, 'index'])
         ->name('models');

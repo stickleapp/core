@@ -49,8 +49,10 @@ class ExportSegmentJob implements ShouldQueue
 
         Log::debug('ExportSegment Job', ['segment' => $this->segment]);
 
+        $class = config('stickle.namespaces.segments').'\\'.$this->segment->as_class;
+
         /** @var SegmentContract $segment */
-        $segment = new $this->segment->as_class;
+        $segment = new $class;
         $exportFilename = $exportSegment(
             segmentId: $this->segment->id,
             segmentDefinition: $segment

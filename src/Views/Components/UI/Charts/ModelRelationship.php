@@ -21,11 +21,11 @@ class ModelRelationship extends Component
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
         public string $key,
-        public string $model,
-        public string $uid,
+        public object $model,
         public string $relationship,
         public string $attribute,
         public ChartType $chartType,
+        public mixed $currentValue,
         public ?string $label,
         public ?string $description,
         public ?DataType $dataType,
@@ -43,10 +43,11 @@ class ModelRelationship extends Component
     public function endpoint(): string
     {
         return url()->query(
-            $this->apiPrefix.'/model-attributes',
+            $this->apiPrefix.'/model-relationship-statistics',
             [
                 'model_class' => class_basename($this->model),
-                'uid' => $this->uid,
+                'uid' => $this->model->getKey(),
+                'relationship' => $this->relationship,
                 'attribute' => $this->attribute,
                 'date_from' => now()->subDays(30)->toDateString(),
             ]

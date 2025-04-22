@@ -90,13 +90,12 @@ final class ExportSegmentsCommand extends Command implements Isolatable
                 /**
                  * @var class-string $className
                  */
-                $className = $namespace.'\\'.str_replace(
+                $className = str_replace(
                     ['/', '.php'],
                     ['\\', ''],
                     substr($file->getRealPath(), strlen($directory) + 1)
                 );
-
-                $reflection = new ReflectionClass($className);
+                $reflection = new ReflectionClass($namespace.'\\'.$className);
                 $defaultProperties = $reflection->getDefaultProperties();
 
                 $results[] = [

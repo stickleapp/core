@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use StickleApp\Core\Models\Segment;
 
 /**
  * Routes for the demo
@@ -19,6 +20,29 @@ Route::middleware(['web'])->group(function () {
     Route::view('/stickle/{modelClass}/segments', 'stickle::pages/segments')
         ->name('stickle::segments')
         ->where('modelClass', '[^/]+');
+
+    Route::get('/stickle/{modelClass}/segments', function (Request $request) {
+        $modelClass = config('stickle.namespaces.models').'\\'.ucfirst($request->route('modelClass'));
+
+        return view('stickle::pages/segments', [
+            'modelClass' => $request->route('modelClass'),
+        ]);
+    })
+        ->name('stickle::segments')
+        ->where('modelClass', '[^/]+');
+
+    Route::get('/stickle/{modelClass}/segments/{segmentId}', function (Request $request) {
+        $modelClass = config('stickle.namespaces.models').'\\'.ucfirst($request->route('modelClass'));
+        $segment = Segment::findOrFail($request->route('segmentId'));
+
+        return view('stickle::pages/segment', [
+            'modelClass' => $request->route('modelClass'),
+            'segment' => $segment,
+        ]);
+    })
+        ->name('stickle::segment')
+        ->where('modelClass', '[^/]+')
+        ->where('segmentId', '[^/]+');
 
     Route::get(
         '/stickle/{modelClass}/{uid}/{relationship}',

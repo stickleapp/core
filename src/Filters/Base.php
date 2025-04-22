@@ -88,9 +88,9 @@ class Base
             throw new \Exception('No test defined');
         }
 
-        if (! isset($this->target)) {
-            throw new \Exception('No target defined');
-        }
+        // if (! isset($this->target)) {
+        //     throw new \Exception('No target defined');
+        // }
 
         return $this->test->applyFilter(
             $this->target->applyJoin($builder),

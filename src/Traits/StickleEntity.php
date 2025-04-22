@@ -207,7 +207,7 @@ trait StickleEntity
         $relationships = ClassUtils::getRelationshipsWith(app(), self::class, [HasMany::class], $stickleEntityClasses);
 
         array_walk($relationships, function (&$relationship) {
-            $attribute = AttributeUtils::getAttributeForClassMethod(
+            $attribute = AttributeUtils::getAttributeForMethod(
                 self::class,
                 $relationship['name'],
                 StickleRelationshipMetadata::class
@@ -270,11 +270,19 @@ trait StickleEntity
 
         // Get the attributes that are tracked by StickleTrait as keys with empty arrays as values
         $trackedAttributes = static::getStickleTrackedAttributes();
+
         // Get the metadata [ 'attribute' => [ 'chartType' => 'line', 'label' => 'Attribute', 'description' => 'Description', 'dataType' => 'string', 'primaryAggregateType' => 'sum' ] ]
-        $metadata = AttributeUtils::getAttributesForClass(
+        $metadataMethods = AttributeUtils::getAllAttributesForClass_targetMethod(
             static::class,
             StickleAttributeMetadata::class
         );
+
+        $metadataProperties = AttributeUtils::getAllAttributesForClass_targetProperty(
+            static::class,
+            StickleAttributeMetadata::class
+        );
+
+        $metadata = array_merge($metadataMethods, $metadataProperties);
 
         // Directly build chart data for tracked attributes
         $chartData = [];

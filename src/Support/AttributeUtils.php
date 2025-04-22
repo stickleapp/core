@@ -4,27 +4,56 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Support;
 
+use Illuminate\Support\Arr;
 use ReflectionClass;
 use ReflectionMethod;
+use Attribute;
 
 class AttributeUtils
 {
-    /**
-     * Get all metadata for a specific attribute class in a target class
-     *
-     * @param  string  $className  The class to inspect
-     * @param  string  $attributeClass  The attribute class to look for (e.g., StickleAttributeMetadata::class)
-     * @return array<string, mixed> Map of attribute name to metadata value
-     */
-    public static function getAttributesForClass(string $className, string $attributeClass): array
-    {
 
+    /**
+     * @return array<string, list<mixed>>
+     */
+    public static function getAllAttributesForClass_targetClass(string $className, ?string $attributeClass = null): array
+    {
         if (! class_exists($className)) {
             throw new \Exception('Class not found');
         }
 
-        if (! class_exists($attributeClass)) {
-            throw new \Exception('Attribute not found');
+        if ($attributeClass !== null) {
+            if (! class_exists($attributeClass)) {
+                throw new \Exception('Attribute not found');
+            }
+        }
+
+        $reflection = new ReflectionClass($className);
+        $metadata = [];
+
+        // Check class for the attribute
+        $classAttributes = $reflection->getAttributes($attributeClass);
+
+        foreach ($classAttributes as $attribute) {
+            $instance = $attribute->newInstance();
+            $metadata[$attributeClass] = $instance->value;
+        }
+
+        return $metadata;
+    }
+
+    /**
+     * @return array<''|class-string, non-empty-array<string, mixed>>
+     */
+    public static function getAllAttributesForClass_targetMethod(string $className, ?string $attributeClass = null): array
+    {
+        if (! class_exists($className)) {
+            throw new \Exception('Class not found');
+        }
+
+        if ($attributeClass !== null) {
+            if (! class_exists($attributeClass)) {
+                throw new \Exception('Attribute not found');
+            }
         }
 
         $reflection = new ReflectionClass($className);
@@ -52,15 +81,8 @@ class AttributeUtils
                 $attributes = $method->getAttributes($attributeClass);
 
                 if (! empty($attributes)) {
-                    $metadata[$attributeName] = $attributes[0]->newInstance()->value;
+                    $metadata[$attributeClass][$attributeName] = $attributes[0]->newInstance()->value;
                 }
-            }
-        }
-        // Check properties for the attribute (if needed)
-        foreach ($reflection->getProperties() as $property) {
-            $attributes = $property->getAttributes($attributeClass);
-            if (! empty($attributes)) {
-                $metadata[$property->getName()] = $attributes[0]->newInstance()->value;
             }
         }
 
@@ -68,54 +90,49 @@ class AttributeUtils
     }
 
     /**
-     * Get metadata for a specific attribute in a class
-     *
-     * @param  string  $className  The class to inspect
-     * @param  string  $attributeClass  The attribute class to look for
-     * @param  string  $attributeName  The attribute name to find
-     * @return array<string, mixed>|null The metadata or null if not found
+     * @return array<''|class-string, non-empty-array<string, mixed>>
      */
-    public static function getAttributeForClass(string $className, string $attributeClass, string $attributeName): ?array
+    public static function getAllAttributesForClass_targetProperty(string $className, ?string $attributeClass = null): array
     {
-        $allAttributes = self::getAttributesForClass($className, $attributeClass);
+        if (! class_exists($className)) {
+            throw new \Exception('Class not found');
+        }
 
-        return $allAttributes[$attributeName] ?? null;
+        if ($attributeClass !== null) {
+            if (! class_exists($attributeClass)) {
+                throw new \Exception('Attribute not found');
+            }
+        }
+
+        $reflection = new ReflectionClass($className);
+        $metadata = [];
+
+        // Check properties for the attribute (if needed)
+        foreach ($reflection->getProperties() as $property) {
+            $attributes = $property->getAttributes($attributeClass);
+            if (! empty($attributes)) {
+                $metadata[$attributeClass][$property->getName()] = $attributes[0]->newInstance()->value;
+            }
+        }
+
+        return $metadata;
     }
 
     /**
-     * Get all metadata for a specific attribute class in an object instance
-     *
-     * @param  object  $object  The object to inspect
-     * @param  string  $attributeClass  The attribute class to look for
-     * @return array<string, mixed> Map of attribute name to metadata value
+     * @return ?Attribute
      */
-    public static function getAttributesForObject(object $object, string $attributeClass): array
+    public static function getAttributeForClass(string $className, string $attributeClass): ?Attribute
     {
-        return self::getAttributesForClass(get_class($object), $attributeClass);
+        $attributes = self::getAllAttributesForClass_targetClass($className, $attributeClass);
+
+        if (count($attributes)) {
+            return data_get($attributes, $attributeClass)[0];
+        }
+
+        return null;
     }
 
-    /**
-     * Get metadata for a specific attribute in an object
-     *
-     * @param  object  $object  The object to inspect
-     * @param  string  $attributeClass  The attribute class to look for
-     * @param  string  $attributeName  The attribute name to find
-     * @return array<string, mixed>|null The metadata or null if not found
-     */
-    public static function getAttributeForObject(object $object, string $attributeClass, string $attributeName): ?array
-    {
-        return self::getAttributeForClass(get_class($object), $attributeClass, $attributeName);
-    }
-
-    /**
-     * Get metadata for a specific attribute on a class method
-     *
-     * @param  string  $className  The class containing the method
-     * @param  string  $methodName  The method name to inspect
-     * @param  string  $attributeClass  The attribute class to look for
-     * @return mixed|null The attribute instance or null if not found
-     */
-    public static function getAttributeForClassMethod(string $className, string $methodName, string $attributeClass): mixed
+    public static function getAttributeForMethod(string $className, string $methodName, string $attributeClass): mixed
     {
         if (! class_exists($className)) {
             throw new \Exception('Class not found');

@@ -8,7 +8,7 @@ use Illuminate\Container\Attributes\Config;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 
-class Segment extends Component
+class Segments extends Component
 {
     /**
      * Create the component instance.
@@ -17,7 +17,7 @@ class Segment extends Component
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
-        public object $segment,
+        public string $modelClass,
         public ?string $heading,
         public ?string $subheading,
     ) {}
@@ -27,15 +27,15 @@ class Segment extends Component
      */
     public function render(): View
     {
-        return view('stickle::components/ui/tables/segment');
+        return view('stickle::components/ui/tables/segments');
     }
 
     public function endpoint(): string
     {
         return url()->query(
-            $this->apiPrefix.'/segment-objects',
+            $this->apiPrefix.'/segments',
             [
-                'segment_id' => $this->segment->getKey(),
+                'model_class' => $this->modelClass,
             ]
         );
     }

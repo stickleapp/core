@@ -129,6 +129,17 @@ You can access a test page at the URL specified in the terminal.
 
 # Testing
 
+--- IF CONFIG MISSING vendor:publish --force
+--- IF CONFIG MISSING vendor:publish --force
+--- IF CONFIG MISSING vendor:publish --force
+--- IF CONFIG MISSING vendor:publish --force
+--- IF CONFIG MISSING vendor:publish --force
+--- IF CONFIG MISSING vendor:publish --force
+--- IF CONFIG MISSING vendor:publish --force
+--- IF CONFIG MISSING vendor:publish --force
+--- IF CONFIG MISSING vendor:publish --force
+--- IF CONFIG MISSING vendor:publish --force
+
 `vendor/bin/testbench vendor:publish --force`
 
 `vendor/bin/testbench workbench:build`

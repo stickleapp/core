@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace StickleApp\Core\Views\Components\UI\Chartlists;
 
 use Illuminate\Container\Attributes\Config;
-use Illuminate\Support\Str;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 use StickleApp\Core\Support\ClassUtils;
 
-class Models extends Component
+class Segment extends Component
 {
     /**
      * Create the component instance.
@@ -19,7 +18,7 @@ class Models extends Component
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
-        public string $modelClass,
+        public object $segment,
         public ?string $heading,
         public ?string $description,
     ) {}
@@ -29,20 +28,16 @@ class Models extends Component
      */
     public function render(): View
     {
-        return view('stickle::components/ui/chartlists/models');
+        return view('stickle::components/ui/chartlists/segment');
     }
 
     public function chartData(): array
     {
 
-        $modelClass = config('stickle.namespaces.models').'\\'.Str::ucfirst($this->modelClass);
-
-        if (! class_exists($modelClass)) {
-            throw new \Exception('Model not found: '.$modelClass);
-        }
+        $modelClass = config('stickle.namespaces.models').'\\'.$this->segment->model_class;
 
         if (! ClassUtils::usesTrait($modelClass, 'StickleApp\\Core\\Traits\\StickleEntity')) {
-            throw new \Exception('Model does not use StickleTrait.');
+            return [];
         }
 
         return $modelClass::getStickleChartData();
