@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Support;
 
-use Illuminate\Support\Arr;
+use Attribute;
 use ReflectionClass;
 use ReflectionMethod;
-use Attribute;
 
 class AttributeUtils
 {
-
     /**
      * @return array<string, list<mixed>>
      */
@@ -118,9 +116,6 @@ class AttributeUtils
         return $metadata;
     }
 
-    /**
-     * @return ?Attribute
-     */
     public static function getAttributeForClass(string $className, string $attributeClass): ?Attribute
     {
         $attributes = self::getAllAttributesForClass_targetClass($className, $attributeClass);
