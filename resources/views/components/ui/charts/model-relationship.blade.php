@@ -4,13 +4,10 @@
     >
         <dt class="text-sm/6 font-medium text-gray-500">{{ $label }}</dt>
         <dd>@include('stickle::components.ui.charts.primatives.delta')</dd>
-        @if($currentValue)
         <dd
             class="w-full flex-none text-3xl/10 font-medium tracking-tight text-gray-900"
-        >
-            {{ $currentValue }}
-        </dd>
-        @endif
+            x-text="currentValue"
+        ></dd>
         <div>
             <canvas x-ref="{{ $key }}" id="{{ $key }}"></canvas>
         </div>
@@ -53,10 +50,12 @@
         return {
             isLoading: false,
             delta: null,
+            currentValue: 'donkey2222' || '',
             async init() {
                 const data = await fetchChartData();
-                this.delta = data.delta;
                 if (!data) return;
+                this.setDeltaValue(data);
+                this.setCurrentValue(data);
                 this.renderChart(data);
             },
             async updateChart() {
@@ -64,8 +63,16 @@
                 const data = await fetchChartData();
                 this.delta = data.delta;
                 if (!data) return;
+                this.setDeltaValue(data);
+                this.setCurrentValue(data);
                 setChartData(data);
                 chart.update();
+            },
+            setCurrentValue(data) {
+                this.currentValue = data.data[0].value_avg;
+            },
+            setDeltaValue(data) {
+                this.delta = data.delta;
             },
             async renderChart(data) {
                 chart = new Chart(this.$refs['{{ $key }}'], {
