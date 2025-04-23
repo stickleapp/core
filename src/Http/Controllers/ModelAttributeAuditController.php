@@ -37,12 +37,6 @@ class ModelAttributeAuditController
             return response()->json(['error' => 'Model does not use StickleEntity trait'], 400);
         }
 
-        // $model = $modelClass::findOrFail($request->string('uid'));
-
-        // $builder = $model->modelAttributeAudits()->where('attribute', $request->string('attribute'));
-
-        // return response()->json($builder->paginate(30));
-
         $model = $modelClass::findOrFail($request->string('uid'));
 
         // Date ranges
@@ -94,10 +88,10 @@ class ModelAttributeAuditController
         $response = [
             'time_series' => $timeSeriesData,
             'delta' => $changeData,
-            // 'period' => [
-            //     'start' => $currentPeriodStart->toDateTimeString(),
-            //     'end' => $currentPeriodEnd->toDateTimeString(),
-            // ],
+            'period' => [
+                'start' => $currentPeriodStart->toDateTimeString(),
+                'end' => $currentPeriodEnd->toDateTimeString(),
+            ],
         ];
 
         return response()->json($response);

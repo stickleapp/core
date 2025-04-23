@@ -16,6 +16,6 @@ class SegmentModelsController
 
         $segment = Segment::findOrFail($segmentId);
 
-        return response()->json($segment->objects()->get());
+        return response()->json($segment->objects()->paginate($request->integer('per_page', 15)));
     }
 }

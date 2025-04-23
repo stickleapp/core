@@ -116,15 +116,11 @@ class AttributeUtils
         return $metadata;
     }
 
-    public static function getAttributeForClass(string $className, string $attributeClass): ?Attribute
+    public static function getAttributeForClass(string $className, string $attributeClass): mixed
     {
         $attributes = self::getAllAttributesForClass_targetClass($className, $attributeClass);
 
-        if (count($attributes)) {
-            return data_get($attributes, $attributeClass)[0];
-        }
-
-        return null;
+        return data_get($attributes, $attributeClass, null);
     }
 
     public static function getAttributeForMethod(string $className, string $methodName, string $attributeClass): mixed

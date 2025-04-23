@@ -74,11 +74,43 @@ class Segment extends Model
      */
     public function objects(): BelongsToMany
     {
-        return $this->belongsToMany(
-            $this->model,
-            "{$this->prefix}model_segment",
+
+        $prefix = config('stickle.database.tablePrefix');
+
+        $modelClass = config('stickle.namespaces.models').'\\'.(string) $this->model_class;
+
+        if (! $modelClass || ! class_exists($modelClass)) {
+            throw new \Exception("Invalid model class specified: {$modelClass}");
+        }
+
+        $pivotTable = $prefix.'model_segment';
+
+        // Start with a base relationship
+        $relation = $this->belongsToMany(
+            $modelClass,
+            $pivotTable,
             'segment_id',
-            'object_uid')
-            ->join($this->model, DB::raw($this->model.'.id::string'), '=', "{$this->prefix}model_segment.object_uid");
+            'object_uid'
+        )->withTimestamps();
+
+        // Get the underlying query builder
+        $query = $relation->getQuery();
+
+        // Remove the default join constraints
+        $query->getQuery()->joins = array_filter($query->getQuery()->joins, function ($join) use ($pivotTable) {
+            return $join->table !== $pivotTable;
+        });
+
+        // Add our custom join with type casting
+        $modelInstance = new $modelClass;
+        $modelTable = $modelInstance->getTable();
+        $primaryKey = $modelInstance->getKeyName();
+
+        $query->join('stc_model_segment', function ($join) use ($modelTable, $primaryKey) {
+            $join->on(DB::raw($modelTable.'.'.$primaryKey.'::text'), '=', 'stc_model_segment.object_uid')
+                ->where('stc_model_segment.segment_id', '=', $this->id);
+        });
+
+        return $relation;
     }
 }

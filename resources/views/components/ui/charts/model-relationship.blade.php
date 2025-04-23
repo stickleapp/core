@@ -69,7 +69,11 @@
                 chart.update();
             },
             setCurrentValue(data) {
-                this.currentValue = data.data[0].value_avg;
+                if (data.time_series && data.time_series.length > 0) {
+                    this.currentValue = data.time_series[data.time_series.length - 1].value;
+                } else {
+                    this.currentValue = '-';
+                }
             },
             setDeltaValue(data) {
                 this.delta = data.delta;
@@ -78,10 +82,10 @@
                 chart = new Chart(this.$refs['{{ $key }}'], {
                     type: "line",
                     data: {
-                        labels: data.data.map(row => row.recorded_at),
+                        labels: data.time_series.map(row => row.timestamp),
                         datasets: [
                             {
-                                data: data.data.map(row => row.value_avg),
+                                data: data.time_series.map(row => row.value),
                                 backgroundColor: "rgba(250, 204, 21, .7)",
                                 borderColor: "rgba(250, 204, 21, .7)",
                                 borderWidth: 2,

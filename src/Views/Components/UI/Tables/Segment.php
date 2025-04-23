@@ -33,10 +33,7 @@ class Segment extends Component
     public function endpoint(): string
     {
         return url()->query(
-            $this->apiPrefix.'/segment-objects',
-            [
-                'segment_id' => $this->segment->getKey(),
-            ]
+            $this->apiPrefix.'/segment-models'
         );
     }
 }
