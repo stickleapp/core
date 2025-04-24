@@ -50,7 +50,10 @@
         return {
             isLoading: false,
             delta: null,
-            currentValue: 'donkey2222' || '',
+            currentValue: null,
+            curr() {
+                return 'asdf';
+            },
             async init() {
                 const data = await fetchChartData();
                 if (!data) return;
@@ -70,9 +73,8 @@
             },
             setCurrentValue(data) {
                 if (data.time_series && data.time_series.length > 0) {
-                    this.currentValue = data.time_series[data.time_series.length - 1].value;
-                } else {
-                    this.currentValue = '-';
+                    let value = data.time_series[data.time_series.length - 1].value;
+                    this.currentValue = Math.round(value);
                 }
             },
             setDeltaValue(data) {
@@ -105,7 +107,7 @@
                         ],
                     },
                     options: {
-                        responsive: false,
+                        responsive: true,
                         maintainAspectRatio: false,
                         scales: {
                             x: {

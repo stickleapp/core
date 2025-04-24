@@ -18,7 +18,7 @@ class ModelRelationship extends Component
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
         public object $model,
-        public string $class,
+        public string $relationship,
         public ?string $heading,
         public ?string $subheading,
     ) {}
@@ -34,9 +34,11 @@ class ModelRelationship extends Component
     public function endpoint(): string
     {
         return url()->query(
-            $this->apiPrefix.'/models',
+            $this->apiPrefix.'/model-relationship',
             [
-                'class' => class_basename($this->class),
+                'model_class' => class_basename($this->model),
+                'object_uid' => $this->model->getKey(),
+                'relationship' => $this->relationship,
             ]
         );
     }

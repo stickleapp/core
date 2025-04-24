@@ -40,6 +40,6 @@ class ModelsController
             });
         });
 
-        return response()->json($builder->paginate($request->integer('per_page', 15)));
+        return response()->json($builder->paginate($request->integer('per_page', 25)));
     }
 }

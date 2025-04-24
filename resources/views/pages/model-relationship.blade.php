@@ -14,12 +14,13 @@
         <!-- 2/3 Column -->
         <div id="events" class="w-full md:w-3/5 pr-4 md:block">
             <!-- Column 2 content here -->
-            <x-stickle::ui.tables.models
+            <x-stickle::ui.tables.model-relationship
                 :heading="\Illuminate\Support\Str::of($relationship)->headline()"
                 :subheading="sprintf('A full list of your %s.', \Illuminate\Support\Str::of($relationship)->plural())"
-                :model-class="$modelClass"
+                :model="$model"
+                :relationship="$relationship"
             >
-            </x-stickle::ui.tables.models>
+            </x-stickle::ui.tables.model-relationship>
         </div>
 
         <!-- 1/3 Column -->

@@ -166,7 +166,7 @@
             items: [],
             filteredItems: [],
             currentPage: 1,
-            perPage: 5,
+            perPage: 25,
             totalRecords: 0,
             isLoading: false,
             error: null,
@@ -225,10 +225,28 @@
 
                 // Build query parameters for the API request
                 const params = new URLSearchParams({
-                    page: store.currentPage,
-                    per_page: store.perPage,
                     model_class: "{{ $modelClass }}",
                 });
+
+                // Check if the API URL has query parameters
+                if (this.apiUrl.includes("?")) {
+                    // Split the URL into base URL and query string
+                    const [baseUrl, queryString] = this.apiUrl.split("?");
+
+                    // Parse the query string and add parameters to our params object
+                    const existingParams = new URLSearchParams(queryString);
+                    for (const [key, value] of existingParams.entries()) {
+                        params.append(key, value);
+                    }
+
+                    // Update the apiUrl to be just the base URL
+                    this.apiUrl = baseUrl;
+                }
+
+                params.append("page", store.currentPage);
+                params.append("per_page", store.perPage);
+                params.append("sort_by", store.sortBy);
+                params.append("sort_direction", store.sortDirection);
 
                 // Add search term if present
                 if (store.searchTerm.trim() !== "") {

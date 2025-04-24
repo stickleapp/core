@@ -11,7 +11,7 @@
             {{ $currentValue }}
         </dd>
         @endif
-        <div>
+        <div class="w-full">
             <canvas x-ref="{{ $key }}" id="{{ $key }}"></canvas>
         </div>
     </div>
@@ -94,7 +94,7 @@
                         ],
                     },
                     options: {
-                        responsive: false,
+                        responsive: true,
                         maintainAspectRatio: false,
                         scales: {
                             x: {

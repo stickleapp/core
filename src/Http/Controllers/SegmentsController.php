@@ -24,9 +24,6 @@ class SegmentsController
         // Add metadata to each segment
         $segments->through(function ($segment) {
 
-            // Retrieve metadata.. vs
-
-            // TODO... work here.. on AttributeUtils (All for the class? Just TARGET_CLASS?)
             if (! $metadata = \StickleApp\Core\Support\AttributeUtils::getAttributeForClass(
                 config('stickle.namespaces.segments').'\\'.$segment->as_class,
                 StickleSegmentMetadata::class

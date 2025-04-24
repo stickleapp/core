@@ -117,7 +117,7 @@
                                     >
                                         <a
                                             :href="modelUrl('{{
-                                                $segment->modelClass
+                                                $model->model_class
                                             }}', item)"
                                             ><span
                                                 x-text="item[column.key]"
@@ -176,6 +176,7 @@
             sortDirection: "asc",
 
             setCurrentPage(page) {
+                debugger;
                 this.currentPage = page;
                 // Trigger data fetch from the main app component
                 // We'll access this method through an event
@@ -183,12 +184,14 @@
             },
 
             setPerPage(perPage) {
+                debugger;
                 this.perPage = perPage;
                 this.currentPage = 1;
                 document.dispatchEvent(new CustomEvent("fetch-data"));
             },
 
             setSorting(column, direction) {
+                debugger;
                 this.sortBy = column;
                 this.sortDirection = direction;
                 this.filters.sort_by = column;
@@ -225,10 +228,14 @@
 
                 // Build query parameters for the API request
                 const params = new URLSearchParams({
-                    segment_id: "{{ $segment->id }}",
+                    page: store.currentPage,
+                    per_page: store.perPage,
+                    sort_by: store.sortBy,
+                    sort_direction: store.sortDirection,
                 });
 
                 // Check if the API URL has query parameters
+                let url = this.apiUrl;
                 if (this.apiUrl.includes("?")) {
                     // Split the URL into base URL and query string
                     const [baseUrl, queryString] = this.apiUrl.split("?");
@@ -240,13 +247,8 @@
                     }
 
                     // Update the apiUrl to be just the base URL
-                    this.apiUrl = baseUrl;
+                    url = baseUrl;
                 }
-
-                params.append("page", store.currentPage);
-                params.append("per_page", store.perPage);
-                params.append("sort_by", store.sortBy);
-                params.append("sort_direction", store.sortDirection);
 
                 // Add search term if present
                 if (store.searchTerm.trim() !== "") {
@@ -261,7 +263,7 @@
                 });
 
                 // Make the API request
-                fetch(`${this.apiUrl}?${params.toString()}`)
+                fetch(`${url}?${params.toString()}`)
                     .then((response) => {
                         if (!response.ok) {
                             throw new Error("Network response was not ok");
