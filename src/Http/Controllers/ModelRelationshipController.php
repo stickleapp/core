@@ -12,7 +12,7 @@ class ModelRelationshipController
     public function index(Request $request): JsonResponse
     {
 
-        $modelClass = config('stickle.namespaces.models') . '\\' .
+        $modelClass = config('stickle.namespaces.models').'\\'.
             $request->string('model_class')->toString();
 
         if (! class_exists($modelClass)) {
