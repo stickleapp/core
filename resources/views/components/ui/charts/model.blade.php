@@ -4,14 +4,11 @@
     >
         <dt class="text-sm/6 font-medium text-gray-500">{{ $label }}</dt>
         <dd>@include('stickle::components.ui.charts.primatives.delta')</dd>
-        @if($currentValue)
         <dd
             class="w-full flex-none text-3xl/10 font-medium tracking-tight text-gray-900"
-        >
-            {{ $currentValue }}
-        </dd>
-        @endif
-        <div class="w-full">
+            x-text="currentValue"
+        ></dd>
+        <div class="w-full" style="height: 150px">
             <canvas x-ref="{{ $key }}" id="{{ $key }}"></canvas>
         </div>
     </div>
@@ -53,10 +50,12 @@
         return {
             isLoading: false,
             delta: null,
+            currentValue: null,
             async init() {
                 const data = await fetchChartData();
-                this.delta = data.delta;
                 if (!data) return;
+                this.setDeltaValue(data);
+                this.setCurrentValue(data);
                 this.renderChart(data);
             },
             async updateChart() {
@@ -64,21 +63,39 @@
                 const data = await fetchChartData();
                 this.delta = data.delta;
                 if (!data) return;
+                this.setDeltaValue(data);
+                this.setCurrentValue(data);
                 setChartData(data);
                 chart.update();
             },
+            setCurrentValue(data) {
+                if (data.time_series && data.time_series.length > 0) {
+                    let value = data.time_series[data.time_series.length - 1].value;
+                    this.currentValue = Math.round(value);
+                }
+            },
+            setDeltaValue(data) {
+                this.delta = data.delta;
+            },
             async renderChart(data) {
-                chart = new Chart(this.$refs['{{ $key }}'], {
+
+                // Create gradient for the chart fill
+                const ctx = this.$refs['{{ $key }}'].getContext('2d');
+                const gradient = ctx.createLinearGradient(0, 0, 0, 150);
+                gradient.addColorStop(0, 'rgba(250, 204, 21, 0.7)');
+                gradient.addColorStop(1, 'rgba(250, 204, 21, 0.1)');
+
+                chart = new Chart(ctx, {
                     type: "line",
                     data: {
                         labels: data.time_series.map(row => row.timestamp),
                         datasets: [
                             {
                                 data: data.time_series.map(row => row.value),
-                                backgroundColor: "rgba(250, 204, 21, .7)",
+                                backgroundColor: gradient,
                                 borderColor: "rgba(250, 204, 21, .7)",
                                 borderWidth: 2,
-                                fill: false,
+                                fill: true,
 
                                 pointRadius: 2, // Size of the points (adjust as needed)
                                 pointBackgroundColor: "white", // White center

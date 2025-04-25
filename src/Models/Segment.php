@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
 /**
- * @property string $model
+ * @property string $model_class
  * @property string $as_class
  */
 class Segment extends Model
@@ -60,7 +60,7 @@ class Segment extends Model
     /**
      * Get the SegmentStatistics associated with the Segment
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Model, SegmentStatistic>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<SegmentStatistic, Segment>
      */
     public function segmentStatistics(): HasMany
     {
@@ -77,9 +77,9 @@ class Segment extends Model
 
         $prefix = config('stickle.database.tablePrefix');
 
-        $modelClass = config('stickle.namespaces.models').'\\'.(string) $this->model_class;
+        $modelClass = config('stickle.namespaces.models').'\\'.$this->model_class;
 
-        if (! $modelClass || ! class_exists($modelClass)) {
+        if (! class_exists($modelClass)) {
             throw new \Exception("Invalid model class specified: {$modelClass}");
         }
 

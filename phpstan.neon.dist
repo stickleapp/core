@@ -12,7 +12,6 @@ parameters:
     level: 6
 
     ignoreErrors:
-        - '#Unable to resolve the template type TRelatedModel in call to method Illuminate\\Database\\Eloquent\\Model::belongsToMany\(\)#'
         - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder<Illuminate\\Database\\Eloquent\\Model>::hasJoin\(\).#'
         - '#Method StickleApp\\Core\\Models\\ModelAttributes::attributable\(\) should return#'
         - '#Method StickleApp\\Core\\Models\\ModelAttributeAudit::attributable\(\) should return#'

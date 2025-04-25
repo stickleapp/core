@@ -6,6 +6,19 @@ namespace StickleApp\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class SegmentStatistic
+ *
+ * @property int $segment_id
+ * @property string $attribute
+ * @property string $value
+ * @property int $value_count
+ * @property float $value_sum
+ * @property float $value_min
+ * @property float $value_max
+ * @property float $value_avg
+ * @property \Illuminate\Support\Carbon $recorded_at
+ */
 class SegmentStatistic extends Model
 {
     public $timestamps = false;

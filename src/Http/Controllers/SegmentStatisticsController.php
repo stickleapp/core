@@ -18,11 +18,11 @@ class SegmentStatisticsController
 
         $segmentId = $request->integer('segment_id');
 
+        $segment = Segment::findOrFail($segmentId);
+
         // Date ranges
         $currentPeriodStart = $request->date('date_from') ?? now()->subDays(30);
         $currentPeriodEnd = $request->date('date_to') ?? now();
-
-        $segment = Segment::findOrFail($segmentId);
 
         $statisticsEntries = $segment->segmentStatistics()
             ->where('attribute', $request->string('attribute'))
@@ -38,8 +38,9 @@ class SegmentStatisticsController
         // Calculate change over 30 days
         $changeData = null;
         if ($firstEntry && $lastEntry) {
-            $firstValue = is_numeric($firstEntry->value_avg) ? (float) $firstEntry->value_avg : null;
-            $lastValue = is_numeric($lastEntry->value_avg) ? (float) $lastEntry->value_avg : null;
+
+            $firstValue = $firstEntry->value_avg ? (float) $firstEntry->value_avg : null;
+            $lastValue = $lastEntry->value_avg ? (float) $lastEntry->value_avg : null;
 
             if ($firstValue !== null && $lastValue !== null) {
                 $absoluteChange = $lastValue - $firstValue;
@@ -50,8 +51,8 @@ class SegmentStatisticsController
                     'end_value' => $lastValue,
                     'absolute_change' => $absoluteChange,
                     'percentage_change' => $percentageChange !== null ? round($percentageChange, 2) : null,
-                    'start_date' => $firstEntry->timestamp,
-                    'end_date' => $lastEntry->timestamp,
+                    'start_date' => $firstEntry->recorded_at,
+                    'end_date' => $lastEntry->recorded_at,
                 ];
             }
         }
@@ -60,7 +61,7 @@ class SegmentStatisticsController
         $timeSeriesData = $statisticsEntries->map(function ($entry) {
             return [
                 'timestamp' => $entry->recorded_at,
-                'value' => is_numeric($entry->value_avg) ? (float) $entry->value_avg : null,
+                'value' => $entry->value_avg ? (float) $entry->value_avg : null,
             ];
         });
 

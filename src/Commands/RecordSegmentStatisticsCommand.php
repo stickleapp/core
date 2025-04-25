@@ -94,16 +94,17 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
     {
         $return = [];
         foreach ($segments as $segment) {
-            $model = $segment->model;
-            if (in_array($model, $return)) {
+
+            $modelClass = $segment->model_class;
+            if (in_array($modelClass, $return)) {
                 continue;
             }
 
-            $stickleTrackedAttributes = $model::getStickleObservedAttributes();
+            $stickleTrackedAttributes = $modelClass::getStickleObservedAttributes();
             $stickleTrackedAttributes[] = 'count';
             foreach ($stickleTrackedAttributes as $attribute) {
-                $return[md5($model.$attribute)] = [
-                    'model_class' => $model,
+                $return[md5($modelClass.$attribute)] = [
+                    'model_class' => $modelClass,
                     'attribute' => $attribute,
                 ];
             }

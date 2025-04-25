@@ -68,7 +68,7 @@ class ModelSegmentAudit extends Model
     {
         return Attribute::make(
             get: function ($value) {
-                $modelClass = $this->segment->model;
+                $modelClass = $this->segment->model_class;
 
                 return $modelClass::find($this->object_uid);
             }
