@@ -1,5 +1,5 @@
 <!-- Main container with global store -->
-<div x-data="tableApp()" x-init="init()">
+<div x-data="tableApp()">
     <!-- Search Bar -->
     <div class="mb-5">
         <div class="flex gap-4 items-center">
@@ -117,7 +117,7 @@
                                     >
                                         <a
                                             :href="modelUrl('{{
-                                                $model->model_class
+                                                $relatedModel()
                                             }}', item)"
                                             ><span
                                                 x-text="item[column.key]"
@@ -324,8 +324,7 @@
             },
 
             modelUrl(modelClass, model) {
-                // TODO: uid / not id?
-                return modelClass + "/" + model.id;
+                return "/stickle/" + modelClass + "/" + model.id;
             },
         };
     }

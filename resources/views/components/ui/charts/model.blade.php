@@ -1,13 +1,17 @@
 <div x-data="chartData{{ md5($endpoint) }}()">
     <div
-        class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 bg-white px-4 py-10 sm:px-6 xl:px-8 shadow-sm"
+        class="gap-x-4 gap-y-2 bg-white shadow-sm overflow-hidden sm:rounded-lg"
     >
-        <dt class="text-sm/6 font-medium text-gray-500">{{ $label }}</dt>
-        <dd>@include('stickle::components.ui.charts.primatives.delta')</dd>
-        <dd
-            class="w-full flex-none text-3xl/10 font-medium tracking-tight text-gray-900"
-            x-text="currentValue"
-        ></dd>
+        <div
+            class="flex flex-wrap items-baseline justify-between px-4 py-10 sm:px-6 xl:px-8"
+        >
+            <dt class="text-sm/6 font-medium text-gray-500">{{ $label }}</dt>
+            <dd>@include('stickle::components.ui.charts.primatives.delta')</dd>
+            <dd
+                class="w-full flex-none text-3xl/10 font-medium tracking-tight text-gray-900"
+                x-text="currentValue"
+            ></dd>
+        </div>
         <div class="w-full" style="height: 150px">
             <canvas x-ref="{{ $key }}" id="{{ $key }}"></canvas>
         </div>
@@ -97,7 +101,7 @@
                                 borderWidth: 2,
                                 fill: true,
 
-                                pointRadius: 2, // Size of the points (adjust as needed)
+                                pointRadius: 3, // Size of the points (adjust as needed)
                                 pointBackgroundColor: "white", // White center
                                 pointBorderColor: "rgba(250, 204, 21, .7)", // Same as line color
                                 pointBorderWidth: 1, // Border thickness

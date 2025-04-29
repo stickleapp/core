@@ -6,8 +6,8 @@
     >
         <option>Statistics</option>
         <option selected>Events</option>
-        @foreach($model->stickleRelationships() as $relationship)
-        <option>{{ $relationship["label"] ?? \Illuminate\Support\Str::of($relationship["name"])->ucfirst()->headline() }}</option>
+        @foreach($model->stickleRelationships([\Illuminate\Database\Eloquent\Relations\HasMany::class]) as $relationship)
+        <option>{{ $relationship->label ?? \Illuminate\Support\Str::of($relationship->name)->ucfirst()->headline() }}</option>
         @endforeach
     </select>
     <svg
@@ -37,11 +37,11 @@
             class="md:hidden rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700"
             >Events</a
         >
-        @foreach($model->stickleRelationships() as $relationship)
+        @foreach($model->stickleRelationships([\Illuminate\Database\Eloquent\Relations\HasMany::class]) as $relationship)
             @php
                 $route = route('stickle::model.relationship', ['modelClass' =>
             class_basename($model), 'uid' => $model->id, 'relationship'
-            => $relationship['name'] ]);
+            => $relationship->name ]);
                 $current = ($route == url()->current()) ? true : false;
             @endphp
         <a
@@ -52,7 +52,7 @@
                 'text-gray-500 hover:text-gray-700' => !$current,
             ])
             {{ $current ? 'aria-current="page"' : '' }}
-            >{{ $relationship["label"] ??  \Illuminate\Support\Str::of($relationship["name"])->headline() }}
+            >{{ $relationship->label ??  \Illuminate\Support\Str::of($relationship->name)->headline() }}
         </a>
         @endforeach
     </nav>

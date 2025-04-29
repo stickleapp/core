@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use StickleApp\Core\Attributes\StickleAttributeMetadata;
@@ -196,15 +197,18 @@ trait StickleEntity
     /**
      * @return array<int, class-string>
      */
-    public function stickleRelationships(): array
+    public function stickleRelationships(?array $relations = []): Collection
     {
+
+        $relations = $relations ?? [HasMany::class, BelongsTo::class];
+
         // Get all classes with the StickleEntity trait
         $stickleEntityClasses = ClassUtils::getClassesWithTrait(
             config('stickle.namespaces.models'),
             \StickleApp\Core\Traits\StickleEntity::class
         );
 
-        $relationships = ClassUtils::getRelationshipsWith(app(), self::class, [HasMany::class], $stickleEntityClasses);
+        $relationships = ClassUtils::getRelationshipsWith(app(), self::class, $relations, $stickleEntityClasses);
 
         array_walk($relationships, function (&$relationship) {
             $attribute = AttributeUtils::getAttributeForMethod(
@@ -216,9 +220,11 @@ trait StickleEntity
             if ($attribute) {
                 $relationship = array_merge($relationship, (array) $attribute->value);
             }
+
+            $relationship = (object) $relationship;
         });
 
-        return $relationships;
+        return collect($relationships);
     }
 
     /**

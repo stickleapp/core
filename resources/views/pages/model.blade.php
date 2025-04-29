@@ -1,4 +1,7 @@
 <x-stickle::ui.layouts.default-layout>
+    <x-stickle::ui.partials.parent-model
+        :model="$model"
+    ></x-stickle::ui.partials.parent-model>
     <h1
         class="scroll-m-20 text-xl md:text-3xl md:font-bold tracking-tight pb-3 md:pb-6"
     >
@@ -11,7 +14,7 @@
     </div>
 
     <div class="w-full flex flex-col md:flex-row">
-        <div id="events" class="w-full md:w-1/2 pr-4 md:block">
+        <div id="events" class="w-full md:w-1/2 md:pr-4 md:block">
             <!-- Column 2 content here -->
             <x-stickle::ui.chartlists.model :model="$model">
             </x-stickle::ui.chartlists.model>

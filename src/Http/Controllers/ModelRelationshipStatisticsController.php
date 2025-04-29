@@ -39,6 +39,7 @@ class ModelRelationshipStatisticsController
 
         $statisticsEntries = $model->modelRelationshipStatistics()
             ->where('attribute', $request->string('attribute'))
+            ->where('relationship', $relationship)
             ->where('recorded_at', '>=', $currentPeriodStart)
             ->orderBy('recorded_at', 'asc')
             ->get();
