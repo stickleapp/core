@@ -34,7 +34,7 @@ class SegmentsController
             // Append the required fields
             $segment->name = data_get($metadata, 'name');
             $segment->description = data_get($metadata, 'description');
-            $segment->refresh_interval = data_get($metadata, 'refreshInterval');
+            $segment->export_intreval = data_get($metadata, 'exportInterval');
 
             return $segment;
         });

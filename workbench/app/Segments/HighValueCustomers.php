@@ -9,8 +9,8 @@ use StickleApp\Core\Filters\Base as Filter;
 use Workbench\App\Models\Customer;
 
 #[StickleSegmentMetadata([
-    'refreshInterval' => 3600,
-    'name' => 'High Value Customer',
+    'exportInterval' => 3600,
+    'name' => 'High Value Customers',
     'description' => 'The users with a ACV in the  top 10%.',
 ])]
 class HighValueCustomers extends SegmentContract

@@ -14,13 +14,14 @@
     </div>
 
     <div class="w-full flex flex-col md:flex-row">
-        <div id="events" class="w-full md:w-1/2 md:pr-4 md:block">
+        <!-- 2/3 Column -->
+        <div id="list" class="w-full lg:w-3/5 pr-4 md:block">
             <!-- Column 2 content here -->
             <x-stickle::ui.chartlists.model :model="$model">
             </x-stickle::ui.chartlists.model>
         </div>
 
-        <div id="statistics" class="w-full md:w-1/2 pl-4 md:block hidden">
+        <div id="statistics" class="w-full lg:w-2/5 pl-4 hidden lg:block">
             <!-- Column 2 content here -->
             <x-stickle::ui.timelines.event-timeline
                 :channel="sprintf(config('stickle.broadcasting.channels.object'),

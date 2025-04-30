@@ -5,14 +5,14 @@
         {{ $segment->name }}
     </h1>
 
-    <div class="w-full mb-4">
+    <div class="w-full mb-4 lg:hidden">
         <x-stickle::ui.partials.segment-navigation :segment="$segment">
         </x-stickle::ui.partials.segment-navigation>
     </div>
 
     <div class="w-full flex flex-col md:flex-row">
         <!-- 2/3 Column -->
-        <div id="events" class="w-full md:w-3/5 pr-4 md:block">
+        <div id="list" class="w-full lg:w-3/5 pr-4 md:block">
             <!-- Column 2 content here -->
             <x-stickle::ui.tables.segment
                 :segment="$segment"
@@ -23,7 +23,7 @@
         </div>
 
         <!-- 1/3 Column -->
-        <div id="statistics" class="w-full md:w-2/5 pl-4 md:block hidden">
+        <div id="statistics" class="w-full lg:w-2/5 pl-4 hidden lg:block">
             <!-- Column 2 content here -->
             <x-stickle::ui.chartlists.segment :segment="$segment">
             </x-stickle::ui.chartlists.segment>

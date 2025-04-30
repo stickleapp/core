@@ -9,8 +9,8 @@ use StickleApp\Core\Filters\Base as Filter;
 use Workbench\App\Models\Customer;
 
 #[StickleSegmentMetadata([
-    'refreshInterval' => 3600,
-    'name' => 'All Customer',
+    'exportInterval' => 3600,
+    'name' => 'All Customers',
     'description' => 'All of the customers.',
 ])]
 class AllCustomers extends SegmentContract

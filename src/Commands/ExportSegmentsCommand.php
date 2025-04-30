@@ -13,8 +13,10 @@ use Illuminate\Support\Facades\Log;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
+use StickleApp\Core\Attributes\StickleSegmentMetadata;
 use StickleApp\Core\Jobs\ExportSegmentJob;
 use StickleApp\Core\Models\Segment;
+use StickleApp\Core\Support\AttributeUtils;
 
 final class ExportSegmentsCommand extends Command implements Isolatable
 {
@@ -87,6 +89,7 @@ final class ExportSegmentsCommand extends Command implements Isolatable
         /** @var \SplFileInfo $file */
         foreach ($files as $file) {
             if ($file->isFile() && $file->getExtension() === 'php') {
+
                 /**
                  * @var class-string $className
                  */
@@ -95,14 +98,27 @@ final class ExportSegmentsCommand extends Command implements Isolatable
                     ['\\', ''],
                     substr($file->getRealPath(), strlen($directory) + 1)
                 );
-                $reflection = new ReflectionClass($namespace.'\\'.$className);
+
+                $segmentClassName = $namespace.'\\'.$className;
+
+                $reflection = new ReflectionClass($segmentClassName);
+
                 $defaultProperties = $reflection->getDefaultProperties();
 
+                $model = Arr::get($defaultProperties, 'model');
+
+                $metadata = AttributeUtils::getAttributeForClass(
+                    $segmentClassName,
+                    StickleSegmentMetadata::class
+                );
+
                 $results[] = [
-                    'model_class' => class_basename(Arr::get($defaultProperties, 'model')),
+                    'name' => data_get($metadata, 'name'),
+                    'description' => data_get($metadata, 'description'),
+                    'model_class' => class_basename($model),
                     'as_class' => $className,
                     'as_json' => null,
-                    'export_interval' => config('stickle.schedule.exportSegments'),
+                    'export_interval' => data_get($metadata, 'exportInterval', config('stickle.schedule.exportSegments')),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];

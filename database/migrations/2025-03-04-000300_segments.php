@@ -26,6 +26,8 @@ return new class extends Migration
         Schema::create("{$prefix}segments", function (Blueprint $table) use ($prefix) {
             $table->id();
             $table->unsignedBigInteger('segment_group_id')->nullable(true);
+            $table->text('name')->nullable(false);
+            $table->text('description')->nullable(true);
             $table->text('model_class')->nullable(false);
             $table->text('as_class')->nullable(true);
             $table->jsonb('as_json')->nullable(true);

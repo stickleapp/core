@@ -335,7 +335,7 @@ These classes contain the definition of the segment, most notably, a method that
 | Method / Attribute | Description                                                              | Required | Data Type | Default |
 | ------------------ | ------------------------------------------------------------------------ | -------- | --------- | ------- |
 | name               | Human readable name                                                      | Y        | String    |         |
-| refreshInterval    | How frequently the segment is refreshed (minutes)                        | Y        | Integer   | 360     |
+| exportInterval     | How frequently the segment is refreshed (minutes)                        | Y        | Integer   | 360     |
 | class              | The StickleEntity model class (ex. App\Models\User)                      | Y        | String    |         |
 | builder()          | An Eloquent builder class that specifies the filters forming the segment | Y        | Builder   |         |
 

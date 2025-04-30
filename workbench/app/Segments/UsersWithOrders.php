@@ -9,7 +9,7 @@ use StickleApp\Core\Filters\Base as Filter;
 use Workbench\App\Models\User;
 
 #[StickleSegmentMetadata([
-    'refreshInterval' => 30,
+    'exportInterval' => 30,
     'name' => 'Uses with Orders',
     'description' => 'Uses who have placed at least 1 order.',
 ])]

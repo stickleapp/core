@@ -12,7 +12,7 @@
 
     <div class="w-full flex flex-col md:flex-row">
         <!-- 2/3 Column -->
-        <div id="events" class="w-full md:w-3/5 pr-4 md:block">
+        <div id="events" class="w-full lg:w-3/5 pr-4 md:block">
             <!-- Column 2 content here -->
             <x-stickle::ui.tables.model-relationship
                 :heading="\Illuminate\Support\Str::of($relationship)->headline()"
@@ -24,7 +24,7 @@
         </div>
 
         <!-- 1/3 Column -->
-        <div id="statistics" class="w-full md:w-2/5 pl-4 md:block hidden">
+        <div id="statistics" class="w-full lg:w-2/5 pl-4 hidden lg:block">
             <!-- Column 2 content here -->
             <x-stickle::ui.chartlists.model-relationship
                 :model="$model"

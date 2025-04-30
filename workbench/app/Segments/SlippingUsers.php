@@ -9,7 +9,7 @@ use StickleApp\Core\Filters\Base as Filter;
 use Workbench\App\Models\User;
 
 #[StickleSegmentMetadata([
-    'refreshInterval' => 30,
+    'exportInterval' => 30,
     'name' => 'Slipping Users',
     'description' => 'Users with declining usage.',
 ])]
