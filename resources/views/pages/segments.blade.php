@@ -1,4 +1,19 @@
 <x-stickle::ui.layouts.default-layout>
+    <div class="mb-5">
+        <x-stickle::ui.partials.breadcrumbs
+            :pages="[
+                [
+                    'name' => \Illuminate\Support\Str::of($modelClass)->plural()->headline(),
+                    'url' => route('stickle::models', ['modelClass' => $modelClass]),
+                ],
+                [
+                    'name' => 'Segments',
+                    'url' => route('stickle::segments', ['modelClass' => $modelClass]),
+                ]
+            ]"
+        ></x-stickle::ui.partials.breadcrumbs>
+    </div>
+
     <h1
         class="scroll-m-20 text-xl md:text-3xl md:font-bold tracking-tight pb-3 md:pb-6"
     >
@@ -7,7 +22,7 @@
 
     <div class="w-full flex flex-col md:flex-row">
         <!-- 2/3 Column -->
-        <div id="events" class="w-full md:w-5/5 pr-4 md:block">
+        <div id="events" class="w-full md:w-5/5 lg:pr-4 md:block">
             <!-- Column 2 content here -->
             <x-stickle::ui.tables.segments
                 :heading="sprintf('%s Segments', \Illuminate\Support\Str::of($modelClass)->headline())"
@@ -18,7 +33,10 @@
         </div>
 
         <!-- 1/3 Column -->
-        <div id="statistics" class="w-full md:w-0/5 pl-4 md:block hidden"></div>
+        <div
+            id="statistics"
+            class="w-full md:w-0/5 lg:pl-4 md:block hidden"
+        ></div>
     </div>
 </x-stickle::ui.layouts.default-layout>
 

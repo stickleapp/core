@@ -1,20 +1,27 @@
 <x-stickle::ui.layouts.default-layout>
-    <h1 class="scroll-m-20 text-3xl font-bold tracking-tight pb-8">
+    <div class="mb-5">
+        <x-stickle::ui.partials.breadcrumbs
+            :pages="[
+                [
+                    'name' => \Illuminate\Support\Str::of($modelClass)->plural()->headline(),
+                    'url' => route('stickle::models', ['modelClass' => $modelClass]),
+                ],
+            ]"
+        ></x-stickle::ui.partials.breadcrumbs>
+    </div>
+
+    <h1 class="scroll-m-20 text-3xl font-bold tracking-tight mb-5">
         {{ \Illuminate\Support\Str::plural(\Illuminate\Support\Str::title(str_replace('_', ' ', $modelClass))) }}
     </h1>
 
-    <div class="w-full flex flex-col md:flex-row">
-        <!-- Navigation for medium screens -->
-        <div class="md:hidden flex justify-left space-x-4">
-            <button class="tab-button" data-target="#column1">List</button>
-            <button class="tab-button" data-target="#column2">
-                Statistics
-            </button>
-            <button class="tab-button" data-target="#column3">Events</button>
-        </div>
+    <div class="w-full mb-4">
+        <x-stickle::ui.partials.models-navigation :modelClass="$modelClass">
+        </x-stickle::ui.partials.models-navigation>
+    </div>
 
+    <div class="w-full flex flex-col md:flex-row">
         <!-- 2/3 Column -->
-        <div id="column1" class="w-full md:w-3/5 md:block">
+        <div id="models" class="w-full md:w-3/5 lg:l-4 md:block">
             <div class="bg-white p-6 shadow-md">
                 <x-stickle::ui.tables.models
                     :heading="\Illuminate\Support\Str::of($modelClass)->headline()"
@@ -26,7 +33,10 @@
         </div>
 
         <!-- 1/3 Column -->
-        <div id="column2" class="w-full md:w-2/5 p-4 md:block hidden">
+        <div
+            id="statistics"
+            class="w-full md:w-2/5 lg:pl-4 lg:pb-4 hidden md:block"
+        >
             <!-- Column 2 content here -->
             <x-stickle::ui.chartlists.models :model-class="$modelClass">
             </x-stickle::ui.chartlists.models>

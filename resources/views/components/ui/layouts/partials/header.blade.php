@@ -81,7 +81,10 @@
                 ></div>
 
                 <!-- Profile dropdown -->
-                <div x-data="{ isProfileMenuOpen: false }" class="relative">
+                <div
+                    x-data="{ isProfileMenuOpen: false }"
+                    class="relative hidden"
+                >
                     <button
                         type="button"
                         @click="isProfileMenuOpen = !isProfileMenuOpen"

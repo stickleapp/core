@@ -1,16 +1,13 @@
 <div class="grid grid-cols-1 md:hidden">
     <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
     <select
-        id="modelNavigationSelect"
+        id="modelsNavigationSelect"
         aria-label="Select a tab"
         class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
     >
-    
+        <option value="#models">List</option>
         <option value="#statistics">Statistics</option>
-        <option value="#events" selected>Events</option>
-        @foreach($model->stickleRelationships([\Illuminate\Database\Eloquent\Relations\HasMany::class]) as $relationship)
-        <option value="#{{ $relationship->name }}">{{ $relationship->label ?? \Illuminate\Support\Str::of($relationship->name)->ucfirst()->headline() }}</option>
-        @endforeach
+        <option value="#events">Events</option>
     </select>
     <svg
         class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end fill-gray-500"
@@ -28,40 +25,31 @@
 </div>
 <div class="hidden md:block">
     <nav class="flex space-x-4" aria-label="Tabs">
-        <!-- Current: "bg-gray-100 text-gray-700", Default: "text-gray-500 hover:text-gray-700" -->
+        <a
+            href="#models"
+            data-target="#models"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700"
+            >List</a
+        >
         <a
             href="#statistics"
             data-target="#statistics"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 lg:hidden"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700"
             >Statistics</a
         >
         <a
             href="#events"
             data-target="#events"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 lg:hidden"
-            >Events</a
-        >         
-        @foreach($model->stickleRelationships([\Illuminate\Database\Eloquent\Relations\HasMany::class]) as $relationship)
-            @php
-                $route = route('stickle::model.relationship', ['modelClass' =>
-            class_basename($model), 'uid' => $model->id, 'relationship'
-            => $relationship->name ]);
-                $current = ($route == url()->current()) ? true : false;
-            @endphp
-        <a
-            href="{{ $route }}"
             class="rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700"
-            {{ $current ? 'aria-current="page"' : '' }}
-            >{{ $relationship->label ??  \Illuminate\Support\Str::of($relationship->name)->headline() }}
-        </a>
-        @endforeach
+            >Events</a
+        >
     </nav>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const select = document.querySelector(
-            'select[id="modelNavigationSelect"]'
+            'select[id="modelsNavigationSelect"]'
         );
         const tabs = document.querySelectorAll('nav[aria-label="Tabs"] a');
 
@@ -119,14 +107,14 @@
         });
 
         // Handle tab clicks
-        // tabs.forEach((tab) => {
-        //     tab.addEventListener("click", function (e) {
-        //         e.preventDefault();
-        //         const hash = this.getAttribute("data-target");
-        //         window.location.hash = hash;
-        //         setActiveTab(hash);
-        //     });
-        // });
+        tabs.forEach((tab) => {
+            tab.addEventListener("click", function (e) {
+                e.preventDefault();
+                const hash = this.getAttribute("data-target");
+                window.location.hash = hash;
+                setActiveTab(hash);
+            });
+        });
 
         // Listen for hash changes (browser back/forward buttons)
         window.addEventListener("hashchange", function () {

@@ -1,7 +1,7 @@
 <!-- Main container with global store -->
 <div x-data="tableApp()">
     <!-- Search Bar -->
-    <div class="mb-5">
+    <div class="mb-5 hidden">
         <div class="flex gap-4 items-center">
             <div class="flex-1">
                 <div class="relative">

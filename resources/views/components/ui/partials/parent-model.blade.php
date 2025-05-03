@@ -2,7 +2,7 @@
 > 0) @php $belongsToRelationship =
 $model->stickleRelationships([\Illuminate\Database\Eloquent\Relations\BelongsTo::class])->first()->name;
 @endphp @if($parent = $model->$belongsToRelationship)
-<h2 class="text-sm text-gray-500">
+<h2 class="text-sm text-gray-500 pb-1">
     <a
         href="{{ route('stickle::model', ['modelClass' => class_basename($parent), 'uid' => $parent->id]) }}"
         class="text-gray-500 hover:text-gray-700"
