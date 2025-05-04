@@ -21,7 +21,7 @@
 
     <div class="w-full flex flex-col md:flex-row">
         <!-- 2/3 Column -->
-        <div id="models" class="w-full md:w-3/5 lg:l-4 md:block">
+        <div id="modelsList" class="w-full md:w-3/5 lg:l-4 md:block">
             <div class="bg-white p-6 shadow-md">
                 <x-stickle::ui.tables.models
                     :heading="\Illuminate\Support\Str::of($modelClass)->headline()"
@@ -33,13 +33,45 @@
         </div>
 
         <!-- 1/3 Column -->
-        <div
-            id="statistics"
-            class="w-full md:w-2/5 lg:pl-4 lg:pb-4 hidden md:block"
-        >
-            <!-- Column 2 content here -->
-            <x-stickle::ui.chartlists.models :model-class="$modelClass">
-            </x-stickle::ui.chartlists.models>
+        <div class="w-full md:w-2/5 lg:pl-4 lg:pb-4 hidden md:block">
+            <div class="w-full mb-4">
+                <div class="mb-4">
+                    <x-stickle::ui.partials.responsive-tabs
+                        :tabs="[
+                        [
+                            'label' => 'Statistics',
+                            'hash' => 'modelsStatistics',
+                        ],
+                        [
+                            'label' => 'Events',
+                            'hash' => 'modelsEvents',
+                        ],
+                    ]"
+                        id="modelsSideBarToggle"
+                    >
+                    </x-stickle::ui.partials.responsive-tabs>
+                </div>
+
+                <!-- Column 2 content here -->
+                <div
+                    id="modelsStatistics"
+                    class="modelsSideBarToggle w-full hidden"
+                >
+                    <x-stickle::ui.chartlists.models :model-class="$modelClass">
+                    </x-stickle::ui.chartlists.models>
+                </div>
+
+                <div
+                    id="modelsEvents"
+                    class="modelsSideBarToggle w-full hidden"
+                >
+                    <x-stickle::ui.timelines.event-timeline
+                        :channel="sprintf(config('stickle.broadcasting.channels.class'),
+                        str_replace('\\', '-', strtolower(class_basename($modelClass)))
+                    )"
+                    ></x-stickle::ui.timelines.event-timeline>
+                </div>
+            </div>
         </div>
     </div>
 </x-stickle::ui.layouts.default-layout>

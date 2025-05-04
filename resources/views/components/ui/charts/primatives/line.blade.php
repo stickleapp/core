@@ -4,7 +4,6 @@
     // const labels = $apiResponse.map((item) => item.timestamp);
 
     // const dataSet1Data = $apiResponse.map((item) => item.value);
-    debugger;
 
     const ctx = document.getElementById("{{ $key }}").getContext("2d");
 

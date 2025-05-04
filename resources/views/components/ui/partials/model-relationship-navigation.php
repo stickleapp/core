@@ -1,13 +1,13 @@
 <div class="grid grid-cols-1 md:hidden">
     <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
     <select
-        id="modelsNavigationSelect"
+        id="modelNavigationSelect"
         aria-label="Select a tab"
         class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
     >
-        <option value="#models">List</option>
+    
         <option value="#statistics">Statistics</option>
-        <option value="#events">Events</option>
+        <option value="#events" selected>Events</option>
     </select>
     <svg
         class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end fill-gray-500"
@@ -26,8 +26,9 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+
         const select = document.querySelector(
-            'select[id="modelsNavigationSelect"]'
+            'select[id="modelNavigationSelect"]'
         );
         const tabs = document.querySelectorAll('nav[aria-label="Tabs"] a');
 
@@ -75,24 +76,31 @@
         }
 
         // Set initial active tab based on URL hash
-        setActiveTab(window.location.hash || "#models");
+        // setActiveTab(window.location.hash || "#models");
 
         // Handle dropdown selection changes
         select.addEventListener("change", function () {
-            const selectedHash = select.options[select.selectedIndex].value;
-            window.location.hash = selectedHash;
-            setActiveTab(selectedHash);
+            const selectedValue = select.options[select.selectedIndex].value;
+            const isHash = selectedValue.startsWith("#");
+            if (isHash) {
+                // If the selected value is a hash, set it as the hash in the URL
+                window.location.hash = selectedValue;
+                setActiveTab(selectedValue);
+            } else {
+                // Otherwise, navigate to the full URL
+                window.location.href = selectedValue;
+            }
         });
 
         // Handle tab clicks
-        tabs.forEach((tab) => {
-            tab.addEventListener("click", function (e) {
-                e.preventDefault();
-                const hash = this.getAttribute("data-target");
-                window.location.hash = hash;
-                setActiveTab(hash);
-            });
-        });
+        // tabs.forEach((tab) => {
+        //     tab.addEventListener("click", function (e) {
+        //         e.preventDefault();
+        //         const hash = this.getAttribute("data-target");
+        //         window.location.hash = hash;
+        //         setActiveTab(hash);
+        //     });
+        // });
 
         // Listen for hash changes (browser back/forward buttons)
         window.addEventListener("hashchange", function () {

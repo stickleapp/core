@@ -1,14 +1,16 @@
 <div class="flow-root">
+    @if($heading)
     <div class="sm:flex sm:items-center mb-8">
         <div class="sm:flex-auto">
             <h1 class="text-base font-semibold text-gray-900">
-                {{ $heading ?? "Events" }}
+                {{ $heading }}
             </h1>
             <p class="mt-2 text-sm text-gray-700">
-                {{ $description ?? "A real-time feed of events." }}
+                {{ $description }}
             </p>
         </div>
     </div>
+    @endif
     <ul id="events-container" role="list" class="-mb-8"></ul>
 </div>
 
@@ -19,6 +21,14 @@
 
         function renderEvents() {
             eventsContainer.innerHTML = "";
+
+            if (events.length === 0) {
+                eventsContainer.innerHTML = `
+                    <div class="text-sm text-gray-500 w-full text-center p-5">
+                        No recent events.
+                    </div>`;
+                return;
+            }
 
             events.forEach((event, index) => {
                 if (!event) return;

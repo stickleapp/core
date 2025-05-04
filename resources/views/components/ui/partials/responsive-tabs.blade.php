@@ -1,13 +1,13 @@
-<div class="grid grid-cols-1 md:hidden">
+<div class="grid grid-cols-1 {{ $responsiveClass }}:hidden">
     <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
     <select
-        id="modelsNavigationSelect"
+        id="{{ $id }}"
         aria-label="Select a tab"
         class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
     >
-        <option value="#models">List</option>
-        <option value="#statistics">Statistics</option>
-        <option value="#events">Events</option>
+        @foreach($tabs as $tab)
+        <option value="#{{ $tab['hash'] }}">{{ $tab["label"] }}</option>
+        @endforeach
     </select>
     <svg
         class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end fill-gray-500"
@@ -23,11 +23,28 @@
         />
     </svg>
 </div>
+<div class="hidden {{ $responsiveClass }}:block">
+    <nav class="flex space-x-4" aria-label="Tabs">
+        @foreach($tabs as $tab)
+        <a
+            href="#"
+            data-target="#{{ $tab['hash'] }}"
+            @class([
+                'rounded-md px-3 py-2 text-sm font-medium',
+                'text-gray-500 hover:text-gray-700' => ! false,
+                'bg-gray-100 text-gray-700' => true,
+            ])
+            {{ false ? 'aria-current="page"' : '' }}
+            >{{ $tab['label'] }}</a
+        >
+        @endforeach
+    </nav>
+</div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const select = document.querySelector(
-            'select[id="modelsNavigationSelect"]'
+            'select[id="{{ $id }}"]'
         );
         const tabs = document.querySelectorAll('nav[aria-label="Tabs"] a');
 
@@ -70,12 +87,12 @@
             }
 
             // Here you would show the corresponding content
-            // document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
-            // document.querySelector(targetTab.getAttribute('data-target')).classList.remove('hidden');
+            document.querySelectorAll('.{{ $id }}').forEach(content => content.classList.add('hidden'));
+            document.querySelector(targetTab.getAttribute('data-target')).classList.remove('hidden');
         }
 
         // Set initial active tab based on URL hash
-        setActiveTab(window.location.hash || "#models");
+        setActiveTab(window.location.hash || "#statistics");
 
         // Handle dropdown selection changes
         select.addEventListener("change", function () {
@@ -89,7 +106,7 @@
             tab.addEventListener("click", function (e) {
                 e.preventDefault();
                 const hash = this.getAttribute("data-target");
-                window.location.hash = hash;
+                // history.pushState(null, null, hash);
                 setActiveTab(hash);
             });
         });

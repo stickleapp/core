@@ -9,7 +9,11 @@
         <option value="#statistics">Statistics</option>
         <option value="#events" selected>Events</option>
         @foreach($model->stickleRelationships([\Illuminate\Database\Eloquent\Relations\HasMany::class]) as $relationship)
-        <option value="#{{ $relationship->name }}">{{ $relationship->label ?? \Illuminate\Support\Str::of($relationship->name)->ucfirst()->headline() }}</option>
+            @php
+                $route = route('stickle::model.relationship', ['modelClass' => class_basename($model), 'uid' => $model->id, 'relationship' => $relationship->name ]);
+                $current = ($route == url()->current()) ? true : false;
+            @endphp
+        <option value="{{ $route }}">{{ $relationship->label ?? \Illuminate\Support\Str::of($relationship->name)->ucfirst()->headline() }}</option>
         @endforeach
     </select>
     <svg
@@ -26,31 +30,22 @@
         />
     </svg>
 </div>
+
 <div class="hidden md:block">
     <nav class="flex space-x-4" aria-label="Tabs">
         <!-- Current: "bg-gray-100 text-gray-700", Default: "text-gray-500 hover:text-gray-700" -->
-        <a
-            href="#statistics"
-            data-target="#statistics"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 lg:hidden"
-            >Statistics</a
-        >
-        <a
-            href="#events"
-            data-target="#events"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 lg:hidden"
-            >Events</a
-        >         
         @foreach($model->stickleRelationships([\Illuminate\Database\Eloquent\Relations\HasMany::class]) as $relationship)
             @php
-                $route = route('stickle::model.relationship', ['modelClass' =>
-            class_basename($model), 'uid' => $model->id, 'relationship'
-            => $relationship->name ]);
+                $route = route('stickle::model.relationship', ['modelClass' => class_basename($model), 'uid' => $model->id, 'relationship' => $relationship->name ]);
                 $current = ($route == url()->current()) ? true : false;
             @endphp
         <a
             href="{{ $route }}"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700"
+            @class([
+                'rounded-md px-3 py-2 text-sm font-medium',
+                'text-gray-500 hover:text-gray-700' => ! $current,
+                'bg-gray-100 text-gray-700' => $current,
+            ])
             {{ $current ? 'aria-current="page"' : '' }}
             >{{ $relationship->label ??  \Illuminate\Support\Str::of($relationship->name)->headline() }}
         </a>
@@ -60,6 +55,7 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+
         const select = document.querySelector(
             'select[id="modelNavigationSelect"]'
         );
@@ -109,13 +105,20 @@
         }
 
         // Set initial active tab based on URL hash
-        setActiveTab(window.location.hash || "#models");
+        // setActiveTab(window.location.hash || "#models");
 
         // Handle dropdown selection changes
         select.addEventListener("change", function () {
-            const selectedHash = select.options[select.selectedIndex].value;
-            window.location.hash = selectedHash;
-            setActiveTab(selectedHash);
+            const selectedValue = select.options[select.selectedIndex].value;
+            const isHash = selectedValue.startsWith("#");
+            if (isHash) {
+                // If the selected value is a hash, set it as the hash in the URL
+                window.location.hash = selectedValue;
+                setActiveTab(selectedValue);
+            } else {
+                // Otherwise, navigate to the full URL
+                window.location.href = selectedValue;
+            }
         });
 
         // Handle tab clicks

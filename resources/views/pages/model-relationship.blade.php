@@ -1,17 +1,55 @@
 <x-stickle::ui.layouts.default-layout>
     <div class="mb-5">
-        <x-stickle::ui.partials.breadcrumbs></x-stickle::ui.partials.breadcrumbs>
+        <x-stickle::ui.partials.breadcrumbs
+            :pages="[
+                [
+                    'name' => \Illuminate\Support\Str::of($modelClass)->plural()->headline(),
+                    'url' => route('stickle::models', ['modelClass' => $modelClass]),
+                ],
+                [
+                    'name' => $model->name,
+                    'url' => route('stickle::model', ['modelClass' => $modelClass, 'uid' => $model->getKey()]),
+                ],
+                [
+                    'name' => \Illuminate\Support\Str::of($relationship)->headline(),
+                    'url' => '#',
+                ],
+            ]"
+        ></x-stickle::ui.partials.breadcrumbs>
     </div>
 
     <h1
         class="scroll-m-20 text-xl md:text-3xl md:font-bold tracking-tight pb-3 md:pb-6"
     >
-        {{ $model->name }}
+        {{ $model->name }}:
+        {{ \Illuminate\Support\Str::of($relationship)->headline() }}
     </h1>
 
+    <p CLASS="text-sm text-gray-500 mb-4">
+        <a
+            href="{{ route('stickle::model', [ 'modelClass' => $modelClass, 'uid' => $model->getKey()]) }}"
+            class="inline-flex items-center text-sm font-medium text-gray-600 hover:text-gray-900"
+        >
+            <svg
+                class="mr-1 w-4 h-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+            >
+                <path
+                    fill-rule="evenodd"
+                    d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                    clip-rule="evenodd"
+                />
+            </svg>
+            Back to {{ $model->name }}
+        </a>
+    </p>
+
     <div class="w-full mb-4">
-        <x-stickle::ui.partials.model-navigation :model="$model">
-        </x-stickle::ui.partials.model-navigation>
+        <x-stickle::ui.partials.model-relationship-navigation :model="$model">
+        </x-stickle::ui.partials.model-relationship-navigation>
     </div>
 
     <div class="w-full flex flex-col md:flex-row">

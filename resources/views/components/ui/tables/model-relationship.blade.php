@@ -176,7 +176,6 @@
             sortDirection: "asc",
 
             setCurrentPage(page) {
-                debugger;
                 this.currentPage = page;
                 // Trigger data fetch from the main app component
                 // We'll access this method through an event
@@ -184,7 +183,6 @@
             },
 
             setPerPage(perPage) {
-                debugger;
                 this.perPage = perPage;
                 this.currentPage = 1;
                 document.dispatchEvent(new CustomEvent("fetch-data"));

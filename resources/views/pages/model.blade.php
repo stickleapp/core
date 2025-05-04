@@ -7,8 +7,8 @@
                     'url' => route('stickle::models', ['modelClass' => $modelClass]),
                 ],
                 [
-                'name' => $model->name,
-                'url' => '#',
+                    'name' => $model->name,
+                    'url' => '#',
                 ],
             ]"
         ></x-stickle::ui.partials.breadcrumbs>
@@ -17,13 +17,14 @@
     <x-stickle::ui.partials.parent-model
         :model="$model"
     ></x-stickle::ui.partials.parent-model>
+
     <h1
         class="scroll-m-20 text-xl md:text-3xl md:font-bold tracking-tight pb-3 md:pb-6"
     >
         {{ $model->name }}
     </h1>
 
-    <div class="w-full mb-4 md:hidden">
+    <div class="w-full mb-4">
         <x-stickle::ui.partials.model-navigation :model="$model">
         </x-stickle::ui.partials.model-navigation>
     </div>
@@ -36,8 +37,9 @@
             </x-stickle::ui.chartlists.model>
         </div>
 
-        <div id="events" class="w-full md:w-2/5 md:pl-4 md:block hidden">
+        <div id="events" class="w-full md:w-2/5 md:pl-4 md:block">
             <!-- Column 2 content here -->
+            <h1 class="text-base font-semibold text-gray-900">Events</h1>
             <x-stickle::ui.timelines.event-timeline
                 :channel="sprintf(config('stickle.broadcasting.channels.object'),
                     str_replace('\\', '-', strtolower(class_basename($model))),
