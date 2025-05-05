@@ -25,19 +25,41 @@
     </h1>
 
     <div class="w-full mb-4">
-        <x-stickle::ui.partials.model-navigation :model="$model">
-        </x-stickle::ui.partials.model-navigation>
+        <div class="mb-4">
+            <x-stickle::ui.partials.responsive-tabs
+                :tabs="[
+                    [
+                        'label' => 'Statistics',
+                        'hash' => 'modelStatistics',
+                    ],
+                    [
+                        'label' => 'Events',
+                        'hash' => 'modelEvents',
+                    ],
+                ]"
+                :hide-tabs="true"
+                responsive-class="md"
+                id="modelToggle"
+            >
+            </x-stickle::ui.partials.responsive-tabs>
+        </div>
     </div>
 
     <div class="w-full flex flex-col md:flex-row">
         <!-- 2/3 Column -->
-        <div id="statistics" class="w-full md:w-3/5 md:pr-4 md:block">
+        <div
+            id="modelstatistics"
+            class="modelsSideBarToggleContent w-full md:w-3/5 md:pr-4 md:block"
+        >
             <!-- Column 2 content here -->
             <x-stickle::ui.chartlists.model :model="$model">
             </x-stickle::ui.chartlists.model>
         </div>
 
-        <div id="events" class="w-full md:w-2/5 md:pl-4 md:block">
+        <div
+            id="modelEvents"
+            class="modelsSideBarToggleContent w-full md:w-2/5 md:pl-4 md:block"
+        >
             <!-- Column 2 content here -->
             <h1 class="text-base font-semibold text-gray-900">Events</h1>
             <x-stickle::ui.timelines.event-timeline

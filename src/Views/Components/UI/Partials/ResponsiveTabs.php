@@ -19,8 +19,9 @@ class ResponsiveTabs extends Component
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
         public string $id,
         public array $tabs,
-        public string $activeTab = '',
+        public bool $hideTabs = false,
         public string $responsiveClass = 'md',
+        public string $activeTab = '',
     ) {}
 
     public function render(): View

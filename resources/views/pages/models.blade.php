@@ -15,13 +15,29 @@
     </h1>
 
     <div class="w-full mb-4">
-        <x-stickle::ui.partials.models-navigation :modelClass="$modelClass">
-        </x-stickle::ui.partials.models-navigation>
+        <x-stickle::ui.partials.responsive-tabs
+            :tabs="[
+                [
+                    'label' => 'List',
+                    'hash' => 'modelsList',
+                ],
+                [
+                    'label' => 'Statistics & Events',
+                    'hash' => 'modelsSidebar',
+                ],
+            ]"
+            :hide-tabs="true"
+            id="modelsNavigation"
+        >
+        </x-stickle::ui.partials.responsive-tabs>
     </div>
 
     <div class="w-full flex flex-col md:flex-row">
         <!-- 2/3 Column -->
-        <div id="modelsList" class="w-full md:w-3/5 lg:l-4 md:block">
+        <div
+            id="modelsList"
+            class="modelsNavigationContent w-full md:w-3/5 md:l-4 md:block"
+        >
             <div class="bg-white p-6 shadow-md">
                 <x-stickle::ui.tables.models
                     :heading="\Illuminate\Support\Str::of($modelClass)->headline()"
@@ -33,20 +49,23 @@
         </div>
 
         <!-- 1/3 Column -->
-        <div class="w-full md:w-2/5 lg:pl-4 lg:pb-4 hidden md:block">
+        <div
+            id="modelsSidebar"
+            class="modelsNavigationContent w-full md:w-2/5 md:pl-4 md:pb-4 hidden md:block"
+        >
             <div class="w-full mb-4">
                 <div class="mb-4">
                     <x-stickle::ui.partials.responsive-tabs
                         :tabs="[
-                        [
-                            'label' => 'Statistics',
-                            'hash' => 'modelsStatistics',
-                        ],
-                        [
-                            'label' => 'Events',
-                            'hash' => 'modelsEvents',
-                        ],
-                    ]"
+                            [
+                                'label' => 'Statistics',
+                                'hash' => 'modelsStatistics',
+                            ],
+                            [
+                                'label' => 'Events',
+                                'hash' => 'modelsEvents',
+                            ],
+                        ]"
                         id="modelsSideBarToggle"
                     >
                     </x-stickle::ui.partials.responsive-tabs>
@@ -55,7 +74,7 @@
                 <!-- Column 2 content here -->
                 <div
                     id="modelsStatistics"
-                    class="modelsSideBarToggle w-full hidden"
+                    class="modelsSideBarToggleContent w-full hidden"
                 >
                     <x-stickle::ui.chartlists.models :model-class="$modelClass">
                     </x-stickle::ui.chartlists.models>
@@ -63,7 +82,7 @@
 
                 <div
                     id="modelsEvents"
-                    class="modelsSideBarToggle w-full hidden"
+                    class="modelsSideBarToggleContent w-full hidden"
                 >
                     <x-stickle::ui.timelines.event-timeline
                         :channel="sprintf(config('stickle.broadcasting.channels.class'),
@@ -75,21 +94,3 @@
         </div>
     </div>
 </x-stickle::ui.layouts.default-layout>
-
-<script>
-    document.querySelectorAll(".tab-button").forEach((button) => {
-        button.addEventListener("click", () => {
-            document
-                .querySelectorAll(".tab-button")
-                .forEach((btn) => btn.classList.remove("active"));
-            button.classList.add("active");
-
-            document
-                .querySelectorAll(".md\\:block")
-                .forEach((column) => column.classList.add("hidden"));
-            document
-                .querySelector(button.getAttribute("data-target"))
-                .classList.remove("hidden");
-        });
-    });
-</script>
