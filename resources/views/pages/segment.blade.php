@@ -25,13 +25,29 @@
     </h1>
 
     <div class="w-full mb-4 lg:hidden">
-        <x-stickle::ui.partials.segment-navigation :segment="$segment">
-        </x-stickle::ui.partials.segment-navigation>
+        <x-stickle::ui.partials.responsive-tabs
+            :tabs="[
+                [
+                    'label' => 'List',
+                    'target' => 'segmentList',
+                ],
+                [
+                    'label' => 'Statistics & Events',
+                    'target' => 'segmentSidebar',
+                ],
+            ]"
+            :hide-tabs="true"
+            id="segmentNavigation"
+        >
+        </x-stickle::ui.partials.responsive-tabs>
     </div>
 
     <div class="w-full flex flex-col md:flex-row">
         <!-- 2/3 Column -->
-        <div id="list" class="w-full lg:w-3/5 lg:pr-4 md:block">
+        <div
+            id="segmentList"
+            class="segmentNavigationContent w-full lg:w-3/5 lg:pr-4 md:block"
+        >
             <!-- Column 2 content here -->
             <x-stickle::ui.tables.segment
                 :segment="$segment"
@@ -42,7 +58,10 @@
         </div>
 
         <!-- 1/3 Column -->
-        <div id="statistics" class="w-full lg:w-2/5 lg:pl-4 hidden lg:block">
+        <div
+            id="segmentSidebar"
+            class="segmentNavigationContent w-full lg:w-2/5 lg:pl-4 hidden lg:block"
+        >
             <!-- Column 2 content here -->
             <x-stickle::ui.chartlists.segment :segment="$segment">
             </x-stickle::ui.chartlists.segment>

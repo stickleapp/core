@@ -10,20 +10,40 @@
         ></x-stickle::ui.partials.breadcrumbs>
     </div>
 
-    <h1 class="scroll-m-20 text-3xl font-bold tracking-tight mb-5">
-        {{ \Illuminate\Support\Str::plural(\Illuminate\Support\Str::title(str_replace('_', ' ', $modelClass))) }}
-    </h1>
+    <div class="border-b border-gray-200">
+        <div class="sm:flex sm:items-baseline">
+            <h3 class="text-base font-semibold text-gray-900">
+                {{ \Illuminate\Support\Str::plural(\Illuminate\Support\Str::title(str_replace('_', ' ', $modelClass))) }}
+            </h3>
+            <div class="mt-4 sm:mt-0 sm:ml-10">
+                <nav class="-mb-px flex space-x-8">
+                    <!-- Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
+                    <a
+                        href="{{ route('stickle::models', ['modelClass' => $modelClass]) }}"
+                        class="border-b-2 border-indigo-500 px-1 pb-4 text-sm font-medium whitespace-nowrap text-indigo-600"
+                        aria-current="page"
+                        >All</a
+                    >
+                    <a
+                        href="{{ route('stickle::segments', ['modelClass' => $modelClass]) }}"
+                        class="border-b-2 border-transparent px-1 pb-4 text-sm font-medium whitespace-nowrap text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                        >Segments</a
+                    >
+                </nav>
+            </div>
+        </div>
+    </div>
 
     <div class="w-full mb-4">
         <x-stickle::ui.partials.responsive-tabs
             :tabs="[
                 [
                     'label' => 'List',
-                    'hash' => 'modelsList',
+                    'target' => 'modelsList',
                 ],
                 [
                     'label' => 'Statistics & Events',
-                    'hash' => 'modelsSidebar',
+                    'target' => 'modelsSidebar',
                 ],
             ]"
             :hide-tabs="true"
@@ -59,11 +79,11 @@
                         :tabs="[
                             [
                                 'label' => 'Statistics',
-                                'hash' => 'modelsStatistics',
+                                'target' => 'modelsStatistics',
                             ],
                             [
                                 'label' => 'Events',
-                                'hash' => 'modelsEvents',
+                                'target' => 'modelsEvents',
                             ],
                         ]"
                         id="modelsSideBarToggle"

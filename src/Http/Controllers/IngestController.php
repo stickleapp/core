@@ -145,8 +145,9 @@ class IngestController
      */
     private function availableModels(): array
     {
-        $config = config('stickle.models', []);
-
-        return array_filter($config, fn ($value) => ! is_null($value));
+        return ClassUtils::getClassesWithTrait(
+            config('stickle.namespaces.models'),
+            \StickleApp\Core\Traits\StickleEntity::class
+        );
     }
 }

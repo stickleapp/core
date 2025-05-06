@@ -14,11 +14,9 @@
         ></x-stickle::ui.partials.breadcrumbs>
     </div>
 
-    <h1
-        class="scroll-m-20 text-xl md:text-3xl md:font-bold tracking-tight pb-3 md:pb-6"
-    >
-        {{ sprintf('%s Segments', \Illuminate\Support\Str::of($modelClass)->headline()) }}
-    </h1>
+    <x-stickle::ui.partials.models-navigation
+        :model-class="$modelClass"
+    ></x-stickle::ui.partials.models-navigation>
 
     <div class="w-full flex flex-col md:flex-row">
         <!-- 2/3 Column -->

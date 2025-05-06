@@ -50,9 +50,11 @@
                                 </div>
                                 <div class="min-w-0 flex-1 py-1.5">
                                     <div class="text-sm text-gray-500">
-                                        <span class="font-medium text-gray-900">${
-                                            event?.data?.user?.name || "User"
-                                        }</span>
+                                        <a href="/stickle/User/${
+                                            event?.data?.user?.id
+                                        }" class="font-medium text-gray-900">${
+                    event?.data?.user?.name || "User"
+                }</a>
                                         ${
                                             event?.data?.event ||
                                             event?.data?.path

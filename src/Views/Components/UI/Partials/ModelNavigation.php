@@ -17,6 +17,7 @@ class ModelNavigation extends Component
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
+        public string $id,
         public object $model
     ) {}
 

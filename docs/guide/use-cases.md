@@ -6,11 +6,18 @@ outline: deep
 
 Stickle is extremely powerful&mdash;if you need it to be. But it very easy to get started.
 
-## Is anyone using my app? Who? What are they doing?
+## How are people using my app?
 
-Stickle has you covered. Install Stickle and run the `stickle:configure` script and then navigate to `/stickle`.
+Stickle has you covered. Follow the [installation instructions](/guide/installation.md) and navigate to `/stickle`.
 
-Stickle is already processing your user data and making it available in snazzy charts and data tables. Have a click around and then come back here!
+Stickle is already processing your user data and making it available in snazzy charts and data tables. It reports:
+
+-   Sessions;
+-   Page Views;
+-   Authorization events; and
+-   User-defined events.
+
+Have a click around and then come back here!
 
 ## Let's Segment your customers!
 
@@ -19,7 +26,7 @@ Not all customers are alike. If you know Laravel Eloquent, then you can build po
 -   Customers who joined this week.
 -   Customers who have paid the most money.
 -   Customers who have been active the longest.
--   Cusotmers who have made the most purchases.
+-   Customers who have made the most purchases.
 -   Customers renewing in the next 30- (or 60- or 90-) days.
 -   ICP (Ideal Customer Profile)
 

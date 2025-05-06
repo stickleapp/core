@@ -26,30 +26,19 @@
 
     <div class="w-full mb-4">
         <div class="mb-4">
-            <x-stickle::ui.partials.responsive-tabs
-                :tabs="[
-                    [
-                        'label' => 'Statistics',
-                        'hash' => 'modelStatistics',
-                    ],
-                    [
-                        'label' => 'Events',
-                        'hash' => 'modelEvents',
-                    ],
-                ]"
-                :hide-tabs="true"
-                responsive-class="md"
-                id="modelToggle"
+            <x-stickle::ui.partials.model-navigation
+                :model="$model"
+                id="modelNavigation"
             >
-            </x-stickle::ui.partials.responsive-tabs>
+            </x-stickle::ui.partials.model-navigation>
         </div>
     </div>
 
     <div class="w-full flex flex-col md:flex-row">
         <!-- 2/3 Column -->
         <div
-            id="modelstatistics"
-            class="modelsSideBarToggleContent w-full md:w-3/5 md:pr-4 md:block"
+            id="modelStatistics"
+            class="modelNavigationContent w-full md:w-3/5 md:pr-4 md:block"
         >
             <!-- Column 2 content here -->
             <x-stickle::ui.chartlists.model :model="$model">
@@ -58,10 +47,10 @@
 
         <div
             id="modelEvents"
-            class="modelsSideBarToggleContent w-full md:w-2/5 md:pl-4 md:block"
+            class="modelNavigationContent w-full md:w-2/5 md:pl-4 md:block"
         >
             <!-- Column 2 content here -->
-            <h1 class="text-base font-semibold text-gray-900">Events</h1>
+            <h1 class="text-base font-semibold text-gray-900 pb-4">Events</h1>
             <x-stickle::ui.timelines.event-timeline
                 :channel="sprintf(config('stickle.broadcasting.channels.object'),
                     str_replace('\\', '-', strtolower(class_basename($model))),
@@ -71,21 +60,3 @@
         </div>
     </div>
 </x-stickle::ui.layouts.default-layout>
-
-<script>
-    document.querySelectorAll(".tab-button").forEach((button) => {
-        button.addEventListener("click", () => {
-            document
-                .querySelectorAll(".tab-button")
-                .forEach((btn) => btn.classList.remove("active"));
-            button.classList.add("active");
-
-            document
-                .querySelectorAll(".md\\:block")
-                .forEach((column) => column.classList.add("hidden"));
-            document
-                .querySelector(button.getAttribute("data-target"))
-                .classList.remove("hidden");
-        });
-    });
-</script>

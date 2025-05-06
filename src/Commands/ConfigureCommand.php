@@ -45,7 +45,7 @@ class ConfigureCommand extends Command
 
         note("We'll ask you a few questions to get your Stickle configuration set up.");
 
-        pause('Shall we? Press ENTER key to continue...');
+        pause('Ready? Press ENTER key to continue...');
 
         $architecture = suggest(
             label: 'Which of the following best describes your application?',
@@ -79,26 +79,26 @@ class ConfigureCommand extends Command
 
         $settings[] = $this->addSetting('tablePrefix', $tablePrefix, 'Table Prefix');
 
-        note('What is your user model?');
+        // note('What is your user model?');
 
-        /** @var string $userModelDefault * */
-        $userModelDefault = config('auth.providers.users.model');
-        $userModel = text(
-            label: 'What is your user model (full namespace)?',
-            validate: ['userModel' => 'required|string'],
-            default: $userModelDefault
-        );
+        // /** @var string $userModelDefault * */
+        // $userModelDefault = config('auth.providers.users.model');
+        // $userModel = text(
+        //     label: 'What is your user model (full namespace)?',
+        //     validate: ['userModel' => 'required|string'],
+        //     default: $userModelDefault
+        // );
 
-        $settings[] = $this->addSetting('userModel', $userModel, 'User Model');
+        // $settings[] = $this->addSetting('userModel', $userModel, 'User Model');
 
-        note('Stickle can aggregate metrics under a group (organiation, account, tenant, etc).');
+        // note('Stickle can aggregate metrics under a group (organiation, account, tenant, etc).');
 
-        $groupModel = text(
-            label: 'What is your group model (full namespace)?',
-            validate: ['userModel' => 'string'],
-        );
+        // $groupModel = text(
+        //     label: 'What is your group model (full namespace)?',
+        //     validate: ['userModel' => 'string'],
+        // );
 
-        $settings[] = $this->addSetting('groupModel', $groupModel, 'Group Model');
+        // $settings[] = $this->addSetting('groupModel', $groupModel, 'Group Model');
 
         $modelsPath = text(
             label: 'Where do you place your laravel models (full namespace)?',
@@ -126,6 +126,16 @@ class ConfigureCommand extends Command
 
         note('Stickle needs access to a disk to store files for loading large data sets.');
 
+        /** @var array<string> $connections */
+        $connections = config('database.connections');
+        $connection = suggest(
+            label: 'Which database connection should be used?',
+            validate: ['connection' => 'string'],
+            options: array_keys($connections)
+        );
+
+        $settings[] = $this->addSetting('connection', $connection, 'Database Connection');
+
         /** @var array<string> $disks */
         $disks = config('filesystems.disks');
         $storageDisk = suggest(
@@ -147,7 +157,7 @@ class ConfigureCommand extends Command
 
         $settings[] = $this->addSetting('serverLoadMiddleware', $serverLoadMiddleware, 'Server Load Middleware', (bool) $serverLoadMiddleware ? 'Yes' : 'No');
 
-        note('Stickle can track insert Javascript to track user events and page views.');
+        note('Stickle can track insert a small Javascript snippet that will track user events and page views.');
 
         $clientLoadMiddleware = confirm(
             label: 'Do you want to track client-side requests using Javascript?',
@@ -177,11 +187,15 @@ class ConfigureCommand extends Command
         );
 
         $serverLoadMiddleware = confirm(
-            label: 'Would you like to apply these settings?',
+            label: 'Would you publish these settings to `/stickle/config.php`?',
             default: false,
             yes: 'Yes',
             no: 'No, I\'ll change settings manually'
         );
+
+        if ($serverLoadMiddleware) {
+            info('Publishing settings...');
+        }
     }
 
     /** @return array<string, mixed> */

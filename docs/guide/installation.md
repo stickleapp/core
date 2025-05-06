@@ -23,43 +23,35 @@ $ composer require stickleapp/core
 
 ### Install
 
-Stickle provides an installer that will guide you through your Stickle installation and configuration. You can run the intaller via artisan:
+Stickle provides an installer that will guide you through your Stickle installation and configuration. You can run the intaller via the `artisan` command:
 
 ```
-$ php artisan stickle:install
-```
-
-### Run
-
-Stickle provides a command that will start any processes required for running Stickle locally.
-
-```
-$ php artisan stickle:run
+$ php artisan stickle:configure
 ```
 
 ### Advanced
 
-The following are largely handled by the `stickle:install` and `stickle:run` commands but you may need to run them independently at some point.
+The following are largely handled by the `stickle:configure` command but you may need to run them independently at some point.
 
-### Publish Files
+#### Publish Files
 
 You must publish files from Stickle to your project.
 
 ```
-$ php artisan vendor:publish
+$ php artisan vendor:publish --provider="StickleApp\Core\CoreServiceProvider"
 ```
 
-### Configure Package
+### Manual Configuration
 
 Stickle ships with sensible defaults that work with most 'out-of-the-box' Laravel installations.
 
-However, we recommend you review these settings and adjust them as, necessary, to optimize your setting.
+The `stickle:configure` artisan command will publish `/config/stickle.php` and setup your initial values.
 
-These can be found in `/config/stickle.php`.
+You can manually configure these settings if necessary.
 
 ### Migrations
 
-Once you have installed and configured Stickle, you must run the required database migrations:
+`stickle:configure` will run the required migrations but you can run them manually if necessary `php artisan migrate`.
 
 ```
 $ php artisan migrate
