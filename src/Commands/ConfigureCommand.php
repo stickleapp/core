@@ -68,17 +68,6 @@ class ConfigureCommand extends Command
 
         $settings[] = $this->addSetting('interval', $interval, 'Default Process Interval (minutes)');
 
-        note('Stickle creates tables in your database.');
-        note('We can prefix these tables with a string to help keep things organized.');
-
-        $tablePrefix = text(
-            label: 'Would you like to prefix your Stickle table names with a short string?',
-            validate: ['tablePrefix' => 'required|string|min:3|max:10'],
-            default: 'stickle_'
-        );
-
-        $settings[] = $this->addSetting('tablePrefix', $tablePrefix, 'Table Prefix');
-
         // note('What is your user model?');
 
         // /** @var string $userModelDefault * */
@@ -124,24 +113,50 @@ class ConfigureCommand extends Command
 
         $settings[] = $this->addSetting('segmentsPath', $segmentsPath, 'Segments Path');
 
-        note('Stickle needs access to a disk to store files for loading large data sets.');
+        note('Stickle will need access to your primary database. It will query existing tables and create new ones.');
 
         /** @var array<string> $connections */
-        $connections = config('database.connections');
-        $connection = suggest(
+        $dbConnections = config('database.connections');
+        $dbConnection = suggest(
             label: 'Which database connection should be used?',
             validate: ['connection' => 'string'],
-            options: array_keys($connections)
+            options: array_keys($dbConnections)
         );
 
-        $settings[] = $this->addSetting('connection', $connection, 'Database Connection');
+        $settings[] = $this->addSetting('connection', $dbConnection, 'Database Connection');
+
+        note('Stickle can prefix the name of tables it creates with a string to help keep things organized and prevent name collision.');
+
+        $tablePrefix = text(
+            label: 'Would you like to prefix your Stickle table names with a short string?',
+            validate: ['tablePrefix' => 'required|string|min:3|max:10'],
+            default: 'stickle_'
+        );
+
+        $settings[] = $this->addSetting('tablePrefix', $tablePrefix, 'Table Prefix');
+
+        if ($dbConnection === 'pgsql') {
+
+            note('Stickle can optionally use table partitioning. If you have a high volume of events and page views, this make Stickle more performant. It will also allow you to remove old data without impacting database performance.');
+
+            $enablePartitioning = text(
+                label: 'Would you like to use partitioning?',
+                default: false,
+                yes: 'Yes',
+                no: 'No'
+            );
+
+            $settings[] = $this->addSetting('enablePartitioning', $enablePartitioning, 'Enable Partitioning', (bool) $enablePartitioning ? 'Yes' : 'No');
+        }
+
+        note('Stickle needs access to a disk to store files for loading large data sets.');
 
         /** @var array<string> $disks */
-        $disks = config('filesystems.disks');
+        $storageDisks = config('filesystems.disks');
         $storageDisk = suggest(
             label: 'What storage disk should be used for data exports?',
             validate: ['storageDisk' => 'string'],
-            options: array_keys($disks)
+            options: array_keys($storageDisks)
         );
 
         $settings[] = $this->addSetting('storageDisk', $storageDisk, 'Storage Disk');
@@ -151,6 +166,17 @@ class ConfigureCommand extends Command
         $serverLoadMiddleware = confirm(
             label: 'Do you want to track server requests using middleware?',
             default: false,
+            yes: 'Yes',
+            no: 'No'
+        );
+
+        $settings[] = $this->addSetting('serverLoadMiddleware', $serverLoadMiddleware, 'Server Load Middleware', (bool) $serverLoadMiddleware ? 'Yes' : 'No');
+
+        note('Stickle can track Laravel authentication events such as logins, logouts, password resets, etc.');
+
+        $trackAuthenticationEvents = confirm(
+            label: 'Do you want to track Laravel authentication events?',
+            default: true,
             yes: 'Yes',
             no: 'No'
         );
@@ -167,6 +193,33 @@ class ConfigureCommand extends Command
         );
 
         $settings[] = $this->addSetting('clientLoadMiddleware', $clientLoadMiddleware, 'Client Load Middleware', (bool) $clientLoadMiddleware ? 'Yes' : 'No');
+
+        note('StickleUI gives you visual access to your data.');
+
+        $webPrefix = text(
+            label: 'What path would you like to use for accessing StickleUI?',
+            validate: ['webPrefix' => 'string'],
+            default: 'stickle'
+        );
+
+        $settings[] = $this->addSetting('webPrefix', $webPrefix, 'StickleUI Path');
+
+        note('Stickle exposes some API routes used by the UI. We prefix the routes to distinguish them from your application routes.');
+
+        $apiPrefix = text(
+            label: 'What prefix would you like to use for the API routes?',
+            validate: ['apiPrefix' => 'string'],
+            default: 'api/stickle'
+        );
+
+        $settings[] = $this->addSetting('apiPrefix', $apiPrefix, 'API Prefix');
+
+        $serverLoadMiddleware = confirm(
+            label: 'Do you want to track server requests using middleware?',
+            default: false,
+            yes: 'Yes',
+            no: 'No'
+        );
 
         info('Please review your settings.');
 
@@ -186,14 +239,14 @@ class ConfigureCommand extends Command
             rows: $rows,
         );
 
-        $serverLoadMiddleware = confirm(
+        $publishConfig = confirm(
             label: 'Would you publish these settings to `/stickle/config.php`?',
             default: false,
             yes: 'Yes',
             no: 'No, I\'ll change settings manually'
         );
 
-        if ($serverLoadMiddleware) {
+        if ($publishConfig) {
             info('Publishing settings...');
         }
     }
