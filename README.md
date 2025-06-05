@@ -1,3 +1,7 @@
+# PRE-RELEASE SOFTWARE. DO NOT USE ON PRODUCTION. 
+
+This README was written as a roadmap for Stickle Development and does not currently reflect the code in the project. You can find some more up-to-date docs in /docs but they are subject to change as well...
+
 Stickle is a package for Laravel that helps you analyze--and interact with--your customer base.
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/stickleapp/core.svg?style=flat-square)](https://packagist.org/packages/stickleapp/core)
