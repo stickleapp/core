@@ -38,4 +38,8 @@ interface AnalyticsRepositoryContract
         ?string $utmCampaign = null,
         ?string $utmContent = null
     ): void;
+
+    public function rollupSessions(
+        DateTimeInterface $startDate
+    ): void;
 }

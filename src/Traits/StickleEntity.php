@@ -62,7 +62,7 @@ trait StickleEntity
          */
         if (! $builder->hasJoin("{$prefix}model_attributes")) {
             $builder->leftJoin("{$prefix}model_attributes", function ($join) use ($prefix) {
-                $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw(self::getTableName().'.id::text'));
+                $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw(self::getTableName().'.'.self::getKeyName().'::text'));
                 $join->where("{$prefix}model_attributes.model_class", '=', self::class);
             });
         }

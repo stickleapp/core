@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use ReflectionClass;
 use StickleApp\Core\Attributes\StickleSegmentMetadata;
 use StickleApp\Core\Jobs\ExportSegmentJob;
 use StickleApp\Core\Models\Segment;
 use StickleApp\Core\Support\AttributeUtils;
+use StickleApp\Core\Support\ClassUtils;
 
 final class ExportSegmentsCommand extends Command implements Isolatable
 {
@@ -101,9 +101,7 @@ final class ExportSegmentsCommand extends Command implements Isolatable
 
                 $segmentClassName = $namespace.'\\'.$className;
 
-                $reflection = new ReflectionClass($segmentClassName);
-
-                $defaultProperties = $reflection->getDefaultProperties();
+                $defaultProperties = ClassUtils::getDefaultAttributesForClass($segmentClassName);
 
                 $model = Arr::get($defaultProperties, 'model');
 

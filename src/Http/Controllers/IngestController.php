@@ -13,6 +13,7 @@ use Illuminate\Validation\Rule;
 use StickleApp\Core\Enums\RequestType;
 use StickleApp\Core\Events\Page;
 use StickleApp\Core\Events\Track;
+use StickleApp\Core\Support\ClassUtils;
 
 class IngestController
 {

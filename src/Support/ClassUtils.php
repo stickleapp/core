@@ -157,6 +157,7 @@ class ClassUtils
      *    return $this->hasMany(User::class);
      *}
      *
+     * @param  \Illuminate\Foundation\Application  $app  The Laravel application
      * @param  string  $class  The class name
      * @param  array<int, string>  $relationshipClasses  The relationship classes to check against
      * @param  array<int, string>  $relatedClasses  The related classes to check against
@@ -196,19 +197,11 @@ class ClassUtils
     }
 
     /**
-     * Check if a $class has a method returning a subtype of Illuminate\Database\Eloquent\Relations\Relation
-     * that takes one of the $classes as an argument.
-     *
-     * Ie. This would return true becuase it returns a hasMany relationship with User as a parameter
-     * public function users(): hasMany
-     * {
-     *    return $this->hasMany(User::class);
-     *}
-     *
+     * @param  \Illuminate\Foundation\Application  $app  The Laravel application
      * @param  string  $class  The class name
      * @param  array<int, string>  $relationshipClasses  The eloquent relationship classes to allow
      * @param  array<int, string>  $relatedClasses  The related classes to check against
-     * @return array<int, array<string, mixed>> True if the class has a relationship with any of the specified classes, false otherwise
+     * @return array<int, array<string, mixed>> An array of Laravel Relationships
      */
     public static function getRelationshipsWith(Application $app, string $class, array $relationshipClasses, array $relatedClasses): array
     {
@@ -229,6 +222,7 @@ class ClassUtils
         }, $relationshipClasses);
 
         $return = [];
+
         // Check each relation to see if it relates to any of the specified classes
         foreach ($relations as $relationInfo) {
 
@@ -242,5 +236,16 @@ class ClassUtils
         }
 
         return $return;
+    }
+
+    /**
+     * @param  string  $class  The class name
+     * @return array<string, mixed>
+     */
+    public static function getDefaultAttributesForClass(string $class): array
+    {
+        $reflection = new ReflectionClass($class);
+
+        return $reflection->getDefaultProperties();
     }
 }

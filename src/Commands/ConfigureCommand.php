@@ -95,7 +95,7 @@ class ConfigureCommand extends Command
             default: 'App\Models'
         );
 
-        $seetings[] = $this->addSetting('modelsPath', $modelsPath, 'Models Path');
+        $settings[] = $this->addSetting('modelsPath', $modelsPath, 'Models Path');
 
         $listenersPath = text(
             label: 'Where do you place your event listeners (full namespace)?',
@@ -139,7 +139,7 @@ class ConfigureCommand extends Command
 
             note('Stickle can optionally use table partitioning. If you have a high volume of events and page views, this make Stickle more performant. It will also allow you to remove old data without impacting database performance.');
 
-            $enablePartitioning = text(
+            $enablePartitioning = confirm(
                 label: 'Would you like to use partitioning?',
                 default: false,
                 yes: 'Yes',
@@ -181,7 +181,7 @@ class ConfigureCommand extends Command
             no: 'No'
         );
 
-        $settings[] = $this->addSetting('serverLoadMiddleware', $serverLoadMiddleware, 'Server Load Middleware', (bool) $serverLoadMiddleware ? 'Yes' : 'No');
+        $settings[] = $this->addSetting('trackAuthenticationEvents', $trackAuthenticationEvents, 'Track  Authentication Events', (bool) $serverLoadMiddleware ? 'Yes' : 'No');
 
         note('Stickle can track insert a small Javascript snippet that will track user events and page views.');
 
@@ -225,14 +225,12 @@ class ConfigureCommand extends Command
 
         note('You can change any of these settings in config/stickle.php.');
 
-        $callback = function ($item) {
+        $rows = collect($settings)->map(function ($item) {
             return [
                 'label' => (string) $item['label'],
                 'value' => (string) $item['displayValue'],
             ];
-        };
-
-        $rows = collect($settings)->map($callback);
+        });
 
         table(
             headers: ['Setting', 'Value'],
@@ -249,6 +247,8 @@ class ConfigureCommand extends Command
         if ($publishConfig) {
             info('Publishing settings...');
         }
+
+        //  Run migrations if using partioning...
     }
 
     /** @return array<string, mixed> */

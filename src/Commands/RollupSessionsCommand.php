@@ -9,6 +9,7 @@ use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\Log;
+use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
 
 final class RollupSessionsCommand extends Command implements Isolatable
 {
@@ -28,7 +29,8 @@ final class RollupSessionsCommand extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
-        #[ConfigAttribute('stickle.database.tablePrefix')] protected ?string $prefix = null,
+        #[ConfigAttribute('stickle.database.tablePrefix')] protected ?string $prefix,
+        readonly AnalyticsRepositoryContract $repository
     ) {
         parent::__construct();
     }
@@ -44,42 +46,6 @@ final class RollupSessionsCommand extends Command implements Isolatable
 
         $startDate = Carbon::parse($startDate);
 
-        $sql = <<<sql
-INSERT INTO {$this->prefix}sessions_rollup_1day (
-    model_class, 
-    object_uid, 
-    day, 
-    session_count
-)
-    WITH first_session_events AS (
-        SELECT
-            model_class,
-            object_uid,
-            session_uid,
-            MIN(DATE(timestamp)) AS first_day
-        FROM
-            (SELECT model_class, object_uid, session_uid, timestamp FROM {$this->prefix}events WHERE timestamp >= '%s'
-             UNION ALL
-             SELECT model_class, object_uid, session_uid, timestamp FROM {$this->prefix}requests WHERE offline = FALSE AND timestamp > '%s') AS combined
-        GROUP BY
-            model_class,
-            object_uid,
-            session_uid
-    )
-    SELECT
-        model_class,
-        object_uid,
-        first_day AS day,
-        COUNT(DISTINCT session_uid) AS session_count
-    FROM
-        first_session_events
-    GROUP BY
-        model_class,
-        object_uid,
-        first_day
-ON CONFLICT (model_class, object_uid, day) DO UPDATE SET session_count = EXCLUDED.session_count;
-sql;
-
-        \DB::statement(sprintf($sql, $startDate->toDateString(), $startDate->toDateString()));
+        $this->repository->rollupSessions($startDate);
     }
 }

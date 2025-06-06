@@ -22,8 +22,6 @@ class TrackListener implements ShouldQueue
     {
         Log::debug('TrackListener->handle()', [$event]);
 
-        Log::debug('TrackListener->handle() - save event', [$event]);
-
         $this->repository->saveEvent(
             model: data_get($event->payload, 'model_class'),
             objectUid: data_get($event->payload, 'object_uid'),
