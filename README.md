@@ -1,3 +1,7 @@
+# PRE-RELEASE SOFTWARE. DO NOT USE ON PRODUCTION. 
+
+This README was written as a roadmap for Stickle Development and does not currently reflect the code in the project. You can find some more up-to-date docs in /docs but they are subject to change as well...
+
 Stickle is a package for Laravel that helps you analyze--and interact with--your customer base.
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/stickleapp/core.svg?style=flat-square)](https://packagist.org/packages/stickleapp/core)
@@ -64,16 +68,6 @@ Share customer-specific email updates to your customers to demonstrate the value
 
 A multi-purpose, extensible, Intercom-style widget.
 
-# Stickle UI Professional
-
-$499 one time payment includes:
-
--   A first-party UI for Stickle Core and Stickle Apps;
--   Updates for 1 year;
--   Email support.
-
-Renewals for $99/year.
-
 # Getting Started
 
 ## Requirements
@@ -100,14 +94,6 @@ The installer will guide you through the setup process helping you set configura
 -   If you want to track each authenticated event via middleware; and
 -   How you define the relationships between `Users` and `Groups` in your application.
 
-It will also prompt you to install desired first-party Stickle apps:
-
--   Stickle Webhooks
--   Stickle Websockets
--   Stickle Health
--   Stickle Orchestrations
--   Stickle Dashboards
-
 ## Running Migrations
 
 After you have specified your configuration options in the installation script, run migrations:
@@ -127,7 +113,7 @@ This command will does the following:
 
 You can access a test page at the URL specified in the terminal.
 
-# Testing
+
 
 --- IF CONFIG MISSING vendor:publish --force
 --- IF CONFIG MISSING vendor:publish --force
