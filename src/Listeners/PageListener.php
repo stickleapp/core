@@ -16,7 +16,7 @@ class PageListener implements ShouldQueue
     /**
      * Create the event listener.
      */
-    public function __construct(readonly AnalyticsRepositoryContract $repository) {}
+    public function __construct(public readonly AnalyticsRepositoryContract $repository) {}
 
     public function handle(Page $event): void
     {
