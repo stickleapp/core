@@ -59,20 +59,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Models
-    |--------------------------------------------------------------------------
-    |
-    | Which models should be used for the various entities and what is the relationship
-    | between the group and the user
-    */
-    'models' => [
-        // @phpstan-ignore class.notFound
-        'user' => env('AUTH_MODEL', App\Models\User::class),
-        'group' => env('STICKLE_MODEL_GROUP', null),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Paths
     |--------------------------------------------------------------------------
     |
