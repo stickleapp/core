@@ -1,6 +1,6 @@
-# PRE-RELEASE SOFTWARE. DO NOT USE ON PRODUCTION. 
+# PRE-RELEASE SOFTWARE
 
-This README was written as a roadmap for Stickle Development and does not currently reflect the code in the project. You can find some more up-to-date docs in /docs but they are subject to change as well...
+## This software is not ready to be used. Contact me dclaysmith@gmail.com.
 
 Stickle is a package for Laravel that helps you analyze--and interact with--your customer base.
 
@@ -35,38 +35,6 @@ Stickle Core is the foundation of Stickle that:
 # Stickle Apps
 
 Stickle Apps extend the funtionality of Stickle Core. Anyone can write a Stickle app but we'll provide some first-party apps to get people started.
-
-## Stickle Webhooks
-
-Stickle Webhooks allow you to send Stickle events to a defined Webhook endpoint.
-
-NOTE: Not sure we need this. Is there a definite market winner library for Webhooks? Spatie?
-
-## Stickle Websockets
-
-Built on Laravel Reverb, Stickle Websockets allow you to send notifications to connected clients via Websockets.
-
-NOTE: Not sure we need this. **Maybe** something that works out-of-the-box with the Javasdk?
-
-## Stickle Health
-
-Build customer health scores based on Stickle Core.
-
-## Stickle Orchestrations
-
-Create workflows triggered on data in Stickle Core.
-
-## Stickle Dashboards
-
-Create shareable dashboards containing metrics gleaned from your Customer data.
-
-## Stickle Updates
-
-Share customer-specific email updates to your customers to demonstrate the value they provide.
-
-## Stickle Widget
-
-A multi-purpose, extensible, Intercom-style widget.
 
 # Getting Started
 
@@ -108,49 +76,10 @@ When complete you can run Stickle with the following command:
 
 This command will does the following:
 
--   activates cron tasks; `php artisan schedule:work`
+-   activates cron tasks;
 -   activates websockets server (if applicable).
 
 You can access a test page at the URL specified in the terminal.
-
-
-
---- IF CONFIG MISSING vendor:publish --force
---- IF CONFIG MISSING vendor:publish --force
---- IF CONFIG MISSING vendor:publish --force
---- IF CONFIG MISSING vendor:publish --force
---- IF CONFIG MISSING vendor:publish --force
---- IF CONFIG MISSING vendor:publish --force
---- IF CONFIG MISSING vendor:publish --force
---- IF CONFIG MISSING vendor:publish --force
---- IF CONFIG MISSING vendor:publish --force
---- IF CONFIG MISSING vendor:publish --force
-
-`vendor/bin/testbench vendor:publish --force`
-
-`vendor/bin/testbench workbench:build`
-
-`vendor/bin/testbench migrate:refresh`
-
-`vendor/bin/testbench db:seed --class=\\Workbench\\Database\\Seeders\\DatabaseSeeder`
-
-`vendor/bin/testbench migrate:fresh --seed --seeder=\\Workbench\\Database\\Seeders\\DatabaseSeeder`
-
-`vendor/bin/testbench stickle:record-model-attributes ~/Projects/StickleApp/Core/workbench/app/Models \\Workbench\\App\\Models 10`
-
-`vendor/bin/testbench stickle:export-segments ~/Projects/StickleApp/Core/workbench/app/Segments \\Workbench\\App\\Segments 10`
-
-`vendor/bin/testbench stickle:record-segment-statitics`
-
-'vendor/bin/testbench stickle:record-model-statitics'
-
-`vendor/bin/testbench stickle:process-segment-events`
-
-`./vendor/bin/testbench workbench:send-test-requests`
-
-files
-`vendor/orchestra/testbench-core/laravel/storage/app` (CSV temp exports)
-`tail -f vendor/orchestra/testbench-core/laravel/storage/logs/laravel.log` (Logs)
 
 # Advanced Configuration
 
@@ -204,159 +133,6 @@ Stickle can track requests and events on the server and on the client. There are
 Where to autoload `Segments` (ActiveAccounts.php) and export them.
 Where to autoload `Listeners`
 Where to autoload `Playbooks` (ActiveAccounts.php) and export them (Move to => Stickle Playbooks)
-
-# How To
-
-OK. So you installed Stickle and typed the `php artisan stickle:run` command. You were given a URL to open in your web browser (probably http://localhost:8000). You should see a demo screen that you can use to test some things out.
-
-The left frame is your application, the middle frame is an example 'admin console' and the right frame is an example 3rd-party application like a CRM.
-
-```
-Add echo code to your app
-```
-
-```
-Add echo code to admin
-```
-
-```
-Code to send a webhook to fake 3rd party service http://localhost:9000
-```
-
-Start by logging into your application in the left frame. You should have seen:
-
--   Register a new user
-
--   A welcome message on the login page;
--   Some updates in the admin panel:
-
-    -   An alert announcing that someone just logged in;
-    -   An update to the 'Logged In Users' widget;
-    -   An update to your row in the Active Users table (with a new Login Count and Most recent login);
-
--   In the admin frame, click on your username
-    In the application frame, update your username and add your birthday and click 'Save'. You should see:
-
--   In application:
--   In admin panel:
-
-Now do some stuff in the admin interface...
-
-Now do some stuff in the CRM...
-
-```
-Call a remote webhook
-```
-
-Meanwhile, Stickle is refreshing your Segments:
-
--   Added to Segment alert in Admin
-
-## Tracking End User Behavior
-
-### On the Server
-
-```
-use StickleApp\Core\Events\Track;
-use StickleApp\Core\Events\Group;
-
-Track::dispatch(...args);
-Group::dispatch(...args);
-Identify::dispatch(...args);
-```
-
-### On the Browser
-
-```
-Stickle('track', []);
-Stickle('identify', []);
-Stickle('page', []);
-Stickle('group', []);
-```
-
-## Tracking Model Attribute Changes
-
-In your StickleEntity model, you can have Stickle track numerical attributes over time. To do so, add the attribute to the `$tracked` array on the model.
-
-## Eloquent Models
-
-Stickle exposes two Eloquent scopes that allow you to segment your users based on their behavior or history: `stickle` and `orStickle`.
-
-These methods expect an instance of a `StickleApp\Core\Filter` class.
-
-```
-use App\Models\User;
-use StickleApp\Core\Filters\Base as Filter;
-
-$users = User::stickle(
-        Filter::eventCount('clicked:something')
-            ->greaterThan(10)
-            ->onOrAfter(now()->subYears(1))
-            ->before(now()))
-    ->get();
-```
-
-```
-use App\Models\User;
-use StickleApp\Core\Filters\Base as Filter;
-
-$users = User::stickle(
-        Filter::eventCount('clicked:something')
-            ->increased(
-                [now()->subYears(2), now()->subYears(1)],
-                [now()->subYears(1), now()],
-            )
-            ->moreThan(new Percentage(10));
-    )->get();
-```
-
-Please see [docs/ELOQUENT](docs/ELOQUENT.md) for a full list of filters and options.
-
-## Creating Segments
-
-You can create segments of StickleEntity models by creating a class that implements the `Segment` contract and placing it in the `App\Segments` directory.
-
-These classes contain the definition of the segment, most notably, a method that returns a `Illuminate\Database\Eloquent\Builder` that returns the items contained in the Segment.
-
-| Method / Attribute | Description                                                              | Required | Data Type | Default |
-| ------------------ | ------------------------------------------------------------------------ | -------- | --------- | ------- |
-| name               | Human readable name                                                      | Y        | String    |         |
-| exportInterval     | How frequently the segment is refreshed (minutes)                        | Y        | Integer   | 360     |
-| class              | The StickleEntity model class (ex. App\Models\User)                      | Y        | String    |         |
-| builder()          | An Eloquent builder class that specifies the filters forming the segment | Y        | Builder   |         |
-
-## Reacting to Events
-
-### User Events
-
-### TrackEvents
-
-Creates a listener in App\Listeners\User\NameOfEventListener and it will be called when the event is received.
-
-### TrackPageView
-
-Define routes that you want to handle in config(). You can use the same patterns as Laravel's routing. You can assign Listeners to be called when a page is visited.
-
-```
-config\stickle.php
-
-$pageViewListenders => [
-    '/upgrade' => [
-        \App\Listeners\SendUpgradeOfferEmail::class,
-    ]
-],
-
-```
-
-### Server Events
-
-Why handle these through Stickle? We want to log them? We want to hook into webhooks/websockets?
-
-We'll generate some around Segments? What else?
-
-We'll dispatch some TrackEvents for:
-EnteredSegment
-ExitedSegment
 
 # Changelog
 

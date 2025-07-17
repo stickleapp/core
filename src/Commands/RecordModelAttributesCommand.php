@@ -69,10 +69,10 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
                     ->orWhereNull('synced_at');
             })->limit(1000)->select("{$model->getTable()}.*");
 
-            foreach ($builder->cursor() as $trackable) {
-                dispatch(function () use ($trackable) {
-                    $attributes = $trackable->getStickleTrackedAttributes();
-                    $trackable->trackable_attributes = $trackable->only($attributes);
+            foreach ($builder->cursor() as $stickleEntity) {
+                dispatch(function () use ($stickleEntity) {
+                    $attributes = $stickleEntity->getStickleTrackedAttributes();
+                    $stickleEntity->trackable_attributes = $stickleEntity->only($attributes);
                 });
             }
         }

@@ -22,6 +22,12 @@ use StickleApp\Core\Models\ModelRelationshipStatistic;
 use StickleApp\Core\Support\AttributeUtils;
 use StickleApp\Core\Support\ClassUtils;
 
+/**
+ * Trait StickleEntity
+ *
+ * This trait provides methods to enable Stickle functionality on Eloquent models.
+ * It allows for filtering, tracking attributes, and managing relationships with Stickle.
+ */
 trait StickleEntity
 {
     public static function getTableName()
@@ -134,7 +140,7 @@ trait StickleEntity
         });
 
         /**
-         * When a trackable model is created, log observed attributes
+         * When a StickleEntity model is created, log observed attributes
          */
         static::created(function (Model $model) {
 
@@ -144,7 +150,7 @@ trait StickleEntity
         });
 
         /**
-         * When a trackable model is updated, log observed attributes
+         * When a stickleEntity model is updated, log observed attributes
          */
         static::updated(function (Model $model) {
 
@@ -269,6 +275,53 @@ trait StickleEntity
                 }
             }
         );
+    }
+
+    /**
+     * Access a specific stickle attribute with its history
+     *
+     * Get current value
+     *$shoeSize = $user->stickleAttribute('shoe_size')->current();
+     *
+     * Check if size is set
+     * if ($user->stickleAttribute('shoe_size')->current() !== null) {
+     *    // Do something
+     * }
+     *
+     * Get most recent change
+     * $latestShoeSize = $user->stickleAttribute('shoe_size')->latest();
+     *
+     * Get historical values between dates
+     * $shoeSizeHistory = $user->stickleAttribute('shoe_size')
+     *    ->audit()
+     *    ->between('2023-01-01', '2023-12-31')
+     *    ->all();
+     *
+     * Get the most recent value in a date range
+     * $recentShoeSize = $user->stickleAttribute('shoe_size')
+     *    ->audit()
+     *    ->between('2023-01-01', '2023-12-31')
+     *    ->value();
+     *
+     * Get timeline with timestamps and old/new values
+     * $timeline = $user->stickleAttribute('shoe_size')
+     *    ->audit()
+     *    ->timeline();
+     *
+     * Limit results
+     * $recentChanges = $user->stickleAttribute('shoe_size')
+     *    ->audit()
+     *    ->limit(5)
+     *    ->all();
+     *
+     * ?? Aggregates ->sum(), ->avg(), ->min(), ->max()
+     *
+     * @param  string  $attribute  The attribute name to access
+     * @return \StickleApp\Core\Support\StickleAttributeAccessor
+     */
+    public function stickleAttribute(string $attribute)
+    {
+        return new \StickleApp\Core\Support\StickleAttributeAccessor($this, $attribute);
     }
 
     public static function getStickleChartData(): array

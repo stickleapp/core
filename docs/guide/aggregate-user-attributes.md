@@ -9,14 +9,14 @@ Stickle allows you to track individuals (`Users`) as well as organizations (`Gro
 For instance, if your software manages retail stores. You may have individual employees (`Users`) working at specific retail locations (`Groups`). Perhaps each employee has a `user_rating` provided by customers. Stickle allows you to see the `AVG`, `MIN` and `MAX` `user_rating` for employees at each retail location `Group`.
 
 ```php
-use App\Models\Group; // The Group model has the `trackable` trait
+use App\Models\Group; // The Group model has the `StickleEntity` trait
 
 $userRating = Group::find(id: 34)->stickleUserAggregate(attribute: 'user_rating', aggregate: 'MAX', include_children: false);
 ```
 
 ## Prerequisites
 
-To avail of this functionality you need to add the `trackable` trait on
+To avail of this functionality you need to add the `StickleEntity` trait on
 
 # Numeric Attributes
 

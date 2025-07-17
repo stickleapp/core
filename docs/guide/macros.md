@@ -2,6 +2,13 @@
 outline: deep
 ---
 
+NOTE: This is half-baked.
+
+User::stickleFilter(new FilterName()) -- scope
+User::stickleSort() -- sort on a ModelAttributs
+$user->stickleAttribute()           -- macro (point in time value)
+$user->stick
+
 # Scopes
 
 # Macros

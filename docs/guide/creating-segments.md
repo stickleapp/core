@@ -30,7 +30,7 @@ class ActiveUsers extends Segment
 
 There are two items in the class you must extend: the `$model` attribute and `toBuilder()` function.
 
-`$model` must be an class that implements the `trackable` trait. The segment will contain objects of this class.
+`$model` must be an class that implements the `StickleEntity` trait. The segment will contain objects of this class.
 
 The `toBuilder()` method must return an instance of a `Illuminate\Database\Eloquent\Builder` class.
 
