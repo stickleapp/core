@@ -16,7 +16,7 @@ class TrackListener implements ShouldQueue
     /**
      * Create the event listener.
      */
-    public function __construct(readonly AnalyticsRepositoryContract $repository) {}
+    public function __construct(public readonly AnalyticsRepositoryContract $repository) {}
 
     public function handle(Track $event): void
     {
