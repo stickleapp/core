@@ -8,17 +8,17 @@ use Illuminate\Support\Collection;
 
 class StickleAttributeAccessor
 {
-    protected $model;
+    protected Model $model;
 
-    protected $attribute;
+    protected string $attribute;
 
-    protected $isAuditMode = false;
+    protected ?bool $isAuditMode;
 
-    protected $startDate = null;
+    protected ?Carbon $startDate = null;
 
-    protected $endDate = null;
+    protected ?Carbon $endDate = null;
 
-    protected $limit = null;
+    protected ?int $limit = null;
 
     public function __construct(Model $model, string $attribute)
     {
@@ -27,31 +27,9 @@ class StickleAttributeAccessor
     }
 
     /**
-     * Get the current value of the attribute
-     */
-    public function current()
-    {
-        $attributes = $this->model->modelAttributes;
-
-        return $attributes && isset($attributes->data[$this->attribute])
-            ? $attributes->data[$this->attribute]
-            : null;
-    }
-
-    /**
-     * Switch to audit mode for historical queries
-     */
-    public function audit()
-    {
-        $this->isAuditMode = true;
-
-        return $this;
-    }
-
-    /**
      * Filter history between two dates
      */
-    public function between($startDate, $endDate = null)
+    public function between(mixed $startDate, mixed $endDate = null): StickleAttributeAccessor
     {
         $this->startDate = $startDate instanceof Carbon ? $startDate : Carbon::parse($startDate);
         $this->endDate = $endDate ? ($endDate instanceof Carbon ? $endDate : Carbon::parse($endDate)) : now();
@@ -62,7 +40,7 @@ class StickleAttributeAccessor
     /**
      * Limit the number of records returned
      */
-    public function limit(int $limit)
+    public function limit(int $limit): StickleAttributeAccessor
     {
         $this->limit = $limit;
 
@@ -70,22 +48,33 @@ class StickleAttributeAccessor
     }
 
     /**
-     * Get the most recent value from the audit history
+     * Get the current value of the attribute
      */
-    public function latest()
+    public function current(): mixed
     {
-        return $this->audit()->limit(1)->value();
+        /** @phpstan-ignore-next-line */
+        $attributes = $this->model->modelAttributes;
+
+        return data_get($attributes, $this->attribute, null);
     }
 
     /**
-     * Get the historical values
+     * Get the most recent value from the audit history
      */
-    public function all(): Collection
+    public function latest(): mixed
     {
-        if (! $this->isAuditMode) {
-            return collect([$this->current()]);
-        }
 
+        return $this->limit(1)->audit()->first();
+    }
+
+    /**
+     * Get all values as a timeline with timestamps
+     *
+     * @return Collection<int, array{value: mixed, timestamp: Carbon, old_value?: mixed, change?: string}>
+     */
+    public function audit(): Collection
+    {
+        /** @phpstan-ignore-next-line */
         $query = $this->model->modelAttributeAudits()
             ->where('attribute', $this->attribute)
             ->orderBy('created_at', 'desc');
@@ -99,50 +88,10 @@ class StickleAttributeAccessor
         }, $this->limit);
 
         return $query->get()->map(function ($audit) {
-            return $audit->value_new;
-        });
-    }
-
-    /**
-     * Get the first value in the result set
-     */
-    public function value()
-    {
-        return $this->all()->first();
-    }
-
-    /**
-     * Get all values as a timeline with timestamps
-     */
-    public function timeline(): Collection
-    {
-        if (! $this->isAuditMode) {
-            return collect([
-                [
-                    'value' => $this->current(),
-                    'timestamp' => $this->model->modelAttributes->synced_at ?? now(),
-                ],
-            ]);
-        }
-
-        $query = $this->model->modelAttributeAudits()
-            ->where('attribute', $this->attribute)
-            ->orderBy('created_at', 'desc');
-
-        if ($this->startDate) {
-            $query->whereBetween('created_at', [$this->startDate, $this->endDate]);
-        }
-
-        if ($this->limit) {
-            $query->limit($this->limit);
-        }
-
-        return $query->get()->map(function ($audit) {
             return [
                 'value' => $audit->value_new,
                 'old_value' => $audit->value_old,
                 'timestamp' => $audit->created_at,
-                'change' => $audit->change_type,
             ];
         });
     }

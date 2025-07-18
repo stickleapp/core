@@ -21,6 +21,7 @@ use StickleApp\Core\Models\ModelAttributes;
 use StickleApp\Core\Models\ModelRelationshipStatistic;
 use StickleApp\Core\Support\AttributeUtils;
 use StickleApp\Core\Support\ClassUtils;
+use StickleApp\Core\Support\StickleAttributeAccessor;
 
 /**
  * Trait StickleEntity
@@ -281,7 +282,7 @@ trait StickleEntity
      * Access a specific stickle attribute with its history
      *
      * Get current value
-     *$shoeSize = $user->stickleAttribute('shoe_size')->current();
+     * $shoeSize = $user->stickleAttribute('shoe_size')->current();
      *
      * Check if size is set
      * if ($user->stickleAttribute('shoe_size')->current() !== null) {
@@ -317,9 +318,8 @@ trait StickleEntity
      * ?? Aggregates ->sum(), ->avg(), ->min(), ->max()
      *
      * @param  string  $attribute  The attribute name to access
-     * @return \StickleApp\Core\Support\StickleAttributeAccessor
      */
-    public function stickleAttribute(string $attribute)
+    public function stickleAttribute(string $attribute): StickleAttributeAccessor
     {
         return new \StickleApp\Core\Support\StickleAttributeAccessor($this, $attribute);
     }
