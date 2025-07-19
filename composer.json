@@ -76,6 +76,10 @@
         "lint": [
             "@php vendor/bin/pint --ansi",
             "@php vendor/bin/phpstan analyse --verbose --ansi"
+        ],
+        "migrate:seed": [
+            "@php vendor/bin/testbench migrate:fresh --ansi",
+            "@php vendor/bin/testbench db:seed --class=\\\\Workbench\\\\Database\\\\Seeders\\\\DatabaseSeeder --ansi"
         ]
     },
     "config": {
