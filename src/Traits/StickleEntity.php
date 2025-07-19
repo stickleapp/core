@@ -266,7 +266,7 @@ trait StickleEntity
                             ]
                         );
                     $existingAttributes = $modelAttributes->data ?? [];
-                    \Log::debug(array_merge($existingAttributes, $value));
+
                     $modelAttributes->update(
                         [
                             'data' => array_merge($existingAttributes, $value),
