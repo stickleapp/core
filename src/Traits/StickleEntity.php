@@ -21,7 +21,6 @@ use StickleApp\Core\Models\ModelAttributes;
 use StickleApp\Core\Models\ModelRelationshipStatistic;
 use StickleApp\Core\Support\AttributeUtils;
 use StickleApp\Core\Support\ClassUtils;
-use StickleApp\Core\Support\StickleAttributeAccessor;
 
 /**
  * Trait StickleEntity
@@ -267,6 +266,7 @@ trait StickleEntity
                             ]
                         );
                     $existingAttributes = $modelAttributes->data ?? [];
+                    \Log::debug(array_merge($existingAttributes, $value));
                     $modelAttributes->update(
                         [
                             'data' => array_merge($existingAttributes, $value),
@@ -278,50 +278,16 @@ trait StickleEntity
         );
     }
 
-    /**
-     * Access a specific stickle attribute with its history
-     *
-     * Get current value
-     * $shoeSize = $user->stickleAttribute('shoe_size')->current();
-     *
-     * Check if size is set
-     * if ($user->stickleAttribute('shoe_size')->current() !== null) {
-     *    // Do something
-     * }
-     *
-     * Get most recent change
-     * $latestShoeSize = $user->stickleAttribute('shoe_size')->latest();
-     *
-     * Get historical values between dates
-     * $shoeSizeHistory = $user->stickleAttribute('shoe_size')
-     *    ->audit()
-     *    ->between('2023-01-01', '2023-12-31')
-     *    ->all();
-     *
-     * Get the most recent value in a date range
-     * $recentShoeSize = $user->stickleAttribute('shoe_size')
-     *    ->audit()
-     *    ->between('2023-01-01', '2023-12-31')
-     *    ->value();
-     *
-     * Get timeline with timestamps and old/new values
-     * $timeline = $user->stickleAttribute('shoe_size')
-     *    ->audit()
-     *    ->timeline();
-     *
-     * Limit results
-     * $recentChanges = $user->stickleAttribute('shoe_size')
-     *    ->audit()
-     *    ->limit(5)
-     *    ->all();
-     *
-     * ?? Aggregates ->sum(), ->avg(), ->min(), ->max()
-     *
-     * @param  string  $attribute  The attribute name to access
-     */
-    public function stickleAttribute(string $attribute): StickleAttributeAccessor
+    public function stickleAttribute(string $attribute): mixed
     {
-        return new \StickleApp\Core\Support\StickleAttributeAccessor($this, $attribute);
+        /** @phpstan-ignore-next-line */
+        $modelAttributesObject = $this->modelAttributes;
+
+        if (! $modelAttributesObject) {
+            return null;
+        }
+
+        return data_get($modelAttributesObject->data, $attribute, null);
     }
 
     public static function getStickleChartData(): array

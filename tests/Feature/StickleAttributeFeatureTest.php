@@ -9,23 +9,18 @@ it('tracks attribute changes through stickle entity', function () {
     $user->trackable_attributes = ['shoe_size' => 40];
 
     // Check current value
-    expect($user->stickleAttribute('shoe_size')->current())->toBe(40);
+    expect($user->stickleAttribute('shoe_size'))->toBe(40);
 
     // Update attribute
-    $user->trackable_attributes = ['shoe_size' => 41];
+    $user->trackable_attributes = ['shoe_size' => 48];
+
+    // These two methods do not work -- possible Laravel bug?
+    $newModel = $user->fresh();
+    // $user->refresh();
+    // $user = User::find($user->id);
 
     // Check updated value
-    expect($user->stickleAttribute('shoe_size')->current())->toBe(41);
-
-    // Check history
-    $history = $user->stickleAttribute('shoe_size')->audit()->all();
-    expect($history)->toHaveCount(1); // Only contains value_new from audit records
-
-    // Get timeline to see both old and new values
-    $timeline = $user->stickleAttribute('shoe_size')->audit()->timeline();
-    expect($timeline)->toHaveCount(1);
-    expect($timeline[0]['value'])->toBe(41);
-    expect($timeline[0]['old_value'])->toBe(40);
+    expect($newModel->stickleAttribute('shoe_size'))->toBe(48);
 });
 
 it('preserves other attributes when updating', function () {
@@ -41,6 +36,6 @@ it('preserves other attributes when updating', function () {
     $user->trackable_attributes = ['shoe_size' => 41];
 
     // Both attributes should be preserved
-    expect($user->stickleAttribute('shoe_size')->current())->toBe(41);
-    expect($user->stickleAttribute('hair_color')->current())->toBe('brown');
+    expect($user->stickleAttribute('shoe_size'))->toBe(41);
+    expect($user->stickleAttribute('hair_color'))->toBe('brown');
 });
