@@ -43,7 +43,6 @@
     </div>
 
     <div class="w-full flex flex-col md:flex-row">
-        <!-- 2/3 Column -->
         <div
             id="segmentList"
             class="segmentNavigationContent w-full lg:w-3/5 lg:pr-4 md:block"
@@ -57,7 +56,6 @@
             </x-stickle::ui.tables.segment>
         </div>
 
-        <!-- 1/3 Column -->
         <div
             id="segmentSidebar"
             class="segmentNavigationContent w-full lg:w-2/5 lg:pl-4 hidden lg:block"

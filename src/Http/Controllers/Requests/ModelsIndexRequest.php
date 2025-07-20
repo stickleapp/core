@@ -23,6 +23,7 @@ class ModelsIndexRequest extends FormRequest
     {
         return [
             'model_class' => ['required', 'string'],
+            'uid' => ['sometimes', 'string'],
             'search' => ['nullable', 'string'],
             'per_page' => ['nullable', 'integer'],
         ];

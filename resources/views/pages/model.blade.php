@@ -35,28 +35,56 @@
     </div>
 
     <div class="w-full flex flex-col md:flex-row">
-        <!-- 2/3 Column -->
-        <div
-            id="modelStatistics"
-            class="modelNavigationContent w-full md:w-3/5 md:pr-4 md:block"
-        >
-            <!-- Column 2 content here -->
-            <x-stickle::ui.chartlists.model :model="$model">
-            </x-stickle::ui.chartlists.model>
+        <div class="modelNavigationContent w-full md:w-3/5 md:pr-4 md:block">
+            <x-stickle::ui.model-attributes
+                :model="$model"
+                :heading="\Illuminate\Support\Str::of($model->name)->headline()"
+                :subheading="sprintf('A full list of your %s attributes.',
+            \Illuminate\Support\Str::of($modelClass)->plural())"
+            >
+            </x-stickle::ui.model-attributes>
         </div>
 
         <div
-            id="modelEvents"
+            id="modelSidebar"
             class="modelNavigationContent w-full md:w-2/5 md:pl-4 md:block"
         >
-            <!-- Column 2 content here -->
-            <h1 class="text-base font-semibold text-gray-900 pb-4">Events</h1>
-            <x-stickle::ui.timelines.event-timeline
-                :channel="sprintf(config('stickle.broadcasting.channels.object'),
+            <div class="w-full mb-4">
+                <div class="mb-4">
+                    <x-stickle::ui.partials.responsive-tabs
+                        :tabs="[
+                            [
+                                'label' => 'Statistics',
+                                'target' => 'modelStatistics',
+                            ],
+                            [
+                                'label' => 'Events',
+                                'target' => 'modelEvents',
+                            ],
+                        ]"
+                        id="modelSideBarToggle"
+                    >
+                    </x-stickle::ui.partials.responsive-tabs>
+                </div>
+                <div
+                    id="modelStatistics"
+                    class="modelSideBarToggleContent w-full hidden"
+                >
+                    <x-stickle::ui.chartlists.model :model="$model">
+                    </x-stickle::ui.chartlists.model>
+                </div>
+                <div
+                    id="modelEvents"
+                    class="modelSideBarToggleContent w-full hidden"
+                >
+                    <x-stickle::ui.timelines.event-timeline
+                        :channel="sprintf(config('stickle.broadcasting.channels.object'),
                     str_replace('\\', '-', strtolower(class_basename($model))),
                     $model->getKey()
                 )"
-            ></x-stickle::ui.timelines.event-timeline>
+                    ></x-stickle::ui.timelines.event-timeline>
+                </div>
+            </div>
         </div>
     </div>
 </x-stickle::ui.layouts.default-layout>

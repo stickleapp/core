@@ -32,13 +32,19 @@ class ModelsController
             return response()->json(['error' => 'Model does not use StickleEntity trait'], 400);
         }
 
-        $search = data_get($validated, 'search'); // Get search term if provided
+        $model = $modelClass::query()->getModel();
 
-        $builder = $modelClass::query()->when($search, function ($q) use ($search) {
-            return $q->where(function ($subQuery) use ($search) {
-                $subQuery->where('name', 'ILIKE', "%{$search}%");
+        $search = data_get($validated, 'search');
+        $uid = data_get($validated, 'uid');
+
+        $builder = $modelClass::query()
+            ->when($search, function ($q) use ($search) {
+                return $q->where(function ($subQuery) use ($search) {
+                    $subQuery->where('name', 'ILIKE', "%{$search}%");
+                });
+            })->when($uid, function ($q) use ($uid, $model) {
+                return $q->where($model->getKeyName(), $uid);
             });
-        });
 
         return response()->json($builder->paginate($request->integer('per_page', 25)));
     }

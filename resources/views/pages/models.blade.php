@@ -53,7 +53,6 @@
     </div>
 
     <div class="w-full flex flex-col md:flex-row">
-        <!-- 2/3 Column -->
         <div
             id="modelsList"
             class="modelsNavigationContent w-full md:w-3/5 md:l-4 md:block"
@@ -68,7 +67,6 @@
             </div>
         </div>
 
-        <!-- 1/3 Column -->
         <div
             id="modelsSidebar"
             class="modelsNavigationContent w-full md:w-2/5 md:pl-4 md:pb-4 hidden md:block"
