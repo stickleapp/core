@@ -77,7 +77,9 @@ class ModelRelationshipStatisticsController
             ];
         });
 
+        // Assemble the response
         $response = [
+            'value' => $model->getAttribute($attribute),
             'time_series' => $timeSeriesData,
             'delta' => $changeData,
             'period' => [

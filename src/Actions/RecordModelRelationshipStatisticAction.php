@@ -57,6 +57,7 @@ class RecordModelRelationshipStatisticAction
         string $relatedClass,
         string $attribute
     ): Builder {
+
         Log::info(self::class, func_get_args());
 
         $prefix = config('stickle.database.tablePrefix');

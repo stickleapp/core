@@ -6,7 +6,6 @@ namespace Workbench\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
 
 class SegmentStatisticsSeeder extends Seeder
 {
@@ -35,9 +34,9 @@ class SegmentStatisticsSeeder extends Seeder
     private function populateSegmentStatistics($segment, $startDate, $endDate, $prefix): void
     {
         // Get model class and trackable attributes
-        $modelClass = config('stickle.namespaces.models') . '\\' . $segment->model_class;
-        
-        if (!class_exists($modelClass)) {
+        $modelClass = config('stickle.namespaces.models').'\\'.$segment->model_class;
+
+        if (! class_exists($modelClass)) {
             return;
         }
 
@@ -60,7 +59,7 @@ class SegmentStatisticsSeeder extends Seeder
 
         // Generate statistics for each day and each attribute
         $currentDate = $startDate->copy();
-        
+
         while ($currentDate->lte($endDate)) {
             foreach ($trackedAttributes as $attribute) {
                 $this->generateStatisticForDay($segment->id, $attribute, $modelIds, $currentDate, $prefix);
@@ -74,13 +73,13 @@ class SegmentStatisticsSeeder extends Seeder
         // Generate realistic statistics with gradual changes
         $baseValue = $this->getBaseValueForAttribute($attribute);
         $daysSinceStart = $date->diffInDays(now()->subDays(25));
-        
+
         // Add gradual trend (slight increase over time for most metrics)
         $trendMultiplier = 1 + ($daysSinceStart * 0.02); // 2% increase per day
-        
+
         // Add some randomness for realism
         $randomVariation = 1 + (mt_rand(-20, 20) / 100); // ±20% variation
-        
+
         $count = count($modelIds);
         $min = max(0, $baseValue * 0.3 * $randomVariation);
         $max = $baseValue * 2 * $trendMultiplier * $randomVariation;
@@ -94,7 +93,7 @@ class SegmentStatisticsSeeder extends Seeder
             ->where('recorded_at', $date->toDateString())
             ->exists();
 
-        if (!$exists) {
+        if (! $exists) {
             \DB::table("{$prefix}segment_statistics")->insert([
                 'segment_id' => $segmentId,
                 'attribute' => $attribute,
@@ -112,7 +111,7 @@ class SegmentStatisticsSeeder extends Seeder
     private function getBaseValueForAttribute($attribute): float
     {
         // Return realistic base values for different attribute types
-        return match($attribute) {
+        return match ($attribute) {
             'user_rating' => 3.5,
             'ticket_count' => 12,
             'open_ticket_count' => 3,

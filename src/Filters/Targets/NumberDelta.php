@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
-use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Builder;
@@ -12,22 +11,26 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 use StickleApp\Core\Contracts\FilterTargetContract;
-use StickleApp\Core\Filters\Targets\Traits\HasSumDeltaFilters;
 
-class EventCount extends FilterTargetContract
+class NumberDelta extends FilterTargetContract
 {
-    use HasSumDeltaFilters;
-
+    /**
+     * @param  array<DateTimeInterface>  $period
+     */
     public function __construct(
         #[Config('stickle.database.tablePrefix')] protected ?string $prefix,
-        public string $event,
-        public ?DateTimeInterface $startDate = null,
-        public ?DateTimeInterface $endDate = null
+        public string $attribute,
+        public ?array $period,
     ) {}
 
     public function property(): ?string
     {
-        return $this->event;
+        return "data->>'{$this->attribute}'";
+    }
+
+    public function castProperty(): mixed
+    {
+        return sprintf('(%s)::numeric', $this->property());
     }
 
     public function joinKey(): ?string
@@ -37,17 +40,31 @@ class EventCount extends FilterTargetContract
 
     private function subJoin(): QueryBuilder
     {
-        return \DB::table($this->prefix.'events_rollup_1day')
-            ->where('event_name', $this->event)
-            ->whereDate('day', '>=', Carbon::parse($this->startDate)->toDateString())
-            ->whereDate('day', '<', Carbon::parse($this->endDate)->toDateString())
-            ->groupBy(['model_class', 'object_uid'])
-            ->select('model_class', 'object_uid', DB::raw('sum(event_count) as event_count'));
+        $query = \DB::table($this->prefix.'model_attribute_audit')
+            ->where('attribute', $this->attribute);
+
+        if ($this->period && count($this->period) === 2) {
+            $query->whereBetween('day', [
+                $this->period[0]->format('Y-m-d'),
+                $this->period[1]->format('Y-m-d'),
+            ]);
+        }
+
+        return $query->select(
+            'model_class',
+            'object_uid',
+            DB::raw(preg_replace('/\s+/', ' ', "
+                LAST_VALUE(({$this->attribute})::numeric) 
+                    OVER (PARTITION BY model_class, object_uid ORDER BY day ASC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) - 
+                FIRST_VALUE(({$this->attribute})::numeric) 
+                    OVER (PARTITION BY model_class, object_uid ORDER BY day ASC)
+                AS delta
+            "))
+        );
     }
 
     public function applyJoin(Builder $builder): Builder
     {
-
         if (! $this->joinKey()) {
             return $builder;
         }
@@ -68,21 +85,5 @@ class EventCount extends FilterTargetContract
         );
 
         return $builder;
-    }
-
-    public function startDate(DateTimeInterface $date): void
-    {
-        $this->startDate = $date;
-    }
-
-    public function endDate(DateTimeInterface $date): void
-    {
-        $this->endDate = $date;
-    }
-
-    public function between(DateTimeInterface $startDate, DateTimeInterface $endDate): void
-    {
-        $this->startDate = $startDate;
-        $this->endDate = $endDate;
     }
 }

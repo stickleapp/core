@@ -6,9 +6,12 @@ namespace StickleApp\Core\Filters\Targets;
 
 use Illuminate\Container\Attributes\Config;
 use StickleApp\Core\Contracts\FilterTargetContract;
+use StickleApp\Core\Filters\Targets\Traits\HasValueDeltaFilters;
 
 class Number extends FilterTargetContract
 {
+    use HasValueDeltaFilters;
+
     public function __construct(
         #[Config('stickle.database.tablePrefix')] protected ?string $prefix,
         public string $attribute

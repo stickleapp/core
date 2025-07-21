@@ -3,38 +3,7 @@
 declare(strict_types=1);
 
 use StickleApp\Core\Filters\Base as Filter;
-use StickleApp\Core\Filters\Targets\EventCount;
-use StickleApp\Core\Filters\Targets\EventCountDelta;
 use Workbench\App\Models\User;
-
-test('`decreased` chanages target class', function () {
-
-    $filter = Filter::eventCount('clicked:something');
-
-    expect($filter->target)->toBeInstanceOf(EventCount::class);
-
-    $filter->decreased(
-        [now()->subYears(2), now()->subYears(1)],
-        [now()->subYears(1), now()],
-    );
-
-    expect($filter->target)->toBeInstanceOf(EventCountDelta::class);
-
-});
-
-test('`increased` chanages target class', function () {
-
-    $filter = Filter::eventCount('clicked:something');
-
-    expect($filter->target)->toBeInstanceOf(EventCount::class);
-
-    $filter->increased(
-        [now()->subYears(2), now()->subYears(1)],
-        [now()->subYears(1), now()],
-    );
-    expect($filter->target)->toBeInstanceOf(EventCountDelta::class);
-
-});
 
 test('Delta creates correct sql', function () {
 

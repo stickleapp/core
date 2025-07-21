@@ -53,7 +53,7 @@ class Base
         $testClass = 'StickleApp\Core\Filters\Tests\\'.ucfirst($method);
 
         /**
-         * HasDeltaFilters (increased, decreased) will changge the `Target`
+         * Has[Sum|Value]DeltaFilters (increased, decreased) will change the `Target`
          * from EventCount to EventCountDelta
          */
         if (method_exists($this->target, $method)) {

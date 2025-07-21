@@ -50,16 +50,6 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
             \StickleApp\Core\Traits\StickleEntity::class
         );
 
-        // Filter the classes to only include those that have a relationship with one of these classes
-        // Note: Can include relationships with self class
-
-        // Use presense of StickleRelationshipMetadata to decide what
-        // we need to be recording...
-
-        // [
-        //      [ 'Customer', 'children', [...Customer Tracked Attributes]],
-        //      [ 'Customer', 'users', [...User Tracked Attributes] ]
-        // ]
         $attributes = [];
         foreach ($modelClasses as $modelClass) {
             $stickleTrackedAttributes = $modelClass::getStickleTrackedAttributes();
@@ -67,7 +57,7 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
                 foreach ($relationships as $relationship) {
                     foreach ($stickleTrackedAttributes as $attribute) {
                         $attributes[] = [
-                            'model_class' => class_basename($modelClass),
+                            'model_class' => $modelClass,
                             'relationship' => $relationship['name'],
                             'related_class' => $relationship['related'],
                             'attribute' => $attribute,
@@ -77,28 +67,31 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
             }
         }
 
-        $tempTableSql = 'CREATE TEMP TABLE temp_attributes (model_class TEXT, relationship TEXT, related_class TEXT, attribute TEXT);';
+        $rows = DB::transaction(function () use ($attributes, $limit) {
 
-        DB::statement($tempTableSql);
+            $tempTableSql = 'CREATE TEMP TABLE temp_attributes (model_class TEXT, relationship TEXT, related_class TEXT, attribute TEXT);';
 
-        DB::table('temp_attributes')->insert($attributes);
+            DB::statement($tempTableSql);
 
-        $rows = DB::table('temp_attributes')
-            ->leftJoin("{$this->prefix}model_relationship_statistic_exports", function ($query) {
-                $query->on("{$this->prefix}model_relationship_statistic_exports.model_class", '=', 'temp_attributes.model');
-                $query->on("{$this->prefix}model_relationship_statistic_exports.relationship", '=', 'temp_attributes.relationship');
-                $query->on("{$this->prefix}model_relationship_statistic_exports.attribute", '=', 'temp_attributes.attribute');
-            })
-            ->select([
-                'temp_attributes.model_class',
-                'temp_attributes.relationship',
-                'temp_attributes.related_class',
-                'temp_attributes.attribute',
-                'last_recorded_at',
-            ])
-            ->orderByRaw('last_recorded_at asc NULLS FIRST')
-            ->limit((int) $limit)
-            ->get();
+            DB::table('temp_attributes')->insert($attributes);
+
+            return DB::table('temp_attributes')
+                ->leftJoin("{$this->prefix}model_relationship_statistic_exports", function ($query) {
+                    $query->on("{$this->prefix}model_relationship_statistic_exports.model_class", '=', 'temp_attributes.model_class');
+                    $query->on("{$this->prefix}model_relationship_statistic_exports.relationship", '=', 'temp_attributes.relationship');
+                    $query->on("{$this->prefix}model_relationship_statistic_exports.attribute", '=', 'temp_attributes.attribute');
+                })
+                ->select([
+                    'temp_attributes.model_class',
+                    'temp_attributes.relationship',
+                    'temp_attributes.related_class',
+                    'temp_attributes.attribute',
+                    'last_recorded_at',
+                ])
+                ->orderByRaw('last_recorded_at asc NULLS FIRST')
+                ->limit((int) $limit)
+                ->get();
+        });
 
         foreach ($rows as $row) {
             RecordModelRelationshipStatisticJob::dispatch(
