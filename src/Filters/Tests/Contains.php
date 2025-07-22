@@ -15,6 +15,6 @@ class Contains extends FilterTestContract
 
     public function applyFilter(Builder $builder, FilterTargetContract $target, string $operator): Builder
     {
-        return $builder->where(DB::raw(sprintf('(%s)', $target->property())), 'ilike', sprintf('%%%s%%', $this->comparator));
+        return $builder->whereLike(DB::raw($target->property()), sprintf('%%%s%%', $this->comparator), $this->caseSensitive, $operator);
     }
 }

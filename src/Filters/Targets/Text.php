@@ -21,6 +21,6 @@ class Text extends FilterTargetContract
 
     public function castProperty(): mixed
     {
-        return sprintf('(%s)::text', $this->property());
+        return sprintf('%s::text', $this->property());
     }
 }

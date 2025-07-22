@@ -41,7 +41,7 @@ test('text filter with equals generates correct full SQL', function () {
 
     expect($sql)->toContain('select * from "users"');
     expect($sql)->toContain('where');
-    expect($sql)->toContain("(data->>'name')::text = ?");
+    expect($sql)->toContain("data->>'name'::text = ?");
 
     $bindings = $query->getBindings();
     expect($bindings)->toContain('John Doe');
@@ -59,7 +59,7 @@ test('number filter with greater than generates correct full SQL', function () {
 
     expect($sql)->toContain('select * from "users"');
     expect($sql)->toContain('where');
-    expect($sql)->toContain("(data->>'age')::numeric > ?");
+    expect($sql)->toContain("(data->'age')::numeric > ?");
 
     $bindings = $query->getBindings();
     expect($bindings)->toContain(25);
@@ -77,7 +77,7 @@ test('boolean filter with isTrue generates correct full SQL', function () {
 
     expect($sql)->toContain('select * from "users"');
     expect($sql)->toContain('where');
-    expect($sql)->toContain("(data->>'is_active')::boolean = true");
+    expect($sql)->toContain("(data->'is_active')::boolean = true");
 });
 
 test('date filter with between generates correct full SQL', function () {
@@ -95,7 +95,7 @@ test('date filter with between generates correct full SQL', function () {
 
     expect($sql)->toContain('select * from "users"');
     expect($sql)->toContain('where');
-    expect($sql)->toContain("(data->>'created_at')::date between ? and ?");
+    expect($sql)->toContain("data->>'created_at'::date between ? and ?");
 
     expect($query->getBindings())->toContain($startDate, $endDate);
 });
@@ -116,8 +116,8 @@ test('multiple filters with AND operator generates correct full SQL', function (
 
     expect($sql)->toContain('select * from "users"');
     expect($sql)->toContain('where');
-    expect($sql)->toContain("(data->>'status')::text = ?");
-    expect($sql)->toContain("and (data->>'score')::numeric >= ?");
+    expect($sql)->toContain("data->>'status'::text = ?");
+    expect($sql)->toContain("and (data->'score')::numeric >= ?");
 
     expect($query->getBindings())->toContain('active', 100);
 });
@@ -191,7 +191,7 @@ test('complex filter combination generates executable SQL', function () {
 
     // Verify bindings
     expect($query->getBindings())->toContain('%@gmail.com%', 10);
-
+    $query->get();
     // Most importantly - verify the query can be executed without errors
     expect(function () use ($query) {
         $query->get();

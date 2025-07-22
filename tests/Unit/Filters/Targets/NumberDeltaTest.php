@@ -30,6 +30,6 @@ test('Delta creates correct sql', function () {
 
     // Normalize SQL by replacing multiple spaces and newlines with a single space
     expect(preg_replace('/\s+/', ' ', $builder->toSql()))->toBe(
-        preg_replace('/\s+/', ' ', sprintf('select * from "users" left join (select "model_class", "object_uid", LAST_VALUE((data->>\'score\')::numeric) OVER (PARTITION BY model_class, object_uid ORDER BY day ASC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) - FIRST_VALUE((data->>\'score\')::numeric) OVER (PARTITION BY model_class, object_uid ORDER BY day ASC) AS delta from "stc_model_attribute_audit" where "attribute" = ? and "day" between ? and ?) as "%s" on "%s"."object_uid" = "users"."object_uid" and "%s"."model_class" = "users"."model_class"', $joinKey, $joinKey, $joinKey))
+        preg_replace('/\s+/', ' ', sprintf('select * from "users" left join (select "model_class", "object_uid", LAST_VALUE((data->\'score\')::numeric) OVER (PARTITION BY model_class, object_uid ORDER BY day ASC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) - FIRST_VALUE((data->\'score\')::numeric) OVER (PARTITION BY model_class, object_uid ORDER BY day ASC) AS delta from "stc_model_attribute_audit" where "attribute" = ? and "day" between ? and ?) as "%s" on "%s"."object_uid" = "users"."object_uid" and "%s"."model_class" = "users"."model_class"', $joinKey, $joinKey, $joinKey))
     );
 });

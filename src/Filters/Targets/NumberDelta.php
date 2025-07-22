@@ -30,7 +30,7 @@ class NumberDelta extends FilterTargetContract
 
     public function castProperty(): mixed
     {
-        return sprintf('(%s)::numeric', $this->property());
+        return sprintf('%s::numeric', $this->property());
     }
 
     public function joinKey(): ?string

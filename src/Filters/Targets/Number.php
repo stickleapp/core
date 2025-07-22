@@ -19,7 +19,7 @@ class Number extends FilterTargetContract
 
     public function property(): ?string
     {
-        return "data->>'{$this->attribute}'";
+        return "data->'{$this->attribute}'";
     }
 
     public function castProperty(): mixed

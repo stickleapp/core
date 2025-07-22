@@ -22,7 +22,7 @@ test('Casts target property as boolean', function () {
 
     $filter = Filter::number('a_column');
 
-    expect($filter->target->castProperty())->toBe("(data->>'a_column')::numeric");
+    expect($filter->target->castProperty())->toBe("(data->'a_column')::numeric");
 
 });
 

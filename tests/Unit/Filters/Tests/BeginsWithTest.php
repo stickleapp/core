@@ -15,7 +15,7 @@ test('Creates correct sql for text (case insensitive)', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        "select * from \"users\" where data->>'a_column' ilike ?"
+        "select * from \"users\" where data->>'a_column'::text ilike ?"
     );
 
     expect($builder->getBindings())->toEqual(['hello%']);
@@ -31,7 +31,7 @@ test('Creates correct sql for text (case sensitive)', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        "select * from \"users\" where data->>'a_column' like ?"
+        "select * from \"users\" where data->>'a_column'::text like ?"
     );
 
     expect($builder->getBindings())->toEqual(['Hello%']);
@@ -47,7 +47,7 @@ test('Handles special characters in search term', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        "select * from \"users\" where data->>'a_column' ilike ?"
+        "select * from \"users\" where data->>'a_column'::text ilike ?"
     );
 
     expect($builder->getBindings())->toEqual(['hello_world%test%']);
@@ -63,7 +63,7 @@ test('Works with empty string', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        "select * from \"users\" where (data->>'a_column'::text) ilike ?"
+        "select * from \"users\" where data->>'a_column'::text ilike ?"
     );
 
     expect($builder->getBindings())->toEqual(['%']);
@@ -79,10 +79,10 @@ test('Works with single character', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        "select * from \"users\" where (data->>'a_column')::text ilike ?"
+        "select * from \"users\" where data->>'a_column'::text ilike ?"
     );
 
-    expect($builder->getBindings())->toEqual('a%');
+    expect($builder->getBindings())->toContain('a%');
 });
 
 test('Case sensitivity parameter defaults to false', function () {

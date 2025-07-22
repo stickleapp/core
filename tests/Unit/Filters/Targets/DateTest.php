@@ -17,6 +17,6 @@ test('casts target property as date', function () {
 
     $filter = Filter::date('a_column');
 
-    expect($filter->target->castProperty())->toBe("(data->>'a_column')::date");
+    expect($filter->target->castProperty())->toBe("data->>'a_column'::date");
 
 });

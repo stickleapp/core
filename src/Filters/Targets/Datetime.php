@@ -21,6 +21,6 @@ class Datetime extends FilterTargetContract
 
     public function castProperty(): mixed
     {
-        return sprintf('(%s)::datetime', $this->property());
+        return sprintf('%s::datetime', $this->property());
     }
 }

@@ -21,7 +21,7 @@ test('Creates correct sql for date', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        sprintf("select * from \"users\" where (data->>'a_column')::date >= ?", $prefix)
+        sprintf("select * from \"users\" where data->>'a_column'::date >= ?", $prefix)
     );
 
     expect(collect($builder->getBindings())->first())->toBe($date);
@@ -41,7 +41,7 @@ test('Creates correct sql for datetime', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        sprintf("select * from \"users\" where (data->>'a_column')::datetime >= ?", $prefix)
+        sprintf("select * from \"users\" where data->>'a_column'::datetime >= ?", $prefix)
     );
 
     expect(collect($builder->getBindings())->first())->toBe($datetime);
@@ -61,7 +61,7 @@ test('Creates correct sql for text', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        sprintf("select * from \"users\" where (data->>'a_column')::text >= ?", $prefix)
+        sprintf("select * from \"users\" where data->>'a_column'::text >= ?", $prefix)
     );
 
     expect(collect($builder->getBindings())->first())->toBe($uuid);
@@ -81,7 +81,7 @@ test('Creates correct sql for number', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        sprintf("select * from \"users\" where (data->>'a_column')::numeric >= ?", $prefix)
+        sprintf("select * from \"users\" where (data->'a_column')::numeric >= ?", $prefix)
     );
 
     expect(collect($builder->getBindings())->first())->toBe($number);
@@ -97,7 +97,7 @@ test('works with relative dates', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        sprintf("select * from \"users\" where (data->>'a_column')::date >= ?", config('stickle.database.tablePrefix'))
+        sprintf("select * from \"users\" where data->>'a_column'::date >= ?", config('stickle.database.tablePrefix'))
     );
 
     expect($builder->getBindings())->toEqual([

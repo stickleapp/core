@@ -15,8 +15,6 @@ class BeginsWith extends FilterTestContract
 
     public function applyFilter(Builder $builder, FilterTargetContract $target, string $operator): Builder
     {
-        // dd([$target->castProperty(), $target->property()]);
-
         return $builder->whereLike(DB::raw($target->property()), sprintf('%s%%', $this->comparator), $this->caseSensitive, $operator);
     }
 }

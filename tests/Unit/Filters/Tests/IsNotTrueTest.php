@@ -17,6 +17,6 @@ test('Creates correct sql', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        sprintf("select * from \"users\" where ((data->>'a_column')::boolean != true or (data->>'a_column')::boolean is null)", $prefix)
+        sprintf("select * from \"users\" where ((data->'a_column')::boolean != true or (data->'a_column')::boolean is null)", $prefix)
     );
 });

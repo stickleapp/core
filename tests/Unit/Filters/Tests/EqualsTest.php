@@ -17,7 +17,7 @@ test('Creates correct sql', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        sprintf("select * from \"users\" where (data->>'a_column')::text = ?", $prefix)
+        sprintf("select * from \"users\" where data->>'a_column'::text = ?", $prefix)
     );
 });
 
@@ -31,7 +31,7 @@ test('works with relative dates', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        sprintf("select * from \"users\" where (data->>'a_column')::date = ?", config('stickle.database.tablePrefix'))
+        sprintf("select * from \"users\" where data->>'a_column'::date = ?", config('stickle.database.tablePrefix'))
     );
 
     expect($builder->getBindings())->toEqual([

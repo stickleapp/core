@@ -15,6 +15,6 @@ test('Creates correct sql', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        "select * from \"users\" where (data->>'first_column')::text != \"second_column\""
+        "select * from \"users\" where data->>'first_column'::text != \"second_column\""
     );
 });

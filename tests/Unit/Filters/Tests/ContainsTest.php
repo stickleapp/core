@@ -17,8 +17,29 @@ test('Creates correct sql for text', function () {
     $filter->test->applyFilter($builder, $filter->target, 'and');
 
     expect($builder->toSql())->toBe(
-        sprintf("select * from \"users\" where (data->>'a_column')::text ilike ?", $prefix)
+        sprintf("select * from \"users\" where data->>'a_column'::text ilike ?", $prefix)
     );
 
     expect(collect($builder->getBindings())->first())->toBe('%donkey%');
+});
+
+test('Creates correct sql for number', function () {
+
+    $prefix = config('stickle.database.tablePrefix');
+
+    $number = '0123456789';
+
+    $filter = Filter::number('a_column')
+        ->contains('234');
+
+    $builder = User::query();
+
+    $filter->test->applyFilter($builder, $filter->target, 'and');
+
+    expect($builder->toSql())->toBe(
+        sprintf("select * from \"users\" where data->'a_column'::text ilike ?", $prefix)
+    );
+    // dd($builder->getBindings());
+
+    // expect(collect($builder->getBindings())->first())->toBe($number);
 });
