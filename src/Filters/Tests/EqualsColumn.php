@@ -9,14 +9,12 @@ use Illuminate\Support\Facades\DB;
 use StickleApp\Core\Contracts\FilterTargetContract;
 use StickleApp\Core\Contracts\FilterTestContract;
 
-class BeginsWith extends FilterTestContract
+class EqualsColumn extends FilterTestContract
 {
-    public function __construct(public string $comparator, public bool $caseSensitive = false) {}
+    public function __construct(public string $comparator) {}
 
     public function applyFilter(Builder $builder, FilterTargetContract $target, string $operator): Builder
     {
-        // dd([$target->castProperty(), $target->property()]);
-
-        return $builder->whereLike(DB::raw($target->property()), sprintf('%s%%', $this->comparator), $this->caseSensitive, $operator);
+        return $builder->whereColumn(DB::raw($target->castProperty()), '=', $this->comparator);
     }
 }

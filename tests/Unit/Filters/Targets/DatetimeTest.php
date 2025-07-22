@@ -5,7 +5,7 @@ declare(strict_types=1);
 use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Filters\Targets\Datetime;
 
-test('boolean() sets target as Datetime', function () {
+test('datetime() sets target as Datetime', function () {
 
     $prefix = config('stickle.database.tablePrefix');
 

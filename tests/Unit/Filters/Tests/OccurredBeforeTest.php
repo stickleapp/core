@@ -51,3 +51,20 @@ test('Creates correct sql for datetime', function () {
     // This is testing 'now' but we can only test on the date not the datetime
     expect(Carbon\Carbon::createFromDate(collect($builder->getBindings())->last())->toDateString())->toEqual(Carbon\Carbon::today()->toDateString());
 });
+
+test('works with relative dates', function () {
+
+    $filter = Filter::date('a_column')
+        ->occurredBefore(now()->subDays(10)->format('Y-m-d'));
+
+    $builder = User::query();
+
+    $filter->test->applyFilter($builder, $filter->target, 'and');
+
+    expect($builder->toSql())->toBe(
+        sprintf("select * from \"users\" where ((data->>'a_column')::date < ? and (data->>'a_column')::date < ?)", config('stickle.database.tablePrefix'))
+    );
+
+    expect($builder->getBindings()[0])->toEqual(now()->subDays(10)->format('Y-m-d'));
+    expect(Carbon\Carbon::createFromDate($builder->getBindings()[1])->toDateString())->toEqual(Carbon\Carbon::today()->toDateString());
+});

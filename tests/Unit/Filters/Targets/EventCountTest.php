@@ -7,6 +7,14 @@ use StickleApp\Core\Filters\Targets\EventCount;
 use StickleApp\Core\Filters\Targets\EventCountDelta;
 use Workbench\App\Models\User;
 
+test('eventCount() sets target as EventCount', function () {
+
+    $filter = Filter::eventCount('clicked:something');
+
+    expect($filter->target)->toBeInstanceOf(EventCount::class);
+
+});
+
 test('`decreased` chanages target class', function () {
 
     $filter = Filter::eventCount('clicked:something');
