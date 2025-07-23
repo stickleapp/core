@@ -24,21 +24,6 @@ use StickleApp\Core\Models\ModelAttributes;
 use StickleApp\Core\Models\Segment;
 use StickleApp\Core\Observers\ModelAttributesObserver;
 use StickleApp\Core\Repositories\PostgresAnalyticsRepository;
-use StickleApp\Core\Views\Components\Demo\Layouts\DefaultLayout as DemoDefaultLayout;
-use StickleApp\Core\Views\Components\UI\Chartlists\ModelChartlist;
-use StickleApp\Core\Views\Components\UI\Chartlists\ModelRelationshipChartlist;
-use StickleApp\Core\Views\Components\UI\Chartlists\ModelsChartlist;
-use StickleApp\Core\Views\Components\UI\Charts\ModelChart;
-use StickleApp\Core\Views\Components\UI\Charts\ModelRelationshipChart;
-use StickleApp\Core\Views\Components\UI\Charts\ModelsChart;
-use StickleApp\Core\Views\Components\UI\Charts\Primatives\InfoChart;
-use StickleApp\Core\Views\Components\UI\Charts\Primatives\LineChart;
-use StickleApp\Core\Views\Components\UI\Charts\SegmentChart;
-use StickleApp\Core\Views\Components\UI\Layouts\DefaultLayout as UIDefaultLayout;
-use StickleApp\Core\Views\Components\UI\Tables\ModelsTable;
-use StickleApp\Core\Views\Components\UI\Tables\Primatives\PaginationSimple;
-use StickleApp\Core\Views\Components\UI\Tables\SegmentTable;
-use StickleApp\Core\Views\Components\UI\Timelines\EventTimeline;
 
 final class CoreServiceProvider extends ServiceProvider
 {

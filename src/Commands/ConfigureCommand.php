@@ -7,18 +7,14 @@ namespace StickleApp\Core\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-use function Laravel\Prompts\confirm;
-use function Laravel\Prompts\info;
-use function Laravel\Prompts\warning;
 use function Laravel\Prompts\alert;
-use function Laravel\Prompts\note;
-use function Laravel\Prompts\pause;
-use function Laravel\Prompts\suggest;
-use function Laravel\Prompts\table;
-use function Laravel\Prompts\text;
 use function Laravel\Prompts\clear;
+use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\form;
+use function Laravel\Prompts\info;
+use function Laravel\Prompts\note;
 use function Laravel\Prompts\spin;
+use function Laravel\Prompts\table;
 
 class ConfigureCommand extends Command
 {
@@ -104,7 +100,7 @@ class ConfigureCommand extends Command
                 validate: ['connection' => 'string|required'],
                 required: true,
                 default: 'pgsql',
-                options: fn() => array_keys(config('database.connections'))
+                options: fn () => array_keys(config('database.connections'))
             )
             ->note('Stickle can prefix the name of tables it creates with a string to help keep things organized and prevent name collision.')
             ->text(
@@ -129,7 +125,7 @@ class ConfigureCommand extends Command
                 validate: ['storageDisk' => 'string'],
                 required: true,
                 default: 'local',
-                options: fn() => array_keys(config('filesystems.disks'))
+                options: fn () => array_keys(config('filesystems.disks'))
             )
             ->note('Stickle can track every request received using server-side middleware.')
             ->confirm(
@@ -189,18 +185,19 @@ class ConfigureCommand extends Command
             ->note('You can change any of these settings in config/stickle.php.')
             ->add(function ($settings) use ($labels) {
                 $rows = collect($settings)
-                    ->reject(fn($value, $key) => is_numeric($key))
+                    ->reject(fn ($value, $key) => is_numeric($key))
                     ->map(function ($value, $key) use ($labels) {
                         return [
                             'label' => (string) $labels[$key] ?? $key,
                             'value' => (string) $value,
                         ];
-                    });                
+                    });
+
                 return table(
                     headers: ['Setting', 'Value'],
                     rows: $rows,
                 );
-            })            
+            })
             ->confirm(
                 label: 'Are you happy with these values?',
                 hint: 'You can change these settings later in `config/stickle.php`.',
@@ -209,10 +206,10 @@ class ConfigureCommand extends Command
                 no: 'No'
             )
             ->submit();
-        
+
         // Clear out the notes() etc, with numerical indexes
-        $settings = collect($settings)->reject(fn($value, $key) => is_numeric($key))->toArray();
-        
+        $settings = collect($settings)->reject(fn ($value, $key) => is_numeric($key))->toArray();
+
         $this->writeConfigFile($settings);
 
         $this->call('config:clear');
@@ -220,36 +217,36 @@ class ConfigureCommand extends Command
         if (confirm(
             label: 'Would you like to publish the configuration file now?',
             hint: 'This will run: php artisan vendor:publish --provider="StickleApp\Core\CoreServiceProvider"'
-        )) {            
+        )) {
             $this->call('vendor:publish', [
                 '--force' => true,
                 '--provider' => 'StickleApp\Core\CoreServiceProvider',
             ]);
-            
+
             info('Configuration published successfully!');
-            
+
             note('You can find it at: config/stickle.php');
         } else {
-            
+
             info('You can publish the configuration later by running:');
-            
+
             note('php artisan vendor:publish --provider="StickleApp\Core\CoreServiceProvider"');
         }
 
         info('Stickle works great with Laravel Reverb for real-time updates!');
 
         note('Laravel Reverb is an official WebSocket server that enables real-time communication.');
-        
+
         note('When used with Stickle, you\'ll get instant updates in the UI whenever events occur.');
 
         if (confirm(
             label: 'Would you like to install Laravel Reverb?'
         )) {
-            
+
             $this->info('Installing Laravel Reverb...');
-            
+
             spin(
-                fn() => $this->installReverb(),
+                fn () => $this->installReverb(),
                 'Installing Laravel Reverb...'
             );
 
@@ -265,15 +262,15 @@ class ConfigureCommand extends Command
 
             note('Learn more at: https://laravel.com/docs/reverb');
         }
-        
+
         $this->call('config:cache');
 
         if (confirm(
             label: 'Would you like to run the migrations now?'
         )) {
-                        
+
             spin(
-                fn() => $this->runMigrations(),
+                fn () => $this->runMigrations(),
                 'Running migrations...'
             );
 
@@ -284,19 +281,18 @@ class ConfigureCommand extends Command
             info('You can run the migrations later by running:');
 
             note('php artisan migrate');
-        }        
+        }
     }
 
     private function installReverb()
     {
         $this->call('install:broadcasting');
-    }    
-
+    }
 
     private function runMigrations()
     {
         $this->call('migrate');
-    }        
+    }
 
     /**
      * Format a value for insertion into a PHP configuration file.
@@ -306,40 +302,41 @@ class ConfigureCommand extends Command
         if (is_bool($value)) {
             return $value ? 'true' : 'false';
         }
-        
+
         if (is_numeric($value)) {
             return (string) $value;
         }
-        
+
         if (is_null($value)) {
             return 'null';
         }
-        
+
         // Default: escape string for PHP config file
         return addslashes((string) $value);
-    }   
-    
+    }
+
     private function writeConfigFile(array $settings): void
-    { 
+    {
         // Read the stub file
-        $stubPath = __DIR__ . '/../../config/stickle.php.stub';
-        $targetPath = __DIR__ . '/../../config/stickle.php.stub';
-        
-        if (!file_exists($stubPath)) {
-            alert('Config stub not found at ' . $stubPath);
+        $stubPath = __DIR__.'/../../config/stickle.php.stub';
+        $targetPath = __DIR__.'/../../config/stickle.php.stub';
+
+        if (! file_exists($stubPath)) {
+            alert('Config stub not found at '.$stubPath);
+
             return;
         }
-        
+
         $stubContent = file_get_contents($stubPath);
 
         // Replace placeholders with actual values
         foreach ($settings as $key => $value) {
-            
+
             // Format value based on type
             $formattedValue = $this->formatValueForConfig($value);
-            
+
             // Replace the placeholder
-            $stubContent = str_replace('{{' . $key . '}}', $formattedValue, $stubContent);
+            $stubContent = str_replace('{{'.$key.'}}', $formattedValue, $stubContent);
         }
     }
 }
