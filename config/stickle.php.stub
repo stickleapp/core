@@ -17,12 +17,12 @@ return [
     | - Rollup Sessions. Aggregate the sessions into the session statistics table
     */
     'schedule' => [
-        'exportSegments' => env('STICKLE_FREQUENCY_EXPORT_SEGMENTS', %%interval%%),
-        'recordSegmentStatistics' => env('STICKLE_FREQUENCY_EXPORT_SEGMENT_STATISTICS', %%interval%%),
-        'recordEntityStatistics' => env('STICKLE_FREQUENCY_EXPORT_ENTITY_STATISTICS', %%interval%%),
-        'rollupEvents' => env('STICKLE_FREQUENCY_ROLLUP_EVENTS', %%interval%%),
-        'rollupPageViews' => env('STICKLE_FREQUENCY_ROLLUP_PAGEVIEWS', %%interval%%),
-        'rollupSessions' => env('STICKLE_FREQUENCY_ROLLUP_SESSIONS', %%interval%%),
+        'exportSegments' => env('STICKLE_FREQUENCY_EXPORT_SEGMENTS', {{interval}}),
+        'recordSegmentStatistics' => env('STICKLE_FREQUENCY_EXPORT_SEGMENT_STATISTICS', {{interval}}),
+        'recordEntityStatistics' => env('STICKLE_FREQUENCY_EXPORT_ENTITY_STATISTICS', {{interval}}),
+        'rollupEvents' => env('STICKLE_FREQUENCY_ROLLUP_EVENTS', {{interval}}),
+        'rollupPageViews' => env('STICKLE_FREQUENCY_ROLLUP_PAGEVIEWS', {{interval}}),
+        'rollupSessions' => env('STICKLE_FREQUENCY_ROLLUP_SESSIONS', {{interval}}),
     ],
 
     /*
@@ -36,9 +36,9 @@ return [
     */
     'database' => [
         'schema' => env('STICKLE_SCHEMA', 'public'),
-        'connection' => env('DB_CONNECTION', '%%dbConnection%%'),
-        'tablePrefix' => env('STICKLE_TABLE_PREFIX', '%%tablePrefix%%'),
-        'enablePartitions' => env('STICKLE_ENABLE_PARTITIONS', %%enablePartitioning%%),
+        'connection' => env('DB_CONNECTION', '{{dbConnection}}'),
+        'tablePrefix' => env('STICKLE_TABLE_PREFIX', '{{tablePrefix}}'),
+        'enablePartitions' => env('STICKLE_ENABLE_PARTITIONS', {{enablePartitioning}}),
         'partitions' => [
             'events' => [
                 'interval' => 'month',
@@ -66,13 +66,13 @@ return [
     | Where are certain items located in your Laravel project
     */
     'namespaces' => [
-        'listeners' => env('STICKLE_NAMESPACES_LISTENERS', '%%listenersPath%%'),
-        'models' => env('STICKLE_NAMESPACES_MODELS', '%%modelsPath%%'),
-        'segments' => env('STICKLE_NAMESPACES_SEGMENTS', '%%segmentsPath%%'),
+        'listeners' => env('STICKLE_NAMESPACES_LISTENERS', '{{listenersPath}}'),
+        'models' => env('STICKLE_NAMESPACES_MODELS', '{{modelsPath}}'),
+        'segments' => env('STICKLE_NAMESPACES_SEGMENTS', '{{segmentsPath}}'),
     ],
 
     'storage' => [
-        'exports' => env('STICKLE_STORAGE_EXPORTS', '%%storageDisk%%'),
+        'exports' => env('STICKLE_STORAGE_EXPORTS', '{{storageDisk}}'),
     ],
 
     /*
@@ -84,11 +84,11 @@ return [
     */
     'routes' => [
         'api' => [
-            'prefix' => env('STICKLE_API_PREFIX', '%%apiPrefix%%'),
+            'prefix' => env('STICKLE_API_PREFIX', '{{apiPrefix}}'),
             'middleware' => env('STICKLE_API_MIDDLEWARE', ['api']),
         ],
         'web' => [
-            'prefix' => env('STICKLE_WEB_PREFIX', '%%webPrefix%%'),
+            'prefix' => env('STICKLE_WEB_PREFIX', '{{webPrefix}}'),
             'middleware' => env('STICKLE_WEB_MIDDLEWARE', ['web']),
         ],
     ],
@@ -117,8 +117,8 @@ return [
     */
     'tracking' => [
         'server' => [
-            'loadMiddleware' => env('STICKLE_TRACK_SERVER_LOAD_MIDDLEWARE', %%serverLoadMiddleware%%),
-            'trackAuthenticationEvents' => env('STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS', %%trackAuthenticationEvents%%),
+            'loadMiddleware' => env('STICKLE_TRACK_SERVER_LOAD_MIDDLEWARE', {{serverLoadMiddleware}}),
+            'trackAuthenticationEvents' => env('STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS', {{trackAuthenticationEvents}}),
             'authenticationEventsTracked' => [
                 'Authenticated',
                 'CurrentDeviceLogout',
@@ -135,7 +135,6 @@ return [
         'client' => [
             'loadMiddleware' => env('STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE', true),
             'trackPageViews' => env('STICKLE_TRACK_CLIENT_PAGE_VIEWS', true),
-            'controllerPrefix' => env('STICKLE_TRACK_CONTROLLER_PREFIX', ''),
         ],
     ],
 ];

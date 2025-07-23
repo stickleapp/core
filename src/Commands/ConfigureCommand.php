@@ -16,6 +16,9 @@ use function Laravel\Prompts\pause;
 use function Laravel\Prompts\suggest;
 use function Laravel\Prompts\table;
 use function Laravel\Prompts\text;
+use function Laravel\Prompts\clear;
+use function Laravel\Prompts\form;
+use function Laravel\Prompts\spin;
 
 class ConfigureCommand extends Command
 {
@@ -41,247 +44,302 @@ class ConfigureCommand extends Command
 
         Log::info(self::class, $this->arguments());
 
-        $settings = [];
+        $labels = [
+            'modelsPath' => 'Models Path',
+            'listenersPath' => 'Listeners Path',
+            'segmentsPath' => 'Segments Path',
+            'dbConnection' => 'Database Connection',
+            'tablePrefix' => 'Table Prefix',
+            'enablePartitioning' => 'Enable Partitioning',
+            'storageDisk' => 'Storage Disk',
+            'serverLoadMiddleware' => 'Server Load Middleware',
+            'trackAuthenticationEvents' => 'Track Authentication Events',
+            'clientLoadMiddleware' => 'Client Load Middleware',
+            'webPrefix' => 'StickleUI Path',
+            'apiPrefix' => 'API Prefix',
+            'interval' => 'Default Process Interval (minutes)',
+        ];
 
-        info('🧙‍♂️ Welcome to the Stickle configuration wizard!');
-
-        note("We'll ask you a few questions help you configure Stickle.");
-
-        pause('Ready? Press ENTER key to continue...');
-
-        $architecture = suggest(
-            label: 'Which of the following best describes your application?',
-            validate: ['architecture' => 'required|string'],
-            options: ['Blade', 'Inertia', 'Livewire', 'SPA (Vue, React, etc.)']
-        );
-
-        // The architecture will determine settings
-        switch ($architecture) {
-            case 'Blade':
-                note('Cool. Good old Blade 🔪. If it ain\'t broke don\'t fix it.');
-                $serverLoadMiddlewareDefault = true;
-                $clientLoadMiddlewareDefault = true;
-                break;
-            case 'Inertia':
-                note('Inertia is great. A single page app without all those JS routing nightmares.');
-                $serverLoadMiddlewareDefault = true;
-                $clientLoadMiddlewareDefault = true;
-                break;
-            case 'Livewire':
-                note('Livewire is awesome. It\'s like Blade, but with a sprinkle of magic.');
-                $serverLoadMiddlewareDefault = true;
-                $clientLoadMiddlewareDefault = true;
-                break;
-            case 'SPA (Vue, React, etc.)':
-                note('Nothing you can\'t do with a good old Vue or React app.');
-                $serverLoadMiddlewareDefault = false;
-                $clientLoadMiddlewareDefault = true;
-                break;
-        }
-
-        note('Stickle tracks your \'customers\'.');
-
-        note('This can mean different things in different apps.');
-
-        note('90% of the time that means your `User` model.');
-        
-        note('It might also include other models such as `Company`, `Organization`, or `Account`.');
-
-        $modelsPath = text(
-            label: 'Where do you place your laravel models (full namespace)?',
-            validate: ['modelsPath' => 'string'],
-            default: 'App\Models'
-        );
-
-        $settings[] = $this->addSetting('modelsPath', $modelsPath, 'Models Path');
-
-        note('Stickle makes it super simple to react to client-side events using server-side code.');
-        
-        $listenersPath = text(
-            label: 'Where do you place your event listeners (full namespace)?',
-            validate: ['listenersPath' => 'string'],
-            default: 'App\Listeners'
-        );
-
-        $settings[] = $this->addSetting('listenersPath', $listenersPath, 'Listeners Path');
-
-        note('If you can use Eloquent then you can build powerful Customer segments that Stickle will track for you.');
-
-        warning('If if you can\'t write an Eloquent query, you probably should stop now but hey, that\'s your call.');
-
-        pause('Did I scare you away? No? Press ENTER key to continue...');
-
-        $segmentsPath = text(
-            label: 'Where will you place your Stickle Segments (full namespace)?',
-            validate: ['segmentsPath' => 'string'],
-            default: 'App\Segments'
-        );
-
-        $settings[] = $this->addSetting('segmentsPath', $segmentsPath, 'Segments Path');
-
-        note('Stickle will need access to your primary database.');
-
-        warning('It will query existing tables and create new ones.');
-
-        alert('We won\'t modify any of your existing tables.');
-
-        /** @var array<string> $connections */
-        $dbConnections = config('database.connections');
-        $dbConnection = suggest(
-            label: 'Which database connection should be used? We aren\'t running migrations yet, so you can change this later.',
-            validate: ['connection' => 'string'],
-            options: array_keys($dbConnections)
-        );
-
-        $settings[] = $this->addSetting('connection', $dbConnection, 'Database Connection');
-
-        note('Stickle can prefix the name of tables it creates with a string to help keep things organized and prevent name collision.');
-
-        $tablePrefix = text(
-            label: 'Would you like to prefix your Stickle table names with a short string?',
-            validate: ['tablePrefix' => 'required|string|min:3|max:10'],
-            default: 'stickle_'
-        );
-
-        $settings[] = $this->addSetting('tablePrefix', $tablePrefix, 'Table Prefix');
-
-        if ($dbConnection === 'pgsql') {
-
-            note('Stickle can optionally use table partitioning.');
-            
-            note('If you have a high volume of events and page views, this make Stickle more performant.');
-            
-            note('It will also allow you to remove old data without impacting database performance.');
-
-            $enablePartitioning = confirm(
+        $settings = form()
+            ->info('🧙‍♂️ Welcome to the Stickle configuration wizard!')
+            ->note("We'll ask you a few questions help you configure Stickle.")
+            ->pause('Ready? Press ENTER key to continue...')
+            ->note('Stickle tracks your \'customers\'.')
+            ->note('This can mean different things in different apps.')
+            ->note('90% of the time that means your `User` model but it can also include other models such as `Company`, `Organization`, or `Account`.')
+            ->text(
+                name: 'modelsPath',
+                label: 'Where do you place your laravel models?',
+                validate: ['modelsPath' => 'string|required'],
+                required: true,
+                hint: 'Full namespace, e.g. `App\Models`',
+                default: 'App\Models'
+            )
+            ->note('Stickle makes it super simple to react to client-side events using server-side code.')
+            ->text(
+                name: 'listenersPath',
+                label: 'Where do you place your event listeners?',
+                validate: ['listenersPath' => 'string|required'],
+                required: true,
+                hint: 'Full namespace, e.g. `App\Listeners`',
+                default: 'App\Listeners'
+            )
+            ->note('If you can use Eloquent then you can build powerful Customer segments that Stickle will track for you.')
+            ->warning('If if you can\'t write an Eloquent query, you probably should stop now but, hey, that\'s your call.')
+            ->pause('Did I scare you away? No? Press ENTER key to continue...')
+            ->text(
+                name: 'segmentsPath',
+                label: 'Where will you place your Stickle Segments?',
+                validate: ['segmentsPath' => 'string|required'],
+                required: true,
+                hint: 'Full namespace, e.g. `App\Segments`',
+                default: 'App\Segments'
+            )
+            ->note('Stickle will need access to your primary database.')
+            ->warning('It **will** query existing tables and create new ones.')
+            ->warning('It **won\'t** modify or delete any of your existing tables.')
+            ->suggest(
+                name: 'dbConnection',
+                label: 'Which database connection should be used? We aren\'t running migrations yet, so you can change this later.',
+                validate: ['connection' => 'string|required'],
+                required: true,
+                default: 'pgsql',
+                options: fn() => array_keys(config('database.connections'))
+            )
+            ->note('Stickle can prefix the name of tables it creates with a string to help keep things organized and prevent name collision.')
+            ->text(
+                name: 'tablePrefix',
+                label: 'Would you like to prefix your Stickle table names with a short string?',
+                validate: ['tablePrefix' => 'string|min:0|max:10'],
+                default: 'stickle_'
+            )
+            ->confirm(
+                name: 'enablePartitioning',
                 label: 'Would you like to use partitioning?',
-                default: false,
+                default: true,
+                required: false,
+                yes: 'Yes',
+                no: 'No',
+                hint: 'PostgreSQL only - If you have a high volume of events and page views, this make Stickle more performant.'
+            )
+            ->note('Stickle needs access to a disk to store files for loading large data sets.')
+            ->suggest(
+                name: 'storageDisk',
+                label: 'What storage disk should be used for data exports?',
+                validate: ['storageDisk' => 'string'],
+                required: true,
+                default: 'local',
+                options: fn() => array_keys(config('filesystems.disks'))
+            )
+            ->note('Stickle can track every request received using server-side middleware.')
+            ->confirm(
+                name: 'serverLoadMiddleware',
+                label: 'Do you want to track server requests using middleware?',
+                default: true,
+                required: true,
                 yes: 'Yes',
                 no: 'No'
+            )
+            ->note('Stickle can track Laravel authentication events such as logins, logouts, password resets, etc.')
+            ->confirm(
+                name: 'trackAuthenticationEvents',
+                label: 'Do you want to track Laravel authentication events?',
+                default: true,
+                required: true,
+                yes: 'Yes',
+                no: 'No'
+            )
+            ->note('Stickle can track insert a small Javascript snippet that will track user events and page views.')
+            ->note('You can further configure this tracking code to track custom client-side events.')
+            ->confirm(
+                name: 'clientLoadMiddleware',
+                label: 'Do you want to track client-side requests using Javascript?',
+                default: true,
+                required: true,
+                yes: 'Yes',
+                no: 'No'
+            )
+            ->note('StickleUI gives you visual access to your data.')
+            ->note('By default, it is available at `/stickle` but you can change it.')
+            ->text(
+                name: 'webPrefix',
+                label: 'What path would you like to use for accessing StickleUI?',
+                required: true,
+                validate: ['webPrefix' => 'string'],
+                default: 'stickle'
+            )
+            ->note('Stickle exposes some API routes used by the UI.')
+            ->note('We prefix the routes (`api/stickle`) to distinguish them from your other routes.')
+            ->text(
+                name: 'apiPrefix',
+                label: 'What prefix would you like to use for the API routes?',
+                validate: ['apiPrefix' => 'string'],
+                default: 'api/stickle'
+            )
+            ->note('Stickle runs a number of processes in the background to transform your data.')
+            ->text(
+                name: 'interval',
+                label: 'How frequently would you like to run these processes (in minutes)?',
+                validate: ['interval' => 'required|int|min:1'],
+                required: true,
+                hint: 'Every X minutes',
+                default: '360'
+            )
+            ->info('Please review your settings.')
+            ->note('You can change any of these settings in config/stickle.php.')
+            ->add(function ($settings) use ($labels) {
+                $rows = collect($settings)
+                    ->reject(fn($value, $key) => is_numeric($key))
+                    ->map(function ($value, $key) use ($labels) {
+                        return [
+                            'label' => (string) $labels[$key] ?? $key,
+                            'value' => (string) $value,
+                        ];
+                    });                
+                return table(
+                    headers: ['Setting', 'Value'],
+                    rows: $rows,
+                );
+            })            
+            ->confirm(
+                label: 'Are you happy with these values?',
+                hint: 'You can change these settings later in `config/stickle.php`.',
+                default: true,
+                yes: 'Yes',
+                no: 'No'
+            )
+            ->submit();
+        
+        // Clear out the notes() etc, with numerical indexes
+        $settings = collect($settings)->reject(fn($value, $key) => is_numeric($key))->toArray();
+        
+        $this->writeConfigFile($settings);
+
+        $this->call('config:clear');
+
+        if (confirm(
+            label: 'Would you like to publish the configuration file now?',
+            hint: 'This will run: php artisan vendor:publish --provider="StickleApp\Core\CoreServiceProvider"'
+        )) {            
+            $this->call('vendor:publish', [
+                '--force' => true,
+                '--provider' => 'StickleApp\Core\CoreServiceProvider',
+            ]);
+            
+            info('Configuration published successfully!');
+            
+            note('You can find it at: config/stickle.php');
+        } else {
+            
+            info('You can publish the configuration later by running:');
+            
+            note('php artisan vendor:publish --provider="StickleApp\Core\CoreServiceProvider"');
+        }
+
+        info('Stickle works great with Laravel Reverb for real-time updates!');
+
+        note('Laravel Reverb is an official WebSocket server that enables real-time communication.');
+        
+        note('When used with Stickle, you\'ll get instant updates in the UI whenever events occur.');
+
+        if (confirm(
+            label: 'Would you like to install Laravel Reverb?'
+        )) {
+            
+            $this->info('Installing Laravel Reverb...');
+            
+            spin(
+                fn() => $this->installReverb(),
+                'Installing Laravel Reverb...'
             );
 
-            $settings[] = $this->addSetting('enablePartitioning', $enablePartitioning, 'Enable Partitioning', (bool) $enablePartitioning ? 'Yes' : 'No');
+            info('Laravel Reverb installed successfully!');
+
+            note('Start the WebSocket server with: php artisan reverb:start');
+
+        } else {
+
+            info('You can install Laravel Reverb later by running:');
+
+            note('php artisan install:broadcasting');
+
+            note('Learn more at: https://laravel.com/docs/reverb');
         }
-
-        note('Stickle needs access to a disk to store files for loading large data sets.');
-
-        /** @var array<string> $disks */
-        $storageDisks = config('filesystems.disks');
-        $storageDisk = suggest(
-            label: 'What storage disk should be used for data exports?',
-            validate: ['storageDisk' => 'string'],
-            options: array_keys($storageDisks)
-        );
-
-        $settings[] = $this->addSetting('storageDisk', $storageDisk, 'Storage Disk');
-
-        note('Stickle can track every request received using server-side middleware.');
-
-        $serverLoadMiddleware = confirm(
-            label: 'Do you want to track server requests using middleware?',
-            default: $serverLoadMiddlewareDefault,
-            yes: 'Yes',
-            no: 'No'
-        );
-
-        $settings[] = $this->addSetting('serverLoadMiddleware', $serverLoadMiddleware, 'Server Load Middleware', (bool) $serverLoadMiddleware ? 'Yes' : 'No');
-
-        note('Stickle can track Laravel authentication events such as logins, logouts, password resets, etc.');
-
-        $trackAuthenticationEvents = confirm(
-            label: 'Do you want to track Laravel authentication events?',
-            default: true,
-            yes: 'Yes',
-            no: 'No'
-        );
-
-        $settings[] = $this->addSetting('trackAuthenticationEvents', $trackAuthenticationEvents, 'Track  Authentication Events', (bool) $serverLoadMiddleware ? 'Yes' : 'No');
-
-        note('Stickle can track insert a small Javascript snippet that will track user events and page views.');
-
-        note('You can further configure this tracking code to track custom client-side events.');
-
-        $clientLoadMiddleware = confirm(
-            label: 'Do you want to track client-side requests using Javascript?',
-            default: $clientLoadMiddlewareDefault,
-            yes: 'Yes',
-            no: 'No'
-        );
-
-        $settings[] = $this->addSetting('clientLoadMiddleware', $clientLoadMiddleware, 'Client Load Middleware', (bool) $clientLoadMiddleware ? 'Yes' : 'No');
-
-        note('StickleUI gives you visual access to your data.');
-
-        note('By default, it is available at `/stickle` but you can change it.');
-
-        $webPrefix = text(
-            label: 'What path would you like to use for accessing StickleUI?',
-            validate: ['webPrefix' => 'string'],
-            default: 'stickle'
-        );
-
-        $settings[] = $this->addSetting('webPrefix', $webPrefix, 'StickleUI Path');
-
-        note('Stickle exposes some API routes used by the UI.');
         
-        note('We prefix the routes (`api/stickle`) to distinguish them from your other routes.');
+        $this->call('config:cache');
 
-        $apiPrefix = text(
-            label: 'What prefix would you like to use for the API routes?',
-            validate: ['apiPrefix' => 'string'],
-            default: 'api/stickle'
-        );
+        if (confirm(
+            label: 'Would you like to run the migrations now?'
+        )) {
+                        
+            spin(
+                fn() => $this->runMigrations(),
+                'Running migrations...'
+            );
 
-        $settings[] = $this->addSetting('apiPrefix', $apiPrefix, 'API Prefix');
+            info('Migrations ran successfully!');
 
-        note('Stickle runs a number of processes in the background to transform your data.');
+        } else {
 
-        $interval = text(
-            label: '🕓 How frequently would you like to run these processes (in minutes)?',
-            validate: ['interval' => 'required|int|min:1'],
-            default: '360'
-        );
+            info('You can run the migrations later by running:');
 
-        $settings[] = $this->addSetting('interval', $interval, 'Default Process Interval (minutes)');
-
-        info('Please review your settings.');
-
-        note('You can change any of these settings in config/stickle.php.');
-
-        $rows = collect($settings)->map(function ($item) {
-            return [
-                'label' => (string) $item['label'],
-                'value' => (string) $item['displayValue'],
-            ];
-        });
-
-        table(
-            headers: ['Setting', 'Value'],
-            rows: $rows,
-        );
-
-        $publishConfig = confirm(
-            label: 'Would you publish these settings to `/stickle/config.php`?',
-            default: false,
-            yes: 'Yes',
-            no: 'No, I\'ll change settings manually'
-        );
-
-        if ($publishConfig) {
-            info('Publishing settings...');
-        }
-
-        //  Run migrations if using partioning...
+            note('php artisan migrate');
+        }        
     }
 
-    /** @return array<string, mixed> */
-    private function addSetting(string $key, mixed $value, string $label, ?string $displayValue = null): array
+    private function installReverb()
     {
-        return [
-            'key' => $key,
-            'value' => $value,
-            'displayValue' => is_null($displayValue) ? $value : $displayValue,
-            'label' => $label,
-        ];
+        $this->call('install:broadcasting');
+    }    
+
+
+    private function runMigrations()
+    {
+        $this->call('migrate');
+    }        
+
+    /**
+     * Format a value for insertion into a PHP configuration file.
+     */
+    private function formatValueForConfig(mixed $value): string
+    {
+        if (is_bool($value)) {
+            return $value ? 'true' : 'false';
+        }
+        
+        if (is_numeric($value)) {
+            return (string) $value;
+        }
+        
+        if (is_null($value)) {
+            return 'null';
+        }
+        
+        // Default: escape string for PHP config file
+        return addslashes((string) $value);
+    }   
+    
+    private function writeConfigFile(array $settings): void
+    { 
+        // Read the stub file
+        $stubPath = __DIR__ . '/../../config/stickle.php.stub';
+        $targetPath = __DIR__ . '/../../config/stickle.php.stub';
+        
+        if (!file_exists($stubPath)) {
+            alert('Config stub not found at ' . $stubPath);
+            return;
+        }
+        
+        $stubContent = file_get_contents($stubPath);
+
+        // Replace placeholders with actual values
+        foreach ($settings as $key => $value) {
+            
+            // Format value based on type
+            $formattedValue = $this->formatValueForConfig($value);
+            
+            // Replace the placeholder
+            $stubContent = str_replace('{{' . $key . '}}', $formattedValue, $stubContent);
+        }
     }
 }
