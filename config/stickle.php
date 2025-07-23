@@ -36,7 +36,6 @@ return [
     */
     'database' => [
         'schema' => env('STICKLE_SCHEMA', 'public'),
-        'connection' => env('DB_CONNECTION', 'pgsql'),
         'tablePrefix' => env('STICKLE_TABLE_PREFIX', 'stc_'),
         'partitions' => [
             'events' => [

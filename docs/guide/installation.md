@@ -57,7 +57,9 @@ You can manually configure these settings if necessary.
 $ php artisan migrate
 ```
 
-### Scheduled Tasks
+### Running Stickle
+
+#### Scheduled Tasks
 
 Stickle runs several scheduled tasks in the background. Make sure you have a queue worker running. For development, run:
 
@@ -66,6 +68,11 @@ php artisan schedule:work
 
 ```
 
-### Demo Page
+#### Laravel Reverb
 
-You can confirm Stickle is installed correctly by visiting the `/stickle-demo` route in the web browser.
+If you are using Laravel Reverb you will need to start it. For development, run:
+
+```
+php artisan reverb:start
+
+```

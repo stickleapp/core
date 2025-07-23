@@ -8,7 +8,7 @@ export default defineConfig({
         // https://vitepress.dev/reference/default-theme-config
         nav: [
             { text: "Home", link: "/" },
-            { text: "Guide", link: "/guide/index.html" },
+            { text: "Guide", link: "/guide/what-is-stickle.html" },
             { text: "How-To", link: "/how-to/index.html" },
             { text: "StickleUI", link: "https://stickleui.app" },
         ],
