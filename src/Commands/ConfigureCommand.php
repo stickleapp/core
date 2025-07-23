@@ -7,15 +7,15 @@ namespace StickleApp\Core\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
+use function Laravel\Prompts\alert;
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\info;
-use function Laravel\Prompts\warning;
-use function Laravel\Prompts\alert;
 use function Laravel\Prompts\note;
 use function Laravel\Prompts\pause;
 use function Laravel\Prompts\suggest;
 use function Laravel\Prompts\table;
 use function Laravel\Prompts\text;
+use function Laravel\Prompts\warning;
 
 class ConfigureCommand extends Command
 {
@@ -84,7 +84,7 @@ class ConfigureCommand extends Command
         note('This can mean different things in different apps.');
 
         note('90% of the time that means your `User` model.');
-        
+
         note('It might also include other models such as `Company`, `Organization`, or `Account`.');
 
         $modelsPath = text(
@@ -96,7 +96,7 @@ class ConfigureCommand extends Command
         $settings[] = $this->addSetting('modelsPath', $modelsPath, 'Models Path');
 
         note('Stickle makes it super simple to react to client-side events using server-side code.');
-        
+
         $listenersPath = text(
             label: 'Where do you place your event listeners (full namespace)?',
             validate: ['listenersPath' => 'string'],
@@ -148,9 +148,9 @@ class ConfigureCommand extends Command
         if ($dbConnection === 'pgsql') {
 
             note('Stickle can optionally use table partitioning.');
-            
+
             note('If you have a high volume of events and page views, this make Stickle more performant.');
-            
+
             note('It will also allow you to remove old data without impacting database performance.');
 
             $enablePartitioning = confirm(
@@ -223,7 +223,7 @@ class ConfigureCommand extends Command
         $settings[] = $this->addSetting('webPrefix', $webPrefix, 'StickleUI Path');
 
         note('Stickle exposes some API routes used by the UI.');
-        
+
         note('We prefix the routes (`api/stickle`) to distinguish them from your other routes.');
 
         $apiPrefix = text(

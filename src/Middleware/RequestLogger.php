@@ -7,7 +7,6 @@ namespace StickleApp\Core\Middleware;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Events\Page;
 
 class RequestLogger
@@ -19,33 +18,33 @@ class RequestLogger
         // Livewire
         'livewire/*',
         '*/livewire/*',
-        
+
         // Telescope
         'telescope/*',
         'vendor/telescope/*',
-        
+
         // Horizon
         'horizon/*',
         'vendor/horizon/*',
-        
+
         // Health checks
         'health',
         'ping',
     ];
-    
+
     /**
      * Handle an incoming request.
-     * 
+     *
      * Just pass through - tracking happens after response is sent
      */
     public function handle(Request $request, Closure $next)
     {
         return $next($request);
     }
-    
+
     /**
      * Perform tracking after response has been sent to browser.
-     * 
+     *
      * This method is automatically called by Laravel after the response
      * has been sent to the client. This prevents tracking from slowing
      * down the user's request.
@@ -55,7 +54,7 @@ class RequestLogger
         if ($this->shouldIgnore($request)) {
             return;
         }
-        
+
         $data = [
             'user' => $request->user(),
             'model_class' => get_class($request->user()),
@@ -75,7 +74,7 @@ class RequestLogger
 
         Page::dispatch($data);
     }
-    
+
     /**
      * Determine if the request should be ignored
      */
@@ -85,22 +84,22 @@ class RequestLogger
         if ($this->isLivewireRequest($request)) {
             return true;
         }
-        
+
         // Check URL patterns
         foreach ($this->ignoredPatterns as $pattern) {
             if ($request->is($pattern)) {
                 return true;
             }
         }
-        
+
         // Check for Telescope header
         if ($request->hasHeader('X-Telescope-Request')) {
             return true;
         }
-        
+
         return false;
     }
-    
+
     /**
      * Check if this is a Livewire request
      */
@@ -110,7 +109,7 @@ class RequestLogger
                $request->routeIs('livewire.*') ||
                str_contains($request->path(), 'livewire/message');
     }
-    
+
     /**
      * Get the response status code safely
      */
@@ -119,14 +118,14 @@ class RequestLogger
         if (method_exists($response, 'getStatusCode')) {
             return $response->getStatusCode();
         }
-        
+
         if (method_exists($response, 'status')) {
             return $response->status();
         }
-        
+
         return 200;
     }
-    
+
     /**
      * Calculate response time in milliseconds
      */
@@ -135,7 +134,7 @@ class RequestLogger
         if (defined('LARAVEL_START')) {
             return round((microtime(true) - LARAVEL_START) * 1000, 2);
         }
-        
+
         return 0.0;
     }
 }
