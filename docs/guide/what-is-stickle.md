@@ -8,10 +8,10 @@ Stickle is a customer analytics and engagement package for Laravel. Use it to:
 
 -   Build real-time customer analytics dashboards;
 -   Trigger Laravel notifications based on end-user behavior;
--   Highlight important customer behavior in your admin panel;
--   Segment your customer base to identify high value or at-risk customers in realtime.
+-   Highlight important customer behavior in your admin panel; or
+-   Segment your customer base (ex. 'My at-risk customers').
 
-Stickle can be further extended by adding 1st-party Stickle apps and can be integrated with other Laravel Packages to expand their functionality.
+Stickle provides the knowledge you need to make educated decisions about your customers _and_ to create powerful, real-time functionality in your application.
 
 ## What Stickle is not...
 
@@ -45,23 +45,3 @@ You can:
 StickleUI is composed of a rich library of Laravel Blade components that can be assembled to provide your team with information it needs.
 
 StickleUI also has some low-level Blade Components which you can extend to make StickleUI fit your own use case.
-
-## SticklePro <Badge type="tip" text="From $499" />
-
-Want a full-featured, self-hosted, privacy first customer analytics, engagement and success platform at a fraction of the cost of a SaaS solution? Try SticklePro!
-
-SticklePro includes:
-
--   Powerful playbooks and automations;
--   In-app notifications;
--   Customer health-scores;
--   Customer digest builder (send personalized email upates to your customers).
-
-A one-time purchase of $499 gives you lifetime access to SticklePro and a year of updates. Stay up-to-date with a $199/year SticklePro subscription.
-
-SticklePro subscription also includes:
-
--   Access to all future feature releases;
--   Access to members-only forum;
--   Priority support for StickleCore issues;
--   Email and live-chat support (24-hour response).

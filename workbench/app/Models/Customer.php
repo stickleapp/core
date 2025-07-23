@@ -61,6 +61,8 @@ class Customer extends Model
 
     /**
      * Specify the attributes that should be observed (via Observable)
+     * - TODO: chang this to a method that returns the attributes dynamically
+     * public static function stickleObservedAttributes(): array {}
      */
     public static array $stickleObservedAttributes = [
         'mrr',
@@ -68,6 +70,8 @@ class Customer extends Model
 
     /**
      * Specify the attributes that should be observed (via Observable)
+     * - TODO: chang this to a method that returns the attributes dynamically
+     * public static function stickleTrackedAttributes(): array {}
      */
     public static array $stickleTrackedAttributes = [
         'mrr',
@@ -78,6 +82,9 @@ class Customer extends Model
         'average_resolution_time',
         'average_resolution_time_30_days',
     ];
+
+    // public static function stickleTrackedAggregates(): array {}
+    // #[StickleAggregateMetadata([])
 
     #[StickleRelationshipMetadata([
         'label' => 'Child Customers',
@@ -278,4 +285,18 @@ class Customer extends Model
             default => 0,
         };
     }
+
+    // #[StickleAggregateMetadata([
+    //     'label' => 'Quarterly Sales Volume',
+    //     'description' => 'Total sales by quater.',
+    //     'period' => Period::QUARTER,
+    // ])]
+    // public function getQuarterlySalesVolumeAttribute(): ?float
+    // {
+    //     return [
+    //         'period_type' => Period::QUARTER,
+    //         'period_name' => // previous quarter....
+    //         'value' => // sum of previous quarter....
+    //     ]
+    // }
 }

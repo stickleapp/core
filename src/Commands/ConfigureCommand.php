@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\info;
+use function Laravel\Prompts\warning;
+use function Laravel\Prompts\alert;
 use function Laravel\Prompts\note;
 use function Laravel\Prompts\pause;
 use function Laravel\Prompts\suggest;
@@ -41,9 +43,9 @@ class ConfigureCommand extends Command
 
         $settings = [];
 
-        info('Welcome to the Stickle configuration wizard!');
+        info('🧙‍♂️ Welcome to the Stickle configuration wizard!');
 
-        note("We'll ask you a few questions to get your Stickle configuration set up.");
+        note("We'll ask you a few questions help you configure Stickle.");
 
         pause('Ready? Press ENTER key to continue...');
 
@@ -54,40 +56,36 @@ class ConfigureCommand extends Command
         );
 
         // The architecture will determine settings
-        if ($architecture) {
-
+        switch ($architecture) {
+            case 'Blade':
+                note('Cool. Good old Blade 🔪. If it ain\'t broke don\'t fix it.');
+                $serverLoadMiddlewareDefault = true;
+                $clientLoadMiddlewareDefault = true;
+                break;
+            case 'Inertia':
+                note('Inertia is great. A single page app without all those JS routing nightmares.');
+                $serverLoadMiddlewareDefault = true;
+                $clientLoadMiddlewareDefault = true;
+                break;
+            case 'Livewire':
+                note('Livewire is awesome. It\'s like Blade, but with a sprinkle of magic.');
+                $serverLoadMiddlewareDefault = true;
+                $clientLoadMiddlewareDefault = true;
+                break;
+            case 'SPA (Vue, React, etc.)':
+                note('Nothing you can\'t do with a good old Vue or React app.');
+                $serverLoadMiddlewareDefault = false;
+                $clientLoadMiddlewareDefault = true;
+                break;
         }
 
-        note('Stickle runs a number of processes in the background to transform your data.');
+        note('Stickle tracks your \'customers\'.');
 
-        $interval = text(
-            label: 'How frequently would you like to run these processes (in minutes)?',
-            validate: ['interval' => 'required|int|min:1'],
-            default: '360'
-        );
+        note('This can mean different things in different apps.');
 
-        $settings[] = $this->addSetting('interval', $interval, 'Default Process Interval (minutes)');
-
-        // note('What is your user model?');
-
-        // /** @var string $userModelDefault * */
-        // $userModelDefault = config('auth.providers.users.model');
-        // $userModel = text(
-        //     label: 'What is your user model (full namespace)?',
-        //     validate: ['userModel' => 'required|string'],
-        //     default: $userModelDefault
-        // );
-
-        // $settings[] = $this->addSetting('userModel', $userModel, 'User Model');
-
-        // note('Stickle can aggregate metrics under a group (organiation, account, tenant, etc).');
-
-        // $groupModel = text(
-        //     label: 'What is your group model (full namespace)?',
-        //     validate: ['userModel' => 'string'],
-        // );
-
-        // $settings[] = $this->addSetting('groupModel', $groupModel, 'Group Model');
+        note('90% of the time that means your `User` model.');
+        
+        note('It might also include other models such as `Company`, `Organization`, or `Account`.');
 
         $modelsPath = text(
             label: 'Where do you place your laravel models (full namespace)?',
@@ -97,6 +95,8 @@ class ConfigureCommand extends Command
 
         $settings[] = $this->addSetting('modelsPath', $modelsPath, 'Models Path');
 
+        note('Stickle makes it super simple to react to client-side events using server-side code.');
+        
         $listenersPath = text(
             label: 'Where do you place your event listeners (full namespace)?',
             validate: ['listenersPath' => 'string'],
@@ -104,6 +104,12 @@ class ConfigureCommand extends Command
         );
 
         $settings[] = $this->addSetting('listenersPath', $listenersPath, 'Listeners Path');
+
+        note('If you can use Eloquent then you can build powerful Customer segments that Stickle will track for you.');
+
+        warning('If if you can\'t write an Eloquent query, you probably should stop now but hey, that\'s your call.');
+
+        pause('Did I scare you away? No? Press ENTER key to continue...');
 
         $segmentsPath = text(
             label: 'Where will you place your Stickle Segments (full namespace)?',
@@ -113,12 +119,16 @@ class ConfigureCommand extends Command
 
         $settings[] = $this->addSetting('segmentsPath', $segmentsPath, 'Segments Path');
 
-        note('Stickle will need access to your primary database. It will query existing tables and create new ones.');
+        note('Stickle will need access to your primary database.');
+
+        warning('It will query existing tables and create new ones.');
+
+        alert('We won\'t modify any of your existing tables.');
 
         /** @var array<string> $connections */
         $dbConnections = config('database.connections');
         $dbConnection = suggest(
-            label: 'Which database connection should be used?',
+            label: 'Which database connection should be used? We aren\'t running migrations yet, so you can change this later.',
             validate: ['connection' => 'string'],
             options: array_keys($dbConnections)
         );
@@ -137,7 +147,11 @@ class ConfigureCommand extends Command
 
         if ($dbConnection === 'pgsql') {
 
-            note('Stickle can optionally use table partitioning. If you have a high volume of events and page views, this make Stickle more performant. It will also allow you to remove old data without impacting database performance.');
+            note('Stickle can optionally use table partitioning.');
+            
+            note('If you have a high volume of events and page views, this make Stickle more performant.');
+            
+            note('It will also allow you to remove old data without impacting database performance.');
 
             $enablePartitioning = confirm(
                 label: 'Would you like to use partitioning?',
@@ -161,11 +175,11 @@ class ConfigureCommand extends Command
 
         $settings[] = $this->addSetting('storageDisk', $storageDisk, 'Storage Disk');
 
-        note('Stickle can track every request received using middleware.');
+        note('Stickle can track every request received using server-side middleware.');
 
         $serverLoadMiddleware = confirm(
             label: 'Do you want to track server requests using middleware?',
-            default: false,
+            default: $serverLoadMiddlewareDefault,
             yes: 'Yes',
             no: 'No'
         );
@@ -185,9 +199,11 @@ class ConfigureCommand extends Command
 
         note('Stickle can track insert a small Javascript snippet that will track user events and page views.');
 
+        note('You can further configure this tracking code to track custom client-side events.');
+
         $clientLoadMiddleware = confirm(
             label: 'Do you want to track client-side requests using Javascript?',
-            default: false,
+            default: $clientLoadMiddlewareDefault,
             yes: 'Yes',
             no: 'No'
         );
@@ -195,6 +211,8 @@ class ConfigureCommand extends Command
         $settings[] = $this->addSetting('clientLoadMiddleware', $clientLoadMiddleware, 'Client Load Middleware', (bool) $clientLoadMiddleware ? 'Yes' : 'No');
 
         note('StickleUI gives you visual access to your data.');
+
+        note('By default, it is available at `/stickle` but you can change it.');
 
         $webPrefix = text(
             label: 'What path would you like to use for accessing StickleUI?',
@@ -204,7 +222,9 @@ class ConfigureCommand extends Command
 
         $settings[] = $this->addSetting('webPrefix', $webPrefix, 'StickleUI Path');
 
-        note('Stickle exposes some API routes used by the UI. We prefix the routes to distinguish them from your application routes.');
+        note('Stickle exposes some API routes used by the UI.');
+        
+        note('We prefix the routes (`api/stickle`) to distinguish them from your other routes.');
 
         $apiPrefix = text(
             label: 'What prefix would you like to use for the API routes?',
@@ -214,12 +234,15 @@ class ConfigureCommand extends Command
 
         $settings[] = $this->addSetting('apiPrefix', $apiPrefix, 'API Prefix');
 
-        $serverLoadMiddleware = confirm(
-            label: 'Do you want to track server requests using middleware?',
-            default: false,
-            yes: 'Yes',
-            no: 'No'
+        note('Stickle runs a number of processes in the background to transform your data.');
+
+        $interval = text(
+            label: '🕓 How frequently would you like to run these processes (in minutes)?',
+            validate: ['interval' => 'required|int|min:1'],
+            default: '360'
         );
+
+        $settings[] = $this->addSetting('interval', $interval, 'Default Process Interval (minutes)');
 
         info('Please review your settings.');
 

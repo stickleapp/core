@@ -13,24 +13,49 @@ use StickleApp\Core\Events\Page;
 class RequestLogger
 {
     /**
+     * Routes/patterns to ignore
+     */
+    protected array $ignoredPatterns = [
+        // Livewire
+        'livewire/*',
+        '*/livewire/*',
+        
+        // Telescope
+        'telescope/*',
+        'vendor/telescope/*',
+        
+        // Horizon
+        'horizon/*',
+        'vendor/horizon/*',
+        
+        // Health checks
+        'health',
+        'ping',
+    ];
+    
+    /**
      * Handle an incoming request.
-     *
-     * @return mixed
+     * 
+     * Just pass through - tracking happens after response is sent
      */
     public function handle(Request $request, Closure $next)
     {
-        $response = $next($request);
-
-        if (! $request->user()) {
-            return $response;
+        return $next($request);
+    }
+    
+    /**
+     * Perform tracking after response has been sent to browser.
+     * 
+     * This method is automatically called by Laravel after the response
+     * has been sent to the client. This prevents tracking from slowing
+     * down the user's request.
+     */
+    public function terminate(Request $request, $response): void
+    {
+        if ($this->shouldIgnore($request)) {
+            return;
         }
-
-        Log::debug('Request received by middleware:', [
-            $request,
-        ]);
-
-        //  x-livewire? telescope? check example repo
-
+        
         $data = [
             'user' => $request->user(),
             'model_class' => get_class($request->user()),
@@ -49,7 +74,68 @@ class RequestLogger
         ];
 
         Page::dispatch($data);
-
-        return $response;
+    }
+    
+    /**
+     * Determine if the request should be ignored
+     */
+    protected function shouldIgnore(Request $request): bool
+    {
+        // Check if it's a Livewire request
+        if ($this->isLivewireRequest($request)) {
+            return true;
+        }
+        
+        // Check URL patterns
+        foreach ($this->ignoredPatterns as $pattern) {
+            if ($request->is($pattern)) {
+                return true;
+            }
+        }
+        
+        // Check for Telescope header
+        if ($request->hasHeader('X-Telescope-Request')) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Check if this is a Livewire request
+     */
+    protected function isLivewireRequest(Request $request): bool
+    {
+        return $request->hasHeader('X-Livewire') ||
+               $request->routeIs('livewire.*') ||
+               str_contains($request->path(), 'livewire/message');
+    }
+    
+    /**
+     * Get the response status code safely
+     */
+    protected function getStatusCode($response): int
+    {
+        if (method_exists($response, 'getStatusCode')) {
+            return $response->getStatusCode();
+        }
+        
+        if (method_exists($response, 'status')) {
+            return $response->status();
+        }
+        
+        return 200;
+    }
+    
+    /**
+     * Calculate response time in milliseconds
+     */
+    protected function getResponseTime(): float
+    {
+        if (defined('LARAVEL_START')) {
+            return round((microtime(true) - LARAVEL_START) * 1000, 2);
+        }
+        
+        return 0.0;
     }
 }

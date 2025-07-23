@@ -4,20 +4,24 @@ outline: deep
 
 # Use Cases
 
-Stickle is extremely powerful&mdash;if you need it to be. But it very easy to get started.
+Stickle is extremely powerful&mdash;if you need it to be. But it very easy to get started. Stickle helps you answer questions you have about your customers and put that information to work for you.
+
+## Who is using my app?
+
+Stickle has you covered. Follow the [installation instructions](/guide/installation.md) and navigate to `/stickle`. You can see:
+
+-   A list of your companies and users;
+-   Related models (ex. `Company Users`, `Admin Users`, `Parent Company`); and
+-   Customer details.
 
 ## How are people using my app?
 
-Stickle has you covered. Follow the [installation instructions](/guide/installation.md) and navigate to `/stickle`.
-
 Stickle is already processing your user data and making it available in snazzy charts and data tables. It reports:
 
--   Sessions;
+-   Sessions; <Badge type="warning" text="Coming Soon!" />
 -   Page Views;
 -   Authorization events; and
 -   User-defined events.
-
-Have a click around and then come back here!
 
 ## Let's Segment your customers!
 
@@ -34,33 +38,12 @@ We've already created a few of these for you to use as examples.
 
 Once you have built a Segment, Stickle will start tracking your customer KPIs at the Segment-level (ex. what is the MRR of Customers renewing in the next 30 days).
 
-## I need more customer data!
+## Engage with your customers in real-time
 
-QuickStart SPA, Inertia, Livewire, Blade (sets reasonable defaults);
+Stickle is designed to be the central hub for engaging with your customers. Using Stickle and built-in Laravel features, you can quickly add real-time functionality to your application:
 
-2. Install StickleUI and learn about your customers and how they use your application.
+-   Trigger emails when customers haven't logged in recently;
+-   Add new users to your CRM automatically;
+-   Display notifications when users visit specific pages.
 
-3. Set up internal notifications (alert me when a customer does X)
-   ... can we come up with some when() method for only certain conditions?
-   ... channels();
-
-4. Set up customer notifications
-   ... channels() email, in-app, sms
-
-5. Create some admin dashboards.
-
--   Use Stickle Eloquent Methods (`stickle` and `orStickle`) in your app.
--   Add Stickle Charts to An Admin Dashboard (auth?)
-    -   Copy and Paste:
-        -   D3 (Vanilla)
-        -   Rechart (React)
-        -   Chart.js (Vue, Filament, Nova)
-        -
--   Segment data tables
-
--   Send Emails (stickle-notifications-email)
--   Send Slack Notifications (stickle-notifications-slack)
--   Send In-App Notifications (stickle-notifications-widget)
--   Send Toast Notifications (stickle-notifications-toast)
-
-https://neon.tech/guides/laravel-livewire-dynamic-charts
+You can easily add Intercom-style interctions to your Laravel application using Stickle.

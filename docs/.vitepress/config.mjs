@@ -41,10 +41,6 @@ export default defineConfig({
                         text: "Illuminate\\Auth Events",
                         link: "/guide/illuminate-auth-events",
                     },
-                    {
-                        text: "3rd-Party Data",
-                        link: "/guide/3rd-party-integrations",
-                    },
                 ],
             },
             {
