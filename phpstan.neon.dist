@@ -20,6 +20,6 @@ parameters:
         - '#Method StickleApp\\Core\\Models\\Segment::objects\(\) should return#'
 
     excludePaths:
-        - src/Commands/ConfigureCommand.php
+        - src/Commands/InstallCommand.php
         - src/Traits/StickleEntity.php
         - src/Views/Components/*.*

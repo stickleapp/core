@@ -8,10 +8,10 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use StickleApp\Core\Commands\ConfigureCommand;
 use StickleApp\Core\Commands\CreatePartitionsCommand;
 use StickleApp\Core\Commands\DropPartitionsCommand;
 use StickleApp\Core\Commands\ExportSegmentsCommand;
+use StickleApp\Core\Commands\InstallCommand;
 use StickleApp\Core\Commands\ProcessSegmentEventsCommand;
 use StickleApp\Core\Commands\RecordModelAttributesCommand;
 use StickleApp\Core\Commands\RecordModelRelationshipStatisticsCommand;
@@ -24,21 +24,6 @@ use StickleApp\Core\Models\ModelAttributes;
 use StickleApp\Core\Models\Segment;
 use StickleApp\Core\Observers\ModelAttributesObserver;
 use StickleApp\Core\Repositories\PostgresAnalyticsRepository;
-use StickleApp\Core\Views\Components\Demo\Layouts\DefaultLayout as DemoDefaultLayout;
-use StickleApp\Core\Views\Components\UI\Chartlists\ModelChartlist;
-use StickleApp\Core\Views\Components\UI\Chartlists\ModelRelationshipChartlist;
-use StickleApp\Core\Views\Components\UI\Chartlists\ModelsChartlist;
-use StickleApp\Core\Views\Components\UI\Charts\ModelChart;
-use StickleApp\Core\Views\Components\UI\Charts\ModelRelationshipChart;
-use StickleApp\Core\Views\Components\UI\Charts\ModelsChart;
-use StickleApp\Core\Views\Components\UI\Charts\Primatives\InfoChart;
-use StickleApp\Core\Views\Components\UI\Charts\Primatives\LineChart;
-use StickleApp\Core\Views\Components\UI\Charts\SegmentChart;
-use StickleApp\Core\Views\Components\UI\Layouts\DefaultLayout as UIDefaultLayout;
-use StickleApp\Core\Views\Components\UI\Tables\ModelsTable;
-use StickleApp\Core\Views\Components\UI\Tables\Primatives\PaginationSimple;
-use StickleApp\Core\Views\Components\UI\Tables\SegmentTable;
-use StickleApp\Core\Views\Components\UI\Timelines\EventTimeline;
 
 final class CoreServiceProvider extends ServiceProvider
 {
@@ -91,7 +76,7 @@ final class CoreServiceProvider extends ServiceProvider
                     RecordSegmentStatisticsCommand::class,
                     RecordModelRelationshipStatisticsCommand::class,
                     ProcessSegmentEventsCommand::class,
-                    ConfigureCommand::class,
+                    InstallCommand::class,
                 ],
             );
         }
