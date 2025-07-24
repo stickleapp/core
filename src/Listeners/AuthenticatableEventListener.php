@@ -51,50 +51,27 @@ class AuthenticatableEventListener implements ShouldQueue
      */
     public function subscribe(Dispatcher $events): void
     {
+        $eventClasses = [
+            'Authenticated' => Authenticated::class,
+            'CurrentDeviceLogout' => CurrentDeviceLogout::class,
+            'Login' => Login::class,
+            'Logout' => Logout::class,
+            'OtherDeviceLogout' => OtherDeviceLogout::class,
+            'PasswordReset' => PasswordReset::class,
+            'Registered' => Registered::class,
+            'Validated' => Validated::class,
+            'Verified' => Verified::class,
+        ];
 
-        $events->listen(
-            Authenticated::class,
-            [AuthenticatableEventListener::class, 'onEvent']
-        );
+        $trackedEvents = config('stickle.tracking.server.authenticationEventsTracked', []);
 
-        $events->listen(
-            CurrentDeviceLogout::class,
-            [AuthenticatableEventListener::class, 'onEvent']
-        );
-
-        $events->listen(
-            Login::class,
-            [AuthenticatableEventListener::class, 'onEvent']
-        );
-
-        $events->listen(
-            Logout::class,
-            [AuthenticatableEventListener::class, 'onEvent']
-        );
-
-        $events->listen(
-            OtherDeviceLogout::class,
-            [AuthenticatableEventListener::class, 'onEvent']
-        );
-
-        $events->listen(
-            PasswordReset::class,
-            [AuthenticatableEventListener::class, 'onEvent']
-        );
-
-        $events->listen(
-            Registered::class,
-            [AuthenticatableEventListener::class, 'onEvent']
-        );
-
-        $events->listen(
-            Validated::class,
-            [AuthenticatableEventListener::class, 'onEvent']
-        );
-
-        $events->listen(
-            Verified::class,
-            [AuthenticatableEventListener::class, 'onEvent']
-        );
+        foreach ($trackedEvents as $eventName) {
+            if (isset($eventClasses[$eventName])) {
+                $events->listen(
+                    $eventClasses[$eventName],
+                    [AuthenticatableEventListener::class, 'onEvent']
+                );
+            }
+        }
     }
 }

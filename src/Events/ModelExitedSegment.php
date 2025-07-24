@@ -33,7 +33,7 @@ class ModelExitedSegment implements ShouldBroadcast
                 config('stickle.broadcasting.channels.firehose')
             ),
             new Channel(
-                sprintf(config('stickle.broadcasting.channels.model'),
+                sprintf(config('stickle.broadcasting.channels.object'),
                     str_replace('\\', '-', strtolower(get_class($this->model))),
                     $this->model->getKey()
                 )

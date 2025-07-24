@@ -42,7 +42,7 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
 
         Log::info(self::class, $this->arguments());
 
-        $limit = $this->argument('limit') ?? 10;
+        $limit = $this->argument('limit') ?? 1000;
 
         // Get all classes with the StickleEntity trait
         $modelClasses = ClassUtils::getClassesWithTrait(
@@ -89,6 +89,10 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
                     'last_recorded_at',
                 ])
                 ->orderByRaw('last_recorded_at asc NULLS FIRST')
+                ->where(function ($query) {
+                    $query->where("{$this->prefix}model_relationship_statistic_exports.last_recorded_at", '<', now()->subMinutes(config('stickle.schedule.recordModelRelationshipStatistics', 360)))
+                        ->orWhereNull("{$this->prefix}model_relationship_statistic_exports.last_recorded_at");
+                })
                 ->limit((int) $limit)
                 ->get();
         });

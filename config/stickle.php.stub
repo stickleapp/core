@@ -35,9 +35,9 @@ return [
     | This must be a Postgres based connection.
     */
     'database' => [
-        'schema' => env('STICKLE_SCHEMA', 'public'),
+        'schema' => env('STICKLE_DATABASE_SCHEMA', 'public'),
         'connection' => env('DB_CONNECTION', '{{dbConnection}}'),
-        'tablePrefix' => env('STICKLE_TABLE_PREFIX', '{{tablePrefix}}'),
+        'tablePrefix' => env('STICKLE_DATABASE_TABLE_PREFIX', '{{tablePrefix}}'),
         'enablePartitions' => env('STICKLE_ENABLE_PARTITIONS', {{enablePartitioning}}),
         'partitions' => [
             'events' => [

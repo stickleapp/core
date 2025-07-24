@@ -44,7 +44,7 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
 
         $segmentId = $this->argument('segmentId');
 
-        $limit = $this->argument('limit') ?? 10;
+        $limit = $this->argument('limit') ?? 1000;
 
         $segments = Segment::all();
 
@@ -71,6 +71,10 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
                 "{$this->prefix}segments.id as segment_id",
                 'last_recorded_at',
             ])
+            ->where(function ($query) {
+                $query->where("{$this->prefix}segment_statistic_exports.last_recorded_at", '<', now()->subMinutes(config('stickle.schedule.recordSegmentStatistics', 360)))
+                    ->orWhereNull("{$this->prefix}segment_statistic_exports.last_recorded_at");
+            })
             ->orderByRaw('last_recorded_at asc NULLS FIRST')
             ->limit((int) $limit)
             ->get();

@@ -8,7 +8,7 @@ on:
       - ".github/workflows/phpstan.yml"
 
 env:
-  STICKLE_TABLE_PREFIX: "stc_"
+  STICKLE_DATABASE_TABLE_PREFIX: "stc_"
 
 jobs:
   phpstan:

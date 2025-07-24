@@ -32,10 +32,20 @@ class EventServiceProvider extends ServiceProvider
         ],
     ];
 
-    /** @var array<string> */
-    protected $subscribe = [
-        AuthenticatableEventListener::class,
-    ];
+    /**
+     * Get the subscriber classes that should be registered.
+     *
+     * @return array
+     */
+    public function getSubscribedEvents()
+    {
+        $subscribers = [];
+        if (count(config('stickle.tracking.server.authenticationEventsTracked', [])) > 0) {
+            $subscribers[] = AuthenticatableEventListener::class;
+        }
+
+        return $subscribers;
+    }
 
     /**
      * Register any events for your application.

@@ -14,32 +14,33 @@ use StickleApp\Core\Http\Controllers\SegmentStatisticsController;
 /**
  * API Routes
  */
-Route::middleware(['api'])->group(function () {
+Route::middleware(config('stickle.routes.api.middleware', ['api']))
+    ->prefix(config('stickle.routes.api.prefix', 'stickle/api'))->group(function () {
 
-    Route::post('/stickle/api/track', [IngestController::class, 'store'])
-        ->name('stickle/track');
+        Route::post('/track', [IngestController::class, 'store'])
+            ->name('stickle/track');
 
-    Route::get('/stickle/api/segment-statistics', [SegmentStatisticsController::class, 'index'])
-        ->name('segment-statistics');
+        Route::get('/segment-statistics', [SegmentStatisticsController::class, 'index'])
+            ->name('segment-statistics');
 
-    Route::get('/stickle/api/segment-models', [SegmentModelsController::class, 'index'])
-        ->name('segment-models');
+        Route::get('/segment-models', [SegmentModelsController::class, 'index'])
+            ->name('segment-models');
 
-    Route::get('/stickle/api/segments', [SegmentsController::class, 'index'])
-        ->name('segments');
+        Route::get('/segments', [SegmentsController::class, 'index'])
+            ->name('segments');
 
-    Route::get('/stickle/api/models', [ModelsController::class, 'index'])
-        ->name('models');
+        Route::get('/models', [ModelsController::class, 'index'])
+            ->name('models');
 
-    Route::get('/stickle/api/models-statistics', [ModelsStatisticsController::class, 'index'])
-        ->name('models-statistics');
+        Route::get('/models-statistics', [ModelsStatisticsController::class, 'index'])
+            ->name('models-statistics');
 
-    Route::get('/stickle/api/model-relationship', [ModelRelationshipController::class, 'index'])
-        ->name('models-relationship');
+        Route::get('/model-relationship', [ModelRelationshipController::class, 'index'])
+            ->name('models-relationship');
 
-    Route::get('/stickle/api/model-relationship-statistics', [ModelRelationshipStatisticsController::class, 'index'])
-        ->name('model-relationship-statistics');
+        Route::get('/model-relationship-statistics', [ModelRelationshipStatisticsController::class, 'index'])
+            ->name('model-relationship-statistics');
 
-    Route::get('/stickle/api/model-attribute-audit', [ModelAttributeAuditController::class, 'index'])
-        ->name('model-attribute-audit');
-});
+        Route::get('/model-attribute-audit', [ModelAttributeAuditController::class, 'index'])
+            ->name('model-attribute-audit');
+    });

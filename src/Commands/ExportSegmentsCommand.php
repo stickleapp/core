@@ -23,8 +23,7 @@ final class ExportSegmentsCommand extends Command implements Isolatable
     /**
      * @var string
      */
-    protected $signature = 'stickle:export-segments {directory : The full path where the Segment classes are stored.}
-                                                    {namespace : The namespace of the Segment classes.}
+    protected $signature = 'stickle:export-segments {namespace : The namespace of the Segment classes.}
                                                     {limit : The maximum number of segments to export.}';
 
     /**
@@ -55,7 +54,7 @@ final class ExportSegmentsCommand extends Command implements Isolatable
          * Using Reflection, create an array containing all of the segments
          * in the designated directory.
          */
-        $segments = $this->getSegmentSyncDefinitions($directory, $namespace);
+        $segments = $this->getSegmentSyncDefinitions($namespace);
 
         /**
          * Insert any segments from this analysis into the `segments` table.
@@ -80,9 +79,11 @@ final class ExportSegmentsCommand extends Command implements Isolatable
     }
 
     /** @return array<int<0, max>, array<string, mixed>> */
-    public function getSegmentSyncDefinitions(string $directory, string $namespace): array
+    public function getSegmentSyncDefinitions(string $namespace): array
     {
         $results = [];
+
+        $directory = ClassUtils::directoryFromNamespace($namespace);
 
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
 

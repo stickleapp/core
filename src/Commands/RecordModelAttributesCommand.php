@@ -44,7 +44,9 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
 
         $directory = $this->argument('directory');
         $namespace = $this->argument('namespace');
+        $limit = $this->argument('limit') ?? 1000;
 
+        // Get all classes with the StickleEntity trait
         $classes = $this->getClassesWithTrait(StickleEntity::class, $directory, $namespace);
 
         foreach ($classes as $class) {
@@ -65,9 +67,9 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
                     );
                 }
             )->where(function ($query) {
-                $query->where('synced_at', '<', now()->subMinutes(360))
+                $query->where('synced_at', '<', now()->subMinutes(config('stickle.schedule.recordModelAttributes', 360)))
                     ->orWhereNull('synced_at');
-            })->limit(1000)->select("{$model->getTable()}.*");
+            })->limit($limit)->select("{$model->getTable()}.*");
 
             foreach ($builder->cursor() as $stickleEntity) {
                 dispatch(function () use ($stickleEntity) {

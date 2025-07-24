@@ -18,7 +18,7 @@ final class RollupSessionsCommand extends Command implements Isolatable
      *
      * vendor/bin/testbench stickle:drop-partition lc_events_rollup_1day public week '2024-10-01'
      */
-    protected $signature = 'stickle:rollup-sessions {start_date : First date to consider}';
+    protected $signature = 'stickle:rollup-sessions {days_ago : How far back to rollup sessions. Defaults to 7 days ago.}';
 
     /**
      * @var string
@@ -42,9 +42,9 @@ final class RollupSessionsCommand extends Command implements Isolatable
     {
         Log::info(self::class, $this->arguments());
 
-        $startDate = $this->argument('start_date');
+        $daysAgo = $this->argument('days_ago') ?? 7;
 
-        $startDate = Carbon::parse($startDate);
+        $startDate = Carbon::now() - subDays($daysAgo);
 
         $this->repository->rollupSessions($startDate);
     }
