@@ -59,6 +59,14 @@ $ php artisan migrate
 
 ### Running Stickle
 
+Once installed, you need to make sure you are running your cron jobs and your Reverb server. If you aren't already doing so, you can use our convenience script:
+
+```
+php artisan stickle:dev
+```
+
+Alternatively, you can run the individual tasks below.
+
 #### Scheduled Tasks
 
 Stickle runs several scheduled tasks in the background. Make sure you have a queue worker running. For development, run:

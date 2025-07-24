@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use StickleApp\Core\Commands\CreatePartitionsCommand;
+use StickleApp\Core\Commands\DevCommand;
 use StickleApp\Core\Commands\DropPartitionsCommand;
 use StickleApp\Core\Commands\ExportSegmentsCommand;
 use StickleApp\Core\Commands\InstallCommand;
@@ -77,6 +78,7 @@ final class CoreServiceProvider extends ServiceProvider
                     RecordModelRelationshipStatisticsCommand::class,
                     ProcessSegmentEventsCommand::class,
                     InstallCommand::class,
+                    DevCommand::class,
                 ],
             );
         }

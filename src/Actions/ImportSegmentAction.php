@@ -20,7 +20,7 @@ class ImportSegmentAction
 
         // Retrieve from storage
         /** @var string $disk * */
-        $disk = config('stickle.filesystem.disk');
+        $disk = config('stickle.filesystem.disks.exports');
         $storage = Storage::disk($disk);
 
         if ($storage->missing($exportFilename)) {

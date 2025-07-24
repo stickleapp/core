@@ -20,9 +20,6 @@ return [
         'exportSegments' => env('STICKLE_FREQUENCY_EXPORT_SEGMENTS', 360),
         'recordSegmentStatistics' => env('STICKLE_FREQUENCY_EXPORT_SEGMENT_STATISTICS', 360),
         'recordEntityStatistics' => env('STICKLE_FREQUENCY_EXPORT_ENTITY_STATISTICS', 360),
-        'rollupEvents' => env('STICKLE_FREQUENCY_ROLLUP_EVENTS', 360),
-        'rollupPageViews' => env('STICKLE_FREQUENCY_ROLLUP_PAGEVIEWS', 360),
-        'rollupSessions' => env('STICKLE_FREQUENCY_ROLLUP_SESSIONS', 360),
     ],
 
     /*
@@ -43,7 +40,7 @@ return [
                 'extension' => '1 week',
                 'retention' => '1 years',
             ],
-            'page_views' => [
+            'requests' => [
                 'interval' => 'week',
                 'extension' => '1 week',
                 'retention' => '1 years',
@@ -69,8 +66,10 @@ return [
         'models' => env('STICKLE_NAMESPACES_MODELS', 'Workbench\App\Models'),
     ],
 
-    'storage' => [
-        'exports' => env('STICKLE_STORAGE_EXPORTS', 'segment-exports'),
+    'filesystem' => [
+        'disks' => [
+            'exports' => env('STICKLE_FILESYSTEM_DISK_EXPORTS', 'local'),
+        ],
     ],
 
     /*
@@ -102,7 +101,7 @@ return [
         'channels' => [
             'firehose' => env('STICKLE_BROADCASTING_CHANNEL_FIREHOSE', 'stickle.firehose'),
             'object' => env('STICKLE_BROADCASTING_CHANNEL_OBJECT', 'stickle.object.%s.%s'),
-            'class' => env('STICKLE_BROADCASTING_CHANNEL_CLASS', 'stickle.class.%s'),
+            'model' => env('STICKLE_BROADCASTING_CHANNEL_MODEL', 'stickle.model.%s'),
         ],
     ],
 

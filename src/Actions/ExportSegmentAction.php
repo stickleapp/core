@@ -42,7 +42,7 @@ class ExportSegmentAction
         $filename = $this->formatFilename($segmentId);
 
         /** @var string $disk * */
-        $disk = config('stickle.filesystem.disk');
+        $disk = config('stickle.filesystem.disks.exports');
         Storage::disk($disk)->putFileAs('', $csvPath, $filename);
 
         return $filename;
