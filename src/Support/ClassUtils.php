@@ -260,21 +260,21 @@ class ClassUtils
         // Get the application base path
         $app = app();
         $basePath = method_exists($app, 'basePath') ? $app->basePath() : base_path();
-        
+
         // Convert namespace separators to directory separators
         $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $namespace);
-        
+
         // Determine the source directory based on common Laravel conventions
         $srcPaths = ['src', 'app'];
-        
+
         foreach ($srcPaths as $srcPath) {
-            $fullPath = $basePath . DIRECTORY_SEPARATOR . $srcPath . DIRECTORY_SEPARATOR . $namespacePath;
+            $fullPath = $basePath.DIRECTORY_SEPARATOR.$srcPath.DIRECTORY_SEPARATOR.$namespacePath;
             if (is_dir($fullPath)) {
                 return $fullPath;
             }
         }
-        
+
         // If no existing directory found, default to src
-        return $basePath . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $namespacePath;
+        return $basePath.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.$namespacePath;
     }
 }

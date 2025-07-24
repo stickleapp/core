@@ -53,8 +53,9 @@ final class CreatePartitionsCommand extends Command implements Isolatable
     {
         Log::info(self::class, $this->arguments());
 
-        if (!config('stickle.database.partitionsEnabled', true)) {
+        if (! config('stickle.database.partitionsEnabled', true)) {
             $this->info('Partitioning is disabled. Skipping partition creation.');
+
             return;
         }
 

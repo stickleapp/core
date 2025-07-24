@@ -9,10 +9,10 @@ use StickleApp\Core\ScheduleServiceProvider;
 beforeEach(function () {
     // Create a fresh schedule instance for each test
     $this->schedule = new Schedule(app());
-    
+
     // Bind our fresh schedule to the container
     app()->instance(Schedule::class, $this->schedule);
-    
+
     $this->provider = new ScheduleServiceProvider(app());
     $this->provider->boot();
 });
@@ -88,7 +88,7 @@ it('schedules sessions partition drop command', function () {
         return str_contains($event->command, 'stickle:drop-partitions')
             && str_contains($event->command, 'sessions_rollup_1day');
     });
-    
+
     expect($sessionsCommands)->toHaveCount(1);
 });
 
