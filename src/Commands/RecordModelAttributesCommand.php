@@ -42,7 +42,9 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
     {
         Log::info(self::class, $this->arguments());
 
+        /** @var string $directory */
         $directory = $this->argument('directory');
+        /** @var string $namespace */
         $namespace = $this->argument('namespace');
         $limit = $this->argument('limit') ?? 1000;
 
