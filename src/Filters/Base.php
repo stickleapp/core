@@ -100,11 +100,11 @@ class Base
                 $builder,
                 $this->targetArguments
             );
-            
-            if (!$target instanceof FilterTargetContract) {
+
+            if (! $target instanceof FilterTargetContract) {
                 throw new \Exception('Target instance must implement FilterTargetContract');
             }
-            
+
             return $target;
         }
 
@@ -114,11 +114,11 @@ class Base
             $builder,
             ...$this->targetArguments
         );
-        
-        if (!$target instanceof FilterTargetContract) {
+
+        if (! $target instanceof FilterTargetContract) {
             throw new \Exception('Target instance must implement FilterTargetContract');
         }
-        
+
         return $target;
     }
 

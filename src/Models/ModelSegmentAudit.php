@@ -71,7 +71,7 @@ class ModelSegmentAudit extends Model
                 if ($this->segment === null) {
                     return null;
                 }
-                
+
                 $modelClass = $this->segment->model_class;
 
                 return $modelClass::find($this->object_uid);
