@@ -51,10 +51,10 @@ final class DropPartitionsCommand extends Command implements Isolatable
             return;
         }
 
-        $existingTable = $this->argument('existing_table');
-        $schema = $this->argument('schema');
-        $interval = $this->argument('interval');
-        $priorToDate = $this->argument('prior_to_date');
+        $existingTable = (string) $this->argument('existing_table');
+        $schema = (string) $this->argument('schema');
+        $interval = (string) $this->argument('interval');
+        $priorToDate = (string) $this->argument('prior_to_date');
 
         $startDate = Carbon::parse($priorToDate);
 
