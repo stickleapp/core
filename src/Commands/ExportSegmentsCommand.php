@@ -48,13 +48,12 @@ final class ExportSegmentsCommand extends Command implements Isolatable
     {
         Log::info(self::class, $this->arguments());
 
-        $directory = $this->argument('directory') ?
-            $this->argument('directory') :
-            ClassUtils::directoryFromNamespace(
-                $this->argument('namespace')
-            );
-
+        /** @var string $namespace */
         $namespace = $this->argument('namespace');
+        /** @var string|null $directory */
+        $directory = $this->argument('directory');
+        
+        $directory = $directory ?: ClassUtils::directoryFromNamespace($namespace);
 
         /**
          * Using Reflection, create an array containing all of the segments

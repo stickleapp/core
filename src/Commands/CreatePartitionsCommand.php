@@ -59,10 +59,14 @@ final class CreatePartitionsCommand extends Command implements Isolatable
             return;
         }
 
-        $existingTable = (string) $this->argument('existing_table');
-        $schema = (string) $this->argument('schema');
-        $interval = (string) $this->argument('interval');
-        $periodStart = (string) $this->argument('period_start');
+        /** @var string $existingTable */
+        $existingTable = $this->argument('existing_table');
+        /** @var string $schema */
+        $schema = $this->argument('schema');
+        /** @var string $interval */
+        $interval = $this->argument('interval');
+        /** @var string $periodStart */
+        $periodStart = $this->argument('period_start');
         $intervalCount = (int) $this->argument('interval_count') ?: 0;
 
         /**
