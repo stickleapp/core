@@ -52,7 +52,7 @@ final class ExportSegmentsCommand extends Command implements Isolatable
         $namespace = $this->argument('namespace');
         /** @var string|null $directory */
         $directory = $this->argument('directory');
-        
+
         $directory = $directory ?: ClassUtils::directoryFromNamespace($namespace);
 
         /**
