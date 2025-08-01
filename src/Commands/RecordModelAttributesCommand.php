@@ -50,7 +50,7 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
         $classes = $this->getClassesWithTrait(StickleEntity::class, $directory, $namespace);
 
         foreach ($classes as $class) {
-            /** @var object $model */
+            /** @var \Illuminate\Database\Eloquent\Model $model */
             $model = new $class;
 
             $builder = $class::query()->leftJoin(

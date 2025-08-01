@@ -27,7 +27,7 @@ class Segment extends FilterTargetContract
         $this->segmentId = $this->resolveSegmentId($segmentIdentifier);
     }
 
-    public function property(): ?string
+    public function property(): string
     {
         return $this->modelSegmentTable.'.segment_id';
     }

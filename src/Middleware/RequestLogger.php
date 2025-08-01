@@ -57,10 +57,11 @@ class RequestLogger
             return;
         }
 
+        $user = $request->user();
         $data = [
-            'user' => $request->user(),
-            'model_class' => get_class($request->user()),
-            'object_uid' => (string) $request->user()->id,
+            'user' => $user,
+            'model_class' => $user ? get_class($user) : null,
+            'object_uid' => $user ? (string) $user->id : null,
             'session_uid' => $request->session()->getId(),
             'url' => $request->fullUrl(),
             'path' => $request->getPathInfo(),
@@ -121,11 +122,11 @@ class RequestLogger
      */
     protected function getStatusCode(mixed $response): int
     {
-        if (method_exists($response, 'getStatusCode')) {
+        if (is_object($response) && method_exists($response, 'getStatusCode')) {
             return $response->getStatusCode();
         }
 
-        if (method_exists($response, 'status')) {
+        if (is_object($response) && method_exists($response, 'status')) {
             return $response->status();
         }
 

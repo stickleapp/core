@@ -12,6 +12,10 @@ class IsIn extends FilterTestContract
 {
     public function applyFilter(Builder $builder, FilterTargetContract $target, string $operator): Builder
     {
+        if ($target->property() === null) {
+            throw new \InvalidArgumentException('Filter target property cannot be null');
+        }
+
         return $builder->whereNotNull($target->property());
     }
 }

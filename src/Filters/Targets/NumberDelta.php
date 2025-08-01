@@ -40,7 +40,7 @@ class NumberDelta extends FilterTargetContract
         return sprintf('%s::numeric', $this->property());
     }
 
-    public function joinKey(): ?string
+    public function joinKey(): string
     {
         // Generate a consistent key based on the filter parameters, not the builder state
         $keyData = [
@@ -50,14 +50,15 @@ class NumberDelta extends FilterTargetContract
             'modelClass' => $this->builder->getModel()->getMorphClass(),
         ];
 
-        return md5(json_encode($keyData));
+        return md5(implode('|', array_values($keyData)));
     }
 
     private function subJoin(): QueryBuilder
     {
         $query = \DB::table($this->prefix.'model_attribute_audit')
             ->where('attribute', $this->attribute)
-            ->when($this->endDate, function (QueryBuilder $query) {
+            ->when($this->endDate !== null, function (QueryBuilder $query) {
+                assert($this->endDate !== null); // PHPStan hint
                 return $query->whereBetween('day', [
                     $this->startDate->format('Y-m-d'),
                     $this->endDate->format('Y-m-d'),

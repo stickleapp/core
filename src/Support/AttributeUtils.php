@@ -33,7 +33,9 @@ class AttributeUtils
 
         foreach ($classAttributes as $attribute) {
             $instance = $attribute->newInstance();
-            $metadata[$attributeClass] = $instance->value;
+            if (property_exists($instance, 'value')) {
+                $metadata[$attributeClass] = $instance->value;
+            }
         }
 
         return $metadata;
@@ -68,18 +70,23 @@ class AttributeUtils
 
                 // First, add underscore before each uppercase letter
                 $pattern = '/(?<!^)[A-Z]/';
-                $attributeName = preg_replace($pattern, '_$0', $attributeName);
+                $result = preg_replace($pattern, '_$0', $attributeName);
+                $attributeName = $result !== null ? $result : $attributeName;
 
                 // Then add underscore before numeric sequences
                 $pattern = '/([a-zA-Z])(\d+)/';
-                $attributeName = preg_replace($pattern, '$1_$2', $attributeName);
+                $result = preg_replace($pattern, '$1_$2', $attributeName);
+                $attributeName = $result !== null ? $result : $attributeName;
 
                 $attributeName = strtolower($attributeName);
 
                 $attributes = $method->getAttributes($attributeClass);
 
                 if (! empty($attributes)) {
-                    $metadata[$attributeClass][$attributeName] = $attributes[0]->newInstance()->value;
+                    $instance = $attributes[0]->newInstance();
+                    if (property_exists($instance, 'value')) {
+                        $metadata[$attributeClass][$attributeName] = $instance->value;
+                    }
                 }
             }
         }
@@ -109,7 +116,10 @@ class AttributeUtils
         foreach ($reflection->getProperties() as $property) {
             $attributes = $property->getAttributes($attributeClass);
             if (! empty($attributes)) {
-                $metadata[$attributeClass][$property->getName()] = $attributes[0]->newInstance()->value;
+                $instance = $attributes[0]->newInstance();
+                if (property_exists($instance, 'value')) {
+                    $metadata[$attributeClass][$property->getName()] = $instance->value;
+                }
             }
         }
 

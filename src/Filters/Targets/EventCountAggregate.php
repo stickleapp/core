@@ -32,7 +32,7 @@ class EventCountAggregate extends FilterTargetContract
         return 'StickleApp\\Core\\Filters\\Targets\\EventCount';
     }
 
-    public function property(): ?string
+    public function property(): string
     {
         return $this->event;
     }
@@ -42,18 +42,18 @@ class EventCountAggregate extends FilterTargetContract
         return sprintf('event_count_aggregate_%s', $this->joinKey());
     }
 
-    public function joinKey(): ?string
+    public function joinKey(): string
     {
         // Generate a consistent key based on the filter parameters, not the builder state
         $keyData = [
             'event' => $this->event,
             'aggregate' => $this->aggregate,
-            'startDate' => $this->startDate?->format('Y-m-d'),
-            'endDate' => $this->endDate?->format('Y-m-d'),
+            'startDate' => $this->startDate?->format('Y-m-d') ?? '',
+            'endDate' => $this->endDate?->format('Y-m-d') ?? '',
             'modelClass' => $this->builder->getModel()->getMorphClass(),
         ];
 
-        return md5(json_encode($keyData));
+        return md5(implode('|', array_values($keyData)));
     }
 
     private function subJoin(): QueryBuilder

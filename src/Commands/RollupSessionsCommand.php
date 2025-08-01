@@ -17,7 +17,7 @@ final class RollupSessionsCommand extends Command implements Isolatable
      *
      * vendor/bin/testbench stickle:rollup-sessions 3'
      */
-    protected $signature = 'stickle:rollup-sessions { days_ago?=7 : How far back to rollup sessions. Defaults to 7 days ago. }';
+    protected $signature = 'stickle:rollup-sessions {days_ago=7 : How far back to rollup sessions. Defaults to 7 days ago.}';
 
     /**
      * @var string

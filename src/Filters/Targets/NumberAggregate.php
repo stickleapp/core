@@ -42,7 +42,7 @@ class NumberAggregate extends FilterTargetContract
         return sprintf('number_aggregate_%s', $this->joinKey());
     }
 
-    public function joinKey(): ?string
+    public function joinKey(): string
     {
         // Generate a consistent key based on the filter parameters, not the builder state
         $keyData = [
@@ -53,7 +53,7 @@ class NumberAggregate extends FilterTargetContract
             'modelClass' => $this->builder->getModel()->getMorphClass(),
         ];
 
-        return md5(json_encode($keyData));
+        return md5(implode('|', array_values($keyData)));
     }
 
     private function subJoin(): QueryBuilder

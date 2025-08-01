@@ -44,25 +44,21 @@ class NumberAggregateDelta extends FilterTargetContract
         return sprintf('number_aggregate_delta_%s', $this->joinKey());
     }
 
-    public function joinKey(): ?string
+    public function joinKey(): string
     {
         // Generate a consistent key based on the filter parameters, not the builder state
         $keyData = [
-            'attribute' => $this->attribute,
-            'aggregate' => $this->aggregate,
-            'deltaVerb' => $this->deltaVerb,
-            'currentPeriod' => [
-                $this->currentPeriod[0]->format('Y-m-d'),
-                $this->currentPeriod[1]->format('Y-m-d'),
-            ],
-            'previousPeriod' => [
-                $this->previousPeriod[0]->format('Y-m-d'),
-                $this->previousPeriod[1]->format('Y-m-d'),
-            ],
-            'modelClass' => $this->builder->getModel()->getMorphClass(),
+            $this->attribute,
+            $this->aggregate,
+            $this->deltaVerb,
+            $this->currentPeriod[0]->format('Y-m-d'),
+            $this->currentPeriod[1]->format('Y-m-d'),
+            $this->previousPeriod[0]->format('Y-m-d'),
+            $this->previousPeriod[1]->format('Y-m-d'),
+            $this->builder->getModel()->getMorphClass(),
         ];
 
-        return md5(json_encode($keyData));
+        return md5(implode('|', $keyData));
     }
 
     private function subJoin(): QueryBuilder

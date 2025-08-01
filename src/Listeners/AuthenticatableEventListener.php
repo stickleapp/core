@@ -42,7 +42,7 @@ class AuthenticatableEventListener implements ShouldQueue
             objectUid: (string) $event->user->id,
             sessionUid: $this->request->session()->getId(),
             timestamp: $timestamp,
-            event: get_class($event),
+            event: get_class($event) ?: 'UnknownEvent',
         );
     }
 

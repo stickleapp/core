@@ -37,11 +37,11 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return array<string, class-string>
      */
-    public function getSubscribedEvents()
+    public function getSubscribedEvents(): array
     {
         $subscribers = [];
         if (count(config('stickle.tracking.server.authenticationEventsTracked', [])) > 0) {
-            $subscribers[] = AuthenticatableEventListener::class;
+            $subscribers['auth'] = AuthenticatableEventListener::class;
         }
 
         return $subscribers;

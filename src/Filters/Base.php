@@ -95,19 +95,31 @@ class Base
             : $this->targetClass;
 
         if (method_exists($baseTargetClass, 'getTargetInstance')) {
-            return $baseTargetClass::getTargetInstance(
+            $target = $baseTargetClass::getTargetInstance(
                 config('stickle.database.tablePrefix'),
                 $builder,
                 $this->targetArguments
             );
+            
+            if (!$target instanceof FilterTargetContract) {
+                throw new \Exception('Target instance must implement FilterTargetContract');
+            }
+            
+            return $target;
         }
 
         // For simple targets, instantiate directly with prefix and arguments
-        return new $baseTargetClass(
+        $target = new $baseTargetClass(
             config('stickle.database.tablePrefix'),
             $builder,
             ...$this->targetArguments
         );
+        
+        if (!$target instanceof FilterTargetContract) {
+            throw new \Exception('Target instance must implement FilterTargetContract');
+        }
+        
+        return $target;
     }
 
     /**

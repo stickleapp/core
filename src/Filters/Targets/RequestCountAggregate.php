@@ -42,7 +42,7 @@ class RequestCountAggregate extends FilterTargetContract
         return sprintf('request_%s_%s', $this->aggregate, $this->joinKey());
     }
 
-    public function joinKey(): ?string
+    public function joinKey(): string
     {
         // Generate a consistent key based on the filter parameters, not the builder state
         $keyData = [
@@ -53,7 +53,7 @@ class RequestCountAggregate extends FilterTargetContract
             'modelClass' => $this->builder->getModel()->getMorphClass(),
         ];
 
-        return md5(json_encode($keyData));
+        return md5(implode('|', array_values($keyData)));
     }
 
     private function subJoin(): QueryBuilder

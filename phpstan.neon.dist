@@ -9,7 +9,7 @@ parameters:
         - database/
         - resources/
 
-    level: 6
+    level: 8
 
     ignoreErrors:
         - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder<Illuminate\\Database\\Eloquent\\Model>::hasJoin\(\).#'

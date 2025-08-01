@@ -89,6 +89,7 @@ class Segment extends Model
         $pivotTable = $prefix.'model_segment';
 
         // Start with a base relationship
+        /** @var class-string<\Illuminate\Database\Eloquent\Model> $modelClass */
         $relation = $this->belongsToMany(
             $modelClass,
             $pivotTable,
@@ -100,11 +101,15 @@ class Segment extends Model
         $query = $relation->getQuery();
 
         // Remove the default join constraints
-        $query->getQuery()->joins = array_filter($query->getQuery()->joins, function ($join) use ($pivotTable) {
-            return $join->table !== $pivotTable;
-        });
+        $joins = $query->getQuery()->joins;
+        if ($joins !== null) {
+            $query->getQuery()->joins = array_filter($joins, function ($join) use ($pivotTable) {
+                return $join->table !== $pivotTable;
+            });
+        }
 
         // Add our custom join with type casting
+        /** @var \Illuminate\Database\Eloquent\Model $modelInstance */
         $modelInstance = new $modelClass;
         $modelTable = $modelInstance->getTable();
         $primaryKey = $modelInstance->getKeyName();
