@@ -18,10 +18,10 @@ class ClassUtils
      */
     public static function usesTrait($class, string $trait): bool
     {
-        if (is_string($class) && !class_exists($class)) {
+        if (is_string($class) && ! class_exists($class)) {
             return false;
         }
-        
+
         $reflection = new ReflectionClass($class);
         $traits = [];
         $currentClass = $reflection;
@@ -97,10 +97,10 @@ class ClassUtils
             $classes[] = $className;
         }
 
-        $validClasses = array_filter($classes, function($className) {
+        $validClasses = array_filter($classes, function ($className) {
             return $className !== null && class_exists($className);
         });
-        
+
         // Cast to class-string array since we've verified classes exist
         return array_values($validClasses);
     }
@@ -256,10 +256,10 @@ class ClassUtils
      */
     public static function getDefaultAttributesForClass(string $class): array
     {
-        if (!class_exists($class)) {
+        if (! class_exists($class)) {
             return [];
         }
-        
+
         $reflection = new ReflectionClass($class);
 
         return $reflection->getDefaultProperties();

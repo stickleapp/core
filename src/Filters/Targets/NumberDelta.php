@@ -59,6 +59,7 @@ class NumberDelta extends FilterTargetContract
             ->where('attribute', $this->attribute)
             ->when($this->endDate !== null, function (QueryBuilder $query) {
                 assert($this->endDate !== null); // PHPStan hint
+
                 return $query->whereBetween('day', [
                     $this->startDate->format('Y-m-d'),
                     $this->endDate->format('Y-m-d'),
