@@ -1,0 +1,25 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/nesbot/carbon/extension.neon
+
+parameters:
+
+    paths:
+        - src/
+        - database/
+        - resources/
+
+    level: 6
+
+    ignoreErrors:
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder<Illuminate\\Database\\Eloquent\\Model>::hasJoin\(\).#'
+        - '#Method StickleApp\\Core\\Models\\ModelAttributes::attributable\(\) should return#'
+        - '#Method StickleApp\\Core\\Models\\ModelAttributeAudit::attributable\(\) should return#'
+        - '#Method StickleApp\\Core\\Models\\Segment::segmentStatistics\(\) should return#'
+        - '#Method StickleApp\\Core\\Models\\ModelSegmentAudit::segment\(\)#'
+        - '#Method StickleApp\\Core\\Models\\Segment::objects\(\) should return#'
+
+    excludePaths:
+        - src/Commands/InstallCommand.php
+        - src/Traits/StickleEntity.php
+        - src/Views/Components/*.*

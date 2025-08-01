@@ -1,0 +1,5 @@
+.env
+.env.dusk
+
+node_modules
+storage

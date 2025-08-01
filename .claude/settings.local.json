@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php artisan db:seed:*)",
+      "Bash(composer run:*)",
+      "Bash(vendor/bin/pest:*)",
+      "Bash(php:*)",
+      "Bash(find:*)",
+      "Bash(composer test)"
+    ]
+  },
+  "enableAllProjectMcpServers": false
+}
