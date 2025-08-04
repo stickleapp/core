@@ -9,17 +9,17 @@ use Workbench\App\Models\User;
 beforeEach(function () {
     // Create a test segment for use in tests
     $this->segment = SegmentModel::create([
-        'name' => 'Active Users',
+        'name' => 'VIP Users',
         'model_class' => 'User',
-        'as_class' => 'ActiveUsers',
-        'description' => 'Currently active users',
+        'as_class' => 'VipUsers',
+        'description' => 'Users who have been VIP',
     ]);
 });
 
-test('isIn() generates correct SQL for segment membership', function () {
+test('hasBeenInSegment() generates correct SQL for historical segment membership', function () {
     $prefix = config('stickle.database.tablePrefix');
 
-    $filter = Filter::segment('ActiveUsers')->isIn();
+    $filter = Filter::segmentHistory('VipUsers')->hasBeenInSegment();
     $builder = User::query();
 
     $target = $filter->getTarget($builder);
@@ -30,12 +30,13 @@ test('isIn() generates correct SQL for segment membership', function () {
 
     expect($sql)->toContain('select * from "users"');
     expect($sql)->toContain('left join');
-    expect($sql)->toContain($prefix.'model_segment');
+    expect($sql)->toContain($prefix.'model_segment_audit');
     expect($sql)->toContain('is not null');
+    expect($sql)->toContain('operation');
 });
 
-test('isIn() creates executable query', function () {
-    $filter = Filter::segment('ActiveUsers')->isIn();
+test('hasBeenInSegment() creates executable query', function () {
+    $filter = Filter::segmentHistory('VipUsers')->hasBeenInSegment();
     $builder = User::query();
 
     $target = $filter->getTarget($builder);
@@ -48,18 +49,18 @@ test('isIn() creates executable query', function () {
     })->not()->toThrow(\Exception::class);
 });
 
-test('isIn() with stickleWhere integration', function () {
+test('hasBeenInSegment() with stickleWhere integration', function () {
     $prefix = config('stickle.database.tablePrefix');
 
     $query = User::query()
         ->stickleWhere(
-            Filter::segment('ActiveUsers')->isIn()
+            Filter::segmentHistory('VipUsers')->hasBeenInSegment()
         );
 
     $sql = $query->toSql();
 
     expect($sql)->toContain('select * from "users"');
     expect($sql)->toContain('left join');
-    expect($sql)->toContain($prefix.'model_segment');
+    expect($sql)->toContain($prefix.'model_segment_audit');
     expect($sql)->toContain('is not null');
 });

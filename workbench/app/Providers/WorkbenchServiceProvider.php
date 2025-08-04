@@ -3,7 +3,7 @@
 namespace Workbench\App\Providers;
 
 use Illuminate\Foundation\Events\DiscoverEvents;
-// use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use SplFileInfo;
@@ -22,7 +22,7 @@ class WorkbenchServiceProvider extends ServiceProvider
     public function boot(): void
     {
 
-        // Broadcast::routes();
+        Broadcast::routes();
 
         if ($this->app->runningInConsole()) {
             $this->commands(

@@ -14,7 +14,7 @@ class Ticket extends Model
     /**
      * Customer the order belongs to.
      */
-    public function Customer(): BelongsTo
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
@@ -22,7 +22,7 @@ class Ticket extends Model
     /**
      * User assigned to ticket
      */
-    public function AssignedTo(): BelongsTo
+    public function assignedTo(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to_id');
     }
@@ -30,7 +30,7 @@ class Ticket extends Model
     /**
      * User assigned to ticket
      */
-    public function CreatedBy(): BelongsTo
+    public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by_id');
     }

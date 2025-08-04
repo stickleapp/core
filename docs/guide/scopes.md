@@ -131,7 +131,7 @@ For performance-critical applications, you can create scopes that filter by pre-
 public function scopeActive(Builder $query): void
 {
     $query->stickleWhere(
-        Filter::segment('ActiveUsers')->isIn()
+        Filter::segment('ActiveUsers')->isInSegment()
     );
 }
 
@@ -141,9 +141,9 @@ public function scopeActive(Builder $query): void
 public function scopeEngagedCustomers(Builder $query): void
 {
     $query->stickleWhere(
-        Filter::segment('HighEngagement')->isIn()
+        Filter::segment('HighEngagement')->isInSegment()
     )->stickleWhere(
-        Filter::segment('RecentPurchasers')->isIn()
+        Filter::segment('RecentPurchasers')->isInSegment()
     );
 }
 ```

@@ -6,7 +6,8 @@
       "Bash(vendor/bin/pest:*)",
       "Bash(php:*)",
       "Bash(find:*)",
-      "Bash(composer test)"
+      "Bash(composer test)",
+      "Bash(rm:*)"
     ]
   },
   "enableAllProjectMcpServers": false

@@ -9,17 +9,17 @@ use Workbench\App\Models\User;
 beforeEach(function () {
     // Create a test segment for use in tests
     $this->segment = SegmentModel::create([
-        'name' => 'Inactive Users',
+        'name' => 'Premium Users',
         'model_class' => 'User',
-        'as_class' => 'InactiveUsers',
-        'description' => 'Currently inactive users',
+        'as_class' => 'PremiumUsers',
+        'description' => 'Users who have never been premium',
     ]);
 });
 
-test('isNotIn() generates correct SQL for segment non-membership', function () {
+test('hasNeverBeenInSegment() generates correct SQL for never having segment membership', function () {
     $prefix = config('stickle.database.tablePrefix');
 
-    $filter = Filter::segment('InactiveUsers')->isNotIn();
+    $filter = Filter::segmentHistory('PremiumUsers')->hasNeverBeenInSegment();
     $builder = User::query();
 
     $target = $filter->getTarget($builder);
@@ -30,12 +30,13 @@ test('isNotIn() generates correct SQL for segment non-membership', function () {
 
     expect($sql)->toContain('select * from "users"');
     expect($sql)->toContain('left join');
-    expect($sql)->toContain($prefix.'model_segment');
+    expect($sql)->toContain($prefix.'model_segment_audit');
     expect($sql)->toContain('is null');
+    expect($sql)->toContain('operation');
 });
 
-test('isNotIn() creates executable query', function () {
-    $filter = Filter::segment('InactiveUsers')->isNotIn();
+test('hasNeverBeenInSegment() creates executable query', function () {
+    $filter = Filter::segmentHistory('PremiumUsers')->hasNeverBeenInSegment();
     $builder = User::query();
 
     $target = $filter->getTarget($builder);
@@ -48,18 +49,18 @@ test('isNotIn() creates executable query', function () {
     })->not()->toThrow(\Exception::class);
 });
 
-test('isNotIn() with stickleWhere integration', function () {
+test('hasNeverBeenInSegment() with stickleWhere integration', function () {
     $prefix = config('stickle.database.tablePrefix');
 
     $query = User::query()
         ->stickleWhere(
-            Filter::segment('InactiveUsers')->isNotIn()
+            Filter::segmentHistory('PremiumUsers')->hasNeverBeenInSegment()
         );
 
     $sql = $query->toSql();
 
     expect($sql)->toContain('select * from "users"');
     expect($sql)->toContain('left join');
-    expect($sql)->toContain($prefix.'model_segment');
+    expect($sql)->toContain($prefix.'model_segment_audit');
     expect($sql)->toContain('is null');
 });

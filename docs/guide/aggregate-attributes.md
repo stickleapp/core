@@ -12,7 +12,7 @@ In Laravel, you can define these relationshipo using **foreign keys** and Eloque
 
 # A Practical Example
 
-Often it is interesting to know aggregate values of related models. For example, say you sell software to help companies manage support tickets. You would have `Tenants`, `Users`, and `Tickets` models.
+Often it is interesting to know aggregate values of related models. For example, say you sell software to help companies manage support tickets. You would have `Customers`, `Users`, and `Tickets` models.
 
 -   The number of users with a rating attribute (count);
 -   The average rating;

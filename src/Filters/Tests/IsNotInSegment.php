@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use StickleApp\Core\Contracts\FilterTargetContract;
 use StickleApp\Core\Contracts\FilterTestContract;
 
-class IsIn extends FilterTestContract
+class IsNotInSegment extends FilterTestContract
 {
     public function applyFilter(Builder $builder, FilterTargetContract $target, string $operator): Builder
     {
@@ -16,6 +16,6 @@ class IsIn extends FilterTestContract
             throw new \InvalidArgumentException('Filter target property cannot be null');
         }
 
-        return $builder->whereNotNull($target->property());
+        return $builder->whereNull($target->property());
     }
 }

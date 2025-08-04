@@ -42,7 +42,7 @@ test('segment isIn() filter finds current segment members', function () {
 
     $query = User::query()
         ->stickleWhere(
-            Filter::segment('ActiveUsers')->isIn()
+            Filter::segment('ActiveUsers')->isInSegment()
         );
 
     $sql = $query->toSql();
@@ -71,7 +71,7 @@ test('segment isNotIn() filter finds non-members', function () {
 
     $query = User::query()
         ->stickleWhere(
-            Filter::segment('ActiveUsers')->isNotIn()
+            Filter::segment('ActiveUsers')->isNotInSegment()
         );
 
     $sql = $query->toSql();
@@ -101,7 +101,7 @@ test('segmentHistory hasBeenIn() filter finds historical members', function () {
 
     $query = User::query()
         ->stickleWhere(
-            Filter::segmentHistory('VipUsers')->hasBeenIn()
+            Filter::segmentHistory('VipUsers')->hasBeenInSegment()
         );
 
     $sql = $query->toSql();
@@ -132,7 +132,7 @@ test('segmentHistory hasNeverBeenIn() filter finds users who never were in segme
 
     $query = User::query()
         ->stickleWhere(
-            Filter::segmentHistory('VipUsers')->hasNeverBeenIn()
+            Filter::segmentHistory('VipUsers')->hasNeverBeenInSegment()
         );
 
     $sql = $query->toSql();
@@ -172,10 +172,10 @@ test('complex segment filter combinations work together', function () {
     // Find users who are currently active AND have never been VIP
     $query = User::query()
         ->stickleWhere(
-            Filter::segment('ActiveUsers')->isIn()
+            Filter::segment('ActiveUsers')->isInSegment()
         )
         ->stickleWhere(
-            Filter::segmentHistory('VipUsers')->hasNeverBeenIn()
+            Filter::segmentHistory('VipUsers')->hasNeverBeenInSegment()
         );
 
     $users = $query->get();
@@ -188,17 +188,17 @@ test('complex segment filter combinations work together', function () {
 test('segment resolution by different identifiers', function () {
     // Test by name
     $queryByName = User::query()
-        ->stickleWhere(Filter::segment('Active Users')->isIn());
+        ->stickleWhere(Filter::segment('Active Users')->isInSegment());
     expect($queryByName->toSql())->toContain('model_segment');
 
     // Test by as_class
     $queryByClass = User::query()
-        ->stickleWhere(Filter::segment('ActiveUsers')->isIn());
+        ->stickleWhere(Filter::segment('ActiveUsers')->isInSegment());
     expect($queryByClass->toSql())->toContain('model_segment');
 
     // Test by ID
     $queryById = User::query()
-        ->stickleWhere(Filter::segment((string) $this->activeSegment->id)->isIn());
+        ->stickleWhere(Filter::segment((string) $this->activeSegment->id)->isInSegment());
     expect($queryById->toSql())->toContain('model_segment');
 
     // All should generate equivalent queries
