@@ -4,7 +4,7 @@ outline: deep
 
 # Stickle Eloquent Methods
 
-Stickle adds additional filter options to Eloquent through two Eloquent Scopes `stickle()` and `orStickle()` which behave in the same way as `where()` and `orWhere()` respectively.
+Stickle adds additional filter options to Eloquent through two Eloquent Scopes `stickle()` and `stickleOrWhere()` which behave in the same way as `where()` and `orWhere()` respectively.
 
 These scopes accept a single Filter object (`StickleApp\Core\Filters\Base`) that defines a filter which will be applied to your query builder.
 
@@ -66,13 +66,13 @@ Boolean filters test boolean attributes stored in the model's JSON data field.
 
 ```php
 // Users where 'email_verified' is true
-$users = User::stickle(Filter::boolean('email_verified')->isTrue())->get();
+$users = User::stickleWhere(Filter::boolean('email_verified')->isTrue())->get();
 
 // Users where 'is_premium' is false
-$users = User::stickle(Filter::boolean('is_premium')->isFalse())->get();
+$users = User::stickleWhere(Filter::boolean('is_premium')->isFalse())->get();
 
 // Users where 'newsletter_subscribed' is not null
-$users = User::stickle(Filter::boolean('newsletter_subscribed')->isNotNull())->get();
+$users = User::stickleWhere(Filter::boolean('newsletter_subscribed')->isNotNull())->get();
 ```
 
 ### Date
@@ -92,13 +92,13 @@ Date filters test date attributes stored in the model's JSON data field.
 
 ```php
 // Users where 'birth_date' is after 1990-01-01
-$users = User::stickle(Filter::date('birth_date')->isAfter('1990-01-01'))->get();
+$users = User::stickleWhere(Filter::date('birth_date')->isAfter('1990-01-01'))->get();
 
 // Users where 'trial_expires' is before today
-$users = User::stickle(Filter::date('trial_expires')->isBefore(now()))->get();
+$users = User::stickleWhere(Filter::date('trial_expires')->isBefore(now()))->get();
 
 // Users born between 1980 and 1990
-$users = User::stickle(Filter::date('birth_date')->between('1980-01-01', '1990-12-31'))->get();
+$users = User::stickleWhere(Filter::date('birth_date')->between('1980-01-01', '1990-12-31'))->get();
 ```
 
 ### Datetime
@@ -118,13 +118,13 @@ Datetime filters test datetime attributes stored in the model's JSON data field.
 
 ```php
 // Users where 'last_login' is after yesterday
-$users = User::stickle(Filter::datetime('last_login')->isAfter(now()->subDay()))->get();
+$users = User::stickleWhere(Filter::datetime('last_login')->isAfter(now()->subDay()))->get();
 
 // Users where 'created_at' is before last week
-$users = User::stickle(Filter::datetime('created_at')->isBefore(now()->subWeek()))->get();
+$users = User::stickleWhere(Filter::datetime('created_at')->isBefore(now()->subWeek()))->get();
 
 // Users active in the last hour
-$users = User::stickle(
+$users = User::stickleWhere(
     Filter::datetime('last_activity')->between(now()->subHour(), now())
 )->get();
 ```
@@ -149,7 +149,7 @@ EventCount filters aggregate event data over specified time periods. All EventCo
 
 ```php
 // Users who clicked 'buy_button' more than 5 times in the last 30 days
-$users = User::stickle(
+$users = User::stickleWhere(
     Filter::eventCount('clicked:buy_button')
         ->count()
         ->betweenDates(now()->subDays(30), now())
@@ -157,7 +157,7 @@ $users = User::stickle(
 )->get();
 
 // Users with average session duration over 10 minutes last week
-$users = User::stickle(
+$users = User::stickleWhere(
     Filter::eventCount('session:duration')
         ->avg()
         ->betweenDates(now()->subWeek(), now())
@@ -165,7 +165,7 @@ $users = User::stickle(
 )->get();
 
 // Users whose click count increased compared to previous period
-$users = User::stickle(
+$users = User::stickleWhere(
     Filter::eventCount('clicked:product')
         ->sum()
         ->increased()
@@ -206,13 +206,13 @@ Number filters test numeric attributes stored in the model's JSON data field. Th
 
 ```php
 // Simple value comparison - users with score greater than 100
-$users = User::stickle(Filter::number('score')->greaterThan(100))->get();
+$users = User::stickleWhere(Filter::number('score')->greaterThan(100))->get();
 
 // Users with score between 50 and 150
-$users = User::stickle(Filter::number('score')->between(50, 150))->get();
+$users = User::stickleWhere(Filter::number('score')->between(50, 150))->get();
 
 // Users whose average purchase amount in last 30 days is over $500
-$users = User::stickle(
+$users = User::stickleWhere(
     Filter::number('purchase_amount')
         ->avg()
         ->betweenDates(now()->subDays(30), now())
@@ -220,7 +220,7 @@ $users = User::stickle(
 )->get();
 
 // Users whose total spending increased by more than $100 compared to previous month
-$users = User::stickle(
+$users = User::stickleWhere(
     Filter::number('purchase_amount')
         ->sum()
         ->increased()
@@ -232,7 +232,7 @@ $users = User::stickle(
 )->get();
 
 // Users whose maximum single purchase decreased compared to last quarter
-$users = User::stickle(
+$users = User::stickleWhere(
     Filter::number('purchase_amount')
         ->max()
         ->decreased()
@@ -264,7 +264,7 @@ RequestCount filters aggregate HTTP request data for specific URLs over time per
 
 ```php
 // Users who made more than 10 API requests in the last 7 days
-$users = User::stickle(
+$users = User::stickleWhere(
     Filter::requestCount('/api/data')
         ->count()
         ->betweenDates(now()->subDays(7), now())
@@ -272,7 +272,7 @@ $users = User::stickle(
 )->get();
 
 // Users whose dashboard visits increased compared to last week
-$users = User::stickle(
+$users = User::stickleWhere(
     Filter::requestCount('/dashboard')
         ->sum()
         ->increased()
@@ -304,7 +304,7 @@ SessionCount filters aggregate session data over time periods. All SessionCount 
 
 ```php
 // Users with more than 5 sessions in the last 30 days
-$users = User::stickle(
+$users = User::stickleWhere(
     Filter::sessionCount()
         ->count()
         ->betweenDates(now()->subDays(30), now())
@@ -312,7 +312,7 @@ $users = User::stickle(
 )->get();
 
 // Users whose session count increased compared to previous month
-$users = User::stickle(
+$users = User::stickleWhere(
     Filter::sessionCount()
         ->sum()
         ->increased()
@@ -336,11 +336,11 @@ Text filters test text attributes stored in the model's JSON data field.
 
 ```php
 // Users where 'company' equals 'Acme Corp'
-$users = User::stickle(Filter::text('company')->equals('Acme Corp'))->get();
+$users = User::stickleWhere(Filter::text('company')->equals('Acme Corp'))->get();
 
 // Users where 'bio' contains 'developer'
-$users = User::stickle(Filter::text('bio')->contains('developer'))->get();
+$users = User::stickleWhere(Filter::text('bio')->contains('developer'))->get();
 
 // Users where 'job_title' begins with 'Senior'
-$users = User::stickle(Filter::text('job_title')->beginsWith('Senior'))->get();
+$users = User::stickleWhere(Filter::text('job_title')->beginsWith('Senior'))->get();
 ```

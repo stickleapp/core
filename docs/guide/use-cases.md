@@ -4,15 +4,17 @@ outline: deep
 
 # Use Cases
 
-Stickle is extremely powerful&mdash;if you need it to be. But it very easy to get started. Stickle helps you answer questions you have about your customers and put that information to work for you.
+Stickle is extremely powerful yet easy to get started with. Stickle helps you answer questions you have about your customers and put that information to work for you.
 
-## Who is using my app?
+It can help answer:
+
+## Who are my customers?
 
 Stickle has you covered. Follow the [installation instructions](/guide/installation.md) and navigate to `/stickle`. You can see:
 
--   A list of your companies and users;
--   Related models (ex. `Company Users`, `Admin Users`, `Parent Company`); and
--   Customer details.
+-   A list of your 'customers' (Laravel models you have assigned the `StickleEntity` trait).
+-   Related `StickleEntity` models (ex. `Company Users`, `Admin Users`, `Parent Company`); and
+-   'Customer' entity details.
 
 ## How are people using my app?
 

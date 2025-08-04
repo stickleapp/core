@@ -18,12 +18,12 @@ Apply Stickle filters to your model queries using the `stickle()` scope.
 use StickleApp\Core\Filters\Base as Filter;
 
 // Filter users with high ratings
-$users = User::stickle(
+$users = User::stickleWhere(
     Filter::number('user_rating')->greaterThan(4.0)
 )->get();
 
 // Filter by multiple conditions
-$activeUsers = User::stickle(
+$activeUsers = User::stickleWhere(
     Filter::eventCount('page_view')
         ->sum()
         ->greaterThan(10)
@@ -31,14 +31,14 @@ $activeUsers = User::stickle(
 )->get();
 
 // Complex filtering with event aggregates
-$highValueCustomers = Customer::stickle(
+$highValueCustomers = Customer::stickleWhere(
     Filter::numberAggregate('mrr')
         ->sum()
         ->greaterThan(1000)
 )->get();
 ```
 
-### `orStickle(Filter $filter)`
+### `stickleOrWhere(Filter $filter)`
 
 Apply Stickle filters with OR logic to your queries.
 
@@ -46,7 +46,7 @@ Apply Stickle filters with OR logic to your queries.
 
 ```php
 // Find users who are either high-rated OR recently active
-$users = User::stickle(
+$users = User::stickleWhere(
     Filter::number('user_rating')->greaterThan(4.0)
 )->stickleOrWhere(
     Filter::eventCount('login')
@@ -347,7 +347,7 @@ $user->trackable_attributes = [
 use StickleApp\Core\Filters\Base as Filter;
 
 // Find high-value customers with recent activity
-$customers = Customer::stickle(
+$customers = Customer::stickleWhere(
     Filter::numberAggregate('mrr')
         ->sum()
         ->greaterThan(500)
@@ -359,7 +359,7 @@ $customers = Customer::stickle(
 )->get();
 
 // Find users who either have high ratings OR are recently active
-$engagedUsers = User::stickle(
+$engagedUsers = User::stickleWhere(
     Filter::number('user_rating')->greaterThan(4.0)
 )->stickleOrWhere(
     Filter::eventCount('page_view')
@@ -448,11 +448,11 @@ foreach ($chartData as $chart) {
 
 ### Automatic Join Prevention
 
-The `stickle()` and `orStickle()` scopes automatically prevent duplicate joins:
+The `stickle()` and `stickleOrWhere()` scopes automatically prevent duplicate joins:
 
 ```php
 // This won't create duplicate joins
-$users = User::stickle(
+$users = User::stickleWhere(
     Filter::number('user_rating')->greaterThan(4.0)
 )->stickleWhere(
     Filter::number('subscription_mrr')->greaterThan(100)

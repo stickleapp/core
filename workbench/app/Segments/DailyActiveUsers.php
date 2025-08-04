@@ -20,7 +20,7 @@ class DailyActiveUsers extends SegmentContract
     public function toBuilder(): Builder
     {
 
-        return $this->model::stickle(
+        return $this->model::stickleWhere(
             Filter::eventCount(event: 'clicked:something')
                 ->sum()
                 ->greaterThan(0)
@@ -31,10 +31,10 @@ class DailyActiveUsers extends SegmentContract
                 ->increased()
                 ->greaterThan(0)
                 ->betweenDateRanges(
-                    now()->subDays(14)->startOfDay(),
-                    now()->subDays(7)->endOfDay(),
-                    now()->subDays(7)->startOfDay(),
-                    now()->endOfDay()
+                    [now()->subDays(14)->startOfDay(),
+                        now()->subDays(7)->endOfDay()],
+                    [now()->subDays(7)->startOfDay(),
+                        now()->endOfDay()]
                 )
         );
 

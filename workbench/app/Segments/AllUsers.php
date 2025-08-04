@@ -20,7 +20,7 @@ class AllUsers extends SegmentContract
     public function toBuilder(): Builder
     {
 
-        // return $this->model::stickle(
+        // return $this->model::stickleWhere(
         //     Filter::eventCount('clicked:something')
         //         ->greaterThan(0)
         //         ->startDate(now()->subDays(7))

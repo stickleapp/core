@@ -19,7 +19,7 @@ class UsersWithOrders extends SegmentContract
 
     public function toBuilder(): Builder
     {
-        // return $this->model::stickle(
+        // return $this->model::stickleWhere(
         //     Filter::number('order_count')
         //         ->greaterThan(2)
         // );

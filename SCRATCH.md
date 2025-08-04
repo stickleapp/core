@@ -277,7 +277,7 @@ These methods expect an instance of a `StickleApp\Core\Filter` class.
 use App\Models\User;
 use StickleApp\Core\Filters\Base as Filter;
 
-$users = User::stickle(
+$users = User::stickleWhere(
         Filter::eventCount('clicked:something')
             ->greaterThan(10)
             ->onOrAfter(now()->subYears(1))
@@ -289,7 +289,7 @@ $users = User::stickle(
 use App\Models\User;
 use StickleApp\Core\Filters\Base as Filter;
 
-$users = User::stickle(
+$users = User::stickleWhere(
         Filter::eventCount('clicked:something')
             ->increased(
                 [now()->subYears(2), now()->subYears(1)],

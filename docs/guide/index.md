@@ -31,6 +31,8 @@ StickleCore is the foundation of Stickle that runs on your application server(s)
 
 ## StickleUI <Badge type="warning" text="MIT License" />
 
+<Badge type="danger" text="StickleUI is under development and many of the features below are coming soon." />
+
 StickleUI is bundled with StickleCore, providing analytics and reporting for StickleCore. StickleUI provides some out-of-the-box reports on your customers and allows you to build your own reports, customized to your business.
 
 You can:

@@ -19,7 +19,7 @@ class SlippingUsers extends SegmentContract
 
     public function toBuilder(): Builder
     {
-        // return $this->model::stickle(
+        // return $this->model::stickleWhere(
         //     Filter::eventCount('clicked:something')
         //         ->decreased(
         //             [now()->subWeeks(4), now()->subWeeks(2)],

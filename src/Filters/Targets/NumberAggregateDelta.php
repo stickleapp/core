@@ -80,7 +80,7 @@ class NumberAggregateDelta extends FilterTargetContract
                 'object_uid',
                 DB::raw("
                     COALESCE({$this->aggregate}(CASE WHEN updated_at BETWEEN '{$currentStart}' AND '{$currentEnd}' THEN (data->>'{$this->attribute}')::numeric END), 0) -
-                    COALESCE({$this->aggregate}(CASE WHEN updated_at BETWEEN '{$previousStart}' AND '{$previousEnd}' THEN (data->>'{$this->attribute}')::numeric END), 0) as delta
+                    COALESCE({$this->aggregate}(CASE WHEN updated_at BETWEEN '{$previousStart}' AND '{$previousEnd}' THEN (data->>'{$this->attribute}')::numeric END), 0) as {$this->castProperty()}
                 "),
             ]);
     }

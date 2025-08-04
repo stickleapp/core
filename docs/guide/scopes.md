@@ -76,7 +76,7 @@ class User extends Model
 
 ## Complex Scopes with Multiple Filters
 
-You can combine multiple filters using `stickle()` and `orStickle()` for complex business logic:
+You can combine multiple filters using `stickle()` and `stickleOrWhere()` for complex business logic:
 
 ```php
 /**
@@ -224,7 +224,7 @@ $targetUsers = User::active()
 1. **Use segments for frequently queried filters** - Pre-compute expensive filters as segments
 2. **Limit date ranges** - Smaller date ranges perform better than large historical queries
 3. **Index your model attributes** - Ensure tracked attributes are properly indexed
-4. **Combine filters efficiently** - Use `stickle()` for AND conditions and `orStickle()` for OR conditions
+4. **Combine filters efficiently** - Use `stickle()` for AND conditions and `stickleOrWhere()` for OR conditions
 
 ## Available Filter Types
 

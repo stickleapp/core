@@ -81,7 +81,7 @@ class EventCountAggregateDelta extends FilterTargetContract
                 'object_uid',
                 DB::raw("
                     COALESCE({$this->aggregate}(CASE WHEN day BETWEEN '{$currentStart}' AND '{$currentEnd}' THEN event_count END), 0) -
-                    COALESCE({$this->aggregate}(CASE WHEN day BETWEEN '{$previousStart}' AND '{$previousEnd}' THEN event_count END), 0) as delta
+                    COALESCE({$this->aggregate}(CASE WHEN day BETWEEN '{$previousStart}' AND '{$previousEnd}' THEN event_count END), 0) as {$this->castProperty()}
                 "),
             ]);
     }
