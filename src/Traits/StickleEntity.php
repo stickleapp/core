@@ -144,7 +144,7 @@ trait StickleEntity
          */
         static::created(function (Model $model) {
 
-            $observableAttributeKeys = $model->getStickleObservedAttributes();
+            $observableAttributeKeys = $model::stickleObservedAttributes();
 
             $model->trackable_attributes = $model->only($observableAttributeKeys);
         });
@@ -154,7 +154,7 @@ trait StickleEntity
          */
         static::updated(function (Model $model) {
 
-            $observableAttributeKeys = array_intersect($model::getStickleObservedAttributes(), array_keys($model->getDirty()));
+            $observableAttributeKeys = array_intersect($model::stickleObservedAttributes(), array_keys($model->getDirty()));
 
             $model->trackable_attributes = $model->only($observableAttributeKeys);
         });
@@ -162,26 +162,20 @@ trait StickleEntity
     }
 
     /**
-     * This attribute is used to define which attributes should be watched for changes
-     *
-     * It is defined on the parent model
+     * Define which attributes should be watched for changes.
+     * Override this method in your model to specify observed attributes.
      */
-    public static function getStickleObservedAttributes()
+    public static function stickleObservedAttributes(): array
     {
-
-        if (property_exists(static::class, 'stickleObservedAttributes') && isset(static::$stickleObservedAttributes)) {
-            return static::$stickleObservedAttributes;
-        }
-
         return [];
     }
 
-    public static function getStickleTrackedAttributes()
+    /**
+     * Define which attributes should be tracked over time for analytics.
+     * Override this method in your model to specify tracked attributes.
+     */
+    public static function stickleTrackedAttributes(): array
     {
-        if (property_exists(static::class, 'stickleTrackedAttributes') && isset(static::$stickleTrackedAttributes)) {
-            return static::$stickleTrackedAttributes;
-        }
-
         return [];
     }
 
@@ -294,7 +288,7 @@ trait StickleEntity
     {
 
         // Get the attributes that are tracked by StickleTrait as keys with empty arrays as values
-        $trackedAttributes = static::getStickleTrackedAttributes();
+        $trackedAttributes = static::stickleTrackedAttributes();
 
         // Get the metadata [ 'attribute' => [ 'chartType' => 'line', 'label' => 'Attribute', 'description' => 'Description', 'dataType' => 'string', 'primaryAggregateType' => 'sum' ] ]
         $metadataMethods = AttributeUtils::getAllAttributesForClass_targetMethod(

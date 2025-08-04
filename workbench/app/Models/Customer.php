@@ -60,28 +60,30 @@ class Customer extends Model
     ];
 
     /**
-     * Specify the attributes that should be observed (via Observable)
-     * - TODO: chang this to a method that returns the attributes dynamically
-     * public static function stickleObservedAttributes(): array {}
+     * Define which attributes should be watched for changes.
      */
-    public static array $stickleObservedAttributes = [
-        'mrr',
-    ];
+    public static function stickleObservedAttributes(): array
+    {
+        return [
+            'mrr',
+        ];
+    }
 
     /**
-     * Specify the attributes that should be observed (via Observable)
-     * - TODO: chang this to a method that returns the attributes dynamically
-     * public static function stickleTrackedAttributes(): array {}
+     * Define which attributes should be tracked over time for analytics.
      */
-    public static array $stickleTrackedAttributes = [
-        'mrr',
-        'ticket_count',
-        'open_ticket_count',
-        'closed_ticket_count',
-        'tickets_closed_last_30_days',
-        'average_resolution_time',
-        'average_resolution_time_30_days',
-    ];
+    public static function stickleTrackedAttributes(): array
+    {
+        return [
+            'mrr',
+            'ticket_count',
+            'open_ticket_count',
+            'closed_ticket_count',
+            'tickets_closed_last_30_days',
+            'average_resolution_time',
+            'average_resolution_time_30_days',
+        ];
+    }
 
     // public static function stickleTrackedAggregates(): array {}
     // #[StickleAggregateMetadata([])

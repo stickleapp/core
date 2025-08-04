@@ -41,7 +41,7 @@ class SegmentStatisticsSeeder extends Seeder
         }
 
         $model = new $modelClass;
-        $trackedAttributes = $model::$stickleTrackedAttributes ?? [];
+        $trackedAttributes = $model::stickleTrackedAttributes();
 
         if (empty($trackedAttributes)) {
             return;

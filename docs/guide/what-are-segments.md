@@ -20,7 +20,7 @@ Once you have defined a segment, Trickle will automatically update which models 
 
 ## Segment Statistics
 
-Additionally, Stickle calculates aggregates of each of your model-level `$stickleTrackedAttributes` and tracks these over time for each segment. For example, if you define a `mrr` attribute and add it to your class's `$stickleTrackedAttributes` property, each Segment will track the aggregate values (AVG, MAX, MIN, SUM) of `mrr` in that segment.
+Additionally, Stickle calculates aggregates of each of your model-level tracked attributes and tracks these over time for each segment. For example, if you define a `mrr` attribute and add it to your class's `stickleTrackedAttributes()` method, each Segment will track the aggregate values (AVG, MAX, MIN, SUM) of `mrr` in that segment.
 
 ## Filtering by existence in Segments
 

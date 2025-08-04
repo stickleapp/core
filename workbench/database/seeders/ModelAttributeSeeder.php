@@ -84,7 +84,7 @@ class ModelAttributeSeeder extends Seeder
 
         $customers = Customer::has('users')->get()->take(24);
 
-        $stickleTrackedAttributes = Customer::$stickleTrackedAttributes ?? [];
+        $stickleTrackedAttributes = Customer::stickleTrackedAttributes();
 
         foreach ($customers as $customer) {
 
@@ -106,7 +106,7 @@ class ModelAttributeSeeder extends Seeder
 
             $users = $customer->users;
 
-            $stickleTrackedAttributes = User::$stickleTrackedAttributes ?? [];
+            $stickleTrackedAttributes = User::stickleTrackedAttributes();
 
             foreach ($users as $user) {
                 $attributes = [];

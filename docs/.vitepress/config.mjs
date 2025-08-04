@@ -69,11 +69,11 @@ export default defineConfig({
                 collapsed: false,
                 items: [
                     {
-                        text: "Model Attributes",
+                        text: "Models",
                         link: "/guide/tracking-model-attributes",
                     },
                     {
-                        text: "Segment Statistics",
+                        text: "Segments",
                         link: "/guide/tracking-segments",
                     },
                 ],
@@ -83,12 +83,8 @@ export default defineConfig({
                 collapsed: false,
                 items: [
                     {
-                        text: "User Attributes",
-                        link: "/guide/aggregate-user-attributes",
-                    },
-                    {
-                        text: "Group Attributes",
-                        link: "/guide/aggregate-group-attributes",
+                        text: "Model Attributes",
+                        link: "/guide/aggregate-attributes",
                     },
                 ],
             },

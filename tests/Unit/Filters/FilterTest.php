@@ -21,7 +21,7 @@ test('example', function () {
             Filter::eventCount('clicked:something')
                 ->count()
                 ->greaterThan(10)
-                ->betweenDates(now()->subYears(1), now())
+                ->betweenDates(startDate: now()->subYears(1), endDate: now())
         );
     expect($query->toSql())->not()->toBeEmpty();
 });
@@ -148,7 +148,7 @@ test('eventCount filter generates correct full SQL with joins', function () {
             Filter::eventCount('page_view')
                 ->count()
                 ->greaterThan(5)
-                ->betweenDates(now()->subDays(30), now())
+                ->betweenDates(startDate: now()->subDays(30), endDate: now())
         );
 
     $sql = $query->toSql();

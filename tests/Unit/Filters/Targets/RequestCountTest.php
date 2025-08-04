@@ -9,7 +9,7 @@ use Workbench\App\Models\User;
 test('requestCount() with aggregate creates RequestCountAggregate target', function () {
     $filter = Filter::requestCount(url: '/api/something')
         ->sum()
-        ->betweenDates(now()->subDays(7), now());
+        ->betweenDates(startDate: now()->subDays(7), endDate: now());
 
     $builder = User::query();
     $target = $filter->getTarget($builder);
@@ -24,7 +24,7 @@ test('RequestCountAggregate creates correct SQL', function () {
 
     $filter = Filter::requestCount(url: '/api/something')
         ->sum()
-        ->betweenDates(now()->subDays(7), now());
+        ->betweenDates(startDate: now()->subDays(7), endDate: now());
 
     $builder = User::query();
     $target = $filter->getTarget($builder);
@@ -42,7 +42,7 @@ test('RequestCount requires URL argument', function () {
     expect(function () {
         $filter = Filter::requestCount(url: '')
             ->sum()
-            ->betweenDates(now()->subDays(7), now());
+            ->betweenDates(startDate: now()->subDays(7), endDate: now());
 
         $builder = User::query();
         $filter->getTarget($builder);
@@ -52,7 +52,7 @@ test('RequestCount requires URL argument', function () {
 test('RequestCount requires aggregate method', function () {
     expect(function () {
         $filter = Filter::requestCount(url: '/api/something')
-            ->betweenDates(now()->subDays(7), now());
+            ->betweenDates(startDate: now()->subDays(7), endDate: now());
 
         $builder = User::query();
         $filter->getTarget($builder);

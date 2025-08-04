@@ -17,7 +17,7 @@ export default defineConfig({
         // Make Vite accessible from other devices on your network
         host: "0.0.0.0",
         // Set the correct port
-        port: 5173,
+        port: 5174,
         // Ensure HMR works correctly
         hmr: {
             host: "localhost",

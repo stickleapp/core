@@ -21,9 +21,9 @@ it('can call stickle()', function () {
 });
 
 it('has observed attributes', function () {
-    expect(User::getStickleObservedAttributes())->toBeArray();
+    expect(User::stickleObservedAttributes())->toBeArray();
 });
 
 it('has tracked attributes', function () {
-    expect(User::getStickleTrackedAttributes())->toBeArray();
+    expect(User::stickleTrackedAttributes())->toBeArray();
 });

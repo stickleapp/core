@@ -9,7 +9,7 @@ use Workbench\App\Models\User;
 test('eventCount() with aggregate creates EventCountAggregate target', function () {
     $filter = Filter::eventCount(event: 'clicked:button')
         ->sum()
-        ->betweenDates(now()->subDays(7), now());
+        ->betweenDates(startDate: now()->subDays(7), endDate: now());
 
     $builder = User::query();
     $target = $filter->getTarget($builder);
@@ -24,7 +24,7 @@ test('EventCountAggregate creates correct SQL', function () {
 
     $filter = Filter::eventCount(event: 'user:login')
         ->count()
-        ->betweenDates(now()->subDays(30), now());
+        ->betweenDates(startDate: now()->subDays(30), endDate: now());
 
     $builder = User::query();
 
@@ -43,7 +43,7 @@ test('EventCount requires event argument', function () {
     expect(function () {
         $filter = Filter::eventCount(event: '')
             ->sum()
-            ->betweenDates(now()->subDays(7), now());
+            ->betweenDates(startDate: now()->subDays(7), endDate: now());
 
         $builder = User::query();
         $filter->getTarget($builder);
@@ -53,7 +53,7 @@ test('EventCount requires event argument', function () {
 test('EventCount requires aggregate method', function () {
     expect(function () {
         $filter = Filter::eventCount(event: 'clicked:button')
-            ->betweenDates(now()->subDays(7), now());
+            ->betweenDates(startDate: now()->subDays(7), endDate: now());
 
         $builder = User::query();
         $filter->getTarget($builder);

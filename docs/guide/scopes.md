@@ -27,7 +27,7 @@ class User extends Model
         $query->stickleWhere(
             Filter::requestCount('/dashboard')
                 ->count()
-                ->betweenDates(now()->subDays(7), now())
+                ->betweenDates(startDate: now()->subDays(7), endDate: now())
                 ->greaterThan(0)
         );
     }
@@ -40,7 +40,7 @@ class User extends Model
         $query->stickleWhere(
             Filter::number('purchase_amount')
                 ->sum()
-                ->betweenDates(now()->subYear(), now())
+                ->betweenDates(startDate: now()->subYear(), endDate: now())
                 ->greaterThan(1000)
         );
     }
@@ -55,8 +55,8 @@ class User extends Model
                 ->count()
                 ->increased()
                 ->betweenDateRanges(
-                    [now()->subMonths(2), now()->subMonth()], // Previous month
-                    [now()->subMonth(), now()]                 // Current month
+                    compareToDateRange: [now()->subMonths(2), now()->subMonth()],
+                    currentDateRange: [now()->subMonth(), now()]
                 )
                 ->greaterThan(5)
         );
@@ -88,13 +88,13 @@ public function scopeLikelyToChurn(Builder $query): void
         // Low session activity in the last 30 days
         Filter::sessionCount()
             ->count()
-            ->betweenDates(now()->subDays(30), now())
+            ->betweenDates(startDate: now()->subDays(30), endDate: now())
             ->lessThan(3)
     )->stickleWhere(
         // No purchases in the last 60 days
         Filter::eventCount('purchase:completed')
             ->count()
-            ->betweenDates(now()->subDays(60), now())
+            ->betweenDates(startDate: now()->subDays(60), endDate: now())
             ->equals(0)
     );
 }
@@ -108,13 +108,13 @@ public function scopePowerUsers(Builder $query): void
         // High event activity
         Filter::eventCount('button:click')
             ->count()
-            ->betweenDates(now()->subDays(30), now())
+            ->betweenDates(startDate: now()->subDays(30), endDate: now())
             ->greaterThan(100)
     )->stickleOrWhere(
         // OR high purchase value
         Filter::number('purchase_amount')
             ->sum()
-            ->betweenDates(now()->subDays(30), now())
+            ->betweenDates(startDate: now()->subDays(30), endDate: now())
             ->greaterThan(500)
     );
 }

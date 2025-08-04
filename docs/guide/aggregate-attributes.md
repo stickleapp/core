@@ -2,11 +2,23 @@
 outline: deep
 ---
 
-# Aggregating User Attributes
+# Aggregating Model Attributes
 
-Stickle allows you to track individuals (`Users`) as well as organizations (`Groups`). It is often useful to see and filter on the aggregate of `User` metrics at the `Group` level.
+In many organizations, your 'customer' information is spread over more than one Laravel model.
 
-For instance, if your software manages retail stores. You may have individual employees (`Users`) working at specific retail locations (`Groups`). Perhaps each employee has a `user_rating` provided by customers. Stickle allows you to see the `AVG`, `MIN` and `MAX` `user_rating` for employees at each retail location `Group`.
+For instances, many business-to-business software applications have `Accounts` which are companies and then `Users` which belong to the `Account`.
+
+In Laravel, you can define these relationshipo using **foreign keys** and Eloquent relationships. Stickle will then display and track the _aggregate_ values of the related models' attributes.
+
+# A Practical Example
+
+Often it is interesting to know aggregate values of related models. For example, say you sell software to help companies manage support tickets. You would have `Tenants`, `Users`, and `Tickets` models.
+
+-   The number of users with a rating attribute (count);
+-   The average rating;
+-   The sum total of the rating (not very useful);
+-   The lowest rating; and
+-   The highest rating;
 
 ```php
 use App\Models\Group; // The Group model has the `StickleEntity` trait

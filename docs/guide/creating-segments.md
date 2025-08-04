@@ -41,10 +41,12 @@ There are two items in the class you must extend: the `$model` attribute and `to
 
 The `toBuilder()` method must return an instance of a `Illuminate\Database\Eloquent\Builder` class.
 
-## Attributes
+## Stickle Segment Metadata
 
-You can optionally provide values for two custom class attributes:
+You can optionally provide additional information about the Segment using the `StickleSegmentMetadata` php attribute. This information is used in StickleUI to provide more context.
 
-`SegmentName` is a human-readable name you may provide for this segment. In the absense of this attribute, Stitch will infer the name of the segment from the name of the class.
+`name` is a human-readable name you may provide for this segment. In the absense of this attribute, Stitch will infer the name of the segment from the name of the class.
 
-`SegmentExportInterval` allows you specify a length of time (in minutes) that should elapse between requerying this segment. This will override the default set in `config('stickle.schedule.exportSegments')`.
+`description` is a longr, human-readable description of the segment providing more information about the objectives of this segments and how your organization might use the information.
+
+`exportInterval` allows you specify a length of time (in minutes) that should elapse between requerying this segment. This will override the default set in `config('stickle.schedule.exportSegments')`.

@@ -24,16 +24,16 @@ class DailyActiveUsers extends SegmentContract
             Filter::eventCount(event: 'clicked:something')
                 ->sum()
                 ->greaterThan(0)
-                ->betweenDates(now()->subDays(7), now())
+                ->betweenDates(startDate: now()->subDays(7), endDate: now())
         )->stickleWhere(
             Filter::eventCount(event: 'clicked:something')
                 ->avg()
                 ->increased()
                 ->greaterThan(0)
                 ->betweenDateRanges(
-                    [now()->subDays(14)->startOfDay(),
+                    compareToDateRange: [now()->subDays(14)->startOfDay(),
                         now()->subDays(7)->endOfDay()],
-                    [now()->subDays(7)->startOfDay(),
+                    currentDateRange: [now()->subDays(7)->startOfDay(),
                         now()->endOfDay()]
                 )
         );

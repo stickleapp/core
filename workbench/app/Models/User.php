@@ -64,25 +64,31 @@ class User extends Authenticatable
     ];
 
     /**
-     * Specify the attributes that should be observed for changes
+     * Define which attributes should be watched for changes.
      */
-    public static array $stickleObservedAttributes = [
-        'user_level',
-    ];
+    public static function stickleObservedAttributes(): array
+    {
+        return [
+            'user_level',
+        ];
+    }
 
     /**
-     * Specify the attributes that should be tracked over time
+     * Define which attributes should be tracked over time for analytics.
      */
-    public static array $stickleTrackedAttributes = [
-        // 'user_level', // store in db
-        'user_rating',
-        'ticket_count',
-        'open_ticket_count',
-        'closed_ticket_count',
-        'tickets_closed_last_30_days',
-        'average_resolution_time',
-        'average_resolution_time_30_days',
-    ];
+    public static function stickleTrackedAttributes(): array
+    {
+        return [
+            // 'user_level', // store in db
+            'user_rating',
+            'ticket_count',
+            'open_ticket_count',
+            'closed_ticket_count',
+            'tickets_closed_last_30_days',
+            'average_resolution_time',
+            'average_resolution_time_30_days',
+        ];
+    }
 
     public function ticketsAssigned(): HasMany
     {

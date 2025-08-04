@@ -4,11 +4,15 @@ outline: deep
 
 # Model Attributes
 
-Stickle allows you to create an audit history of your Users. To do so, simply add the `StickleApp\Core\Traits\StickleEntity` and add the attributes you want to track to the `$observedAttributes` array of that class.
+Stickle allows you to create an audit history of your Users. To do so, simply assign the `StickleApp\Core\Traits\StickleEntity` trait to the model and add the attributes you want to track to the `$observedAttributes` array of that class.
 
 # Numeric Attributes
 
+Documentation missing. <Badge type="danger" text="Incomplete"></Badge>
+
 # Text Attributes
+
+Documentation missing. <Badge type="danger" text="Incomplete"></Badge>
 
 # What about parent <> child relationships?
 

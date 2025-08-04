@@ -54,7 +54,7 @@ test('EventCount delta requires both date ranges', function () {
         $filter = Filter::eventCount(event: 'clicked:button')
             ->sum()
             ->increased()
-            ->betweenDates(now()->subDays(7), now());
+            ->betweenDates(startDate: now()->subDays(7), endDate: now());
 
         $builder = User::query();
         $filter->getTarget($builder);

@@ -9,7 +9,7 @@ use Workbench\App\Models\User;
 test('sessionCount() with aggregate creates SessionCountAggregate target', function () {
     $filter = Filter::sessionCount()
         ->sum()
-        ->betweenDates(now()->subDays(7), now());
+        ->betweenDates(startDate: now()->subDays(7), endDate: now());
 
     $builder = User::query();
     $target = $filter->getTarget($builder);
@@ -23,7 +23,7 @@ test('SessionCountAggregate creates correct SQL', function () {
 
     $filter = Filter::sessionCount()
         ->count()
-        ->betweenDates(now()->subDays(30), now());
+        ->betweenDates(startDate: now()->subDays(30), endDate: now());
 
     $builder = User::query();
     $target = $filter->getTarget($builder);
@@ -40,7 +40,7 @@ test('SessionCountAggregate creates correct SQL', function () {
 test('SessionCount requires aggregate method', function () {
     expect(function () {
         $filter = Filter::sessionCount()
-            ->betweenDates(now()->subDays(7), now());
+            ->betweenDates(startDate: now()->subDays(7), endDate: now());
 
         $builder = User::query();
         $filter->getTarget($builder);

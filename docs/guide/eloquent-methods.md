@@ -30,8 +30,8 @@ $users = User::query()
             ->increased()
             ->moreThan(5)
             ->betweenDateRanges(
-                [now()->subDays(14), now()->subDays(7)],
-                [now()->subDays(7), now()]
+                compareToDateRange: [now()->subDays(14), now()->subDays(7)],
+                currentDateRRange: [now()->subDays(7), now()]
             )
     )->get();
 ```
@@ -152,7 +152,7 @@ EventCount filters aggregate event data over specified time periods. All EventCo
 $users = User::stickleWhere(
     Filter::eventCount('clicked:buy_button')
         ->count()
-        ->betweenDates(now()->subDays(30), now())
+        ->betweenDates(startDate: now()->subDays(30), endDate: now())
         ->greaterThan(5)
 )->get();
 
@@ -160,7 +160,7 @@ $users = User::stickleWhere(
 $users = User::stickleWhere(
     Filter::eventCount('session:duration')
         ->avg()
-        ->betweenDates(now()->subWeek(), now())
+        ->betweenDates(startDate: now()->subWeek(), endDate: now())
         ->greaterThan(10)
 )->get();
 
@@ -170,8 +170,8 @@ $users = User::stickleWhere(
         ->sum()
         ->increased()
         ->betweenDateRanges(
-            [now()->subDays(14), now()->subDays(7)], // Compare period
-            [now()->subDays(7), now()]                // Current period
+            compareToDateRange: [now()->subDays(14), now()->subDays(7)],
+            currentDateRange: [now()->subDays(7), now()]
         )
         ->greaterThan(0)
 )->get();
@@ -215,7 +215,7 @@ $users = User::stickleWhere(Filter::number('score')->between(50, 150))->get();
 $users = User::stickleWhere(
     Filter::number('purchase_amount')
         ->avg()
-        ->betweenDates(now()->subDays(30), now())
+        ->betweenDates(startDate: now()->subDays(30), endDate: now())
         ->greaterThan(500)
 )->get();
 
@@ -225,8 +225,8 @@ $users = User::stickleWhere(
         ->sum()
         ->increased()
         ->betweenDateRanges(
-            [now()->subMonths(2), now()->subMonth()], // Previous month
-            [now()->subMonth(), now()]                 // Current month
+            compareToDateRange: [now()->subMonths(2), now()->subMonth()],
+            currentDateRange: [now()->subMonth(), now()]
         )
         ->greaterThan(100)
 )->get();
@@ -237,8 +237,8 @@ $users = User::stickleWhere(
         ->max()
         ->decreased()
         ->betweenDateRanges(
-            [now()->subMonths(6), now()->subMonths(3)], // Previous quarter
-            [now()->subMonths(3), now()]                 // Current quarter
+            compareToDateRange: [now()->subMonths(6), now()->subMonths(3)],
+            currentDateRange: [now()->subMonths(3), now()]
         )
         ->greaterThan(0)
 )->get();
@@ -251,7 +251,7 @@ RequestCount filters aggregate HTTP request data for specific URLs over time per
 **Required Methods:**
 
 -   Aggregate: `sum()`, `avg()`, `min()`, `max()`, `count()`
--   Date range: `betweenDates(startDate, endDate)` or `betweenDateRanges(compareRange, currentRange)`
+-   Date range: `betweenDates(startDate, endDate)` or `betweenDateRanges(compareToDateRange, currentDateRange)`
 
 **Available Tests:**
 
@@ -267,7 +267,7 @@ RequestCount filters aggregate HTTP request data for specific URLs over time per
 $users = User::stickleWhere(
     Filter::requestCount('/api/data')
         ->count()
-        ->betweenDates(now()->subDays(7), now())
+        ->betweenDates(startDate: now()->subDays(7), endDate: now())
         ->greaterThan(10)
 )->get();
 
@@ -277,8 +277,8 @@ $users = User::stickleWhere(
         ->sum()
         ->increased()
         ->betweenDateRanges(
-            [now()->subDays(14), now()->subDays(7)], // Last week
-            [now()->subDays(7), now()]                // This week
+            compareToDateRange: [now()->subDays(14), now()->subDays(7)],
+            currentDateRange: [now()->subDays(7), now()]
         )
         ->greaterThan(0)
 )->get();
@@ -291,7 +291,7 @@ SessionCount filters aggregate session data over time periods. All SessionCount 
 **Required Methods:**
 
 -   Aggregate: `sum()`, `avg()`, `min()`, `max()`, `count()`
--   Date range: `betweenDates(startDate, endDate)` or `betweenDateRanges(compareRange, currentRange)`
+-   Date range: `betweenDates(startDate, endDate)` or `betweenDateRanges(compareToDateRange, currentDateRange)`
 
 **Available Tests:**
 
@@ -307,7 +307,7 @@ SessionCount filters aggregate session data over time periods. All SessionCount 
 $users = User::stickleWhere(
     Filter::sessionCount()
         ->count()
-        ->betweenDates(now()->subDays(30), now())
+        ->betweenDates(startDate: now()->subDays(30), endDate: now())
         ->greaterThan(5)
 )->get();
 
@@ -317,8 +317,8 @@ $users = User::stickleWhere(
         ->sum()
         ->increased()
         ->betweenDateRanges(
-            [now()->subMonths(2), now()->subMonth()], // Previous month
-            [now()->subMonth(), now()]                 // Current month
+            compareToDateRange: [now()->subMonths(2), now()->subMonth()],
+            currentDateRange: [now()->subMonth(), now()]
         )
         ->greaterThan(0)
 )->get();

@@ -27,7 +27,7 @@ $activeUsers = User::stickleWhere(
     Filter::eventCount('page_view')
         ->sum()
         ->greaterThan(10)
-        ->betweenDates(now()->subDays(7), now())
+        ->betweenDates(startDate: now()->subDays(7), now())
 )->get();
 
 // Complex filtering with event aggregates
@@ -51,7 +51,7 @@ $users = User::stickleWhere(
 )->stickleOrWhere(
     Filter::eventCount('login')
         ->greaterThan(0)
-        ->betweenDates(now()->subDays(1), now())
+        ->betweenDates(startDate: now()->subDays(1), now())
 )->get();
 ```
 
@@ -135,7 +135,7 @@ foreach ($relationships as $relationship) {
 
 ## Static Methods
 
-### `getStickleObservedAttributes(): array`
+### `stickleObservedAttributes(): array`
 
 Get the list of attributes that should be automatically tracked when models are created or updated.
 
@@ -146,19 +146,22 @@ class User extends Model
 {
     use StickleEntity;
 
-    protected static $stickleObservedAttributes = [
-        'email',
-        'subscription_status',
-        'user_rating',
-    ];
+    public static function stickleObservedAttributes(): array
+    {
+        return [
+            'email',
+            'subscription_status',
+            'user_rating',
+        ];
+    }
 }
 
 // Get observed attributes
-$observed = User::getStickleObservedAttributes();
+$observed = User::stickleObservedAttributes();
 // Returns: ['email', 'subscription_status', 'user_rating']
 ```
 
-### `getStickleTrackedAttributes(): array`
+### `stickleTrackedAttributes(): array`
 
 Get the list of attributes that are tracked for analytics and charting.
 
@@ -169,15 +172,18 @@ class User extends Model
 {
     use StickleEntity;
 
-    protected static $stickleTrackedAttributes = [
-        'user_rating',
-        'subscription_mrr',
-        'login_count',
-    ];
+    public static function stickleTrackedAttributes(): array
+    {
+        return [
+            'user_rating',
+            'subscription_mrr',
+            'login_count',
+        ];
+    }
 }
 
 // Get tracked attributes
-$tracked = User::getStickleTrackedAttributes();
+$tracked = User::stickleTrackedAttributes();
 // Returns: ['user_rating', 'subscription_mrr', 'login_count']
 ```
 
@@ -313,17 +319,23 @@ class User extends Model
     use StickleEntity;
 
     // Define which attributes to observe for changes
-    protected static $stickleObservedAttributes = [
-        'email',
-        'subscription_status',
-        'user_rating',
-    ];
+    public static function stickleObservedAttributes(): array
+    {
+        return [
+            'email',
+            'subscription_status',
+            'user_rating',
+        ];
+    }
 
     // Define which attributes to track for analytics
-    protected static $stickleTrackedAttributes = [
-        'user_rating',
-        'login_count',
-    ];
+    public static function stickleTrackedAttributes(): array
+    {
+        return [
+            'user_rating',
+            'login_count',
+        ];
+    }
 }
 
 // Tracked attributes are automatically updated when model changes
@@ -355,7 +367,7 @@ $customers = Customer::stickleWhere(
     Filter::eventCount('login')
         ->count()
         ->greaterThan(0)
-        ->betweenDates(now()->subDays(30), now())
+        ->betweenDates(startDate: now()->subDays(30), now())
 )->get();
 
 // Find users who either have high ratings OR are recently active
@@ -365,7 +377,7 @@ $engagedUsers = User::stickleWhere(
     Filter::eventCount('page_view')
         ->count()
         ->greaterThan(10)
-        ->betweenDates(now()->subDays(7), now())
+        ->betweenDates(startDate: now()->subDays(7), now())
 )->get();
 ```
 
@@ -414,10 +426,13 @@ class User extends Model
 {
     use StickleEntity;
 
-    protected static $stickleTrackedAttributes = [
-        'user_rating',
-        'subscription_mrr',
-    ];
+    public static function stickleTrackedAttributes(): array
+    {
+        return [
+            'user_rating',
+            'subscription_mrr',
+        ];
+    }
 
     #[StickleAttributeMetadata([
         'chartType' => ChartType::LINE,
@@ -490,7 +505,7 @@ foreach ($users as $user) {
 
 ## Best Practices
 
-1. **Define Tracked Attributes Clearly**: Use separate arrays for `$stickleObservedAttributes` and `$stickleTrackedAttributes` based on your needs.
+1. **Define Tracked Attributes Clearly**: Override the `stickleObservedAttributes()` and `stickleTrackedAttributes()` methods based on your needs.
 
 2. **Use Metadata Attributes**: Define `StickleAttributeMetadata` and `StickleRelationshipMetadata` for better UI integration.
 

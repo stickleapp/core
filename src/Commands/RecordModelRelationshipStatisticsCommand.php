@@ -52,7 +52,7 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
 
         $attributes = [];
         foreach ($modelClasses as $modelClass) {
-            $stickleTrackedAttributes = $modelClass::getStickleTrackedAttributes();
+            $stickleTrackedAttributes = $modelClass::stickleTrackedAttributes();
             if ($relationships = ClassUtils::getRelationshipsWith(app(), $modelClass, [HasMany::class], $modelClasses)) {
                 foreach ($relationships as $relationship) {
                     foreach ($stickleTrackedAttributes as $attribute) {

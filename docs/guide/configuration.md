@@ -34,7 +34,7 @@ _Default: 360_
 
 ### `STICKLE_FREQUENCY_RECORD_SEGMENT_STATISTICS`
 
-How often (in minutes) to record segment statistics -- that is the aggregates of the model attributes contained in the `stickleTrackedAttributes` array -- at the Segment-level.
+How often (in minutes) to record segment statistics -- that is the aggregates of the model attributes returned by the `stickleTrackedAttributes()` method -- at the Segment-level.
 
 _Default: 360_
 
