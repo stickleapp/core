@@ -14,6 +14,7 @@ use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\form;
 use function Laravel\Prompts\info;
 use function Laravel\Prompts\note;
+use function Laravel\Prompts\outro;
 use function Laravel\Prompts\spin;
 use function Laravel\Prompts\table;
 
@@ -178,7 +179,7 @@ class InstallCommand extends Command
                 name: 'STICKLE_WEB_MIDDLEWARE',
                 label: 'What middleware would you like to apply to the web routes?',
                 validate: ['STICKLE_WEB_MIDDLEWARE' => 'string'],
-                default: 'api'
+                default: 'web'
             )
             ->note('Stickle exposes some API routes used by the UI.')
             ->note('We prefix the routes (`api/stickle`) to distinguish them from your other routes.')
@@ -221,29 +222,22 @@ class InstallCommand extends Command
                     headers: ['Setting', 'Value'],
                     rows: $rows,
                 );
-            })
-            ->confirm(
-                label: 'Are you happy with these values?',
-                hint: 'You can change these settings later in `config/stickle.php`.',
-                default: true,
-                yes: 'Yes',
-                no: 'No'
-            )
-            ->submit();
-
-        // Clear out the notes() etc, with numerical indexes
-        $settings = collect($settings)->reject(fn ($value, $key) => is_numeric($key))->toArray();
-
-        $settings = $this->formatSettings($settings);
-
-        $this->writeEnvFile($settings);
-
-        $this->call('config:clear');
+            })->submit();
 
         if (confirm(
-            label: 'Would you like to publish the configuration file now?',
+            label: 'Are you ready to publish the configuration file?',
             hint: 'This will run: php artisan vendor:publish --provider="StickleApp\Core\CoreServiceProvider"'
         )) {
+
+            // Clear out the notes() etc, with numerical indexes
+            $settings = collect($settings)->reject(fn ($value, $key) => is_numeric($key))->toArray();
+
+            $settings = $this->formatSettings($settings);
+
+            $this->writeEnvFile($settings);
+
+            $this->call('config:clear');
+
             $this->call('vendor:publish', [
                 '--force' => true,
                 '--provider' => 'StickleApp\Core\CoreServiceProvider',
@@ -271,10 +265,10 @@ class InstallCommand extends Command
 
             $this->info('Installing Laravel Reverb...');
 
-            // spin(
-            //     fn () => $this->installReverb(),
-            //     'Installing Laravel Reverb...'
-            // );
+            spin(
+                fn () => $this->installReverb(),
+                'Installing Laravel Reverb...'
+            );
 
             info('Laravel Reverb installed successfully!');
 
@@ -295,10 +289,10 @@ class InstallCommand extends Command
             label: 'Would you like to run the migrations now?'
         )) {
 
-            // spin(
-            //     fn () => $this->runMigrations(),
-            //     'Running migrations...'
-            // );
+            spin(
+                fn () => $this->runMigrations(),
+                'Running migrations...'
+            );
 
             info('Migrations ran successfully!');
 
@@ -308,6 +302,24 @@ class InstallCommand extends Command
 
             note('php artisan migrate');
         }
+
+        if (confirm('Would you like to star our repo on GitHub?')) {
+
+            $repoUrl = 'https://github.com/stickleapp/core';
+
+            if (PHP_OS_FAMILY == 'Darwin') {
+                exec("open {$repoUrl}");
+            }
+            if (PHP_OS_FAMILY == 'Windows') {
+                exec("start {$repoUrl}");
+            }
+            if (PHP_OS_FAMILY == 'Linux') {
+                exec("xdg-open {$repoUrl}");
+            }
+        }
+
+        outro('You are all set! Let us know what you build with Stickle!');
+
     }
 
     private function installReverb()
@@ -359,7 +371,7 @@ class InstallCommand extends Command
 
             // If value contains spaces or special characters, wrap it in quotes
             if (is_string($value) && preg_match('/\s|[^a-zA-Z0-9_.]/', $envValue)) {
-                $envValue = '"'.str_replace(['"', '\\'], ['\"', '\\\\\\'], $envValue).'"';
+                $envValue = '"'.str_replace(['"', '\\'], ['\"', '\\\\\\\\'], $envValue).'"';
             }
 
             // Check if the key already exists in the .env file

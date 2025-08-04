@@ -7,7 +7,7 @@ use StickleApp\Core\Models\Segment;
 /**
  * Routes for the demo
  */
-Route::middleware(config('stickle.routes.web.middleware', ['web']))
+Route::middleware(config('stickle.routes.web.middleware', []))
     ->prefix(config('stickle.routes.web.prefix', 'stickle'))->group(function () {
 
         /** Stickle UI */
