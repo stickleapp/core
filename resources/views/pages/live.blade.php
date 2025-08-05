@@ -1,6 +1,13 @@
 <x-stickle::ui.layouts.default-layout>
     <div class="mb-5">
-        <x-stickle::ui.partials.breadcrumbs></x-stickle::ui.partials.breadcrumbs>
+        <x-stickle::ui.partials.breadcrumbs
+            :pages="[
+                [
+                    'name' => 'Live',
+                    'url' => route('stickle::live')
+                ]
+            ]"
+        ></x-stickle::ui.partials.breadcrumbs>
     </div>
 
     <div class="w-full p-4">LIVE / DASHBOARD</div>

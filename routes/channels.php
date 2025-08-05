@@ -9,3 +9,7 @@ Broadcast::channel(config('stickle.broadcasting.channels.firehose'), function ($
 Broadcast::channel(config('stickle.broadcasting.channels.object'), function ($user, $model, $id) {
     return true; // ($user->is_admin) ? $user : false;
 });
+
+Broadcast::channel(config('stickle.broadcasting.channels.class'), function ($user, $model) {
+    return true; // ($user->is_admin) ? $user : false;
+});

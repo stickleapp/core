@@ -143,7 +143,7 @@ class SendTestRequests extends Command
 
         while (true) {
 
-            $users = User::where('id', 4)->get();
+            $users = User::where('id', 2)->get();
             // $users = User::where('id', '<=', 10)->limit(10)->get();
             // $users = User::inRandomOrder()->take(10)->get();
 

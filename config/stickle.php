@@ -111,6 +111,7 @@ return [
         'channels' => [
             'firehose' => env('STICKLE_BROADCASTING_CHANNEL_FIREHOSE', 'stickle.firehose'),
             'object' => env('STICKLE_BROADCASTING_CHANNEL_OBJECT', 'stickle.object.%s.%s'),
+            'class' => env('STICKLE_BROADCASTING_CHANNEL_CLASS', 'stickle.class.%s'),
         ],
     ],
 
