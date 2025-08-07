@@ -11,6 +11,16 @@ class Ticket extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'customer_id',
+        'status',
+        'title',
+        'description',
+        'priority',
+        'assigned_to_id',
+        'created_by_id',
+    ];
+
     /**
      * Customer the order belongs to.
      */

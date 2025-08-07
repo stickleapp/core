@@ -27,8 +27,10 @@ class TicketFactory extends Factory
      */
     public function definition(): array
     {
-        // Get a random customer that has at least one user
-        $customer = Customer::has('users')->inRandomOrder()->first();
+        // Create a customer with at least one user
+        $customer = Customer::factory()
+            ->has(\Workbench\App\Models\User::factory()->count(2))
+            ->create();
 
         return [
             'status' => ['open', 'pending', 'in-progress', 'resolved'][fake()->numberBetween(0, 3)],

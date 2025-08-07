@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Workbench\App\Enums\UserType;
+use Workbench\App\Models\Customer;
 use Workbench\App\Models\User;
 
 /**
@@ -34,6 +35,7 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
@@ -41,6 +43,7 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'user_type' => UserType::END_USER,
+            'customer_id' => Customer::factory()->create()->id, // Default to null, can be set later
         ];
     }
 
