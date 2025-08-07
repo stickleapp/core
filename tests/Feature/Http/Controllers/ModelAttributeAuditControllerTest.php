@@ -40,17 +40,17 @@ it('returns model attribute audit data via API request', function () {
         'model_class' => 'User',
         'attribute' => 'user_rating',
     ]);
-    
+
     $response = $this->getJson("/stickle/api/model-attribute-audit?{$queryParams}");
 
     // Assert basic response
     $response->assertOk();
-    
+
     $data = $response->json();
-    
+
     // Basic structure check
     expect($data)->toHaveKeys(['time_series', 'period']);
-    
+
     // Check if delta exists when there's data
     if (isset($data['delta'])) {
         expect($data['delta'])->toHaveKeys(['start_value', 'end_value', 'absolute_change']);
