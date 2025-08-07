@@ -93,6 +93,8 @@ class TestCase extends Orchestra
         Artisan::call("stickle:create-partitions {$this->tablePrefix}requests_rollup_1day public week '{$date}' 2");
         Artisan::call("stickle:create-partitions {$this->tablePrefix}sessions_rollup_1day public week '{$date}' 2");
         Artisan::call("stickle:create-partitions {$this->tablePrefix}model_attribute_audit public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$this->tablePrefix}model_relationship_statistics public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$this->tablePrefix}segment_statistics public week '{$date}' 2");
 
     }
 }

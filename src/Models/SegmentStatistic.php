@@ -46,5 +46,6 @@ class SegmentStatistic extends Model
         'value_min',
         'value_max',
         'value_avg',
+        'recorded_at',
     ];
 }

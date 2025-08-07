@@ -37,7 +37,7 @@ class Segment extends Model
         'description',
         'model_class',
         'as_class',
-        'definition',
+        'as_json',
         'export_interval',
         'last_exported_at',
         'sort_order',
