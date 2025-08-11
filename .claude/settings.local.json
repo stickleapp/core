@@ -8,7 +8,8 @@
       "Bash(find:*)",
       "Bash(composer test)",
       "Bash(rm:*)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "Bash(curl:*)"
     ]
   },
   "enableAllProjectMcpServers": false

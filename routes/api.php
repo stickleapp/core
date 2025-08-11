@@ -22,7 +22,7 @@ Route::middleware(config('stickle.routes.api.middleware', ['api']))
             ->name('stickle/track');
 
         Route::get('/activities', [ActivitiesController::class, 'index'])
-            ->name('activities');
+            ->name('stickle::api.activities');
 
         Route::get('/segment-statistics', [SegmentStatisticsController::class, 'index'])
             ->name('segment-statistics');

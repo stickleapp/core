@@ -85,6 +85,11 @@ class Customer extends Model
         ];
     }
 
+    public function stickleLabel(): string
+    {
+        return $this->name ?: 'Customer '.$this->getKey();
+    }
+
     // public static function stickleTrackedAggregates(): array {}
     // #[StickleAggregateMetadata([])
 

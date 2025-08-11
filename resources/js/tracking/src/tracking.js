@@ -1,5 +1,5 @@
 (function () {
-    const trackingUrl = "/stickle-api/track";
+    const trackingUrl = "/stickle/api/track";
 
     function sendData(data) {
         navigator.sendBeacon(
@@ -11,20 +11,21 @@
         );
     }
 
-    function page() {
+    function page(pageName = "", properties = {}) {
         const data = {
             type: "page",
-            url: window.location.href,
+            name: pageName,
+            properties: properties || {},
             timestamp: new Date().toISOString(),
         };
         sendData(data);
     }
 
-    function track(eventName, eventData = {}) {
+    function track(eventName, properties = {}) {
         const data = {
             type: "track",
             name: eventName,
-            data: eventData,
+            properties: properties || {},
             timestamp: new Date().toISOString(),
         };
         sendData(data);

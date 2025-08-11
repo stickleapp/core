@@ -7,7 +7,7 @@
                     'url' => route('stickle::models', ['modelClass' => $modelClass]),
                 ],
                 [
-                    'name' => $model->name,
+                    'name' => $model->stickleLabel(),
                     'url' => route('stickle::model', ['modelClass' => $modelClass, 'uid' => $model->getKey()]),
                 ],
                 [
@@ -21,7 +21,7 @@
     <h1
         class="scroll-m-20 text-xl md:text-3xl md:font-bold tracking-tight pb-3 md:pb-6"
     >
-        {{ $model->name }}:
+        {{ $model->stickleLabel() }}:
         {{ \Illuminate\Support\Str::of($relationship)->headline() }}
     </h1>
 

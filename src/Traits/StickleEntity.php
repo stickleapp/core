@@ -35,47 +35,6 @@ trait StickleEntity
         return (new self)->getTable();
     }
 
-    /**
-     * Enables a ->stickleWhere() method on the model
-     */
-    public static function scopeStickleWhere(Builder $builder, Filter $filter)
-    {
-
-        $prefix = config('stickle.database.tablePrefix');
-
-        /**
-         * We'll need this join for the filters but do not want to add it twice
-         */
-        if (! $builder->hasJoin("{$prefix}model_attributes")) {
-            $builder->leftJoin("{$prefix}model_attributes", function ($join) use ($prefix) {
-                $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw(self::getTableName().'.id::text'));
-                $join->where("{$prefix}model_attributes.model_class", '=', self::class);
-            });
-        }
-
-        return $filter->apply($builder, 'and');
-    }
-
-    /**
-     * Enables a ->stickleOrWhere() method on the model
-     */
-    public static function scopeStickleOrWhere(Builder $builder, Filter $filter)
-    {
-        $prefix = config('stickle.database.tablePrefix');
-
-        /**
-         * We'll need this join for the filters but do not want to add it twice
-         */
-        if (! $builder->hasJoin("{$prefix}model_attributes")) {
-            $builder->leftJoin("{$prefix}model_attributes", function ($join) use ($prefix) {
-                $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw(self::getTableName().'.'.self::getKeyName().'::text'));
-                $join->where("{$prefix}model_attributes.model_class", '=', self::class);
-            });
-        }
-
-        return $filter->apply($builder, 'or');
-    }
-
     public static function bootStickleEntity()
     {
 
@@ -159,6 +118,62 @@ trait StickleEntity
             $model->trackable_attributes = $model->only($observableAttributeKeys);
         });
 
+    }
+
+    /**
+     * Enables a ->stickleWhere() method on the model
+     */
+    public static function scopeStickleWhere(Builder $builder, Filter $filter)
+    {
+
+        $prefix = config('stickle.database.tablePrefix');
+
+        /**
+         * We'll need this join for the filters but do not want to add it twice
+         */
+        if (! $builder->hasJoin("{$prefix}model_attributes")) {
+            $builder->leftJoin("{$prefix}model_attributes", function ($join) use ($prefix) {
+                $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw(self::getTableName().'.id::text'));
+                $join->where("{$prefix}model_attributes.model_class", '=', self::class);
+            });
+        }
+
+        return $filter->apply($builder, 'and');
+    }
+
+    /**
+     * Enables a ->stickleOrWhere() method on the model
+     */
+    public static function scopeStickleOrWhere(Builder $builder, Filter $filter)
+    {
+        $prefix = config('stickle.database.tablePrefix');
+
+        /**
+         * We'll need this join for the filters but do not want to add it twice
+         */
+        if (! $builder->hasJoin("{$prefix}model_attributes")) {
+            $builder->leftJoin("{$prefix}model_attributes", function ($join) use ($prefix) {
+                $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw(self::getTableName().'.'.self::getKeyName().'::text'));
+                $join->where("{$prefix}model_attributes.model_class", '=', self::class);
+            });
+        }
+
+        return $filter->apply($builder, 'or');
+    }
+
+    public function stickleLabel(): string
+    {
+        return Str::of(strtolower(
+            class_basename(self::class)
+        ))->headline().' '.$this->getKey();
+    }
+
+    public function stickleUrl(): string
+    {
+        return route('stickle::model', [
+            'modelClass' => class_basename(self::class),
+            'uid' => $this->getKey(),
+        ]);
     }
 
     /**

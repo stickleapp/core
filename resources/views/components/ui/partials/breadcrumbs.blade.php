@@ -3,7 +3,7 @@
         <li>
             <div>
                 <a
-                    href="{{ route('stickle::index') }}"
+                    href="{{ route('stickle::live') }}"
                     class="text-gray-400 hover:text-gray-500"
                 >
                     <svg

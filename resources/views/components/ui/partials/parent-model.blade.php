@@ -6,7 +6,7 @@ $model->stickleRelationships([\Illuminate\Database\Eloquent\Relations\BelongsTo:
     <a
         href="{{ route('stickle::model', ['modelClass' => class_basename($parent), 'uid' => $parent->id]) }}"
         class="text-gray-500 hover:text-gray-700"
-        >{{ $parent->name }}
+        >{{ $parent->stickleLabel() }}
     </a>
 </h2>
 @endif @endif

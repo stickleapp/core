@@ -7,9 +7,17 @@
             </template>
             <dl class="grid grid-cols-1 sm:grid-cols-2">
                 <template x-for="(value, key) in modelAttributes" :key="key">
-                    <div class="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
-                        <dt class="text-sm/6 font-medium text-gray-900" x-text="toTitleCase(key)"></dt>
-                        <dd class="mt-1 text-sm/6 text-gray-700 sm:mt-2" x-text="typeof value === 'object' ? JSON.stringify(value) : value"></dd>
+                    <div
+                        class="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0"
+                    >
+                        <dt
+                            class="text-sm/6 font-medium text-gray-900"
+                            x-text="toTitleCase(key)"
+                        ></dt>
+                        <dd
+                            class="mt-1 text-sm/6 text-gray-700 sm:mt-2"
+                            x-text="typeof value === 'object' ? JSON.stringify(value) : value"
+                        ></dd>
                     </div>
                 </template>
             </dl>

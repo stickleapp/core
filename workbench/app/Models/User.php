@@ -91,6 +91,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function stickleLabel(): string
+    {
+        return $this->name ?: 'User '.$this->getKey();
+    }
+
     public function ticketsAssigned(): HasMany
     {
         return $this->hasMany(Ticket::class, 'assigned_to_id');

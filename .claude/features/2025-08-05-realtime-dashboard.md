@@ -28,23 +28,16 @@ Transform the `/stickle/live` route into a comprehensive real-time analytics das
         - `end_at` - End datetime filter (default: now)
         - `event_types` - `page_view|event` (optional)
         - `limit` - Number of recent activities (default: 50)
-        - `include_location` - `true|false` (default: true)
     - **Server-side Processing**:
         - Union of requests and events tables with datetime filtering
-        - Join location_data when `include_location=true`
-        - Latest activity per user using window functions
     - **Attributes Returned**:
         ```json
         {
             "data": [
                 {
-                    "id": 123,
-                    "model": {
-                        "name": "John Doe",
-                        "email": "john@example.com",
-                        "customer_name": "Acme Corp",
-                        "user_type": "END_USER"
-                    },
+                    "model_class": "User",
+                    "object_uid": "object-uid",
+                    "session_uid": "some-id",
                     "activity_type": "page_view",
                     "properties": {
                         "url": "/some/page",
@@ -55,8 +48,7 @@ Transform the `/stickle/live` route into a comprehensive real-time analytics das
                         "country": "USA",
                         "lat": 40.7128,
                         "lng": -74.006
-                    },
-                    "session_status": "active" // Last activity by user within 30 minutes?
+                    }
                 }
             ]
         }

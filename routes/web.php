@@ -11,10 +11,30 @@ Route::middleware(config('stickle.routes.web.middleware', []))
     ->prefix(config('stickle.routes.web.prefix', 'stickle'))->group(function () {
 
         /** Stickle UI */
-        Route::view('/', 'stickle::pages/live')
-            ->name('stickle::index');
-        Route::view('/live', 'stickle::pages/live')
-            ->name('stickle::live');
+        Route::get('/live', function (Request $request) {
+
+            $modelClass = config('stickle.namespaces.models').'\\User';
+
+            if ($request->filled(['model_class', 'uid'])) {
+                $eventsChannel = sprintf(config('stickle.broadcasting.channels.object'),
+                    str_replace('\\', '-', strtolower(class_basename($modelClass))),
+                    $request->string('uid')
+                );
+                $model = $modelClass::findOrFail($request->route('uid'));
+            } else {
+                $eventsChannel = config('stickle.broadcasting.channels.firehose');
+            }
+
+            return view('stickle::pages/live', [
+                'modelClass' => $modelClass,
+                'uid' => $request->string('uid'),
+                'model' => $model ?? null,
+                'eventsChannel' => $eventsChannel,
+                'location' => $request->string('location'),
+            ]);
+        })->name('stickle::live');
+        Route::redirect('', config('stickle.routes.web.prefix').'/live');
+
         Route::view('/{modelClass}/segments/{segmentId}', 'stickle::pages/segment')
             ->name('stickle::segments')
             ->where('modelClass', '[^/]+');

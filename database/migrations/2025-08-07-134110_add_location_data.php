@@ -27,16 +27,6 @@ return new class extends Migration
             $table->unique(['ip_address']);
             $table->spatialIndex('coordinates');
         });
-
-        Schema::table("{$prefix}requests", function (Blueprint $table) {
-            $table->text('ip_address')->nullable(true);
-            $table->index(['ip_address']);
-        });
-
-        Schema::table("{$prefix}events", function (Blueprint $table) {
-            $table->text('ip_address')->nullable(true);
-            $table->index(['ip_address']);
-        });
     }
 
     /**
@@ -48,13 +38,5 @@ return new class extends Migration
         $prefix = config('stickle.database.tablePrefix');
 
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}location_data");
-
-        Schema::table("{$prefix}events", function (Blueprint $table) {
-            $table->dropColumn('ip_address');
-        });
-
-        Schema::table("{$prefix}requests", function (Blueprint $table) {
-            $table->dropColumn('ip_address');
-        });
     }
 };

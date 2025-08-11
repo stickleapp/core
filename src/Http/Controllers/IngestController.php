@@ -67,44 +67,45 @@ class IngestController
         )) {
             throw new \Exception('Object id not specified');
         }
+
+        $properties = data_get($validated, 'payload.*.properties', []);
+
+        $properties['title'] = data_get($properties, 'title', $request->header('X-Title', ''));
+        $properties['path'] = data_get($properties, 'path', $request->getPathInfo());
+        $properties['url'] = data_get($properties, 'url', $request->fullUrl());
+        $properties['referrer'] = data_get($properties, 'referrer', $request->headers->get('referer', ''));
+        $properties['search'] = data_get($properties, 'search', $request->getQueryString());
+        $properties['user_agent'] = data_get($properties, 'user_agent', $request->userAgent());
+        $properties['method'] = data_get($properties, 'method', $request->getMethod());
+
         foreach (data_get($validated, 'payload') as $item) {
             switch ($item['type']) {
                 case 'page':
                     $data = array_merge($item, [
-                        'user' => $request->user(),
+                        'activity_type' => 'page',
                         'model_class' => $modelClass,
                         'object_uid' => $objectUid,
                         'session_uid' => $request->session()->getId(),
-                        'url' => $request->fullUrl(),
-                        'path' => $request->getPathInfo(),
-                        'host' => $request->getHost(),
-                        'search' => $request->getQueryString(),
-                        'utm_source' => $request->query('utm_source'),
-                        'utm_medium' => $request->query('utm_medium'),
-                        'utm_campaign' => $request->query('utm_campaign'),
-                        'utm_content' => $request->query('utm_content'),
-                        'created_at' => data_get($item, 'timestamp', $dt),
-                        'updated_at' => data_get($item, 'timestamp', $dt),
+                        'ip_address' => $request->ip(),
+                        'model' => $this->getModel($modelClass, $objectUid),
+                        'name' => data_get($item, 'name'),
+                        'properties' => $properties,
+                        'timestamp' => data_get($item, 'timestamp', $dt),
                     ]);
 
                     Page::dispatch($data);
                     break;
                 case 'track':
                     $data = array_merge($item, [
-                        'user' => $request->user(),
+                        'activity_type' => 'event',
                         'model_class' => $modelClass,
                         'object_uid' => $objectUid,
                         'session_uid' => $request->session()->getId(),
-                        'url' => $request->fullUrl(),
-                        'path' => $request->getPathInfo(),
-                        'host' => $request->getHost(),
-                        'search' => $request->getQueryString(),
-                        'utm_source' => $request->query('utm_source'),
-                        'utm_medium' => $request->query('utm_medium'),
-                        'utm_campaign' => $request->query('utm_campaign'),
-                        'utm_content' => $request->query('utm_content'),
-                        'created_at' => data_get($item, 'timestamp', $dt),
-                        'updated_at' => data_get($item, 'timestamp', $dt),
+                        'ip_address' => $request->ip(),
+                        'model' => $this->getModel($modelClass, $objectUid),
+                        'name' => data_get($item, 'name'),
+                        'properties' => $properties,
+                        'timestamp' => data_get($item, 'timestamp', $dt),
                     ]);
 
                     Track::dispatch($data);
@@ -150,5 +151,28 @@ class IngestController
             config('stickle.namespaces.models'),
             \StickleApp\Core\Traits\StickleEntity::class
         );
+    }
+
+    private function getModel(string $modelClass, string $objectUid): array
+    {
+
+        $modelClass = config('stickle.namespaces.models').'\\'.Str::ucfirst($modelClass);
+
+        if (! class_exists($modelClass)) {
+            throw new \Exception('Model not found: '.$modelClass);
+        }
+
+        if (! ClassUtils::usesTrait($modelClass, 'StickleApp\\Core\\Traits\\StickleEntity')) {
+            throw new \Exception('Model does not use StickleTrait.');
+        }
+
+        $model = $modelClass::findOrFail($objectUid);
+
+        return [
+            'class' => $modelClass,
+            'uid' => $objectUid,
+            'label' => $model->stickleLabel(),
+            'url' => $model->stickleUrl(),
+        ];
     }
 }

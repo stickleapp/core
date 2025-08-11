@@ -7,7 +7,7 @@
                     'url' => route('stickle::models', ['modelClass' => $modelClass]),
                 ],
                 [
-                    'name' => $model->name,
+                    'name' => $model->stickleLabel(),
                     'url' => '#',
                 ],
             ]"
@@ -21,7 +21,7 @@
     <h1
         class="scroll-m-20 text-xl md:text-3xl md:font-bold tracking-tight pb-3 md:pb-6"
     >
-        {{ $model->name }}
+        {{ $model->stickleLabel() }}
     </h1>
 
     <div class="w-full mb-4">
@@ -38,7 +38,7 @@
         <div class="modelNavigationContent w-full md:w-3/5 md:pr-4 md:block">
             <x-stickle::ui.model-attributes
                 :model="$model"
-                :heading="\Illuminate\Support\Str::of($model->name)->headline()"
+                :heading="\Illuminate\Support\Str::of($model->stickleLabel())->headline()"
                 :subheading="sprintf('A full list of your %s attributes.',
             \Illuminate\Support\Str::of($modelClass)->plural())"
             >

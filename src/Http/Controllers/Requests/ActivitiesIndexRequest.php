@@ -22,13 +22,13 @@ class ActivitiesIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'model_class' => ['required', 'string'],
-            'object_uid' => ['sometimes', 'string'],
-            'start_at' => ['sometimes', 'date'],
-            'end_at' => ['sometimes', 'date', 'after_or_equal:start_at'],
-            'event_types' => ['sometimes', 'string', 'in:page_view,event'],
-            'limit' => ['sometimes', 'integer', 'min:1', 'max:100'],
-            'include_location' => ['sometimes', 'boolean'],
+            'model_class' => ['nullable', 'string'],
+            'object_uid' => ['nullable', 'string'],
+            'start_at' => ['nullable', 'date'],
+            'end_at' => ['nullable', 'date', 'after_or_equal:start_at'],
+            'event_types' => ['nullable', 'string', 'in:page_view,event'],
+            'limit' => ['nullable', 'integer', 'min:1', 'max:250'],
+            'include_location' => ['nullable', 'boolean'],
         ];
     }
 
@@ -56,9 +56,8 @@ class ActivitiesIndexRequest extends FormRequest
     {
         $this->merge([
             'include_location' => $this->boolean('include_location', true),
-            'limit' => $this->integer('limit', 50),
+            'limit' => $this->integer('limit', 250),
             'start_at' => $this->input('start_at', now()->subMinutes(30)->toDateTimeString()),
-            'end_at' => $this->input('end_at', now()->toDateTimeString()),
         ]);
     }
 }
