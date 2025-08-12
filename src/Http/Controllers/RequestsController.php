@@ -7,6 +7,7 @@ namespace StickleApp\Core\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use StickleApp\Core\Http\Controllers\Requests\RequestsIndexRequest;
 use StickleApp\Core\Http\Controllers\Resources\RequestCollection;
+use StickleApp\Core\Models\Request;
 
 class RequestsController
 {
@@ -16,7 +17,7 @@ class RequestsController
         $prefix = config('stickle.database.tablePrefix');
 
         // Build base query for Requests (union of requests and events)
-        $requestsQuery = DB::table("{$prefix}requests")
+        $requestsQuery = Request::query()
             ->leftJoin("{$prefix}location_data", "{$prefix}requests.ip_address", '=', "{$prefix}location_data.ip_address")
             ->select([
                 DB::raw("'page_view' as Request_type"),
@@ -41,7 +42,7 @@ class RequestsController
                 return $query->where('object_uid', $request->string('object_uid'));
             });
 
-        return new RequestCollection($Requests->paginate());
+        return new RequestCollection($requestsQuery->paginate());
 
     }
 }

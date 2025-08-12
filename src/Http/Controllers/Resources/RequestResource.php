@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
 use StickleApp\Core\Support\ClassUtils;
 
-class ActivityResource extends JsonResource
+class RequestResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

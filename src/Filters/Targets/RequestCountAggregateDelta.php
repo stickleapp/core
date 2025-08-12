@@ -70,7 +70,7 @@ class RequestCountAggregateDelta extends FilterTargetContract
 
         return \DB::table($this->prefix.'requests_rollup_1day')
             ->where('type', 'event')
-            ->where('name', $this->url)
+            ->where('url', $this->url)
             ->where('model_class', $this->builder->getModel()->getMorphClass())
             ->where(function ($query) use ($currentStart, $currentEnd, $previousStart, $previousEnd) {
                 $query->whereBetween('day', [$currentStart, $currentEnd])

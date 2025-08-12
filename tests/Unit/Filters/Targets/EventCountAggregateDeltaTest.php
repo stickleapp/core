@@ -71,7 +71,7 @@ test('EventCountAggregateDelta applies join correctly', function () {
 
     expect($sql)->toContain('left join');
     expect($sql)->toContain('delta');
-    expect($sql)->toContain($prefix.'events_rollup_1day');
-    expect($sql)->toContain('"event_name" = ?');
+    expect($sql)->toContain($prefix.'requests_rollup_1day');
+    expect($sql)->toContain('"name" = ?');
     expect($sql)->toContain('CASE WHEN');
 });

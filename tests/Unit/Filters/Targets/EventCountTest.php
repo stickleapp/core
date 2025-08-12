@@ -35,8 +35,8 @@ test('EventCountAggregate creates correct SQL', function () {
     $sql = $builder->toSql();
 
     expect($sql)->toContain('left join');
-    expect($sql)->toContain('count(event_count)');
-    expect($sql)->toContain($prefix.'events_rollup_1day');
+    expect($sql)->toContain('count(request_count)');
+    expect($sql)->toContain($prefix.'requests_rollup_1day');
 });
 
 test('EventCount requires event argument', function () {

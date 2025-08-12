@@ -21,7 +21,7 @@ class Request extends Model
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't populate in Factory
          */
-        $this->table = config('stickle.database.tablePrefix').'segments';
+        $this->table = config('stickle.database.tablePrefix').'requests';
     }
 
     /**

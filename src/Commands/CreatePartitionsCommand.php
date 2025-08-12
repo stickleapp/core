@@ -16,14 +16,14 @@ final class CreatePartitionsCommand extends Command implements Isolatable
     /**
      * @var string
      *
-     * vendor/bin/testbench stickle:create-partition lc_events public week '2024-08-01' 2
-     * vendor/bin/testbench stickle:create-partition lc_events_rollup_1min public week '2024-08-01' 2
-     * vendor/bin/testbench stickle:create-partition lc_events_rollup_5min public week '2024-08-01' 2
-     * vendor/bin/testbench stickle:create-partition lc_events_rollup_1hr public week '2024-08-01' 2
-     * vendor/bin/testbench stickle:create-partition lc_events_rollup_1day public week '2024-08-01' 2
+     * vendor/bin/testbench stickle:create-partition lc_requests public week '2024-08-01' 2
+     * vendor/bin/testbench stickle:create-partition lc_requests_rollup_1min public week '2024-08-01' 2
+     * vendor/bin/testbench stickle:create-partition lc_requests_rollup_5min public week '2024-08-01' 2
+     * vendor/bin/testbench stickle:create-partition lc_requests_rollup_1hr public week '2024-08-01' 2
+     * vendor/bin/testbench stickle:create-partition lc_requests_rollup_1day public week '2024-08-01' 2
      * vendor/bin/testbench stickle:create-partition lc_segment_statistics public week '2024-08-01' 2
      *
-     * events_rollup_1min
+     * requests_rollup_1min
      */
     protected $signature = 'stickle:create-partitions
                             {existing_table : The table to be partitioned}

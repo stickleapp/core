@@ -9,7 +9,8 @@
       "Bash(composer test)",
       "Bash(rm:*)",
       "Bash(rg:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(composer analyze:*)"
     ]
   },
   "enableAllProjectMcpServers": false

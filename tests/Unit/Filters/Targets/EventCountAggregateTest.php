@@ -59,7 +59,7 @@ test('EventCountAggregate applies join correctly', function () {
     $sql = $builder->toSql();
 
     expect($sql)->toContain('left join');
-    expect($sql)->toContain('max(event_count)');
-    expect($sql)->toContain($prefix.'events_rollup_1day');
-    expect($sql)->toContain('"event_name" = ?');
+    expect($sql)->toContain('max(request_count)');
+    expect($sql)->toContain($prefix.'requests_rollup_1day');
+    expect($sql)->toContain('"name" = ?');
 });

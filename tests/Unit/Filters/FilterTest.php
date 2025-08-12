@@ -155,9 +155,9 @@ test('eventCount filter generates correct full SQL with joins', function () {
 
     expect($sql)->toContain('select * from "users"');
     expect($sql)->toContain('left join');
-    expect($sql)->toContain($prefix.'events_rollup_1day');
+    expect($sql)->toContain($prefix.'requests_rollup_1day');
     expect($sql)->toContain('where');
-    expect($sql)->toContain('event_name');
+    expect($sql)->toContain('name');
     expect($sql)->toContain('> ?');
 
     $bindings = $query->getBindings();

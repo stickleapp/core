@@ -9,7 +9,7 @@ it('returns activities data via API request', function () {
         'model_class' => 'User',
     ]);
 
-    $response = $this->getJson("/stickle/api/activities?{$queryParams}");
+    $response = $this->getJson("/stickle/api/requests?{$queryParams}");
 
     $response->assertOk();
 
