@@ -81,11 +81,6 @@ class TestCase extends Orchestra
         $date = now()->subWeeks(1);
 
         // Run artisan command to generate partitions
-        Artisan::call("stickle:create-partitions {$this->tablePrefix}events public week '{$date}' 2");
-        Artisan::call("stickle:create-partitions {$this->tablePrefix}events_rollup_1min public week '{$date}' 2");
-        Artisan::call("stickle:create-partitions {$this->tablePrefix}events_rollup_5min public week '{$date}' 2");
-        Artisan::call("stickle:create-partitions {$this->tablePrefix}events_rollup_1hr public week '{$date}' 2");
-        Artisan::call("stickle:create-partitions {$this->tablePrefix}events_rollup_1day public week '{$date}' 2");
         Artisan::call("stickle:create-partitions {$this->tablePrefix}requests public week '{$date}' 2");
         Artisan::call("stickle:create-partitions {$this->tablePrefix}requests_rollup_1min public week '{$date}' 2");
         Artisan::call("stickle:create-partitions {$this->tablePrefix}requests_rollup_5min public week '{$date}' 2");

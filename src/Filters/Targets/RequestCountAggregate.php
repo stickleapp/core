@@ -59,7 +59,8 @@ class RequestCountAggregate extends FilterTargetContract
     private function subJoin(): QueryBuilder
     {
         return \DB::table($this->prefix.'requests_rollup_1day')
-            ->where('url', $this->url)
+            ->where('type', 'event')
+            ->where('name', $this->url)
             ->where('model_class', $this->builder->getModel()->getMorphClass())
             ->whereDate('day', '>=', Carbon::parse($this->startDate)->toDateString())
             ->whereDate('day', '<', Carbon::parse($this->endDate)->toDateString())

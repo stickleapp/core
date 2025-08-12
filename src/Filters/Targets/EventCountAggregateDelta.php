@@ -68,8 +68,9 @@ class EventCountAggregateDelta extends FilterTargetContract
         $previousStart = $this->previousPeriod[0]->format('Y-m-d');
         $previousEnd = $this->previousPeriod[1]->format('Y-m-d');
 
-        return DB::table($this->prefix.'events_rollup_1day')
-            ->where('event_name', $this->event)
+        return \DB::table($this->prefix.'requests_rollup_1day')
+            ->where('type', 'event')
+            ->where('name', $this->event)
             ->where('model_class', $this->builder->getModel()->getMorphClass())
             ->where(function ($query) use ($currentStart, $currentEnd, $previousStart, $previousEnd) {
                 $query->whereBetween('day', [$currentStart, $currentEnd])
@@ -80,8 +81,8 @@ class EventCountAggregateDelta extends FilterTargetContract
                 'model_class',
                 'object_uid',
                 DB::raw("
-                    COALESCE({$this->aggregate}(CASE WHEN day BETWEEN '{$currentStart}' AND '{$currentEnd}' THEN event_count END), 0) -
-                    COALESCE({$this->aggregate}(CASE WHEN day BETWEEN '{$previousStart}' AND '{$previousEnd}' THEN event_count END), 0) as {$this->castProperty()}
+                    COALESCE({$this->aggregate}(CASE WHEN day BETWEEN '{$currentStart}' AND '{$currentEnd}' THEN request_count END), 0) -
+                    COALESCE({$this->aggregate}(CASE WHEN day BETWEEN '{$previousStart}' AND '{$previousEnd}' THEN request_count END), 0) as {$this->castProperty()}
                 "),
             ]);
     }

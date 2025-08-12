@@ -58,13 +58,14 @@ class EventCountAggregate extends FilterTargetContract
 
     private function subJoin(): QueryBuilder
     {
-        return \DB::table($this->prefix.'events_rollup_1day')
-            ->where('event_name', $this->event)
+        return \DB::table($this->prefix.'requests_rollup_1day')
+            ->where('type', 'event')
+            ->where('name', $this->event)
             ->where('model_class', $this->builder->getModel()->getMorphClass())
             ->whereDate('day', '>=', Carbon::parse($this->startDate)->toDateString())
             ->whereDate('day', '<', Carbon::parse($this->endDate)->toDateString())
             ->groupBy(['model_class', 'object_uid'])
-            ->select('model_class', 'object_uid', DB::raw("{$this->aggregate}(event_count) as {$this->castProperty()}"));
+            ->select('model_class', 'object_uid', DB::raw("{$this->aggregate}(request_count) as {$this->castProperty()}"));
     }
 
     public function applyJoin(): void

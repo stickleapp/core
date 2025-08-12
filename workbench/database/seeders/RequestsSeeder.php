@@ -31,33 +31,56 @@ INSERT INTO {$prefix}requests (
     object_uid, 
     model_class, 
     session_uid, 
-    url,
-    path,
-    host,
-    search,
-    query_params,
-    utm_source,
-    utm_medium,
-    utm_campaign,
-    utm_content,
+    type,
+    request_properties,
     timestamp)
 SELECT
     (((SELECT MAX(id) FROM users) * random())+1)::INT::TEXT AS object_uid,
     'User' AS model_class,
     'session_' || (random() * 90)::int::text AS session_uid,
-    'http://example.com' AS url,
-    '/path/to/page' AS path,
-    'example.com' AS host,
-    'search' AS search,
-    'query_params' AS query_params,
-    'utm_source' AS utm_source,
-    'utm_medium' AS utm_medium,
-    'utm_campaign' AS utm_campaign,
-    'utm_content' AS utm_content,
+    'request' AS type,
+    jsonb_build_object(
+        'url', 'http://example.com',
+        'path', '/path/to/page',
+        'host', 'example.com',
+        'search', 'search',
+        'query_params', 'query_params',
+        'utm_source', 'utm_source',
+        'utm_medium', 'utm_medium',
+        'utm_campaign', 'utm_campaign',
+        'utm_content', 'utm_content'
+    ) AS request_properties,
     CURRENT_TIMESTAMP - (random() * interval '19 days') AS timestamp
 FROM
     generate_series(1,1e3) AS s;
 
+INSERT INTO {$prefix}requests (
+    object_uid, 
+    model_class, 
+    session_uid,
+    type, 
+    request_properties, 
+    timestamp)
+SELECT
+    (((SELECT MAX(id) FROM users) * random())+1)::INT::TEXT AS object_uid,
+    'User' AS model_class,
+    'session_' || (random() * 90)::int::text AS session_uid,
+    'event' AS type,
+    jsonb_build_object(
+        'name', 'clicked:thing',
+        'url', 'http://example.com',
+        'path', '/path/to/page',
+        'host', 'example.com',
+        'search', 'search',
+        'query_params', 'query_params',
+        'utm_source', 'utm_source',
+        'utm_medium', 'utm_medium',
+        'utm_campaign', 'utm_campaign',
+        'utm_content', 'utm_content'
+    ) AS request_properties,
+    CURRENT_TIMESTAMP - (random() * interval '19 days') AS timestamp
+FROM
+    generate_series(1,1e3) AS s;
 -- ----------------------------------------------------------------------------
 -- RUN AGGREGATION QUERIES
 -- ----------------------------------------------------------------------------

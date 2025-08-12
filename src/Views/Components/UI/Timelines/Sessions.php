@@ -17,10 +17,10 @@ class Sessions extends Component
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
-        public ?string $heading = 'Active Sessions',
-        public ?string $description = 'Users currently online',
-        public ?string $channel = 'stickle.firehose',
-        public ?string $activitiesEndpoint = null,
+        public string $channel,
+        public string $requestsEndpoint,
+        public ?string $heading = null,
+        public ?string $description = null,
     ) {}
 
     /**

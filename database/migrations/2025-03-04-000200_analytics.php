@@ -96,14 +96,7 @@ CREATE TABLE {$prefix}requests (
     object_uid TEXT NOT NULL,
     session_uid TEXT NULL,
     ip_address TEXT NULL,
-    name TEXT NULL,
-    title TEXT NULL,
-    path TEXT NULL,
-    url TEXT NULL,
-    referrer TEXT NULL,
-    search TEXT NULL,
-    user_agent TEXT NULL,
-    method TEXT NULL,
+    request_properties JSONB NULL,
     offline BOOLEAN DEFAULT FALSE,
     timestamp TIMESTAMPTZ DEFAULT NOW() NOT NULL
 ) PARTITION BY RANGE (timestamp);
@@ -185,15 +178,15 @@ BEGIN
         SELECT  model_class,
                 object_uid,
                 type,
-                name,
-                title,
-                path,
-                url,
+                request_properties->>'name' as name,
+                request_properties->>'title' as title,
+                request_properties->>'path' as path,
+                request_properties->>'url' as url,
                 date_trunc('seconds', (timestamp - TIMESTAMP 'epoch') / 60) * 60 + TIMESTAMP 'epoch' AS minute,
                 count(*) as request_count
         FROM {$prefix}requests WHERE {$prefix}requests.id BETWEEN start_id AND end_id
-        GROUP BY model_class, object_uid, url, path, host, minute
-        ON CONFLICT (model_class, object_uid, url, path, host, minute)
+        GROUP BY model_class, object_uid, type, name, title, path, url, minute
+        ON CONFLICT (model_class, object_uid, type, name, title, path, url, minute)
         DO UPDATE
         SET request_count = {$prefix}requests_rollup_1min.request_count + excluded.request_count;
 END; 
@@ -220,15 +213,15 @@ BEGIN
         SELECT  model_class,
                 object_uid,
                 type,
-                name,
-                title,
-                path,
-                url,
+                request_properties->>'name' as name,
+                request_properties->>'title' as title,
+                request_properties->>'path' as path,
+                request_properties->>'url' as url,
                 date_trunc('seconds', (timestamp - TIMESTAMP 'epoch') / 300) * 300 + TIMESTAMP 'epoch' AS minute,
                 count(*) as request_count
         FROM {$prefix}requests WHERE {$prefix}requests.id BETWEEN start_id AND end_id
-        GROUP BY model_class, object_uid, url, path, host, minute
-        ON CONFLICT (model_class, object_uid, url, path, host, minute)
+        GROUP BY model_class, object_uid, type, name, title, path, url, minute
+        ON CONFLICT (model_class, object_uid, type, name, title, path, url, minute)
         DO UPDATE
         SET request_count = {$prefix}requests_rollup_5min.request_count + excluded.request_count;
 END; 
@@ -255,15 +248,15 @@ BEGIN
         SELECT  model_class,
                 object_uid,
                 type,
-                name,
-                title,
-                path,
-                url,
+                request_properties->>'name' as name,
+                request_properties->>'title' as title,
+                request_properties->>'path' as path,
+                request_properties->>'url' as url,
                 date_trunc('hour', timestamp) as hour,
                 count(*) as request_count
         FROM {$prefix}requests WHERE {$prefix}requests.id BETWEEN start_id AND end_id
-        GROUP BY model_class, object_uid, url, path, host, hour
-        ON CONFLICT (model_class, object_uid, url, path, host, hour)
+        GROUP BY model_class, object_uid, type, name, title, path, url, hour
+        ON CONFLICT (model_class, object_uid, type, name, title, path, url, hour)
         DO UPDATE
         SET request_count = {$prefix}requests_rollup_1hr.request_count + excluded.request_count;
 END; 
@@ -290,15 +283,15 @@ BEGIN
         SELECT  model_class,
                 object_uid,
                 type,
-                name,
-                title,
-                path,
-                url,
+                request_properties->>'name' as name,
+                request_properties->>'title' as title,
+                request_properties->>'path' as path,
+                request_properties->>'url' as url,
                 date_trunc('day', timestamp) as day,
                 count(*) as request_count
         FROM {$prefix}requests WHERE {$prefix}requests.id BETWEEN start_id AND end_id
-        GROUP BY model_class, object_uid, url, path, host, day
-        ON CONFLICT (model_class, object_uid, url, path, host, day)
+        GROUP BY model_class, object_uid, type, name, title, path, url, day
+        ON CONFLICT (model_class, object_uid, type, name, title, path, url, day)
         DO UPDATE
         SET request_count = {$prefix}requests_rollup_1day.request_count + excluded.request_count;
 END; 
@@ -334,11 +327,6 @@ CREATE UNIQUE INDEX {$prefix}sessions_rollup_1day_unique_idx ON {$prefix}session
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_5min CASCADE");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1hr CASCADE");
         DB::unprepared("DROP TABLE IF EXISTS {$prefix}requests_rollup_1day CASCADE");
-        Schema::dropIfExists("{$prefix}events");
-        DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_1min CASCADE");
-        DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_5min CASCADE");
-        DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_1hr CASCADE");
-        DB::unprepared("DROP TABLE IF EXISTS {$prefix}events_rollup_1day CASCADE");
         Schema::dropIfExists("{$prefix}rollups");
 
     }

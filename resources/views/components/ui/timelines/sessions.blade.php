@@ -130,7 +130,7 @@
 
         const fetchData = async () => {
             this.isLoading = true;
-            return await fetch("{!! $activitiesEndpoint !!}")
+            return await fetch("{!! $requestsEndpoint !!}")
                 .then((response) => response.json())
                 .then((data) => {
                     return data.data;

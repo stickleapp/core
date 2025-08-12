@@ -47,7 +47,7 @@
         >
             <div class="p-6 rounded-lg h-96">
                 <x-stickle::ui.timelines.sessions
-                    :activities-endpoint="route('stickle::api.activities', ['model_class' => 'User'])"
+                    :requests-endpoint="route('stickle::api.requests', ['model_class' => 'User'])"
                     :channel="$eventsChannel"
                     :location="$location"
                     :model-class="$modelClass"

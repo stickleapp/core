@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use StickleApp\Core\Http\Controllers\ActivitiesController;
 use StickleApp\Core\Http\Controllers\IngestController;
 use StickleApp\Core\Http\Controllers\ModelAttributeAuditController;
 use StickleApp\Core\Http\Controllers\ModelRelationshipController;
 use StickleApp\Core\Http\Controllers\ModelRelationshipStatisticsController;
 use StickleApp\Core\Http\Controllers\ModelsController;
 use StickleApp\Core\Http\Controllers\ModelsStatisticsController;
+use StickleApp\Core\Http\Controllers\RequestsController;
 use StickleApp\Core\Http\Controllers\SegmentModelsController;
 use StickleApp\Core\Http\Controllers\SegmentsController;
 use StickleApp\Core\Http\Controllers\SegmentStatisticsController;
@@ -21,8 +21,8 @@ Route::middleware(config('stickle.routes.api.middleware', ['api']))
         Route::post('/track', [IngestController::class, 'store'])
             ->name('stickle/track');
 
-        Route::get('/activities', [ActivitiesController::class, 'index'])
-            ->name('stickle::api.activities');
+        Route::get('/requests', [RequestsController::class, 'index'])
+            ->name('stickle::api.requests');
 
         Route::get('/segment-statistics', [SegmentStatisticsController::class, 'index'])
             ->name('segment-statistics');

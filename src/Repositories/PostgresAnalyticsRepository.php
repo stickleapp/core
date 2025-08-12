@@ -93,9 +93,9 @@ INSERT INTO {$this->prefix}sessions_rollup_1day (
             session_uid,
             MIN(DATE(timestamp)) AS first_day
         FROM
-            (SELECT model_class, object_uid, session_uid, timestamp FROM {$this->prefix}events WHERE timestamp >= '%s'
-             UNION ALL
-             SELECT model_class, object_uid, session_uid, timestamp FROM {$this->prefix}requests WHERE offline = FALSE AND timestamp > '%s') AS combined
+            {$this->prefix}requests 
+        WHERE 
+            offline = FALSE AND timestamp > '%s'
         GROUP BY
             model_class,
             object_uid,

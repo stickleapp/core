@@ -30,7 +30,6 @@ class DatabaseSeeder extends Seeder
             ModelAttributeSeeder::class,
             ModelAttributeAuditSeeder::class,
             ModelRelationshipStatisticsSeeder::class,
-            EventsSeeder::class,
             RequestsSeeder::class,
             SessionsSeeder::class,
             SegmentsSeeder::class,
