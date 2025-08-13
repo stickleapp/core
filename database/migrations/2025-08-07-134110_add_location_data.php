@@ -16,15 +16,13 @@ return new class extends Migration
         DB::unprepared('CREATE EXTENSION IF NOT EXISTS postgis');
 
         Schema::create("{$prefix}location_data", function (Blueprint $table) {
-            $table->id();
-            $table->text('ip_address')->nullable(false);
+            $table->text('ip_address')->primary();
             $table->text('city')->nullable(false);
             $table->text('country')->nullable(false);
             $table->geography('coordinates', subtype: 'point', srid: 4326);
 
             $table->timestamps();
 
-            $table->unique(['ip_address']);
             $table->spatialIndex('coordinates');
         });
     }

@@ -19,7 +19,6 @@ interface AnalyticsRepositoryContract
         string $objectUid,
         string $sessionUid,
         DateTimeInterface $timestamp,
-        string $event,
         ?array $properties = [],
     ): void;
 
@@ -28,15 +27,7 @@ interface AnalyticsRepositoryContract
         string $objectUid,
         string $sessionUid,
         DateTimeInterface $timestamp,
-        ?string $url = null,
-        ?string $path = null,
-        ?string $host = null,
-        ?string $search = null,
-        ?string $queryParams = null,
-        ?string $utmSource = null,
-        ?string $utmMedium = null,
-        ?string $utmCampaign = null,
-        ?string $utmContent = null
+        ?array $properties = [],
     ): void;
 
     public function rollupSessions(

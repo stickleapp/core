@@ -96,7 +96,7 @@ CREATE TABLE {$prefix}requests (
     object_uid TEXT NOT NULL,
     session_uid TEXT NULL,
     ip_address TEXT NULL,
-    request_properties JSONB NULL,
+    properties JSONB NULL,
     offline BOOLEAN DEFAULT FALSE,
     timestamp TIMESTAMPTZ DEFAULT NOW() NOT NULL
 ) PARTITION BY RANGE (timestamp);
@@ -178,10 +178,10 @@ BEGIN
         SELECT  model_class,
                 object_uid,
                 type,
-                request_properties->>'name' as name,
-                request_properties->>'title' as title,
-                request_properties->>'path' as path,
-                request_properties->>'url' as url,
+                properties->>'name' as name,
+                properties->>'title' as title,
+                properties->>'path' as path,
+                properties->>'url' as url,
                 date_trunc('seconds', (timestamp - TIMESTAMP 'epoch') / 60) * 60 + TIMESTAMP 'epoch' AS minute,
                 count(*) as request_count
         FROM {$prefix}requests WHERE {$prefix}requests.id BETWEEN start_id AND end_id
@@ -213,10 +213,10 @@ BEGIN
         SELECT  model_class,
                 object_uid,
                 type,
-                request_properties->>'name' as name,
-                request_properties->>'title' as title,
-                request_properties->>'path' as path,
-                request_properties->>'url' as url,
+                properties->>'name' as name,
+                properties->>'title' as title,
+                properties->>'path' as path,
+                properties->>'url' as url,
                 date_trunc('seconds', (timestamp - TIMESTAMP 'epoch') / 300) * 300 + TIMESTAMP 'epoch' AS minute,
                 count(*) as request_count
         FROM {$prefix}requests WHERE {$prefix}requests.id BETWEEN start_id AND end_id
@@ -248,10 +248,10 @@ BEGIN
         SELECT  model_class,
                 object_uid,
                 type,
-                request_properties->>'name' as name,
-                request_properties->>'title' as title,
-                request_properties->>'path' as path,
-                request_properties->>'url' as url,
+                properties->>'name' as name,
+                properties->>'title' as title,
+                properties->>'path' as path,
+                properties->>'url' as url,
                 date_trunc('hour', timestamp) as hour,
                 count(*) as request_count
         FROM {$prefix}requests WHERE {$prefix}requests.id BETWEEN start_id AND end_id
@@ -283,10 +283,10 @@ BEGIN
         SELECT  model_class,
                 object_uid,
                 type,
-                request_properties->>'name' as name,
-                request_properties->>'title' as title,
-                request_properties->>'path' as path,
-                request_properties->>'url' as url,
+                properties->>'name' as name,
+                properties->>'title' as title,
+                properties->>'path' as path,
+                properties->>'url' as url,
                 date_trunc('day', timestamp) as day,
                 count(*) as request_count
         FROM {$prefix}requests WHERE {$prefix}requests.id BETWEEN start_id AND end_id

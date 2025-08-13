@@ -27,15 +27,17 @@ class PageListener implements ShouldQueue
             objectUid: Arr::get($event->payload, 'object_uid'),
             sessionUid: Arr::get($event->payload, 'session_uid'),
             timestamp: Arr::get($event->payload, 'timestamp', new DateTime),
-            url: Arr::get($event->payload, 'url'),
-            path: Arr::get($event->payload, 'path'),
-            host: Arr::get($event->payload, 'host'),
-            search: Arr::get($event->payload, 'search'),
-            queryParams: Arr::get($event->payload, 'query_params'),
-            utmSource: Arr::get($event->payload, 'utm_source'),
-            utmMedium: Arr::get($event->payload, 'utm_medium'),
-            utmCampaign: Arr::get($event->payload, 'utm_campaign'),
-            utmContent: Arr::get($event->payload, 'utm_content')
+            properties: [
+                'url' => Arr::get($event->payload, 'url'),
+                'path' => Arr::get($event->payload, 'path'),
+                'host' => Arr::get($event->payload, 'host'),
+                'search' => Arr::get($event->payload, 'search'),
+                'query_params' => Arr::get($event->payload, 'query_params'),
+                'utm_source' => Arr::get($event->payload, 'utm_source'),
+                'utm_medium' => Arr::get($event->payload, 'utm_medium'),
+                'utm_campaign' => Arr::get($event->payload, 'utm_campaign'),
+                'utm_content' => Arr::get($event->payload, 'utm_content'),
+            ]
         );
     }
 }

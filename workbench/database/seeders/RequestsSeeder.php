@@ -32,7 +32,7 @@ INSERT INTO {$prefix}requests (
     model_class, 
     session_uid, 
     type,
-    request_properties,
+    properties,
     timestamp)
 SELECT
     (((SELECT MAX(id) FROM users) * random())+1)::INT::TEXT AS object_uid,
@@ -49,7 +49,7 @@ SELECT
         'utm_medium', 'utm_medium',
         'utm_campaign', 'utm_campaign',
         'utm_content', 'utm_content'
-    ) AS request_properties,
+    ) AS properties,
     CURRENT_TIMESTAMP - (random() * interval '19 days') AS timestamp
 FROM
     generate_series(1,1e3) AS s;
@@ -59,7 +59,7 @@ INSERT INTO {$prefix}requests (
     model_class, 
     session_uid,
     type, 
-    request_properties, 
+    properties, 
     timestamp)
 SELECT
     (((SELECT MAX(id) FROM users) * random())+1)::INT::TEXT AS object_uid,
@@ -77,7 +77,7 @@ SELECT
         'utm_medium', 'utm_medium',
         'utm_campaign', 'utm_campaign',
         'utm_content', 'utm_content'
-    ) AS request_properties,
+    ) AS properties,
     CURRENT_TIMESTAMP - (random() * interval '19 days') AS timestamp
 FROM
     generate_series(1,1e3) AS s;

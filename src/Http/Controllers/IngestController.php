@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use StickleApp\Core\Enums\RequestType;
 use StickleApp\Core\Events\Page;
@@ -153,6 +154,9 @@ class IngestController
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getModel(string $modelClass, string $objectUid): array
     {
 

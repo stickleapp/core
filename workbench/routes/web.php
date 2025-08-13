@@ -24,8 +24,8 @@ Route::post('/users/{user}/{event}', function (Request $request, User $user, str
         'timestamp' => $dt,
         'ip_address' => $request->ip(),
         'model' => $user,
-        'name' => $event,
         'properties' => [
+            'name' => $event,
             'url' => $request->fullUrl(),
             'path' => $request->getPathInfo(),
             'host' => $request->getHost(),

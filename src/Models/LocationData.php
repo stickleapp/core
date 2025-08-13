@@ -6,20 +6,16 @@ namespace StickleApp\Core\Models;
 
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * @property string $activity_type
- * @property string $model_class
- * @property string $object_uid
- * @property string $session_uid
- * @property string|null $location
- * @property string $ip_address
- * @property array<string, mixed>|null $properties
- * @property \Carbon\Carbon $timestamp
- */
-class Request extends Model
+class LocationData extends Model
 {
+    /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'ip_address';
+
     /**
      * Creates a new analytics repository instance.
      */
@@ -29,21 +25,17 @@ class Request extends Model
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't populate in Factory
          */
-        $this->table = config('stickle.database.tablePrefix').'requests';
+        $this->table = config('stickle.database.tablePrefix').'location_data';
     }
 
     /**
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'activity_type',
-        'model_class',
-        'object_uid',
-        'session_uid',
-        'location',
         'ip_address',
-        'properties',
-        'timestamp',
+        'city',
+        'country',
+        'coordinates',
     ];
 
     /**
@@ -60,18 +52,7 @@ class Request extends Model
     protected function casts(): array
     {
         return [
-            'properties' => 'json',
-            'timestamp' => 'datetime',
+            'coordinates' => 'point',
         ];
-    }
-
-    /**
-     * Get the location data associated with the request.
-     *
-     * @return BelongsTo<LocationData, $this>
-     */
-    public function locationData()
-    {
-        return $this->belongsTo(LocationData::class);
     }
 }

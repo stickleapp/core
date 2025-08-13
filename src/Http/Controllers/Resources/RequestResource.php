@@ -5,10 +5,19 @@ namespace StickleApp\Core\Http\Controllers\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
+use StickleApp\Core\Models\Request as RequestModel;
 use StickleApp\Core\Support\ClassUtils;
 
+/**
+ * @mixin RequestModel
+ */
 class RequestResource extends JsonResource
 {
+    public function __construct(RequestModel $request)
+    {
+        parent::__construct($request);
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -22,15 +31,18 @@ class RequestResource extends JsonResource
             'model_class' => $this->model_class,
             'object_uid' => $this->object_uid,
             'session_uid' => $this->session_uid,
-            'location' => $this->when($this->location, json_decode($this->location), null),
+            // 'location' => $this->when(! empty($this->location), json_decode($this->location ), null),
             'ip_address' => $this->ip_address,
-            'properties' => $this->when($this->properties, json_decode($this->properties), null),
+            // 'properties' => $this->when(! empty($this->properties), $this->properties ?? ''), null),
             'model' => $this->getModel(),
             'timestamp' => $this->timestamp,
         ];
     }
 
-    private function getModel()
+    /**
+     * @return array<string, mixed>
+     */
+    private function getModel(): array
     {
 
         $modelClass = config('stickle.namespaces.models').'\\'.Str::ucfirst($this->model_class);
