@@ -61,7 +61,7 @@ class Request extends Model
     protected function casts(): array
     {
         return [
-            'ip_address' => 'string', 
+            'ip_address' => 'string',
             'properties' => 'json',
             'timestamp' => 'datetime',
         ];

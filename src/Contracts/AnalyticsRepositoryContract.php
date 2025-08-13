@@ -11,8 +11,6 @@ use DateTimeInterface;
  */
 interface AnalyticsRepositoryContract
 {
-
-
     public function saveRequest(
         string $type,
         string $modelClass,
