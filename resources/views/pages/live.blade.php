@@ -15,8 +15,8 @@
         class="w-full h-96 bg-blue-200 mb-6 rounded-lg flex items-center justify-center"
     >
         <x-stickle::ui.maps.live
-            heading="Live User Activity Map"
-            description="Real-time visualization of user locations and activity"
+            :requests-endpoint="route('stickle::api.requests', ['model_class' => 'User'])"
+            :channel="$eventsChannel"
         />
     </div>
 

@@ -11,20 +11,25 @@
         );
     }
 
-    function page(pageName = "", properties = {}) {
+    function page(e, properties = {}) {
         const data = {
             type: "page",
-            name: pageName,
-            properties: properties || {},
+            properties: {
+                name: document.title,
+                url: window.location.href,
+                title: document.title,
+                referrer: document.referrer,
+                user_agent: navigator.userAgent,
+            },
             timestamp: new Date().toISOString(),
         };
         sendData(data);
     }
 
     function track(eventName, properties = {}) {
+        properties.name = eventName;
         const data = {
             type: "track",
-            name: eventName,
             properties: properties || {},
             timestamp: new Date().toISOString(),
         };

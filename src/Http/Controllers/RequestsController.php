@@ -18,9 +18,7 @@ class RequestsController
         $prefix = config('stickle.database.tablePrefix');
 
         // Build base query for Requests (union of requests and events)
-        $builder = Request::query()
-            ->leftJoin("{$prefix}location_data", "{$prefix}requests.ip_address", '=', "{$prefix}location_data.ip_address")
-            ->with('locationData')
+        $builder = Request::with('locationData')
             // ->select([
             //     DB::raw("'page_view' as Request_type"),
             //     'model_class',

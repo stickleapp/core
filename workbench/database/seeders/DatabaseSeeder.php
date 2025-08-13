@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         Artisan::call("stickle:create-partitions {$prefix}model_attribute_audit public week '{$date}' 2");
 
         $this->call([
+            LocationDataSeeder::class,
             CustomersSeeder::class,
             UsersSeeder::class,
             SubscriptionsSeeder::class,

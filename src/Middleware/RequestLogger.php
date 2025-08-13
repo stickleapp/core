@@ -60,9 +60,10 @@ class RequestLogger
         $user = $request->user();
         $data = [
             'user' => $user,
-            'model_class' => $user ? get_class($user) : null,
+            'model_class' => $user ? class_basename($user) : null,
             'object_uid' => $user ? (string) $user->id : null,
             'session_uid' => $request->session()->getId(),
+            'ip_address' => $request->ip(),
             'url' => $request->fullUrl(),
             'path' => $request->getPathInfo(),
             'host' => $request->getHost(),

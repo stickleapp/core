@@ -31,11 +31,41 @@ class RequestResource extends JsonResource
             'model_class' => $this->model_class,
             'object_uid' => $this->object_uid,
             'session_uid' => $this->session_uid,
-            // 'location' => $this->when(! empty($this->location), json_decode($this->location ), null),
+            'location' => $this->getLocationData(),
             'ip_address' => $this->ip_address,
-            // 'properties' => $this->when(! empty($this->properties), $this->properties ?? ''), null),
+            'properties' => $this->when(! empty($this->properties), $this->properties),
             'model' => $this->getModel(),
             'timestamp' => $this->timestamp,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function getLocationData(): ?array
+    {
+        if (! $this->relationLoaded('locationData') || ! $this->locationData) {
+            return null;
+        }
+
+        $locationData = $this->locationData;
+        $coordinates = null;
+
+        if ($locationData->coordinates) {
+            // Extract lat/lng from PostGIS point
+            $point = $locationData->coordinates;
+            if ($point) {
+                $coordinates = [
+                    'lat' => $point->getLat(),
+                    'lng' => $point->getLng(),
+                ];
+            }
+        }
+
+        return [
+            'city' => $locationData->city,
+            'country' => $locationData->country,
+            'coordinates' => $coordinates,
         ];
     }
 

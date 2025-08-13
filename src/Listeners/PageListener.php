@@ -26,18 +26,9 @@ class PageListener implements ShouldQueue
             model: Arr::get($event->payload, 'model_class'),
             objectUid: Arr::get($event->payload, 'object_uid'),
             sessionUid: Arr::get($event->payload, 'session_uid'),
+            ipAddress: data_get($event->payload, 'ip_address'),
             timestamp: Arr::get($event->payload, 'timestamp', new DateTime),
-            properties: [
-                'url' => Arr::get($event->payload, 'url'),
-                'path' => Arr::get($event->payload, 'path'),
-                'host' => Arr::get($event->payload, 'host'),
-                'search' => Arr::get($event->payload, 'search'),
-                'query_params' => Arr::get($event->payload, 'query_params'),
-                'utm_source' => Arr::get($event->payload, 'utm_source'),
-                'utm_medium' => Arr::get($event->payload, 'utm_medium'),
-                'utm_campaign' => Arr::get($event->payload, 'utm_campaign'),
-                'utm_content' => Arr::get($event->payload, 'utm_content'),
-            ]
+            properties: Arr::get($event->payload, 'properties', [])
         );
     }
 }

@@ -32,6 +32,7 @@ INSERT INTO {$prefix}requests (
     model_class, 
     session_uid, 
     type,
+    ip_address,
     properties,
     timestamp)
 SELECT
@@ -39,6 +40,7 @@ SELECT
     'User' AS model_class,
     'session_' || (random() * 90)::int::text AS session_uid,
     'request' AS type,
+    random_ip.ip_address,
     jsonb_build_object(
         'url', 'http://example.com',
         'path', '/path/to/page',
@@ -52,13 +54,20 @@ SELECT
     ) AS properties,
     CURRENT_TIMESTAMP - (random() * interval '19 days') AS timestamp
 FROM
-    generate_series(1,1e3) AS s;
+    generate_series(1,1e3) AS s
+    CROSS JOIN LATERAL (
+        SELECT ip_address 
+        FROM stc_location_data 
+        ORDER BY random() + s * 0 
+        LIMIT 1
+    ) AS random_ip;
 
 INSERT INTO {$prefix}requests (
     object_uid, 
     model_class, 
     session_uid,
     type, 
+    ip_address,
     properties, 
     timestamp)
 SELECT
@@ -66,6 +75,7 @@ SELECT
     'User' AS model_class,
     'session_' || (random() * 90)::int::text AS session_uid,
     'event' AS type,
+    random_ip.ip_address,
     jsonb_build_object(
         'name', 'clicked:thing',
         'url', 'http://example.com',
@@ -80,7 +90,14 @@ SELECT
     ) AS properties,
     CURRENT_TIMESTAMP - (random() * interval '19 days') AS timestamp
 FROM
-    generate_series(1,1e3) AS s;
+    generate_series(1,1e3) AS s
+    CROSS JOIN LATERAL (
+        SELECT ip_address 
+        FROM stc_location_data 
+        ORDER BY random() + s * 0 
+        LIMIT 1
+    ) AS random_ip;
+    
 -- ----------------------------------------------------------------------------
 -- RUN AGGREGATION QUERIES
 -- ----------------------------------------------------------------------------

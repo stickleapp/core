@@ -26,21 +26,9 @@ class TrackListener implements ShouldQueue
             model: data_get($event->payload, 'model_class'),
             objectUid: data_get($event->payload, 'object_uid'),
             sessionUid: data_get($event->payload, 'session_uid'),
+            ipAddress: data_get($event->payload, 'ip_address'),
             timestamp: data_get($event->payload, 'timestamp', new DateTime),
-            properties: [
-                'name' => data_get($event->payload, 'name'),
-                'url' => data_get($event->payload, 'url'),
-                'path' => data_get($event->payload, 'path'),
-                'host' => data_get($event->payload, 'host'),
-                'search' => data_get($event->payload, 'search'),
-                'query_params' => data_get($event->payload, 'query_params'),
-                'utm_source' => data_get($event->payload, 'utm_source'),
-                'utm_medium' => data_get($event->payload, 'utm_medium'),
-                'utm_campaign' => data_get($event->payload, 'utm_campaign'),
-                'utm_content' => data_get($event->payload, 'utm_content'),
-                'user_agent' => data_get($event->payload, 'user_agent'),
-                'method' => data_get($event->payload, 'method'),
-            ]
+            properties: Arr::get($event->payload, 'properties', [])
         );
 
         /**

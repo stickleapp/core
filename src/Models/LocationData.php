@@ -55,4 +55,9 @@ class LocationData extends Model
             'coordinates' => 'point',
         ];
     }
+
+    public function requests()
+    {
+        return $this->hasMany(Request::class, 'ip_address', 'ip_address');
+    }
 }

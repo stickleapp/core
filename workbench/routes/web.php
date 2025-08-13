@@ -22,7 +22,7 @@ Route::post('/users/{user}/{event}', function (Request $request, User $user, str
         'object_uid' => (string) $user->id,
         'session_uid' => $request->session()->getId(),
         'timestamp' => $dt,
-        'ip_address' => $request->ip(),
+        'ip_address' => \DB::table('stc_location_data')->inRandomOrder()->value('ip_address') ?? $request->ip(),
         'model' => $user,
         'properties' => [
             'name' => $event,

@@ -22,6 +22,7 @@
     },
     "require-dev": {
         "larastan/larastan": "^3.0",
+        "laravel/boost": "^1.0",
         "laravel/pint": "^1.14",
         "laravel/reverb": "^1.5",
         "nunomaduro/collision": "^8.1.1||^7.10.0",

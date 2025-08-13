@@ -72,6 +72,6 @@ class Request extends Model
      */
     public function locationData()
     {
-        return $this->belongsTo(LocationData::class);
+        return $this->belongsTo(LocationData::class, 'ip_address', 'ip_address');
     }
 }

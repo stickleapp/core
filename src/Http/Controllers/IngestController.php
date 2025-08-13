@@ -33,11 +33,9 @@ class IngestController
         $rules = [
             'payload' => ['required', 'array'],
             'payload.*.type' => ['required', Rule::enum(RequestType::class)],
-            'payload.*.model' => ['sometimes', $this->availableModels()],
+            'payload.*.model_class' => ['sometimes', $this->availableModels()],
             'payload.*.object_uid' => ['sometimes', 'string', 'alpha_dash:ascii'],
-            'payload.*.name' => ['required_if:type,track', 'string', 'alpha_dash:ascii'],
-            'payload.*.url' => ['required_if:type,page', 'string', 'url'],
-            'payload.*.data' => ['sometimes_if:type,track', 'array'],
+            'payload.*.properties.name' => ['required_if:type,track', 'string', 'alpha_dash:ascii'],
             'payload.*.timestamp' => ['sometimes', 'nullable', 'date'],
         ];
 
@@ -122,7 +120,7 @@ class IngestController
         if ($explicit) {
             return $explicit;
         }
-
+        dd(class_basename($object));
         if ($object) {
             return class_basename($object);
         }
