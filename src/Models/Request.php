@@ -36,6 +36,7 @@ class Request extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
+        'type',
         'activity_type',
         'model_class',
         'object_uid',
@@ -60,6 +61,7 @@ class Request extends Model
     protected function casts(): array
     {
         return [
+            'ip_address' => 'string', 
             'properties' => 'json',
             'timestamp' => 'datetime',
         ];

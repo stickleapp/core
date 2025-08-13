@@ -140,6 +140,7 @@ class SendTestRequests extends Command
      */
     public function handle(): void
     {
+        $prefix = config('stickle.database.tablePrefix');
 
         while (true) {
 
@@ -147,12 +148,15 @@ class SendTestRequests extends Command
 
             foreach ($users as $user) {
 
+                $ipAddress = \DB::table("{$prefix}location_data")->inRandomOrder()->value('ip_address');
+
                 $randomUrls = collect($this->urls)->shuffle()->take(5);
 
                 foreach ($randomUrls as $url) {
                     $response = Http::withHeaders([
                         'email' => $user->email,
                         'password' => 'password',
+                        'X-Forwarded-For' => $ipAddress,
                     ])->get('http://127.0.0.1:8000'.$url);
                     sleep(5);
                 }
@@ -163,6 +167,7 @@ class SendTestRequests extends Command
                     $response = Http::withHeaders([
                         'email' => $user->email,
                         'password' => 'password',
+                        'X-Forwarded-For' => $ipAddress,
                     ])->post('http://127.0.0.1:8000/users/'.$user->id.'/'.$event);
                     sleep(1);
                 }

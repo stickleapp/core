@@ -11,21 +11,14 @@ use DateTimeInterface;
  */
 interface AnalyticsRepositoryContract
 {
-    /**
-     * @param  array<int, string>  $properties
-     */
-    public function saveEvent(
-        string $model,
-        string $objectUid,
-        string $sessionUid,
-        DateTimeInterface $timestamp,
-        ?array $properties = [],
-    ): void;
+
 
     public function saveRequest(
-        string $model,
+        string $type,
+        string $modelClass,
         string $objectUid,
         string $sessionUid,
+        string $ipAddress,
         DateTimeInterface $timestamp,
         ?array $properties = [],
     ): void;

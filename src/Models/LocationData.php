@@ -17,6 +17,20 @@ class LocationData extends Model
     protected $primaryKey = 'ip_address';
 
     /**
+     * Indicates if the model's ID is auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * The data type of the auto-incrementing ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
      * Creates a new analytics repository instance.
      */
     public function __construct(
@@ -52,6 +66,7 @@ class LocationData extends Model
     protected function casts(): array
     {
         return [
+            'ip_address' => 'string', 
             'coordinates' => 'point',
         ];
     }

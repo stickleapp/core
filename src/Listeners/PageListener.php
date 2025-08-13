@@ -23,7 +23,8 @@ class PageListener implements ShouldQueue
         Log::debug('PageListener->handle()', [$event]);
 
         $this->repository->saveRequest(
-            model: Arr::get($event->payload, 'model_class'),
+            type: 'track',
+            modelClass: Arr::get($event->payload, 'model_class'),
             objectUid: Arr::get($event->payload, 'object_uid'),
             sessionUid: Arr::get($event->payload, 'session_uid'),
             ipAddress: data_get($event->payload, 'ip_address'),

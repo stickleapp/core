@@ -22,13 +22,14 @@ class TrackListener implements ShouldQueue
     {
         Log::debug('TrackListener->handle()', [$event]);
 
-        $this->repository->saveEvent(
-            model: data_get($event->payload, 'model_class'),
+        $this->repository->saveRequest(
+            type: 'track',
+            modelClass: data_get($event->payload, 'model_class'),
             objectUid: data_get($event->payload, 'object_uid'),
             sessionUid: data_get($event->payload, 'session_uid'),
             ipAddress: data_get($event->payload, 'ip_address'),
             timestamp: data_get($event->payload, 'timestamp', new DateTime),
-            properties: Arr::get($event->payload, 'properties', [])
+            properties: data_get($event->payload, 'properties', [])
         );
 
         /**

@@ -7,7 +7,7 @@ namespace StickleApp\Core\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use StickleApp\Core\Http\Controllers\Requests\RequestsIndexRequest;
-use StickleApp\Core\Http\Controllers\Resources\RequestCollection;
+// use StickleApp\Core\Http\Controllers\Resources\RequestCollection;
 use StickleApp\Core\Models\Request;
 
 class RequestsController
@@ -40,10 +40,11 @@ class RequestsController
                 return $query->where('model_class', $request->string('model_class'));
             })->when($request->filled('object_uid'), function ($query) use ($request) {
                 return $query->where('object_uid', $request->string('object_uid'));
-            });
+            })
+            ->orderBy('timestamp', 'desc');
 
-        return response()->json(new RequestCollection($builder->paginate()));
+        // return response()->json(new RequestCollection($builder->paginate()));
 
-        // return response()->json($builder->paginate($request->integer('per_page', 250)));
+        return response()->json($builder->paginate($request->integer('per_page', 250)));
     }
 }

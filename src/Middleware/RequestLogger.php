@@ -60,20 +60,26 @@ class RequestLogger
         $user = $request->user();
         $data = [
             'user' => $user,
+            'type' => 'request',
             'model_class' => $user ? class_basename($user) : null,
             'object_uid' => $user ? (string) $user->id : null,
             'session_uid' => $request->session()->getId(),
-            'ip_address' => $request->ip(),
-            'url' => $request->fullUrl(),
-            'path' => $request->getPathInfo(),
-            'host' => $request->getHost(),
-            'search' => $request->getQueryString(),
-            'utm_source' => $request->query('utm_source'),
-            'utm_medium' => $request->query('utm_medium'),
-            'utm_campaign' => $request->query('utm_campaign'),
-            'utm_content' => $request->query('utm_content'),
-            'created_at' => new Carbon,
-            'updated_at' => new Carbon,
+            'ip_address' => $request->header('X-Forwarded-For') ? $request->header('X-Forwarded-For') : $request->ip(),
+            'timestamp' => Carbon::now(),
+            'properties' => [
+                'url' => $request->fullUrl(),
+                'path' => $request->getPathInfo(),
+                'host' => $request->getHost(),
+                'search' => $request->getQueryString(),
+                'utm_source' => $request->query('utm_source'),
+                'utm_medium' => $request->query('utm_medium'),
+                'utm_campaign' => $request->query('utm_campaign'),
+                'utm_content' => $request->query('utm_content'),
+                'utm_term' => $request->query('utm_term'),
+                'user_agent' => $request->userAgent(),
+                'method' => $request->getMethod(),
+                'status_code' => $this->getStatusCode($response),
+            ],
         ];
 
         Page::dispatch($data);

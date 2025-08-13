@@ -22,40 +22,23 @@ final class PostgresAnalyticsRepository implements AnalyticsRepositoryContract
     ) {}
 
     /**
-     * Save an event
-     */
-    public function saveEvent(
-        string $model,
-        string $objectUid,
-        string $sessionUid,
-        DateTimeInterface $timestamp,
-        ?array $properties = [],
-    ): void {
-        DB::table($this->prefix.'requests')->insert([
-            'type' => 'event',
-            'model_class' => $model,
-            'object_uid' => $objectUid,
-            'session_uid' => $sessionUid,
-            'properties' => json_encode($properties),
-            'timestamp' => $timestamp,
-        ]);
-    }
-
-    /**
      * Save a request
      */
     public function saveRequest(
-        string $model,
+        string $type,
+        string $modelClass,
         string $objectUid,
         string $sessionUid,
+        string $ipAddress,
         DateTimeInterface $timestamp,
         ?array $properties = [],
     ): void {
         DB::table($this->prefix.'requests')->insert([
-            'type' => 'request',
-            'model_class' => $model,
+            'type' => $type,
+            'model_class' => $modelClass,
             'object_uid' => $objectUid,
             'session_uid' => $sessionUid,
+            'ip_address' => $ipAddress,
             'properties' => json_encode($properties),
             'timestamp' => $timestamp,
         ]);
