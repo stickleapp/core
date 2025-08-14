@@ -11,10 +11,8 @@ use DateTimeInterface;
  */
 interface AnalyticsRepositoryContract
 {
-
-
     /**
-     * @param array<string, mixed> $properties
+     * @param  array<string, mixed>  $properties
      */
     public function saveRequest(
         string $type,

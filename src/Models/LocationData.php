@@ -67,7 +67,7 @@ class LocationData extends Model
     protected function casts(): array
     {
         return [
-            'ip_address' => 'string', 
+            'ip_address' => 'string',
             'coordinates' => 'point',
         ];
     }
