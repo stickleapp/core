@@ -23,8 +23,8 @@ final class PostgresAnalyticsRepository implements AnalyticsRepositoryContract
 
     /**
      * Save a request
-     * 
-     * @param array<string, mixed> $properties
+     *
+     * @param  array<string, mixed>  $properties
      */
     public function saveRequest(
         string $type,
