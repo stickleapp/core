@@ -52,6 +52,7 @@ class LocationData extends Model
         'coordinates',
     ];
 
+
     /**
      * The attributes that should be hidden for serialization.
      */
@@ -71,6 +72,9 @@ class LocationData extends Model
         ];
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Request, $this>
+     */
     public function requests()
     {
         return $this->hasMany(Request::class, 'ip_address', 'ip_address');

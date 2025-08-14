@@ -51,20 +51,18 @@ class RequestResource extends JsonResource
         $locationData = $this->locationData;
         $coordinates = null;
 
-        if ($locationData->coordinates) {
+        if (isset($locationData['coordinates']) && $locationData['coordinates']) {
             // Extract lat/lng from PostGIS point
-            $point = $locationData->coordinates;
-            if ($point) {
-                $coordinates = [
-                    'lat' => $point->getLat(),
-                    'lng' => $point->getLng(),
-                ];
-            }
+            $point = $locationData['coordinates'];
+            $coordinates = [
+                'lat' => $point->getLat(),
+                'lng' => $point->getLng(),
+            ];
         }
 
         return [
-            'city' => $locationData->city,
-            'country' => $locationData->country,
+            'city' => $locationData['city'] ?? null,
+            'country' => $locationData['country'] ?? null,
             'coordinates' => $coordinates,
         ];
     }

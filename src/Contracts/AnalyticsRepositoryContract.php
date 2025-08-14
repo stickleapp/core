@@ -13,6 +13,9 @@ interface AnalyticsRepositoryContract
 {
 
 
+    /**
+     * @param array<string, mixed> $properties
+     */
     public function saveRequest(
         string $type,
         string $modelClass,
@@ -25,5 +28,13 @@ interface AnalyticsRepositoryContract
 
     public function rollupSessions(
         DateTimeInterface $startDate
+    ): void;
+
+    public function saveEvent(
+        string $model,
+        string $objectUid,
+        string $sessionUid,
+        DateTimeInterface $timestamp,
+        string $event,
     ): void;
 }

@@ -23,6 +23,8 @@ final class PostgresAnalyticsRepository implements AnalyticsRepositoryContract
 
     /**
      * Save a request
+     * 
+     * @param array<string, mixed> $properties
      */
     public function saveRequest(
         string $type,
@@ -83,5 +85,22 @@ ON CONFLICT (model_class, object_uid, day) DO UPDATE SET session_count = EXCLUDE
 sql;
 
         \DB::statement(sprintf($sql, $startDate->format('Y-m-d'), $startDate->format('Y-m-d')));
+    }
+
+    public function saveEvent(
+        string $model,
+        string $objectUid,
+        string $sessionUid,
+        DateTimeInterface $timestamp,
+        string $event,
+    ): void {
+        DB::table($this->prefix.'requests')->insert([
+            'activity_type' => 'event',
+            'model_class' => $model,
+            'object_uid' => $objectUid,
+            'session_uid' => $sessionUid,
+            'name' => $event,
+            'timestamp' => $timestamp,
+        ]);
     }
 }

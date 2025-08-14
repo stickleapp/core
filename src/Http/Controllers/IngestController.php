@@ -53,12 +53,10 @@ class IngestController
 
         $dt = new Carbon;
 
-        if (! $modelClass = $this->modelClass(
+        $modelClass = $this->modelClass(
             data_get($validated, 'model_class'),
             $request->user()
-        )) {
-            throw new \Exception('Model class not specified');
-        }
+        );
 
         if (! $objectUid = $this->objectUid(
             data_get($validated, 'object_uid'),
@@ -115,17 +113,17 @@ class IngestController
         return response()->noContent();
     }
 
-    private function modelClass(?string $explicit, ?object $object): ?string
+    private function modelClass(?string $explicit, ?object $object): string
     {
         if ($explicit) {
             return $explicit;
         }
-        dd(class_basename($object));
+        
         if ($object) {
             return class_basename($object);
         }
 
-        return null;
+        throw new \Exception('Model class not specified');
     }
 
     private function objectUid(?string $explicit, ?object $model): ?string
