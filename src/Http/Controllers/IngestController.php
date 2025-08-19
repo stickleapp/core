@@ -53,10 +53,12 @@ class IngestController
 
         $dt = new Carbon;
 
-        $modelClass = $this->modelClass(
+        if (! $modelClass = $this->modelClass(
             data_get($validated, 'model_class'),
             $request->user()
-        );
+        )) {
+            throw new \Exception('Model class not specified');
+        }
 
         if (! $objectUid = $this->objectUid(
             data_get($validated, 'object_uid'),
@@ -79,13 +81,12 @@ class IngestController
             switch ($item['type']) {
                 case 'page':
                     $data = array_merge($item, [
-                        'activity_type' => 'page',
+                        'type' => 'page',
                         'model_class' => $modelClass,
                         'object_uid' => $objectUid,
                         'session_uid' => $request->session()->getId(),
                         'ip_address' => $request->ip(),
                         'model' => $this->getModel($modelClass, $objectUid),
-                        'name' => data_get($item, 'name'),
                         'properties' => $properties,
                         'timestamp' => data_get($item, 'timestamp', $dt),
                     ]);
@@ -94,13 +95,12 @@ class IngestController
                     break;
                 case 'track':
                     $data = array_merge($item, [
-                        'activity_type' => 'event',
+                        'type' => 'event',
                         'model_class' => $modelClass,
                         'object_uid' => $objectUid,
                         'session_uid' => $request->session()->getId(),
                         'ip_address' => $request->ip(),
                         'model' => $this->getModel($modelClass, $objectUid),
-                        'name' => data_get($item, 'name'),
                         'properties' => $properties,
                         'timestamp' => data_get($item, 'timestamp', $dt),
                     ]);
@@ -113,7 +113,7 @@ class IngestController
         return response()->noContent();
     }
 
-    private function modelClass(?string $explicit, ?object $object): string
+    private function modelClass(?string $explicit, ?object $object): ?string
     {
         if ($explicit) {
             return $explicit;
@@ -122,8 +122,6 @@ class IngestController
         if ($object) {
             return class_basename($object);
         }
-
-        throw new \Exception('Model class not specified');
     }
 
     private function objectUid(?string $explicit, ?object $model): ?string
@@ -135,8 +133,6 @@ class IngestController
         if ($model && property_exists($model, 'id')) {
             return (string) $model->id;
         }
-
-        return null;
     }
 
     /**

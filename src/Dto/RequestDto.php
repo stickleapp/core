@@ -1,0 +1,53 @@
+<?php
+
+declare(strict_types=1);
+
+namespace StickleApp\Core\Dto;
+
+use Carbon\Carbon;
+
+readonly class RequestDto
+{
+    public function __construct(
+        public string $type,
+        public string $model_class,
+        public string $object_uid,
+        public string $session_uid,
+        public string $ip_address,
+        public ?array $properties,
+        public Carbon $timestamp,
+        public ?LocationDataDto $location_data,
+        public ModelDto $model,
+    ) {}
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            type: $data['type'],
+            model_class: $data['model_class'],
+            object_uid: $data['object_uid'],
+            session_uid: $data['session_uid'],
+            ip_address: $data['ip_address'],
+            properties: $data['properties'] ?? null,
+            timestamp: $data['timestamp'] instanceof Carbon ? $data['timestamp'] : Carbon::parse($data['timestamp']),
+            location_data: isset($data['location_data']) ? LocationDataDto::fromArray($data['location_data']) : null,
+            model: $data['model'] instanceof ModelDto ? $data['model'] : ModelDto::fromArray($data['model']),
+        );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'type' => $this->type,
+            'model_class' => $this->model_class,
+            'object_uid' => $this->object_uid,
+            'session_uid' => $this->session_uid,
+            'location' => $this->location,
+            'ip_address' => $this->ip_address,
+            'properties' => $this->properties,
+            'timestamp' => $this->timestamp,
+            'location_data' => $this->location_data?->toArray(),
+            'model' => $this->model->toArray(),
+        ];
+    }
+}

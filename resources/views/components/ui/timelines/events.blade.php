@@ -56,8 +56,10 @@
                     event?.data?.user?.name || "User"
                 }</a>
                                         ${
-                                            event?.data?.event ||
-                                            event?.data?.path
+                                            event?.data?.properties?.name ||
+                                            event?.data?.properties?.path ||
+                                            event?.data?.properties?.title ||
+                                            event?.data?.properties?.url
                                         }
                                         <span class="whitespace-nowrap">${
                                             event?.created_at || "just now"

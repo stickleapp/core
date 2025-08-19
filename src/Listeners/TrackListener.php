@@ -73,7 +73,7 @@ class TrackListener implements ShouldQueue
     {
         return config('stickle.namespaces.listeners').
             '\\'.
-            Str::studly(class_basename(data_get($event->payload, 'event'))).
+            Str::studly(class_basename(data_get($event->payload, 'properties.name'))).
             'Listener';
     }
 }

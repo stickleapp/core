@@ -59,7 +59,7 @@ class RequestLogger
 
         $user = $request->user();
         $data = [
-            'user' => $user,
+            // 'user' => $user,
             'type' => 'request',
             'model_class' => $user ? class_basename($user) : null,
             'object_uid' => $user ? (string) $user->id : null,
@@ -67,6 +67,7 @@ class RequestLogger
             'ip_address' => $request->header('X-Forwarded-For') ? $request->header('X-Forwarded-For') : $request->ip(),
             'timestamp' => Carbon::now(),
             'properties' => [
+                'name' => $request->path(),
                 'url' => $request->fullUrl(),
                 'path' => $request->getPathInfo(),
                 'host' => $request->getHost(),

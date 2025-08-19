@@ -27,7 +27,7 @@ class RequestResource extends JsonResource
     {
 
         return [
-            'activity_type' => $this->activity_type,
+            'type' => $this->type,
             'model_class' => $this->model_class,
             'object_uid' => $this->object_uid,
             'session_uid' => $this->session_uid,

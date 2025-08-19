@@ -21,15 +21,41 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Request extends Model
 {
     /**
+     * The table associated with the model.
+     */
+    protected $table;
+
+    /**
+     * This table does not use timestamps.
+     */
+    public $timestamps = false;
+
+    /**
      * Creates a new analytics repository instance.
      */
     public function __construct(
-        #[ConfigAttribute('stickle.database.tablePrefix')] protected ?string $prefix = null,
+        #[ConfigAttribute('stickle.database.tablePrefix')] public ?string $prefix = null,
     ) {
         /**
          * We aren't using the Attribute\Config trait b/c it doesn't populate in Factory
          */
-        $this->table = config('stickle.database.tablePrefix').'requests';
+        if (! $this->table) {
+            $this->table = config('stickle.database.tablePrefix').'requests';
+        }
+
+        parent::__construct();
+    }
+
+    /**
+     * Get the table associated with the model.
+     */
+    public function getTable()
+    {
+        if (! $this->table) {
+            $this->table = config('stickle.database.tablePrefix').'requests';
+        }
+
+        return $this->table;
     }
 
     /**
@@ -37,7 +63,6 @@ class Request extends Model
      */
     protected $fillable = [
         'type',
-        'activity_type',
         'model_class',
         'object_uid',
         'session_uid',
