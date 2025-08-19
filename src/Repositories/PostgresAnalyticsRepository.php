@@ -6,7 +6,6 @@ namespace StickleApp\Core\Repositories;
 
 use DateTimeInterface;
 use Illuminate\Container\Attributes\Config;
-use Illuminate\Support\Facades\DB;
 use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
 
 /**
@@ -20,31 +19,6 @@ final class PostgresAnalyticsRepository implements AnalyticsRepositoryContract
     public function __construct(
         #[Config('stickle.database.tablePrefix')] protected ?string $prefix = null,
     ) {}
-
-    /**
-     * Save a request
-     * 
-     * @param array<string, mixed> $properties
-     */
-    public function saveRequest(
-        string $type,
-        string $modelClass,
-        string $objectUid,
-        string $sessionUid,
-        string $ipAddress,
-        DateTimeInterface $timestamp,
-        ?array $properties = [],
-    ): void {
-        DB::table($this->prefix.'requests')->insert([
-            'type' => $type,
-            'model_class' => $modelClass,
-            'object_uid' => $objectUid,
-            'session_uid' => $sessionUid,
-            'ip_address' => $ipAddress,
-            'properties' => json_encode($properties),
-            'timestamp' => $timestamp,
-        ]);
-    }
 
     public function rollupSessions(DateTimeInterface $startDate): void
     {
@@ -85,22 +59,5 @@ ON CONFLICT (model_class, object_uid, day) DO UPDATE SET session_count = EXCLUDE
 sql;
 
         \DB::statement(sprintf($sql, $startDate->format('Y-m-d'), $startDate->format('Y-m-d')));
-    }
-
-    public function saveEvent(
-        string $model,
-        string $objectUid,
-        string $sessionUid,
-        DateTimeInterface $timestamp,
-        string $event,
-    ): void {
-        DB::table($this->prefix.'requests')->insert([
-            'activity_type' => 'event',
-            'model_class' => $model,
-            'object_uid' => $objectUid,
-            'session_uid' => $sessionUid,
-            'name' => $event,
-            'timestamp' => $timestamp,
-        ]);
     }
 }

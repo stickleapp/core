@@ -19,6 +19,7 @@ use Illuminate\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
+use StickleApp\Core\Models\Request as RequestModel;
 
 class AuthenticatableEventListener implements ShouldQueue
 {
@@ -37,13 +38,19 @@ class AuthenticatableEventListener implements ShouldQueue
 
         $timestamp = new DateTime;
 
-        $this->repository->saveEvent(
-            model: class_basename($event->user),
-            objectUid: (string) $event->user->id,
-            sessionUid: $this->request->session()->getId(),
-            timestamp: $timestamp,
-            event: get_class($event) ?: 'UnknownEvent',
-        );
+        $properties = [
+            'name' => get_class($event) ?: 'UnknownEvent',
+        ];
+
+        $request = RequestModel::create([
+            'type' => 'track',
+            'model_class' => class_basename($event->user),
+            'object_uid' => (string) $event->user->id,
+            'session_uid' => $timestamp,
+            'ip_address' => data_get($event->payload, 'ip_address'),
+            'timestamp' => data_get($event->payload, 'timestamp', new DateTime),
+            'properties' => $properties,
+        ]);
     }
 
     /**

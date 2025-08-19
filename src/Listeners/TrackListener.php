@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
 use StickleApp\Core\Events\Track;
+use StickleApp\Core\Models\Request;
 
 class TrackListener implements ShouldQueue
 {
@@ -22,15 +23,15 @@ class TrackListener implements ShouldQueue
     {
         Log::debug('TrackListener->handle()', [$event]);
 
-        $this->repository->saveRequest(
-            type: 'track',
-            modelClass: data_get($event->payload, 'model_class'),
-            objectUid: data_get($event->payload, 'object_uid'),
-            sessionUid: data_get($event->payload, 'session_uid'),
-            ipAddress: data_get($event->payload, 'ip_address'),
-            timestamp: data_get($event->payload, 'timestamp', new DateTime),
-            properties: data_get($event->payload, 'properties', [])
-        );
+        $request = Request::create([
+            'type' => 'track',
+            'model_class' => data_get($event->payload, 'model_class'),
+            'object_uid' => data_get($event->payload, 'object_uid'),
+            'session_uid' => data_get($event->payload, 'session_uid'),
+            'ip_address' => data_get($event->payload, 'ip_address'),
+            'timestamp' => data_get($event->payload, 'timestamp', new DateTime),
+            'properties' => data_get($event->payload, 'properties', []),
+        ]);
 
         /**
          * To repond to events createa a listener class in App\Listeners

@@ -6,10 +6,10 @@ namespace StickleApp\Core\Listeners;
 
 use DateTime;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
 use StickleApp\Core\Events\Page;
+use StickleApp\Core\Models\Request;
 
 class PageListener implements ShouldQueue
 {
@@ -22,14 +22,15 @@ class PageListener implements ShouldQueue
     {
         Log::debug('PageListener->handle()', [$event]);
 
-        $this->repository->saveRequest(
-            type: 'track',
-            modelClass: Arr::get($event->payload, 'model_class'),
-            objectUid: Arr::get($event->payload, 'object_uid'),
-            sessionUid: Arr::get($event->payload, 'session_uid'),
-            ipAddress: data_get($event->payload, 'ip_address'),
-            timestamp: Arr::get($event->payload, 'timestamp', new DateTime),
-            properties: Arr::get($event->payload, 'properties', [])
-        );
+        $request = Request::create([
+            'type' => 'page',
+            'model_class' => data_get($event->payload, 'model_class'),
+            'object_uid' => data_get($event->payload, 'object_uid'),
+            'session_uid' => data_get($event->payload, 'session_uid'),
+            'ip_address' => data_get($event->payload, 'ip_address'),
+            'timestamp' => data_get($event->payload, 'timestamp', new DateTime),
+            'properties' => data_get($event->payload, 'properties', []),
+        ]);
+
     }
 }
