@@ -10,7 +10,8 @@
       "Bash(rm:*)",
       "Bash(rg:*)",
       "Bash(curl:*)",
-      "Bash(composer analyze:*)"
+      "Bash(composer analyze:*)",
+      "Bash(composer test:*)"
     ]
   },
   "enableAllProjectMcpServers": false,

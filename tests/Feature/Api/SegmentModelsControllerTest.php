@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\DB;
 use StickleApp\Core\Models\Segment;
 use Workbench\App\Models\User;
 
+// class_alias(SegmentContract::class, ' Workbench\\App\\Models\\User');
+
 it('returns segment models data via API request', function () {
     // Create a segment
     $segment = Segment::create([

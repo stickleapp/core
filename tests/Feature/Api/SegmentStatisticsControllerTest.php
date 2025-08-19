@@ -3,11 +3,12 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Config;
+use StickleApp\Core\Contracts\SegmentContract;
 use StickleApp\Core\Models\Segment;
 use StickleApp\Core\Models\SegmentStatistic;
 
 // Create mock segment class
-// class_alias('stdClass', 'StickleApp\\Segments\\TestSegment');
+class_alias(SegmentContract::class, 'StickleApp\\Segments\\TestSegment');
 
 beforeEach(function () {
     // Set the segments namespace configuration
@@ -20,7 +21,7 @@ it('returns segment statistics data via API request', function () {
         'name' => 'Test Segment',
         'description' => 'Test segment for statistics',
         'model_class' => 'User',
-        'as_class' => 'StickleApp\\Segments\\TestSegment',
+        'as_class' => 'TestSegment',
         'as_json' => '[]',
     ]);
 

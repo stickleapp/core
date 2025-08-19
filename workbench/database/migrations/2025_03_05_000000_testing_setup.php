@@ -115,7 +115,7 @@ return new class extends Migration
 
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn([
-                'customer_id', 'user_type',
+                'customer_id', 'user_type', 'user_level',
             ]);
         });
         Schema::dropIfExists('customers');
