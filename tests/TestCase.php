@@ -40,13 +40,13 @@ class TestCase extends Orchestra
         config()->set('database.default', 'pgsql');
 
         // Set Stickle configuration from environment variables
-        // $app['config']->set('stickle.namespaces.models', env('STICKLE_NAMESPACES_MODELS', 'App\\Models'));
-        // $app['config']->set('stickle.namespaces.segments', env('STICKLE_NAMESPACES_SEGMENTS', 'App\\Segments'));
-        // $app['config']->set('stickle.namespaces.listeners', env('STICKLE_NAMESPACES_LISTENERS', 'App\\Listeners'));
-        // $app['config']->set('stickle.database.tablePrefix', env('STICKLE_DATABASE_TABLE_PREFIX', ''));
+        config()->set('stickle.namespaces.models', env('STICKLE_NAMESPACES_MODELS'));
+        config()->set('stickle.namespaces.segments', env('STICKLE_NAMESPACES_SEGMENTS'));
+        config()->set('stickle.namespaces.listeners', env('STICKLE_NAMESPACES_LISTENERS'));
+        config()->set('stickle.database.tablePrefix', env('STICKLE_DATABASE_TABLE_PREFIX'));
 
         // This fixes a bug in GitHub Actions runner. But find out why it's needed.
-        $app['config']->set('stickle.broadcasting.channels.object', 'stickle.object.%s.%s');
+        config()->set('stickle.broadcasting.channels.object', 'stickle.object.%s.%s');
 
         // $migration = include __DIR__.'/../database/migrations/initial_structure.php';
         // $migration->up();
