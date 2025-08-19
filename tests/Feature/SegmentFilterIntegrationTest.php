@@ -7,6 +7,7 @@ use StickleApp\Core\Models\Segment as SegmentModel;
 use Workbench\App\Models\User;
 
 beforeEach(function () {
+
     // Create test segments
     $this->activeSegment = SegmentModel::create([
         'name' => 'Active Users',

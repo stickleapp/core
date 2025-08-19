@@ -32,10 +32,16 @@ return new class extends Migration
         });
 
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('customer_id')->nullable(true);
-            $table->string('user_type')->nullable(false);
-            $table->integer('user_level')->nullable(false)->default(0);
-            $table->foreign('customer_id')->references('id')->on('customers');
+            if (! Schema::hasColumn('users', 'customer_id')) {
+                $table->unsignedBigInteger('customer_id')->nullable(true);
+                $table->foreign('customer_id')->references('id')->on('customers');
+            }
+            if (! Schema::hasColumn('users', 'user_type')) {
+                $table->string('user_type')->nullable(false)->default('End User');
+            }
+            if (! Schema::hasColumn('users', 'user_level')) {
+                $table->integer('user_level')->nullable(false)->default(0);
+            }
         });
 
         // Schema::table('customer_user', function (Blueprint $table) {
