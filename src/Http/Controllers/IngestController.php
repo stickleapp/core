@@ -118,7 +118,7 @@ class IngestController
         if ($explicit) {
             return $explicit;
         }
-        
+
         if ($object) {
             return class_basename($object);
         }
