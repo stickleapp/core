@@ -3,12 +3,13 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Config;
+use StickleApp\Core\Contracts\SegmentContract;
 use StickleApp\Core\Models\Segment;
 
 // Create mock segment classes
-class_alias('stdClass', 'StickleApp\\Segments\\Segment1');
-class_alias('stdClass', 'StickleApp\\Segments\\Segment2');
-class_alias('stdClass', 'StickleApp\\Segments\\Segment3');
+class_alias(SegmentContract::class, 'StickleApp\\Segments\\Segment1');
+class_alias(SegmentContract::class, 'StickleApp\\Segments\\Segment2');
+class_alias(SegmentContract::class, 'StickleApp\\Segments\\Segment3');
 
 beforeEach(function () {
     // Set the segments namespace configuration
