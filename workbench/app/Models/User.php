@@ -93,7 +93,7 @@ class User extends Authenticatable
 
     public function stickleLabel(): string
     {
-        return $this->name ?: 'User '.$this->getKey();
+        return $this->name;
     }
 
     public function ticketsAssigned(): HasMany

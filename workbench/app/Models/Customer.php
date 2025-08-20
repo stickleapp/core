@@ -87,7 +87,7 @@ class Customer extends Model
 
     public function stickleLabel(): string
     {
-        return $this->name ?: 'Customer '.$this->getKey();
+        return $this->name;
     }
 
     // public static function stickleTrackedAggregates(): array {}
