@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Listeners;
 
-use DateTime;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
