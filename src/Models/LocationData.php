@@ -6,6 +6,7 @@ namespace StickleApp\Core\Models;
 
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Database\Eloquent\Model;
+use StickleApp\Core\Casts\PostGISPoint;
 
 class LocationData extends Model
 {
@@ -40,6 +41,8 @@ class LocationData extends Model
          * We aren't using the Attribute\Config trait b/c it doesn't populate in Factory
          */
         $this->table = config('stickle.database.tablePrefix').'location_data';
+        
+        parent::__construct();
     }
 
     /**
@@ -67,7 +70,7 @@ class LocationData extends Model
     {
         return [
             'ip_address' => 'string',
-            'coordinates' => 'point',
+            'coordinates' => PostGISPoint::class,
         ];
     }
 

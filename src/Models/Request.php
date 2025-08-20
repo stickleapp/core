@@ -66,7 +66,6 @@ class Request extends Model
         'model_class',
         'object_uid',
         'session_uid',
-        'location',
         'ip_address',
         'properties',
         'timestamp',

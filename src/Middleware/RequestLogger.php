@@ -7,9 +7,11 @@ namespace StickleApp\Core\Middleware;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
+use StickleApp\Core\Dto\LocationDataDto;
 use StickleApp\Core\Dto\ModelDto;
 use StickleApp\Core\Dto\RequestDto;
 use StickleApp\Core\Events\Page;
+use StickleApp\Core\Models\LocationData;
 
 class RequestLogger
 {
@@ -60,7 +62,7 @@ class RequestLogger
         }
 
         $user = $request->user();
-        
+
         $modelDto = $user ? new ModelDto(
             model_class: get_class($user),
             object_uid: (string) $user->id,
@@ -74,13 +76,15 @@ class RequestLogger
             raw: [],
             url: '/guest'
         );
-        
+
+        $ipAddress = $request->header('X-Forwarded-For') ?: $request->ip();
+
         $requestDto = new RequestDto(
             type: 'request',
             model_class: $user ? class_basename($user) : 'Guest',
-            object_uid: $user ? (string) $user->id : 'guest',
+            object_uid: $user ? (string) $user->getKey() : 'guest',
             session_uid: $request->session()->getId(),
-            ip_address: $request->header('X-Forwarded-For') ? $request->header('X-Forwarded-For') : ($request->ip() ?? '127.0.0.1'),
+            ip_address: $ipAddress,
             properties: [
                 'name' => $request->path(),
                 'url' => $request->fullUrl(),
@@ -97,7 +101,7 @@ class RequestLogger
                 'status_code' => $this->getStatusCode($response),
             ],
             timestamp: Carbon::now(),
-            location_data: null,
+            location_data: ($locationData = LocationData::find($ipAddress)) ? LocationDataDto::fromArray($locationData->toArray()) : null,
             model: $modelDto
         );
 

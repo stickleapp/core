@@ -45,7 +45,7 @@
             id="usersColumn"
             class="livePageNavigationContent w-full md:w-1/2 md:block"
         >
-            <div class="p-6 rounded-lg h-96">
+            <div class="p-6 rounded-lg h-96 overflow-y-hidden">
                 <x-stickle::ui.timelines.sessions
                     :requests-endpoint="route('stickle::api.requests', ['model_class' => 'User'])"
                     :channel="$eventsChannel"
@@ -60,7 +60,7 @@
         <!-- Right Column: Model Details & Events -->
         <div
             id="detailsEventsColumn"
-            class="livePageNavigationContent w-full md:w-1/2 hidden md:block"
+            class="livePageNavigationContent w-full md:w-1/2 hidden md:block h-44"
         >
             <!-- Model Details Section (top right) -->
             @if($model)
@@ -70,7 +70,7 @@
             @endif
 
             <!-- Events List Section (bottom right) -->
-            <div class="p-6 rounded-lg h-44">
+            <div class="p-6 rounded-lg h-96 overflow-y-hidden">
                 <x-stickle::ui.timelines.event-timeline
                     :channel="$eventsChannel"
                 ></x-stickle::ui.timelines.event-timeline>

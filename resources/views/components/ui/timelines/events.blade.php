@@ -53,8 +53,15 @@
                                         <a href="/stickle/User/${
                                             event?.data?.user?.id
                                         }" class="font-medium text-gray-900">${
-                    event?.data?.user?.name || "User"
+                    event?.data?.model?.label || "User"
                 }</a>
+                                        <span class="text-gray-400">
+                                            ${
+                                                event?.data?.type == "event"
+                                                    ? "triggered"
+                                                    : "visited "
+                                            }
+                                        </span>
                                         ${
                                             event?.data?.properties?.name ||
                                             event?.data?.properties?.path ||

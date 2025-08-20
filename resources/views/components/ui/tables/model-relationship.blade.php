@@ -189,7 +189,6 @@
             },
 
             setSorting(column, direction) {
-                debugger;
                 this.sortBy = column;
                 this.sortDirection = direction;
                 this.filters.sort_by = column;

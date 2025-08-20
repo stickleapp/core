@@ -18,6 +18,10 @@ class SendTestRequests extends Command
      */
     protected $signature = 'workbench:send-test-requests';
 
+    const SLEEP_PAGE = 1; // Sleep time between page requests
+
+    const SLEEP_TRACK = 1; // Sleep time between tracking events
+
     /**
      * The console command description.
      *
@@ -150,7 +154,7 @@ class SendTestRequests extends Command
 
                 $ipAddress = \DB::table("{$prefix}location_data")->inRandomOrder()->value('ip_address');
 
-                $randomUrls = collect($this->urls)->shuffle()->take(5);
+                $randomUrls = collect($this->urls)->shuffle()->take(2);
 
                 foreach ($randomUrls as $url) {
                     $response = Http::withHeaders([
@@ -158,10 +162,10 @@ class SendTestRequests extends Command
                         'password' => 'password',
                         'X-Forwarded-For' => $ipAddress,
                     ])->get('http://127.0.0.1:8000'.$url);
-                    sleep(5);
+                    sleep(self::SLEEP_PAGE);
                 }
 
-                $randomEvents = collect($this->events)->shuffle()->take(20);
+                $randomEvents = collect($this->events)->shuffle()->take(4);
 
                 foreach ($randomEvents as $event) {
                     $response = Http::withHeaders([
@@ -169,7 +173,7 @@ class SendTestRequests extends Command
                         'password' => 'password',
                         'X-Forwarded-For' => $ipAddress,
                     ])->post('http://127.0.0.1:8000/users/'.$user->id.'/'.$event);
-                    sleep(1);
+                    sleep(self::SLEEP_TRACK);
                 }
             }
         }

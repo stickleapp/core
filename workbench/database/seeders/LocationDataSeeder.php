@@ -327,7 +327,7 @@ class LocationDataSeeder extends Seeder
                 'ip_address' => fake()->ipv4(),
                 'city' => $city['city'],
                 'country' => $city['country'],
-                'coordinates' => DB::raw("ST_SetSRID(ST_MakePoint({$city['longitude']}, {$city['longitude']}), 4326)"),
+                'coordinates' => DB::raw("ST_SetSRID(ST_MakePoint({$city['longitude']}, {$city['latitude']}), 4326)"),
             ]);
         }
     }

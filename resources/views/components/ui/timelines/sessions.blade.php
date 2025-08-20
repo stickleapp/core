@@ -25,7 +25,7 @@
 
 <script>
     function sessionTimelineData() {
-        const activities = [];
+        const requests = [];
         const sessionsContainer = document.getElementById("sessions-container");
         const sessionCount = document.getElementById("session-count");
 
@@ -50,8 +50,8 @@
         }
 
         function renderSessions() {
-            // Group activities by model_class and object_uid, keeping the most recent
-            const uniqueSessions = activities.reduce((acc, activity) => {
+            // Group requests by model_class and object_uid, keeping the most recent
+            const uniqueSessions = requests.reduce((acc, activity) => {
                 const key = `${activity.model_class}_${activity.object_uid}`;
                 if (
                     !acc[key] ||
@@ -89,10 +89,14 @@
                 });
 
                 const timeAgo = formatTimeAgo(session.timestamp);
-                const locationText = session.location?.city
-                    ? `${session.location.city}${
-                          session.location.state
-                              ? ", " + session.location.state
+                const locationText = session.location_data?.city
+                    ? `${session.location_data.city}${
+                          session.location_data.state
+                              ? ", " + session.location_data.state
+                              : ""
+                      }${
+                          session.location_data.country
+                              ? ", " + session.location_data.country
                               : ""
                       }`
                     : "Unknown location";
@@ -148,12 +152,12 @@
             window.Echo.channel("{{ $channel }}").listenToAll(
                 (eventName, data) => {
                     // Add new activity from websocket
-                    if (data && data.activity) {
-                        activities.unshift(data.activity);
+                    if (data && data.payload) {
+                        requests.unshift(data.payload);
 
-                        // Keep only the most recent 100 activities to prevent memory issues
-                        if (activities.length > 100) {
-                            activities.splice(100);
+                        // Keep only the most recent 100 requests to prevent memory issues
+                        if (requests.length > 100) {
+                            requests.splice(100);
                         }
 
                         renderSessions();
@@ -168,7 +172,7 @@
             async init() {
                 const data = await fetchData();
                 if (!data) return;
-                activities.push(...data);
+                requests.push(...data);
                 renderSessions();
             },
         };

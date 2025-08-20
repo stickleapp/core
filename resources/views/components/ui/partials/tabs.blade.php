@@ -51,7 +51,7 @@
         tabs.forEach((tab) => {
             tab.addEventListener("click", function (e) {
                 const isUrl = selectedValue.startsWith("http");
-                debugger;
+
                 if (isUrl) {
                     return;
                 } else {

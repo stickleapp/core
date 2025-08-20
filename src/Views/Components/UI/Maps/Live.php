@@ -19,6 +19,8 @@ class Live extends Component
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
         public ?string $heading = 'Live Map',
         public ?string $description = 'Real-time user activity map',
+        public ?string $requestsEndpoint = null,
+        public ?string $channel = null,
     ) {}
 
     /**

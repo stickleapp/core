@@ -32,7 +32,7 @@ class RequestResource extends JsonResource
             'model_class' => $this->model_class,
             'object_uid' => $this->object_uid,
             'session_uid' => $this->session_uid,
-            'location' => $this->locationData,
+            'location_data' => $this->locationData,
             'ip_address' => $this->ip_address,
             'properties' => $this->when(! empty($this->properties), $this->properties),
             'model' => $this->getModelData(),
@@ -56,7 +56,7 @@ class RequestResource extends JsonResource
         }
 
         $model = $modelClass::findOrFail($this->object_uid);
-        
+
         $modelDto = new ModelDto(
             model_class: $modelClass,
             object_uid: $this->object_uid,
@@ -64,7 +64,7 @@ class RequestResource extends JsonResource
             raw: $model->toArray(),
             url: $model->stickleUrl()
         );
-        
+
         return $modelDto->toArray();
     }
 }
