@@ -60,7 +60,7 @@ class RequestLogger
         }
 
         $user = $request->user();
-        
+
         $modelDto = $user ? new ModelDto(
             model_class: get_class($user),
             object_uid: (string) $user->id,
@@ -74,7 +74,7 @@ class RequestLogger
             raw: [],
             url: '/guest'
         );
-        
+
         $requestDto = new RequestDto(
             type: 'request',
             model_class: $user ? class_basename($user) : 'Guest',

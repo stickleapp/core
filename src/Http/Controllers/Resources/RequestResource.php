@@ -56,7 +56,7 @@ class RequestResource extends JsonResource
         }
 
         $model = $modelClass::findOrFail($this->object_uid);
-        
+
         $modelDto = new ModelDto(
             model_class: $modelClass,
             object_uid: $this->object_uid,
@@ -64,7 +64,7 @@ class RequestResource extends JsonResource
             raw: $model->toArray(),
             url: $model->stickleUrl()
         );
-        
+
         return $modelDto->toArray();
     }
 }

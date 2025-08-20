@@ -29,7 +29,7 @@ Route::post('/users/{user}/{event}', function (Request $request, User $user, str
             'object_uid' => (string) $user->id,
             'label' => $user->stickleLabel(),
             'raw' => $user->toArray(),
-            'url' => $user->stickleUrl()
+            'url' => $user->stickleUrl(),
         ],
         'location_data' => null,
         'properties' => [

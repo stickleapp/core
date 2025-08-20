@@ -27,7 +27,7 @@ class RequestsController
             ->orderBy('timestamp', 'desc');
 
         $paginated = $builder->paginate($request->integer('per_page', 250));
-        
+
         return response()->json([
             'data' => RequestResource::collection($paginated->items()),
             'links' => [
