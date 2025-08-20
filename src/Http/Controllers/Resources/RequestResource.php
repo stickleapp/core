@@ -5,6 +5,7 @@ namespace StickleApp\Core\Http\Controllers\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
+use StickleApp\Core\Dto\ModelDto;
 use StickleApp\Core\Models\Request as RequestModel;
 use StickleApp\Core\Support\ClassUtils;
 
@@ -34,7 +35,7 @@ class RequestResource extends JsonResource
             'location' => $this->locationData,
             'ip_address' => $this->ip_address,
             'properties' => $this->when(! empty($this->properties), $this->properties),
-            'model' => $this->getModel(),
+            'model' => $this->getModelData(),
             'timestamp' => $this->timestamp,
         ];
     }
@@ -42,9 +43,8 @@ class RequestResource extends JsonResource
     /**
      * @return array<string, mixed>
      */
-    private function getModel(): array
+    private function getModelData(): array
     {
-
         $modelClass = config('stickle.namespaces.models').'\\'.Str::ucfirst($this->model_class);
 
         if (! class_exists($modelClass)) {
@@ -56,12 +56,15 @@ class RequestResource extends JsonResource
         }
 
         $model = $modelClass::findOrFail($this->object_uid);
-
-        return [
-            'class' => $this->model_class,
-            'uid' => $this->object_uid,
-            'label' => $model->stickleLabel(),
-            'url' => $model->stickleUrl(),
-        ];
+        
+        $modelDto = new ModelDto(
+            model_class: $modelClass,
+            object_uid: $this->object_uid,
+            label: $model->stickleLabel(),
+            raw: $model->toArray(),
+            url: $model->stickleUrl()
+        );
+        
+        return $modelDto->toArray();
     }
 }

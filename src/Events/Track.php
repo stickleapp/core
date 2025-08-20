@@ -8,6 +8,7 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use StickleApp\Core\Dto\RequestDto;
 
 class Track implements ShouldBroadcast
 {
@@ -15,11 +16,9 @@ class Track implements ShouldBroadcast
 
     /**
      * Create a new event instance.
-     *
-     * @param  array<mixed>  $payload
      */
     public function __construct(
-        public array $payload
+        public RequestDto $payload
     ) {}
 
     /**
@@ -36,8 +35,8 @@ class Track implements ShouldBroadcast
             ),
             new Channel(
                 sprintf(config('stickle.broadcasting.channels.object'),
-                    str_replace('\\', '-', strtolower(data_get($this->payload, 'model_class'))),
-                    data_get($this->payload, 'object_uid')
+                    str_replace('\\', '-', strtolower($this->payload->model_class)),
+                    $this->payload->object_uid
                 )
             ),
         ];

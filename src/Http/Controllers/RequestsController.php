@@ -6,7 +6,7 @@ namespace StickleApp\Core\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use StickleApp\Core\Http\Controllers\Requests\RequestsIndexRequest;
-// use StickleApp\Core\Http\Controllers\Resources\RequestCollection;
+use StickleApp\Core\Http\Controllers\Resources\RequestResource;
 use StickleApp\Core\Models\Request;
 
 class RequestsController
@@ -26,6 +26,24 @@ class RequestsController
             })
             ->orderBy('timestamp', 'desc');
 
-        return response()->json($builder->paginate($request->integer('per_page', 250)));
+        $paginated = $builder->paginate($request->integer('per_page', 250));
+        
+        return response()->json([
+            'data' => RequestResource::collection($paginated->items()),
+            'links' => [
+                'first' => $paginated->url(1),
+                'last' => $paginated->url($paginated->lastPage()),
+                'prev' => $paginated->previousPageUrl(),
+                'next' => $paginated->nextPageUrl(),
+            ],
+            'meta' => [
+                'current_page' => $paginated->currentPage(),
+                'from' => $paginated->firstItem(),
+                'last_page' => $paginated->lastPage(),
+                'per_page' => $paginated->perPage(),
+                'to' => $paginated->lastItem(),
+                'total' => $paginated->total(),
+            ],
+        ]);
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use StickleApp\Core\Dto\RequestDto;
 
 class Page implements ShouldBroadcast
 {
@@ -15,10 +16,8 @@ class Page implements ShouldBroadcast
 
     /**
      * Create a new event instance.
-     *
-     * @param  array<mixed>  $payload
      */
-    public function __construct(public array $payload) {}
+    public function __construct(public RequestDto $payload) {}
 
     /**
      * Get the channels the event should broadcast on.
@@ -33,8 +32,8 @@ class Page implements ShouldBroadcast
             ),
             new Channel(
                 sprintf(config('stickle.broadcasting.channels.object'),
-                    str_replace('\\', '-', strtolower(data_get($this->payload, 'model_class'))),
-                    data_get($this->payload, 'object_uid')
+                    str_replace('\\', '-', strtolower($this->payload->model_class)),
+                    $this->payload->object_uid
                 )
             ),
         ];

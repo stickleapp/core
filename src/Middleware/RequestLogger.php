@@ -7,6 +7,8 @@ namespace StickleApp\Core\Middleware;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
+use StickleApp\Core\Dto\ModelDto;
+use StickleApp\Core\Dto\RequestDto;
 use StickleApp\Core\Events\Page;
 
 class RequestLogger
@@ -58,15 +60,28 @@ class RequestLogger
         }
 
         $user = $request->user();
-        $data = [
-            // 'user' => $user,
-            'type' => 'request',
-            'model_class' => $user ? class_basename($user) : null,
-            'object_uid' => $user ? (string) $user->id : null,
-            'session_uid' => $request->session()->getId(),
-            'ip_address' => $request->header('X-Forwarded-For') ? $request->header('X-Forwarded-For') : $request->ip(),
-            'timestamp' => Carbon::now(),
-            'properties' => [
+        
+        $modelDto = $user ? new ModelDto(
+            model_class: get_class($user),
+            object_uid: (string) $user->id,
+            label: $user->stickleLabel(),
+            raw: $user->toArray(),
+            url: $user->stickleUrl()
+        ) : new ModelDto(
+            model_class: 'Guest',
+            object_uid: 'guest',
+            label: 'Guest User',
+            raw: [],
+            url: '/guest'
+        );
+        
+        $requestDto = new RequestDto(
+            type: 'request',
+            model_class: $user ? class_basename($user) : 'Guest',
+            object_uid: $user ? (string) $user->id : 'guest',
+            session_uid: $request->session()->getId(),
+            ip_address: $request->header('X-Forwarded-For') ? $request->header('X-Forwarded-For') : ($request->ip() ?? '127.0.0.1'),
+            properties: [
                 'name' => $request->path(),
                 'url' => $request->fullUrl(),
                 'path' => $request->getPathInfo(),
@@ -81,9 +96,12 @@ class RequestLogger
                 'method' => $request->getMethod(),
                 'status_code' => $this->getStatusCode($response),
             ],
-        ];
+            timestamp: Carbon::now(),
+            location_data: null,
+            model: $modelDto
+        );
 
-        Page::dispatch($data);
+        Page::dispatch($requestDto);
     }
 
     /**

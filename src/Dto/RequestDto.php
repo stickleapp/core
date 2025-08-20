@@ -8,18 +8,24 @@ use Carbon\Carbon;
 
 readonly class RequestDto
 {
+    /**
+     * @param  ?array<string, mixed>  $properties
+     */
     public function __construct(
         public string $type,
         public string $model_class,
         public string $object_uid,
         public string $session_uid,
-        public string $ip_address,
-        public ?array $properties,
         public Carbon $timestamp,
-        public ?LocationDataDto $location_data,
         public ModelDto $model,
+        public ?string $ip_address,
+        public ?array $properties,
+        public ?LocationDataDto $location_data,
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -35,6 +41,9 @@ readonly class RequestDto
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return [
@@ -42,7 +51,6 @@ readonly class RequestDto
             'model_class' => $this->model_class,
             'object_uid' => $this->object_uid,
             'session_uid' => $this->session_uid,
-            'location' => $this->location,
             'ip_address' => $this->ip_address,
             'properties' => $this->properties,
             'timestamp' => $this->timestamp,

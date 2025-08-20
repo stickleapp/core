@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property string $activity_type
+ * @property string $type
  * @property string $model_class
  * @property string $object_uid
  * @property string $session_uid

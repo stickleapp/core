@@ -6,6 +6,9 @@ namespace StickleApp\Core\Dto;
 
 readonly class LocationDataDto
 {
+    /**
+     * @param  ?array<float>  $coordinates
+     */
     public function __construct(
         public string $ip_address,
         public ?string $city,
@@ -13,6 +16,9 @@ readonly class LocationDataDto
         public ?array $coordinates,
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -23,6 +29,9 @@ readonly class LocationDataDto
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return [

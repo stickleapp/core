@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use StickleApp\Core\Dto\ModelDto;
+use StickleApp\Core\Dto\RequestDto;
 use StickleApp\Core\Enums\RequestType;
 use StickleApp\Core\Events\Page;
 use StickleApp\Core\Events\Track;
@@ -53,59 +55,52 @@ class IngestController
 
         $dt = new Carbon;
 
-        if (! $modelClass = $this->modelClass(
-            data_get($validated, 'model_class'),
-            $request->user()
-        )) {
-            throw new \Exception('Model class not specified');
-        }
-
-        if (! $objectUid = $this->objectUid(
-            data_get($validated, 'object_uid'),
-            $request->user()
-        )) {
-            throw new \Exception('Object id not specified');
-        }
-
-        $properties = data_get($validated, 'payload.*.properties', []);
-
-        $properties['title'] = data_get($properties, 'title', $request->header('X-Title', ''));
-        $properties['path'] = data_get($properties, 'path', $request->getPathInfo());
-        $properties['url'] = data_get($properties, 'url', $request->fullUrl());
-        $properties['referrer'] = data_get($properties, 'referrer', $request->headers->get('referer', ''));
-        $properties['search'] = data_get($properties, 'search', $request->getQueryString());
-        $properties['user_agent'] = data_get($properties, 'user_agent', $request->userAgent());
-        $properties['method'] = data_get($properties, 'method', $request->getMethod());
+        $defaultProperties = [
+            'title' => $request->header('X-Title', ''),
+            'path' => $request->getPathInfo(),
+            'url' => $request->fullUrl(),
+            'referrer' => $request->headers->get('referer', ''),
+            'search' => $request->getQueryString(),
+            'user_agent' => $request->userAgent(),
+            'method' => $request->getMethod(),
+        ];
 
         foreach (data_get($validated, 'payload') as $item) {
+
+            if (! $modelClass = $this->modelClass(
+                data_get($item, 'model_class'),
+                $request->user()
+            )) {
+                throw new \Exception('Model class not specified');
+            }
+
+            if (! $objectUid = $this->objectUid(
+                data_get($item, 'object_uid'),
+                $request->user()
+            )) {
+                throw new \Exception('Object id not specified');
+            }
+
+            $itemProperties = array_merge($defaultProperties, data_get($item, 'properties', []));
+
+            $requestDto = new RequestDto(
+                type: $item['type'] === 'track' ? 'event' : $item['type'],
+                model_class: $modelClass,
+                object_uid: $objectUid,
+                session_uid: $request->session()->getId(),
+                ip_address: $request->ip(),
+                properties: $itemProperties,
+                timestamp: data_get($item, 'timestamp', $dt),
+                location_data: null,
+                model: $this->getModelDto($modelClass, $objectUid)
+            );
+
             switch ($item['type']) {
                 case 'page':
-                    $data = array_merge($item, [
-                        'type' => 'page',
-                        'model_class' => $modelClass,
-                        'object_uid' => $objectUid,
-                        'session_uid' => $request->session()->getId(),
-                        'ip_address' => $request->ip(),
-                        'model' => $this->getModel($modelClass, $objectUid),
-                        'properties' => $properties,
-                        'timestamp' => data_get($item, 'timestamp', $dt),
-                    ]);
-
-                    Page::dispatch($data);
+                    Page::dispatch($requestDto);
                     break;
                 case 'track':
-                    $data = array_merge($item, [
-                        'type' => 'event',
-                        'model_class' => $modelClass,
-                        'object_uid' => $objectUid,
-                        'session_uid' => $request->session()->getId(),
-                        'ip_address' => $request->ip(),
-                        'model' => $this->getModel($modelClass, $objectUid),
-                        'properties' => $properties,
-                        'timestamp' => data_get($item, 'timestamp', $dt),
-                    ]);
-
-                    Track::dispatch($data);
+                    Track::dispatch($requestDto);
                     break;
             }
         }
@@ -122,6 +117,8 @@ class IngestController
         if ($object) {
             return class_basename($object);
         }
+
+        return null;
     }
 
     private function objectUid(?string $explicit, ?object $model): ?string
@@ -133,6 +130,8 @@ class IngestController
         if ($model && property_exists($model, 'id')) {
             return (string) $model->id;
         }
+
+        return null;
     }
 
     /**
@@ -146,29 +145,26 @@ class IngestController
         );
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function getModel(string $modelClass, string $objectUid): array
+    private function getModelDto(string $modelClass, string $objectUid): ModelDto
     {
+        $fullModelClass = config('stickle.namespaces.models').'\\'.Str::ucfirst($modelClass);
 
-        $modelClass = config('stickle.namespaces.models').'\\'.Str::ucfirst($modelClass);
-
-        if (! class_exists($modelClass)) {
-            throw new \Exception('Model not found: '.$modelClass);
+        if (! class_exists($fullModelClass)) {
+            throw new \Exception('Model not found: '.$fullModelClass);
         }
 
-        if (! ClassUtils::usesTrait($modelClass, 'StickleApp\\Core\\Traits\\StickleEntity')) {
+        if (! ClassUtils::usesTrait($fullModelClass, 'StickleApp\\Core\\Traits\\StickleEntity')) {
             throw new \Exception('Model does not use StickleTrait.');
         }
 
-        $model = $modelClass::findOrFail($objectUid);
+        $model = $fullModelClass::findOrFail($objectUid);
 
-        return [
-            'class' => $modelClass,
-            'uid' => $objectUid,
-            'label' => $model->stickleLabel(),
-            'url' => $model->stickleUrl(),
-        ];
+        return new ModelDto(
+            model_class: $fullModelClass,
+            object_uid: $objectUid,
+            label: $model->stickleLabel(),
+            raw: $model->toArray(),
+            url: $model->stickleUrl()
+        );
     }
 }

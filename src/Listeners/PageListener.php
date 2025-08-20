@@ -24,12 +24,12 @@ class PageListener implements ShouldQueue
 
         $request = Request::create([
             'type' => 'page',
-            'model_class' => data_get($event->payload, 'model_class'),
-            'object_uid' => data_get($event->payload, 'object_uid'),
-            'session_uid' => data_get($event->payload, 'session_uid'),
-            'ip_address' => data_get($event->payload, 'ip_address'),
-            'timestamp' => data_get($event->payload, 'timestamp', new DateTime),
-            'properties' => data_get($event->payload, 'properties', []),
+            'model_class' => $event->payload->model_class,
+            'object_uid' => $event->payload->object_uid,
+            'session_uid' => $event->payload->session_uid,
+            'ip_address' => $event->payload->ip_address,
+            'timestamp' => $event->payload->timestamp,
+            'properties' => $event->payload->properties ?? [],
         ]);
 
     }
