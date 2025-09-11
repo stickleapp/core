@@ -28,7 +28,7 @@ return new class extends Migration
             $table->unique(['segment_id', 'attribute']);
         });
 
-        \DB::connection()->getPdo()->exec("
+        DB::connection()->getPdo()->exec("
 DROP TABLE IF EXISTS {$prefix}segment_statistics;
 CREATE TABLE {$prefix}segment_statistics (
     id BIGSERIAL,

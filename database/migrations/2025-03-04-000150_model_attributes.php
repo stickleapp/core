@@ -32,7 +32,7 @@ return new class extends Migration
             $table->index('object_uid');
         });
 
-        \DB::connection()->getPdo()->exec("
+        DB::connection()->getPdo()->exec("
 DROP TABLE IF EXISTS {$prefix}model_attribute_audit;
 CREATE TABLE {$prefix}model_attribute_audit (
     id BIGSERIAL,

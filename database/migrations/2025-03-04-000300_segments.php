@@ -228,7 +228,7 @@ LANGUAGE PLPGSQL;
 eof;
 
         if ($sql = preg_replace('/%s/', $prefix, $sql)) {
-            \DB::connection()->getPdo()->exec($sql);
+            DB::connection()->getPdo()->exec($sql);
         }
     }
 
@@ -246,7 +246,7 @@ eof;
 DROP FUNCTION IF EXISTS f_activate_model_segments(segmentId INT, tempTable VARCHAR);
 DROP FUNCTION IF EXISTS f_deactivate_model_segments(segmentId INT, tempTable VARCHAR);
 eof;
-        \DB::connection()->getPdo()->exec($sql);
+        DB::connection()->getPdo()->exec($sql);
 
         Schema::dropIfExists("{$prefix}model_segment_statistics");
         Schema::dropIfExists("{$prefix}model_segment_audit");

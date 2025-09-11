@@ -28,7 +28,7 @@ return new class extends Migration
             $table->unique(['model_class', 'relationship', 'attribute']);
         });
 
-        \DB::connection()->getPdo()->exec("
+        DB::connection()->getPdo()->exec("
 DROP TABLE IF EXISTS {$prefix}model_relationship_statistics;
 CREATE TABLE {$prefix}model_relationship_statistics (
     id BIGSERIAL,

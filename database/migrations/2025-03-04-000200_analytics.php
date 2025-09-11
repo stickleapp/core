@@ -25,7 +25,7 @@ return new class extends Migration
         });
 
         // events_rollup_1min
-        \DB::connection()->getPdo()->exec("
+        DB::connection()->getPdo()->exec("
 -- ----------------------------------------------------------------------------
 -- SETUP ROLLUP
 -- ----------------------------------------------------------------------------
