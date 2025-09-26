@@ -1,29 +1,22 @@
 <x-stickle::ui.layouts.default-layout>
     <div class="mb-5">
-        <x-stickle::ui.partials.breadcrumbs
-            :pages="[
+        <x-stickle::ui.partials.breadcrumbs :pages="[
                 [
                     'name' => 'Live',
                     'url' => route('stickle::live')
                 ]
-            ]"
-        ></x-stickle::ui.partials.breadcrumbs>
+            ]"></x-stickle::ui.partials.breadcrumbs>
     </div>
 
     <!-- Hero Section - Full Width Map -->
-    <div
-        class="w-full h-96 bg-blue-200 mb-6 rounded-lg flex items-center justify-center"
-    >
-        <x-stickle::ui.maps.live
-            :requests-endpoint="route('stickle::api.requests', ['model_class' => 'User'])"
-            :channel="$eventsChannel"
-        />
+    <div class="w-full h-96 bg-blue-200 mb-6 rounded-lg flex items-center justify-center">
+        <x-stickle::ui.maps.live :requests-endpoint="route('stickle::api.requests', ['model_class' => 'User'])"
+            :channel="$eventsChannel" />
     </div>
 
     <!-- Responsive Tabs Navigation -->
     <div class="w-full mb-4 block md:hidden">
-        <x-stickle::ui.partials.responsive-tabs
-            :tabs="[
+        <x-stickle::ui.partials.responsive-tabs :tabs="[
                 [
                     'label' => 'Users',
                     'target' => 'usersColumn',
@@ -32,36 +25,24 @@
                     'label' => 'Details & Events',
                     'target' => 'detailsEventsColumn',
                 ],
-            ]"
-            id="livePageNavigation"
-        >
+            ]" id="livePageNavigation">
         </x-stickle::ui.partials.responsive-tabs>
     </div>
 
     <!-- Two Column Layout -->
     <div class="w-full flex flex-col md:flex-row gap-6">
         <!-- Left Column: Users List -->
-        <div
-            id="usersColumn"
-            class="livePageNavigationContent w-full md:w-1/2 md:block"
-        >
+        <div id="usersColumn" class="livePageNavigationContent w-full md:w-1/2 md:block">
             <div class="p-6 rounded-lg h-96 overflow-y-hidden">
                 <x-stickle::ui.timelines.sessions
                     :requests-endpoint="route('stickle::api.requests', ['model_class' => 'User'])"
-                    :channel="$eventsChannel"
-                    :location="$location"
-                    :model-class="$modelClass"
-                    :uid="$uid"
-                >
+                    :channel="$eventsChannel" :location="$location" :model-class="$modelClass" :uid="$uid">
                 </x-stickle::ui.timelines.sessions>
             </div>
         </div>
 
         <!-- Right Column: Model Details & Events -->
-        <div
-            id="detailsEventsColumn"
-            class="livePageNavigationContent w-full md:w-1/2 hidden md:block h-44"
-        >
+        <div id="detailsEventsColumn" class="livePageNavigationContent w-full md:w-1/2 hidden md:block h-44">
             <!-- Model Details Section (top right) -->
             @if($model)
             <div class="p-6 rounded-lg mb-4 h-48 border border-gray-100">
@@ -71,9 +52,7 @@
 
             <!-- Events List Section (bottom right) -->
             <div class="p-6 rounded-lg h-96 overflow-y-hidden">
-                <x-stickle::ui.timelines.event-timeline
-                    :channel="$eventsChannel"
-                ></x-stickle::ui.timelines.event-timeline>
+                <x-stickle::ui.timelines.events :channel="$eventsChannel"></x-stickle::ui.timelines.event>
             </div>
         </div>
     </div>

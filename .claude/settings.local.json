@@ -14,10 +14,11 @@
       "Bash(composer test:*)",
       "mcp__laravel-boost__tinker",
       "mcp__laravel-boost__read-log-entries",
-      "mcp__laravel-boost__application-info"
+      "mcp__laravel-boost__application-info",
+      "mcp__laravel-boost__get-config"
     ]
   },
-  "enableAllProjectMcpServers": false,
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "laravel-boost"
   ]
