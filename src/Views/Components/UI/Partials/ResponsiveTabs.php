@@ -10,9 +10,10 @@ use Illuminate\View\View;
 
 class ResponsiveTabs extends Component
 {
-
     public bool $hideTabs = false;
+
     public string $responsiveClass = 'md';
+
     public string $activeTab = '';
 
     /**
