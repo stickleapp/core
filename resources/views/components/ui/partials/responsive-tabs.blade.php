@@ -1,38 +1,24 @@
-<div class="grid grid-cols-1 {{ $responsiveClass }}:hidden">
+<div class="grid grid-cols-1 {{ $responsiveClass ?? '' }}:hidden">
     <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
-    <select
-        id="{{ $id }}Select"
-        aria-label="Select a tab"
-        class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-    >
+    <select id="{{ $id }}Select" aria-label="Select a tab"
+        class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
         @foreach($tabs as $tab)
         <option value="{{ $tab['target'] }}">{{ $tab["label"] }}</option>
         @endforeach
     </select>
-    <svg
-        class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end fill-gray-500"
-        viewBox="0 0 16 16"
-        fill="currentColor"
-        aria-hidden="true"
-        data-slot="icon"
-    >
-        <path
-            fill-rule="evenodd"
+    <svg class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end fill-gray-500"
+        viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" data-slot="icon">
+        <path fill-rule="evenodd"
             d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
-            clip-rule="evenodd"
-        />
+            clip-rule="evenodd" />
     </svg>
 </div>
 @if(!$hideTabs)
 <div class="hidden {{ $responsiveClass }}:block">
     <nav id="{{ $id }}Tabs" class="flex space-x-4" aria-label="Tabs">
         @foreach($tabs as $tab)
-        <a
-            href="#"
-            data-target="{{ $tab['target'] }}"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-70"
-            >{{ $tab["label"] }}</a
-        >
+        <a href="#" data-target="{{ $tab['target'] }}"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-70">{{ $tab["label"] }}</a>
         @endforeach
     </nav>
 </div>
