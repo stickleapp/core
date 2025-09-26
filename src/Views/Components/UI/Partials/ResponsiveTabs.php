@@ -11,9 +11,13 @@ use Illuminate\View\View;
 class ResponsiveTabs extends Component
 {
     public string $id;
+
     public array $tabs;
+
     public bool $hideTabs;
+
     public string $responsiveClass;
+
     public string $activeTab;
 
     /**
