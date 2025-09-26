@@ -13,6 +13,7 @@
             clip-rule="evenodd" />
     </svg>
 </div>
+
 @if(!$hideTabs)
 <div class="hidden {{ $responsiveClass }}:block">
     <nav id="{{ $id }}Tabs" class="flex space-x-4" aria-label="Tabs">
