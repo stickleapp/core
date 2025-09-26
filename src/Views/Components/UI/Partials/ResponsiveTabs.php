@@ -10,7 +10,6 @@ use Illuminate\View\View;
 
 class ResponsiveTabs extends Component
 {
-
     /**
      * Create the component instance.
      *
