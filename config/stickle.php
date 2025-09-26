@@ -34,7 +34,7 @@ return [
     */
     'database' => [
         'schema' => env('STICKLE_DATABASE_SCHEMA', 'public'),
-        'tablePrefix' => env('STICKLE_DATABASE_TABLE_PREFIX', ''),
+        'tablePrefix' => env('STICKLE_DATABASE_TABLE_PREFIX', 'stc_'),
         'partitionsEnabled' => env('STICKLE_DATABASE_ENABLE_PARTITIONS', true),
         'partitions' => [
             'events' => [

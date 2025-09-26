@@ -50,27 +50,22 @@
                                 </div>
                                 <div class="min-w-0 flex-1 py-1.5">
                                     <div class="text-sm text-gray-500">
-                                        <a href="/stickle/User/${
-                                            event?.data?.user?.id
-                                        }" class="font-medium text-gray-900">${
-                    event?.data?.model?.label || "User"
-                }</a>
+                                        <a href="/stickle/User/${event?.data?.user?.id
+                    }" class="font-medium text-gray-900">${event?.data?.model?.label || "User"
+                    }</a>
                                         <span class="text-gray-400">
-                                            ${
-                                                event?.data?.type == "event"
-                                                    ? "triggered"
-                                                    : "visited "
-                                            }
+                                            ${event?.data?.type == "event"
+                        ? "triggered"
+                        : "visited "
+                    }
                                         </span>
-                                        ${
-                                            event?.data?.properties?.name ||
-                                            event?.data?.properties?.path ||
-                                            event?.data?.properties?.title ||
-                                            event?.data?.properties?.url
-                                        }
-                                        <span class="whitespace-nowrap">${
-                                            event?.created_at || "just now"
-                                        }</span>
+                                        ${event?.data?.properties?.name ||
+                    event?.data?.properties?.path ||
+                    event?.data?.properties?.title ||
+                    event?.data?.properties?.url
+                    }
+                                        <span class="whitespace-nowrap">${event?.created_at || "just now"
+                    }</span>
                                     </div>
                                 </div>
                             </div>
