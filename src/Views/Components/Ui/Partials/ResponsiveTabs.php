@@ -28,7 +28,12 @@ class ResponsiveTabs extends Component
 
     public function render(): View
     {
-
-        return view('stickle::components/ui/partials/responsive-tabs');
+        return view('stickle::components/ui/partials/responsive-tabs', [
+            'id' => $this->id,
+            'tabs' => $this->tabs,
+            'hideTabs' => $this->hideTabs,
+            'responsiveClass' => $this->responsiveClass,
+            'activeTab' => $this->activeTab,
+        ]);
     }
 }
