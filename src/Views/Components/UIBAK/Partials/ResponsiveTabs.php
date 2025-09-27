@@ -22,11 +22,13 @@ class ResponsiveTabs extends Component
         public bool $hideTabs = false,
         public string $responsiveClass = 'md',
         public string $activeTab = '',
-    ) {}
+    ) {
+        dd($this);
+    }
 
     public function render(): View
     {
-        dd($this);
+
 
         return view('stickle::components/ui/partials/responsive-tabs');
     }
