@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace StickleApp\Core\Views\Components\UI\Layouts;
+namespace StickleApp\Core\Views\Components\Ui\Layouts;
 
 use Illuminate\View\Component;
 use Illuminate\View\View;

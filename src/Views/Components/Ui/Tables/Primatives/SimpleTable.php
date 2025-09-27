@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace StickleApp\Core\Views\Components\UI\Tables\Primatives;
+namespace StickleApp\Core\Views\Components\Ui\Tables\Primatives;
 
 use Illuminate\View\Component;
 use Illuminate\View\View;

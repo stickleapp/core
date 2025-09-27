@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace StickleApp\Core\Views\Components\UI\Maps;
+namespace StickleApp\Core\Views\Components\Ui\Maps;
 
 use Illuminate\Container\Attributes\Config;
 use Illuminate\View\Component;
