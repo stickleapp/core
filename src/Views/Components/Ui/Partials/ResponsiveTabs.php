@@ -32,7 +32,7 @@ class ResponsiveTabs extends Component
             'id' => $this->id,
             'tabs' => $this->tabs,
             'hideTabs' => $this->hideTabs,
-            'responsiveClass' => $this->responsiveClass,
+            'responsiveClass' => $this->responsiveClass ?? '',
             'activeTab' => $this->activeTab,
         ]);
     }
