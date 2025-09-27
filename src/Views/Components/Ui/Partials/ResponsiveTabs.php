@@ -23,6 +23,7 @@ class ResponsiveTabs extends Component
         public string $responsiveClass = 'md',
         public string $activeTab = '',
     ) {
+        dd($this);
     }
 
     public function render(): View
