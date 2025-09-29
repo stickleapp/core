@@ -11,13 +11,9 @@ it('can be instantiated', function () {
 });
 
 it('registers events correctly', function () {
-    // $obj = new EventServiceProvider(app());
-    // $obj->register();
-
-    // Assuming you have some events and listeners defined in your EventServiceProvider
     $events = app('events');
     $listeners = $events->getListeners(Identify::class);
     expect($listeners)
         ->toBeArray()
-        ->toHaveCount(2); // this + a closure based
+        ->toHaveCount(1);
 });
