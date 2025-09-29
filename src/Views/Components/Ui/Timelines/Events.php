@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace StickleApp\Core\Views\Components\UI\Timelines;
+namespace StickleApp\Core\Views\Components\Ui\Timelines;
 
 use Illuminate\Container\Attributes\Config;
 use Illuminate\View\Component;

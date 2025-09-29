@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace StickleApp\Core\Views\Components\UI\Partials;
+namespace StickleApp\Core\Views\Components\Ui\Partials;
 
 use Illuminate\Container\Attributes\Config;
 use Illuminate\View\Component;
