@@ -20,8 +20,6 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, StickleEntity;
 
-    protected $table = 'users';
-
     /**
      * Create a new factory instance for the model.
      */

@@ -11,8 +11,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
 /**
+ * @property int $id
+ * @property int|null $segment_group_id
+ * @property string $name
+ * @property string|null $description
  * @property string $model_class
- * @property string $as_class
+ * @property string|null $as_class
+ * @property array<string, mixed>|null $as_json
+ * @property int $export_interval
+ * @property \Carbon\Carbon|null $last_exported_at
+ * @property int $sort_order
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
  */
 class Segment extends Model
 {

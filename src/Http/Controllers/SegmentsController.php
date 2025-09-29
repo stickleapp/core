@@ -22,7 +22,7 @@ class SegmentsController
         $segments = $builder->paginate($request->integer('per_page', 15));
 
         // Add metadata to each segment
-        $segments->through(function ($segment) {
+        $segments->through(function (Segment $segment) {
 
             if (! $metadata = \StickleApp\Core\Support\AttributeUtils::getAttributeForClass(
                 config('stickle.namespaces.segments').'\\'.$segment->as_class,
@@ -34,7 +34,7 @@ class SegmentsController
             // Append the required fields
             $segment->name = data_get($metadata, 'name');
             $segment->description = data_get($metadata, 'description');
-            $segment->export_intreval = data_get($metadata, 'exportInterval');
+            $segment->export_interval = data_get($metadata, 'exportInterval');
 
             return $segment;
         });
