@@ -42,6 +42,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "StickleApp\\Core\\": "src/",
             "StickleApp\\Core\\Tests\\": "tests/",
             "StickleApp\\Core\\Database\\Factories\\": "database/factories/",
             "Workbench\\App\\": "workbench/app/",

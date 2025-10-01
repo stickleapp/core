@@ -33,3 +33,6 @@ testbench.yaml
 # Vitepress
 docs/.vitepress/dist
 docs/.vitepress/cache
+
+# Claude
+.claude
