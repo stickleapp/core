@@ -7,7 +7,7 @@ export default defineConfig({
         tailwindcss(),
         laravel({
             input: ["resources/css/app.css", "resources/js/app.js"],
-            publicDirectory: "./vendor/orchestra/testbench-core/laravel/public", // Ensure this points to your package's public directory
+            publicDirectory: "public", // publicDirectory: "./vendor/orchestra/testbench-core/laravel/public", // Ensure this points to your package's public directory
             // Specify the build directory for testbench
             buildDirectory: "build",
             refresh: true,
