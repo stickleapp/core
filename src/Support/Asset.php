@@ -11,9 +11,12 @@ class Asset
         $manifestPath = public_path('vendor/stickleapp/core/manifest.json');
 
         if (file_exists($manifestPath)) {
-            $manifest = json_decode(file_get_contents($manifestPath), true);
-            if (array_key_exists($path, $manifest)) {
-                return asset('vendor/stickleapp/core/'.ltrim($manifest[$path]['file'], '/'));
+            $contents = file_get_contents($manifestPath);
+            if ($contents !== false) {
+                $manifest = json_decode($contents, true);
+                if (is_array($manifest) && array_key_exists($path, $manifest)) {
+                    return asset('vendor/stickleapp/core/'.ltrim($manifest[$path]['file'], '/'));
+                }
             }
         }
 
