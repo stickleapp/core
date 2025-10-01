@@ -108,6 +108,16 @@ final class CoreServiceProvider extends ServiceProvider
         );
 
         /**
+         * Publish Assets
+         */
+        $this->publishes(
+            [
+                __DIR__.'/../build' => public_path('vendor/stickleapp/core'),
+            ],
+            'package-assets'
+        );
+
+        /**
          * Load Routes
          */
         $this->loadRoutesFrom(__DIR__.'/../routes/api.php');

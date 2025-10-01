@@ -8,7 +8,14 @@
 
     <title>{{ config("app.name", "Laravel") }}</title>
 
+    @production
+    <link rel="preload" as="style" href="{{ asset('vendor/stickleapp/core/app.css') }}" />
+    <link rel="modulepreload" as="script" href="{{ asset('vendor/stickleapp/core/app.js') }}" />
+    <link rel="stylesheet" href="{{ asset('vendor/stickleapp/core/app.css') }}" />
+    <script type="module" src="{{ asset('vendor/stickleapp/core/app.js') }}"></script>
+    @else
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @endproduction
 
     <!-- Alpine.js -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.8/cdn.js"></script>
