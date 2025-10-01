@@ -32,6 +32,10 @@ final class CoreServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->singleton('stickle.asset', function () {
+            return new \StickleApp\Core\Support\Asset;
+        });
+
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ScheduleServiceProvider::class);
 
@@ -112,7 +116,7 @@ final class CoreServiceProvider extends ServiceProvider
          */
         $this->publishes(
             [
-                __DIR__.'/../build' => public_path('vendor/stickleapp/core'),
+                __DIR__.'/../public/build' => public_path('vendor/stickleapp/core'),
             ],
             'package-assets'
         );
@@ -124,8 +128,5 @@ final class CoreServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadRoutesFrom(__DIR__.'/../routes/channels.php');
 
-        // if (file_exists($buildPath = $this->app->basePath('public/build/manifest.json'))) {
-        //     Vite::useManifestFromBuildDirectory('build');
-        // }
     }
 }

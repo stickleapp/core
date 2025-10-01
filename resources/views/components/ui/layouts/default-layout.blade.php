@@ -8,11 +8,11 @@
 
     <title>{{ config("app.name", "Laravel") }}</title>
 
-    @production
-    <link rel="preload" as="style" href="{{ asset('vendor/stickleapp/core/app.css') }}" />
-    <link rel="modulepreload" as="script" href="{{ asset('vendor/stickleapp/core/app.js') }}" />
-    <link rel="stylesheet" href="{{ asset('vendor/stickleapp/core/app.css') }}" />
-    <script type="module" src="{{ asset('vendor/stickleapp/core/app.js') }}"></script>
+    @if(file_exists(public_path('build/manifest.json')) && !in_array(app()->environment(), ['local', 'development']))
+    <link rel="preload" as="style" href="{{ \StickleApp\Core\Facades\Asset::url('resources/css/app.css') }}" />
+    <link rel="modulepreload" as="script" href="{{ \StickleApp\Core\Facades\Asset::url('resources/js/app.js') }}" />
+    <link rel="stylesheet" href="{{ \StickleApp\Core\Facades\Asset::url('resources/css/app.css') }}" />
+    <script type="module" src="{{ \StickleApp\Core\Facades\Asset::url('resources/js/app.cjsss') }}"></script>
     @else
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endproduction
