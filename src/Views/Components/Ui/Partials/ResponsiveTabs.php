@@ -1,30 +1,20 @@
 <?php
 
-declare(strict_types=1);
-
-namespace StickleApp\Core\Views\Components\Ui\Partials;
+namespace App\View\Components;
 
 use Illuminate\Container\Attributes\Config;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 
-class ResponsiveTabs extends Component
+class ExampleComponent extends Component
 {
-    /**
-     * Create the component instance.
-     *
-     * @return void
-     */
     public function __construct(
-        #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
+        #[Config('app.name')] protected ?string $appName,
         public string $id,
         public array $tabs,
         public bool $hideTabs = false,
-        public string $responsiveClass = 'md',
-        public string $activeTab = '',
-    ) {
-        dd($this);
-    }
+        public string $someString = 'hello world'
+    ) {}
 
     public function render(): View
     {
