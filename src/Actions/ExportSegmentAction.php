@@ -25,7 +25,12 @@ class ExportSegmentAction
 
         $csvFile = tmpfile();
 
-        $csvPath = stream_get_meta_data($csvFile)['uri'];
+        $metaData = stream_get_meta_data($csvFile);
+        if (! isset($metaData['uri'])) {
+            throw new \Exception('Cannot get temporary file path');
+        }
+
+        $csvPath = $metaData['uri'];
 
         if (! $fd = fopen($csvPath, 'w')) {
             throw new \Exception('Cannot open file');
