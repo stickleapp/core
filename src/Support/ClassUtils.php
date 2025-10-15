@@ -266,22 +266,105 @@ class ClassUtils
     }
 
     /**
-     * Convert a namespace to a filesystem directory path
+     * Convert a namespace to a filesystem directory path using Composer autoload config
      *
      * @param  string  $namespace  The namespace (e.g., 'App\Segments')
-     * @return string The filesystem path (e.g., '/var/app/current/src/App/Segments')
+     * @return string The filesystem path
      */
     public static function directoryFromNamespace(string $namespace): string
     {
-        // Get the application base path
         $app = app();
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $basePath = method_exists($app, 'basePath') ? $app->basePath() : base_path();
 
-        // Convert namespace separators to directory separators
-        $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $namespace);
+        // Get PSR-4 mappings from Composer
+        $psr4Mappings = self::getComposerPsr4Mappings($basePath);
 
-        // Determine the source directory based on common Laravel conventions
+        // Find the best matching PSR-4 prefix for this namespace
+        $bestMatch = ['prefix' => '', 'path' => ''];
+
+        foreach ($psr4Mappings as $prefix => $paths) {
+            // Normalize prefix
+            $prefix = rtrim($prefix, '\\');
+            $namespaceToMatch = rtrim($namespace, '\\');
+
+            // Check if namespace starts with this prefix
+            if (str_starts_with($namespaceToMatch, $prefix)) {
+                // Use the longest matching prefix
+                if (strlen($prefix) > strlen($bestMatch['prefix'])) {
+                    $bestMatch = [
+                        'prefix' => $prefix,
+                        'path' => is_array($paths) ? $paths[0] : $paths,
+                    ];
+                }
+            }
+        }
+
+        if (empty($bestMatch['prefix'])) {
+            // Fallback to old behavior if no PSR-4 match found
+            return self::directoryFromNamespaceFallback($namespace, $basePath);
+        }
+
+        // Calculate the relative namespace path after the prefix
+        $relativeNamespace = substr($namespace, strlen($bestMatch['prefix']));
+        $relativeNamespace = ltrim($relativeNamespace, '\\');
+
+        // Convert namespace to directory path
+        $relativePath = str_replace('\\', DIRECTORY_SEPARATOR, $relativeNamespace);
+
+        // Combine base path, PSR-4 mapped path, and relative path
+        $fullPath = $basePath.DIRECTORY_SEPARATOR.
+            rtrim($bestMatch['path'], DIRECTORY_SEPARATOR);
+
+        if (! empty($relativePath)) {
+            $fullPath .= DIRECTORY_SEPARATOR.$relativePath;
+        }
+
+        return $fullPath;
+    }
+
+    /**
+     * Get PSR-4 autoload mappings from Composer's ClassLoader
+     *
+     * @param  string  $basePath  The application base path
+     * @return array<string, string|array<string>> PSR-4 prefix => path mappings
+     */
+    private static function getComposerPsr4Mappings(string $basePath): array
+    {
+        // Try to get PSR-4 mappings from the already-loaded Composer ClassLoader
+        $autoloadFunctions = spl_autoload_functions();
+
+        foreach ($autoloadFunctions as $autoloadFunction) {
+            if (is_array($autoloadFunction) && $autoloadFunction[0] instanceof \Composer\Autoload\ClassLoader) {
+                $psr4Prefixes = $autoloadFunction[0]->getPrefixesPsr4();
+                if (! empty($psr4Prefixes)) {
+                    return $psr4Prefixes;
+                }
+            }
+        }
+
+        // Fallback: read from composer.json
+        $composerJsonPath = $basePath.DIRECTORY_SEPARATOR.'composer.json';
+
+        if (! file_exists($composerJsonPath)) {
+            return [];
+        }
+
+        $composerData = json_decode(file_get_contents($composerJsonPath), true);
+
+        if (! isset($composerData['autoload']['psr-4'])) {
+            return [];
+        }
+
+        return $composerData['autoload']['psr-4'];
+    }
+
+    /**
+     * Fallback method for namespace to directory conversion
+     */
+    private static function directoryFromNamespaceFallback(string $namespace, string $basePath): string
+    {
+        $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $namespace);
         $srcPaths = ['src', 'app'];
 
         foreach ($srcPaths as $srcPath) {
@@ -291,7 +374,6 @@ class ClassUtils
             }
         }
 
-        // If no existing directory found, default to src
         return $basePath.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.$namespacePath;
     }
 }
