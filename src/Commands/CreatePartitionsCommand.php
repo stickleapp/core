@@ -67,7 +67,7 @@ final class CreatePartitionsCommand extends Command implements Isolatable
         $interval = $this->argument('interval');
         /** @var string $periodStart */
         $periodStart = $this->argument('period_start');
-        $intervalCount = (int) $this->argument('interval_count') ?: 0;
+        $intervalCount = (int) $this->argument('interval_count') ?: 1;
 
         /**
          * Verify the existing table exists
@@ -95,7 +95,7 @@ final class CreatePartitionsCommand extends Command implements Isolatable
         $finished = false;
 
         $i = 0;
-        $j = 0;
+        $partitionsCreated = 0;
 
         while (! $finished) {
 
@@ -109,16 +109,17 @@ final class CreatePartitionsCommand extends Command implements Isolatable
 
             DB::unprepared($sql);
 
+            $this->info("Created partition: $partitionName (FROM '$start' TO '$end')");
+
             $i++;
+            $partitionsCreated++;
 
-            // If the period start is in the past
-            if ($periodStart < Carbon::now() && $start > Carbon::now()) {
-                $j++;
-            }
-
-            if ($j > $intervalCount) {
+            // Stop after creating the requested number of partitions
+            if ($partitionsCreated >= $intervalCount) {
                 $finished = true;
             }
         }
+
+        $this->info("Successfully created $partitionsCreated partition(s) for table $existingTable");
     }
 }
