@@ -350,7 +350,12 @@ class ClassUtils
             return [];
         }
 
-        $composerData = json_decode(file_get_contents($composerJsonPath), true);
+        $composerContent = file_get_contents($composerJsonPath);
+        if ($composerContent === false) {
+            return [];
+        }
+
+        $composerData = json_decode($composerContent, true);
 
         if (! isset($composerData['autoload']['psr-4'])) {
             return [];
