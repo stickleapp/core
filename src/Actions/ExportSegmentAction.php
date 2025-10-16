@@ -30,6 +30,7 @@ class ExportSegmentAction
             throw new \Exception('Cannot get temporary file path');
         }
 
+        assert(is_string($metaData['uri']));
         $csvPath = $metaData['uri'];
 
         if (! $fd = fopen($csvPath, 'w')) {
