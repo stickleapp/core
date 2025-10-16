@@ -53,7 +53,9 @@ final class ExportSegmentsCommand extends Command implements Isolatable
         /** @var string|null $directory */
         $directory = $this->argument('directory');
 
-        $directory = $directory ?: ClassUtils::directoryFromNamespace($namespace);
+        $directory = $directory ?: ClassUtils::directoryFromNamespace(
+            namespace: $namespace
+        );
 
         /**
          * Using Reflection, create an array containing all of the segments
@@ -93,7 +95,7 @@ final class ExportSegmentsCommand extends Command implements Isolatable
     {
         $results = [];
 
-        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(realpath($directory)));
 
         /** @var \SplFileInfo $file */
         foreach ($files as $file) {
@@ -105,7 +107,7 @@ final class ExportSegmentsCommand extends Command implements Isolatable
                 $className = str_replace(
                     ['/', '.php'],
                     ['\\', ''],
-                    substr($file->getRealPath(), strlen($directory) + 1)
+                    substr($file->getRealPath(), strlen(realpath($directory)) + 1)
                 );
 
                 $segmentClassName = $namespace.'\\'.$className;

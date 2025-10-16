@@ -273,31 +273,34 @@ class ClassUtils
      */
     public static function directoryFromNamespace(string $namespace): string
     {
+
         $app = app();
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $basePath = method_exists($app, 'basePath') ? $app->basePath() : base_path();
 
+        // Normalize the input namespace (remove leading/trailing backslashes)
+        $namespace = trim($namespace, '\\');
+
         // Get PSR-4 mappings from Composer
         $psr4Mappings = self::getComposerPsr4Mappings($basePath);
 
-        // Find the best matching PSR-4 prefix for this namespace
+        // Try to find a matching PSR-4 prefix by progressively removing segments
+        $namespaceParts = explode('\\', $namespace);
         $bestMatch = ['prefix' => '', 'path' => ''];
 
-        foreach ($psr4Mappings as $prefix => $paths) {
-            // Normalize prefix
-            $prefix = rtrim($prefix, '\\');
-            $namespaceToMatch = rtrim($namespace, '\\');
-
-            // Check if namespace starts with this prefix
-            if (str_starts_with($namespaceToMatch, $prefix)) {
-                // Use the longest matching prefix
-                if (strlen($prefix) > strlen($bestMatch['prefix'])) {
-                    $bestMatch = [
-                        'prefix' => $prefix,
-                        'path' => is_array($paths) ? $paths[0] : $paths,
-                    ];
-                }
+        // Start with the full namespace and work backwards
+        for ($i = count($namespaceParts); $i > 0; $i--) {
+            $testNamespace = implode('\\', array_slice($namespaceParts, 0, $i)).'\\';
+            if (isset($psr4Mappings[$testNamespace])) {
+                $bestMatch = [
+                    'prefix' => rtrim($testNamespace, '\\'),
+                    'path' => is_array($psr4Mappings[$testNamespace])
+                        ? $psr4Mappings[$testNamespace][0]
+                        : $psr4Mappings[$testNamespace],
+                ];
+                break;
             }
+
         }
 
         if (empty($bestMatch['prefix'])) {
@@ -313,8 +316,7 @@ class ClassUtils
         $relativePath = str_replace('\\', DIRECTORY_SEPARATOR, $relativeNamespace);
 
         // Combine base path, PSR-4 mapped path, and relative path
-        $fullPath = $basePath.DIRECTORY_SEPARATOR.
-            rtrim($bestMatch['path'], DIRECTORY_SEPARATOR);
+        $fullPath = rtrim($bestMatch['path'], DIRECTORY_SEPARATOR);
 
         if (! empty($relativePath)) {
             $fullPath .= DIRECTORY_SEPARATOR.$relativePath;
@@ -357,11 +359,19 @@ class ClassUtils
 
         $composerData = json_decode($composerContent, true);
 
-        if (! isset($composerData['autoload']['psr-4'])) {
-            return [];
+        $mappings = [];
+
+        // Include autoload PSR-4 mappings
+        if (isset($composerData['autoload']['psr-4'])) {
+            $mappings = array_merge($mappings, $composerData['autoload']['psr-4']);
         }
 
-        return $composerData['autoload']['psr-4'];
+        // Include autoload-dev PSR-4 mappings
+        if (isset($composerData['autoload-dev']['psr-4'])) {
+            $mappings = array_merge($mappings, $composerData['autoload-dev']['psr-4']);
+        }
+
+        return $mappings;
     }
 
     /**
