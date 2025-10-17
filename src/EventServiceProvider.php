@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core;
 
-use Override;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Override;
 use StickleApp\Core\Events\Group;
 use StickleApp\Core\Events\Identify;
 use StickleApp\Core\Events\Page;

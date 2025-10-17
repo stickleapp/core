@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
-use Override;
-use Illuminate\Database\Eloquent\Model;
 use DateTimeInterface;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
+use Override;
 use StickleApp\Core\Contracts\FilterTargetContract;
 
 class EventCountAggregateDelta extends FilterTargetContract
 {
     /**
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      * @param  array<DateTimeInterface>  $currentPeriod
      * @param  array<DateTimeInterface>  $previousPeriod
      */
@@ -75,8 +75,8 @@ class EventCountAggregateDelta extends FilterTargetContract
             ->where('type', 'event')
             ->where('name', $this->event)
             ->where('model_class', $this->builder->getModel()->getMorphClass())
-            ->where(function ($query) use ($currentStart, $currentEnd, $previousStart, $previousEnd): void {
-                $query->whereBetween('day', [$currentStart, $currentEnd])
+            ->where(function (\Illuminate\Contracts\Database\Query\Builder $builder) use ($currentStart, $currentEnd, $previousStart, $previousEnd): void {
+                $builder->whereBetween('day', [$currentStart, $currentEnd])
                     ->orWhereBetween('day', [$previousStart, $previousEnd]);
             })
             ->groupBy(['model_class', 'object_uid'])

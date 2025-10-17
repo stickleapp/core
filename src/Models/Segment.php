@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Exception;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -26,10 +27,13 @@ use Illuminate\Support\Facades\DB;
  * @property int $sort_order
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ *
+ * @use HasFactory<Factory<static>>
  */
 class Segment extends Model
 {
     use HasFactory;
+
     /**
      * Creates a new analytics repository instance.
      */
@@ -115,7 +119,7 @@ class Segment extends Model
         // Remove the default join constraints
         $joins = $builder->getQuery()->joins;
         if ($joins !== null) {
-            $builder->getQuery()->joins = array_filter($joins, fn($join): bool => $join->table !== $pivotTable);
+            $builder->getQuery()->joins = array_filter($joins, fn ($join): bool => $join->table !== $pivotTable);
         }
 
         // Add our custom join with type casting

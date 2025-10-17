@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Tests;
 
-use Override;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Artisan;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Override;
 use StickleApp\Core\CoreServiceProvider;
 
 use function Orchestra\Testbench\artisan;

@@ -2,9 +2,9 @@
 
 namespace StickleApp\Core\Http\Controllers\Requests;
 
-use Override;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Override;
 
 class RequestsIndexRequest extends FormRequest
 {

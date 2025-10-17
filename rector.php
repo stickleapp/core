@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use RectorLaravel\Rector\Class_\ModelCastsPropertyToCastsMethodRector;
 use RectorLaravel\Set\LaravelLevelSetList;
 use RectorLaravel\Set\LaravelSetList;
 use RectorLaravel\Set\LaravelSetProvider;
@@ -28,6 +29,11 @@ return RectorConfig::configure()
         __DIR__.'/vendor',
         __DIR__.'/node_modules',
         __DIR__.'/storage',
+        // Skip ModelCastsPropertyToCastsMethodRector for ModelAttributes.php
+        // The $casts property is required for reliable mass assignment operations
+        ModelCastsPropertyToCastsMethodRector::class => [
+            __DIR__.'/src/Models/ModelAttributes.php',
+        ],
     ])
     ->withCache(
         cacheDirectory: __DIR__.'/storage/rector'

@@ -99,7 +99,7 @@ Route::middleware(config('stickle.routes.web.middleware', []))
             ->where('modelClass', '[^/]+')
             ->where('uid', '[^/]+');
 
-        Route::get('/{modelClass}', fn(Request $request): Factory|View => view('stickle::pages/models', [
+        Route::get('/{modelClass}', fn (Request $request): Factory|View => view('stickle::pages/models', [
             'modelClass' => $request->route('modelClass'),
         ]))
             ->name('stickle::models')

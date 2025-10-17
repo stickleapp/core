@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Views\Components\Ui\Layouts;
 
-use StickleApp\Core\Traits\StickleEntity;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 use StickleApp\Core\Support\ClassUtils;
+use StickleApp\Core\Traits\StickleEntity;
 
 class DefaultLayout extends Component
 {

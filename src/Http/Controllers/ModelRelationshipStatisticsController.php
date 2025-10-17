@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Http\Controllers;
 
-use StickleApp\Core\Traits\StickleEntity;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use StickleApp\Core\Support\ClassUtils;
+use StickleApp\Core\Traits\StickleEntity;
 
 class ModelRelationshipStatisticsController
 {
@@ -71,7 +71,7 @@ class ModelRelationshipStatisticsController
         }
 
         // Add time-series data points for visualization
-        $timeSeriesData = $statisticsEntries->map(fn($entry): array => [
+        $timeSeriesData = $statisticsEntries->map(fn ($entry): array => [
             'timestamp' => $entry->recorded_at,
             'value' => is_numeric($entry->value_avg) ? (float) $entry->value_avg : null,
         ]);

@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
-use StickleApp\Core\Traits\StickleEntity;
-use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Jobs\RecordModelRelationshipStatisticJob;
 use StickleApp\Core\Support\ClassUtils;
+use StickleApp\Core\Traits\StickleEntity;
 
 final class RecordModelRelationshipStatisticsCommand extends Command implements Isolatable
 {

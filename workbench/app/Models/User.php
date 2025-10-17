@@ -115,6 +115,7 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Customer::class);
     }
+
     #[StickleAttributeMetadata([
         'label' => 'User Rating',
         'description' => 'The 1 to 5 star rating of the user.',
@@ -124,9 +125,10 @@ class User extends Authenticatable
     ])]
     protected function userRating(): Attribute
     {
-        return Attribute::make(get: fn($value) => $this->ticketsResolved()
+        return Attribute::make(get: fn ($value) => $this->ticketsResolved()
             ->avg('rating'));
     }
+
     #[StickleAttributeMetadata([
         'label' => 'Ticket Count',
         'description' => 'The total number of tickets for the user.',
@@ -136,8 +138,9 @@ class User extends Authenticatable
     ])]
     protected function ticketCount(): Attribute
     {
-        return Attribute::make(get: fn() => $this->ticketsAssigned()->count());
+        return Attribute::make(get: fn () => $this->ticketsAssigned()->count());
     }
+
     #[StickleAttributeMetadata([
         'label' => 'Open Ticket Count',
         'description' => 'The total number of open tickets for the user.',
@@ -147,10 +150,11 @@ class User extends Authenticatable
     ])]
     protected function openTicketCount(): Attribute
     {
-        return Attribute::make(get: fn() => $this->ticketsAssigned()
+        return Attribute::make(get: fn () => $this->ticketsAssigned()
             ->whereStatus('open')
             ->count());
     }
+
     #[StickleAttributeMetadata([
         'label' => 'Resolved Ticket Count',
         'description' => 'The total number of resolved tickets for the user.',
@@ -160,9 +164,10 @@ class User extends Authenticatable
     ])]
     protected function resolvedTicketCount(): Attribute
     {
-        return Attribute::make(get: fn() => $this->ticketsResolved()
+        return Attribute::make(get: fn () => $this->ticketsResolved()
             ->count());
     }
+
     #[StickleAttributeMetadata([
         'label' => 'Tickets Resolved (Last 7 Days)',
         'description' => 'The total number of tickets closed by the customer in the last 7 days.',
@@ -172,10 +177,11 @@ class User extends Authenticatable
     ])]
     protected function ticketsResolvedLast7Days(): Attribute
     {
-        return Attribute::make(get: fn() => $this->ticketsResolved()
+        return Attribute::make(get: fn () => $this->ticketsResolved()
             ->where('resolved_at', '>=', now()->subDays(7))
             ->count());
     }
+
     #[StickleAttributeMetadata([
         'label' => 'Tickets Resolved (Last 30 Days)',
         'description' => 'The total number of tickets closed by the customer in the last 30 days.',
@@ -185,10 +191,11 @@ class User extends Authenticatable
     ])]
     protected function ticketsResolvedLast30Days(): Attribute
     {
-        return Attribute::make(get: fn() => $this->ticketsResolved()
+        return Attribute::make(get: fn () => $this->ticketsResolved()
             ->where('resolved_at', '>=', now()->subDays(30))
             ->count());
     }
+
     #[StickleAttributeMetadata([
         'label' => 'Average Resolution Time',
         'description' => 'The average resolution time for the customer.',
@@ -198,9 +205,10 @@ class User extends Authenticatable
     ])]
     protected function averageResolutionTime(): Attribute
     {
-        return Attribute::make(get: fn() => $this->ticketsResolved()
+        return Attribute::make(get: fn () => $this->ticketsResolved()
             ->avg('resolved_in_seconds'));
     }
+
     #[StickleAttributeMetadata([
         'label' => 'Average Resolution Time Last 7 Days',
         'description' => 'The average resolution time for the customer in the last 7 days.',
@@ -210,10 +218,11 @@ class User extends Authenticatable
     ])]
     protected function averageResolutionTime7Days(): Attribute
     {
-        return Attribute::make(get: fn() => $this->ticketsResolved()
+        return Attribute::make(get: fn () => $this->ticketsResolved()
             ->where('resolved_at', '>=', now()->subDays(7))
             ->avg('resolved_in_seconds'));
     }
+
     #[StickleAttributeMetadata([
         'label' => 'Average Resolution Time Last 30 Days',
         'description' => 'The average resolution time for the customer in the last 30 days.',
@@ -223,10 +232,11 @@ class User extends Authenticatable
     ])]
     protected function averageResolutionTime30Days(): Attribute
     {
-        return Attribute::make(get: fn() => $this->ticketsResolved()
+        return Attribute::make(get: fn () => $this->ticketsResolved()
             ->where('resolved_at', '>=', now()->subDays(30))
             ->avg('resolved_in_seconds'));
     }
+
     /**
      * The attributes that should be cast.
      *

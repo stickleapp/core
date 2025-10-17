@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
-use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Isolatable;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Events\ModelEnteredSegment;
 use StickleApp\Core\Events\ModelExitedSegment;

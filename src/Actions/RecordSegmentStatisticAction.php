@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Actions;
 
-use Illuminate\Support\Collection;
-use stdClass;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use stdClass;
 use StickleApp\Core\Models\SegmentStatistic;
 use StickleApp\Core\Models\SegmentStatisticExport;
 
@@ -26,7 +26,7 @@ class RecordSegmentStatisticAction
         /** @var Collection<int, stdClass> $items */
         $items = $builder->get();
 
-        SegmentStatistic::query()->upsert($items->map(fn($model): array => (array) $model)->all(), uniqueBy: ['segment_id', 'attribute', 'recorded_at'], update: ['value', 'value_avg', 'value_sum', 'value_min', 'value_max', 'value_count']);
+        SegmentStatistic::query()->upsert($items->map(fn ($model): array => (array) $model)->all(), uniqueBy: ['segment_id', 'attribute', 'recorded_at'], update: ['value', 'value_avg', 'value_sum', 'value_min', 'value_max', 'value_count']);
 
         SegmentStatisticExport::query()->updateOrCreate([
             'segment_id' => $segmentId,

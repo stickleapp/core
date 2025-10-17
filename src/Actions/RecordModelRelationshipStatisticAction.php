@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Actions;
 
-use Illuminate\Support\Collection;
-use stdClass;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use stdClass;
 use StickleApp\Core\Models\ModelRelationshipStatistic;
 use StickleApp\Core\Models\ModelRelationshipStatisticExport;
 
@@ -33,7 +33,7 @@ class RecordModelRelationshipStatisticAction
         /** @var Collection<int, stdClass> $items */
         $items = $builder->get();
 
-        ModelRelationshipStatistic::query()->upsert($items->map(fn($item): array => (array) $item)->all(), uniqueBy: ['model_class', 'object_uid', 'relationship', 'attribute', 'recorded_at'], update: ['value', 'value_avg', 'value_sum', 'value_min', 'value_max', 'value_count']);
+        ModelRelationshipStatistic::query()->upsert($items->map(fn ($item): array => (array) $item)->all(), uniqueBy: ['model_class', 'object_uid', 'relationship', 'attribute', 'recorded_at'], update: ['value', 'value_avg', 'value_sum', 'value_min', 'value_max', 'value_count']);
 
         ModelRelationshipStatisticExport::query()->updateOrCreate([
             'model_class' => $modelClass,

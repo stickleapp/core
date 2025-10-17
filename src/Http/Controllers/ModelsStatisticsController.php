@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Http\Controllers;
 
-use StickleApp\Core\Traits\StickleEntity;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use StickleApp\Core\Support\ClassUtils;
+use StickleApp\Core\Traits\StickleEntity;
 
 /**
  * Endpoint to retrieve aggregate statistics for a group of models. Attribute

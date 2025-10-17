@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Middleware;
 
-use Illuminate\Support\Facades\Date;
-use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 use StickleApp\Core\Dto\LocationDataDto;
 use StickleApp\Core\Dto\ModelDto;
 use StickleApp\Core\Dto\RequestDto;
@@ -129,6 +128,7 @@ class RequestLogger
                 return true;
             }
         }
+
         // Check for Telescope header
         return $request->hasHeader('X-Telescope-Request');
     }
@@ -144,6 +144,7 @@ class RequestLogger
         if ($request->routeIs('livewire.*')) {
             return true;
         }
+
         return str_contains($request->path(), 'livewire/message');
     }
 

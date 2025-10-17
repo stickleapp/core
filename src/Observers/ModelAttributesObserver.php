@@ -23,6 +23,10 @@ class ModelAttributesObserver
         $diff = $this->getChangedAttributes($from, $to);
 
         foreach ($diff as $property => $changes) {
+
+            $valueOld = Arr::get($changes, 'value_old', null);
+            $valueNew = Arr::get($changes, 'value_new', null);
+
             // This may be slow
             ModelAttributeAudit::query()->firstOrCreate([
                 'model_class' => $modelAttributes->model_class,
@@ -30,10 +34,17 @@ class ModelAttributesObserver
                 'attribute' => $property,
                 'timestamp' => now(),
             ], [
-                'value_old' => Arr::get($changes, 'value_old'),
-                'value_new' => Arr::get($changes, 'value_new'),
+                'value_old' => $valueOld,
+                'value_new' => $valueNew,
             ]);
-            event(new ModelAttributeChanged($modelAttributes->model_class, $modelAttributes->object_uid, $property, Arr::get($changes, 'value_old'), Arr::get($changes, 'value_new')));
+
+            event(new ModelAttributeChanged(
+                $modelAttributes->model_class,
+                (string) $modelAttributes->object_uid,
+                $property,
+                $valueOld !== null ? (string) $valueOld : null,
+                $valueNew !== null ? (string) $valueNew : null
+            ));
         }
     }
 

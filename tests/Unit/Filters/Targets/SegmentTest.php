@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Filters\Targets\Segment;
-use StickleApp\Core\Models\Segment as SegmentModel;
 use Workbench\App\Models\User;
 
 beforeEach(function (): void {

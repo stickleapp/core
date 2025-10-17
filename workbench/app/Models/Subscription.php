@@ -14,6 +14,7 @@ class Subscription extends Model
 
     /**
      * Customer the order belongs to.
+     *
      * @return BelongsTo<Customer, $this>
      */
     public function customer(): BelongsTo

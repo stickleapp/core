@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
-use InvalidArgumentException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 use StickleApp\Core\Contracts\FilterTargetContract;
 
 class SessionCount extends FilterTargetContract
@@ -52,7 +52,7 @@ class SessionCount extends FilterTargetContract
     }
 
     /**
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      * @param  array<mixed>  $currentDateRange
      * @param  array<mixed>  $compareToDateRange
      */
@@ -62,7 +62,7 @@ class SessionCount extends FilterTargetContract
     }
 
     /**
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      * @param  array<mixed>  $currentDateRange
      */
     private static function createSessionCountAggregate(?string $prefix, Builder $builder, string $aggregate, array $currentDateRange): SessionCountAggregate
@@ -71,7 +71,7 @@ class SessionCount extends FilterTargetContract
     }
 
     /**
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      * @param  array<string, mixed>  $arguments
      */
     public static function getTargetInstance(?string $prefix, Builder $builder, array $arguments): FilterTargetContract

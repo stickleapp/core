@@ -2,10 +2,10 @@
 
 namespace Workbench\Database\Factories;
 
-use Workbench\App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Workbench\App\Models\Customer;
 use Workbench\App\Models\Ticket;
+use Workbench\App\Models\User;
 
 /**
  * @template TModel of \Workbench\App\Models\Ticket

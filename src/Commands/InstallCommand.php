@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
-use StickleApp\Core\CoreServiceProvider;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use StickleApp\Core\CoreServiceProvider;
 
 use function Laravel\Prompts\alert;
 use function Laravel\Prompts\clear;
@@ -212,7 +212,7 @@ class InstallCommand extends Command
             ->add(function ($settings) use ($labels) {
                 $rows = collect($settings)
                     ->reject(fn ($value, $key): bool => is_numeric($key))
-                    ->map(fn($value, $key): array => [
+                    ->map(fn ($value, $key): array => [
                         'label' => (string) $labels[$key] ?? $key,
                         'value' => (string) $value,
                     ]);

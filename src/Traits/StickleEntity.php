@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Traits;
 
-use Illuminate\Database\Query\Expression;
-use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Exception;
-use StickleApp\Core\Enums\ChartType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use StickleApp\Core\Attributes\StickleAttributeMetadata;
 use StickleApp\Core\Attributes\StickleRelationshipMetadata;
+use StickleApp\Core\Enums\ChartType;
 use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Models\ModelAttributeAudit;
 use StickleApp\Core\Models\ModelAttributes;
@@ -45,10 +45,11 @@ trait StickleEntity
         /**
          * Used when building queries to prevent duplicate joins
          */
-        Builder::macro('hasJoin', fn($table, $alias = null) => collect($this->getQuery()->joins)->contains(function ($join) use ($table, $alias): bool {
+        Builder::macro('hasJoin', fn ($table, $alias = null) => collect($this->getQuery()->joins)->contains(function ($join) use ($table, $alias): bool {
             if ($join->table instanceof Expression) {
                 return $join->table->getValue($join->getGrammar()) === "({$table}) as \"{$alias}\"";
             }
+
             return $join->table === $table;
         }));
 
@@ -87,7 +88,7 @@ trait StickleEntity
                     if ($where['type'] === 'Basic') {
                         // Adjust column name if it doesn't include a table prefix
                         $column = $where['column'];
-                        if (!str_contains($column, '.')) {
+                        if (! str_contains($column, '.')) {
                             $column = "$joinTable.$column";
                         }
 
@@ -273,25 +274,21 @@ trait StickleEntity
             },
             set: function ($value): void {
                 if (is_array($value)) {
-                    $modelAttributes = $this
+                    $this
                         ->modelAttributes()
-                        ->firstOrCreate(
+                        ->updateOrCreate(
                             [
                                 'model_class' => class_basename(self::class),
                                 'object_uid' => $this->id,
                             ],
                             [
-                                'data' => [],
+                                'data' => array_merge(
+                                    $this->modelAttributes()->value('data') ?? [],
+                                    $value
+                                ),
+                                'synced_at' => now(),
                             ]
                         );
-                    $existingAttributes = $modelAttributes->data ?? [];
-
-                    $modelAttributes->update(
-                        [
-                            'data' => array_merge($existingAttributes, $value),
-                            'synced_at' => now(),
-                        ]
-                    );
                 }
             }
         );

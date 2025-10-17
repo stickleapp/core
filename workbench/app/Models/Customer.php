@@ -99,6 +99,7 @@ class Customer extends Model
      * Parent account in a parent <> child relationship.
      *
      * For instance: Microsoft EU may have Microsoft as a parent account
+     *
      * @return BelongsTo<Customer, $this>
      */
     public function parent(): BelongsTo
@@ -170,7 +171,7 @@ class Customer extends Model
     ])]
     protected function ticketCount(): Attribute
     {
-        return Attribute::make(get: fn() => $this->tickets()->count());
+        return Attribute::make(get: fn () => $this->tickets()->count());
     }
 
     #[StickleAttributeMetadata([
@@ -182,7 +183,7 @@ class Customer extends Model
     ])]
     protected function openTicketCount(): Attribute
     {
-        return Attribute::make(get: fn() => $this->tickets()
+        return Attribute::make(get: fn () => $this->tickets()
             ->whereStatus('open')
             ->count());
     }
@@ -196,7 +197,7 @@ class Customer extends Model
     ])]
     protected function ticketsClosed(): Attribute
     {
-        return Attribute::make(get: fn() => $this->tickets()
+        return Attribute::make(get: fn () => $this->tickets()
             ->whereStatus('resolved')
             ->count());
     }
@@ -210,7 +211,7 @@ class Customer extends Model
     ])]
     protected function ticketsClosedLast30Days(): Attribute
     {
-        return Attribute::make(get: fn() => $this->tickets()
+        return Attribute::make(get: fn () => $this->tickets()
             ->whereStatus('resolved')
             ->where('resolved_at', '>=', now()->subDays(30))
             ->count());
@@ -225,7 +226,7 @@ class Customer extends Model
     ])]
     protected function ticketsClosedLast7Days(): Attribute
     {
-        return Attribute::make(get: fn() => $this->tickets()
+        return Attribute::make(get: fn () => $this->tickets()
             ->whereStatus('resolved')
             ->where('resolved_at', '>=', now()->subDays(7))
             ->count());
@@ -240,7 +241,7 @@ class Customer extends Model
     ])]
     protected function averageResolutionTime(): Attribute
     {
-        return Attribute::make(get: fn() => $this->tickets()
+        return Attribute::make(get: fn () => $this->tickets()
             ->whereStatus('resolved')
             ->avg('resolved_in_seconds'));
     }
@@ -254,7 +255,7 @@ class Customer extends Model
     ])]
     protected function averageResolutionTime30Days(): Attribute
     {
-        return Attribute::make(get: fn() => $this->tickets()
+        return Attribute::make(get: fn () => $this->tickets()
             ->whereStatus('resolved')
             ->where('resolved_at', '>=', now()->subDays(30))
             ->avg('resolved_in_seconds'));
@@ -269,7 +270,7 @@ class Customer extends Model
     ])]
     protected function averageResolutionTime7Days(): Attribute
     {
-        return Attribute::make(get: fn() => $this->tickets()
+        return Attribute::make(get: fn () => $this->tickets()
             ->whereStatus('resolved')
             ->where('resolved_at', '>=', now()->subDays(7))
             ->avg('resolved_in_seconds'));
@@ -280,7 +281,7 @@ class Customer extends Model
      */
     protected function plan(): Attribute
     {
-        return Attribute::make(get: fn() => $this->subscriptions()
+        return Attribute::make(get: fn () => $this->subscriptions()
             ->where('stripe_status', 'active')
             ->latest()
             ->first()
@@ -297,7 +298,7 @@ class Customer extends Model
     ])]
     protected function mrr(): Attribute
     {
-        return Attribute::make(get: fn(): int => match ($this->plan) {
+        return Attribute::make(get: fn (): int => match ($this->plan) {
             'basic' => 49,
             'pro' => 99,
             'enterprise' => 199,

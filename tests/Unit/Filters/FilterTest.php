@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace FilterTest;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Exception;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Traits\StickleEntity;
 

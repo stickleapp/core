@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Models;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+/**
+ * @use HasFactory<Factory<static>>
+ */
 class ModelAttributeAudit extends Model
 {
     use HasFactory;
+
     public $timestamps = false;
 
     /**

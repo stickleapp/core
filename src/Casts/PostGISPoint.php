@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Casts;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @implements CastsAttributes<array{lat: float, lng: float}|null, mixed>

@@ -2,11 +2,11 @@
 
 namespace Workbench\App\Providers;
 
-use Override;
 use Illuminate\Foundation\Events\DiscoverEvents;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Override;
 use SplFileInfo;
 use Workbench\App\Commands\SendTestRequests;
 

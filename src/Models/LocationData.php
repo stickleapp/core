@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use StickleApp\Core\Casts\PostGISPoint;
 
+/**
+ * @use HasFactory<Factory<static>>
+ */
 class LocationData extends Model
 {
     use HasFactory;
+
     /**
      * The primary key associated with the table.
      *

@@ -2,15 +2,15 @@
 
 namespace StickleApp\Core\Http\Controllers\Resources;
 
-use Override;
 use Exception;
-use StickleApp\Core\Traits\StickleEntity;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
+use Override;
 use StickleApp\Core\Dto\ModelDto;
 use StickleApp\Core\Models\Request as RequestModel;
 use StickleApp\Core\Support\ClassUtils;
+use StickleApp\Core\Traits\StickleEntity;
 
 /**
  * @mixin RequestModel

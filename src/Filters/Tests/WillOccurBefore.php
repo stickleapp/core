@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Tests;
 
-use Illuminate\Support\Facades\Date;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use StickleApp\Core\Contracts\FilterTargetContract;
 use StickleApp\Core\Contracts\FilterTestContract;

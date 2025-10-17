@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
-use InvalidArgumentException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 use StickleApp\Core\Contracts\FilterTargetContract;
 
 class EventCount extends FilterTargetContract
@@ -58,7 +58,7 @@ class EventCount extends FilterTargetContract
     }
 
     /**
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      * @param  array<mixed>  $currentDateRange
      * @param  array<mixed>  $compareToDateRange
      */
@@ -68,7 +68,7 @@ class EventCount extends FilterTargetContract
     }
 
     /**
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      * @param  array<mixed>  $currentDateRange
      */
     private static function createEventCountAggregate(?string $prefix, Builder $builder, string $event, string $aggregate, array $currentDateRange): EventCountAggregate
@@ -77,7 +77,7 @@ class EventCount extends FilterTargetContract
     }
 
     /**
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      * @param  array<string, mixed>  $arguments
      */
     public static function getTargetInstance(?string $prefix, Builder $builder, array $arguments): FilterTargetContract

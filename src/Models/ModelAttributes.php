@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Models;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -11,10 +12,13 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 /**
  * @property string $model_class
  * @property string $object_uid
+ *
+ * @use HasFactory<Factory<static>>
  */
 class ModelAttributes extends Model
 {
     use HasFactory;
+
     /**
      * Creates a new analytics repository instance.
      */
@@ -51,15 +55,20 @@ class ModelAttributes extends Model
     {
         return $this->morphTo();
     }
+
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * Why doesn't casts() function work?
+     * NOTE: We intentionally use the $casts property instead of the casts() method here.
+     * While Rector recommends modernizing to casts(), the method approach doesn't work
+     * reliably with mass assignment operations like updateOrCreate() and firstOrCreate().
+     * The casts() method is not always invoked during these operations, causing arrays
+     * to be inserted as raw values instead of being JSON-encoded, which results in
+     * "Array to string conversion" errors when inserting into JSONB columns.
+     *
+     * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'data' => 'array',
-        ];
-    }
+    protected $casts = [
+        'data' => 'array',
+    ];
 }

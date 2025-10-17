@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
-use Illuminate\Support\Facades\Date;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 

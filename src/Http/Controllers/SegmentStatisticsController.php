@@ -28,7 +28,7 @@ class SegmentStatisticsController
             ->where('attribute', $request->string('attribute'))
             ->where('recorded_at', '>=', $currentPeriodStart->startOfDay())
             ->where('recorded_at', '<', $currentPeriodEnd->endOfDay())
-            ->orderBy('recorded_at', 'asc')
+            ->oldest('recorded_at')
             ->get();
 
         // Get the first and last values in the period (for calculating change)
@@ -58,7 +58,7 @@ class SegmentStatisticsController
         }
 
         // Add time-series data points for visualization
-        $timeSeriesData = $statisticsEntries->map(fn($entry): array => [
+        $timeSeriesData = $statisticsEntries->map(fn ($entry): array => [
             'timestamp' => $entry->recorded_at,
             'value' => $entry->value_avg ? (float) $entry->value_avg : null,
         ]);

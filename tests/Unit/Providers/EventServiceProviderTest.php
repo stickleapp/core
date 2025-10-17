@@ -12,8 +12,8 @@ it('can be instantiated', function (): void {
 });
 
 it('registers events correctly', function (): void {
-    $events = app(Dispatcher::class);
-    $listeners = $events->getListeners(Identify::class);
+    $dispatcher = app(Dispatcher::class);
+    $listeners = $dispatcher->getListeners(Identify::class);
     expect($listeners)
         ->toBeArray()
         ->toHaveCount(1);

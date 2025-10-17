@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Support;
 
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
-use RegexIterator;
 use Composer\Autoload\ClassLoader;
 use Illuminate\Database\Eloquent\ModelInspector;
 use Illuminate\Foundation\Application;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use ReflectionClass;
+use RegexIterator;
 
 class ClassUtils
 {
@@ -61,7 +61,7 @@ class ClassUtils
         $allClasses = self::getClassesInDirectory($directoryToScan, $namespace);
 
         // Filter classes by namespace and trait
-        $classesWithTrait = array_filter($allClasses, fn(string $className): bool =>
+        $classesWithTrait = array_filter($allClasses, fn (string $className): bool =>
             // Check if class uses the trait
             self::usesTrait($className, $trait));
 
@@ -99,7 +99,7 @@ class ClassUtils
             $classes[] = $className;
         }
 
-        $validClasses = array_filter($classes, fn(?string $className): bool => $className !== null && class_exists($className));
+        $validClasses = array_filter($classes, fn (?string $className): bool => $className !== null && class_exists($className));
 
         // Cast to class-string array since we've verified classes exist
         return array_values($validClasses);
@@ -169,7 +169,7 @@ class ClassUtils
      *    return $this->hasMany(User::class);
      *}
      *
-     * @param Application $application The Laravel application
+     * @param  Application  $application  The Laravel application
      * @param  string  $class  The class name
      * @param  array<int, string>  $relationshipClasses  The relationship classes to check against
      * @param  array<int, string>  $relatedClasses  The related classes to check against
@@ -189,7 +189,7 @@ class ClassUtils
         $relations = $info['relations'];
 
         // Replace the fqcn with the class name of $relationshipClasses
-        $relationshipClasses = array_map(fn(string $class): string => class_basename($class), $relationshipClasses);
+        $relationshipClasses = array_map(fn (string $class): string => class_basename($class), $relationshipClasses);
 
         // Check each relation to see if it relates to any of the specified classes
         foreach ($relations as $relation) {
@@ -207,7 +207,7 @@ class ClassUtils
     }
 
     /**
-     * @param Application $application The Laravel application
+     * @param  Application  $application  The Laravel application
      * @param  string  $class  The class name
      * @param  array<int, string>  $relationshipClasses  The eloquent relationship classes to allow
      * @param  array<int, string>  $relatedClasses  The related classes to check against
@@ -227,7 +227,7 @@ class ClassUtils
         $relations = $info['relations'];
 
         // Replace the fqcn with the class name of $relationshipClasses
-        $relationshipClasses = array_map(fn(string $class): string => class_basename($class), $relationshipClasses);
+        $relationshipClasses = array_map(fn (string $class): string => class_basename($class), $relationshipClasses);
 
         $return = [];
 

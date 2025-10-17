@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Http\Controllers;
 
-use StickleApp\Core\Traits\StickleEntity;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Support\ClassUtils;
+use StickleApp\Core\Traits\StickleEntity;
 
 class ModelAttributeAuditController
 {
@@ -79,7 +79,7 @@ class ModelAttributeAuditController
         }
 
         // Add time-series data points for visualization
-        $timeSeriesData = $auditEntries->map(fn($entry): array => [
+        $timeSeriesData = $auditEntries->map(fn ($entry): array => [
             'timestamp' => $entry->timestamp,
             'value' => is_numeric($entry->value) ? (float) $entry->value : null,
         ]);

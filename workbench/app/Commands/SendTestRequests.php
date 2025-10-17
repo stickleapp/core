@@ -2,11 +2,11 @@
 
 namespace Workbench\App\Commands;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Sleep;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Sleep;
 use Workbench\App\Models\User;
 
 class SendTestRequests extends Command

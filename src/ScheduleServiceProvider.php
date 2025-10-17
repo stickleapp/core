@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace StickleApp\Core;
 
 use Carbon\CarbonInterval;
-use Override;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\ServiceProvider;
+use Override;
 
 class ScheduleServiceProvider extends ServiceProvider
 {

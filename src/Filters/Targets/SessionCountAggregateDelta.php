@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
-use Override;
-use Illuminate\Database\Eloquent\Model;
 use DateTimeInterface;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
+use Override;
 use StickleApp\Core\Contracts\FilterTargetContract;
 
 class SessionCountAggregateDelta extends FilterTargetContract
 {
     /**
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      * @param  array<DateTimeInterface>  $currentPeriod
      * @param  array<DateTimeInterface>  $previousPeriod
      */

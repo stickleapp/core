@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
-use Override;
-use InvalidArgumentException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
+use Override;
 use StickleApp\Core\Contracts\FilterTargetContract;
 
 class Number extends FilterTargetContract
 {
     /**
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      */
     public function __construct(
         #[Config('stickle.database.tablePrefix')] protected ?string $prefix,
@@ -77,7 +77,7 @@ class Number extends FilterTargetContract
     }
 
     /**
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      * @param  array<mixed>  $currentDateRange
      * @param  array<mixed>  $compareToDateRange
      */
@@ -87,7 +87,7 @@ class Number extends FilterTargetContract
     }
 
     /**
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      * @param  array<mixed>  $currentDateRange
      */
     private static function createNumberAggregate(?string $prefix, Builder $builder, string $attribute, string $aggregate, array $currentDateRange): NumberAggregate
@@ -96,7 +96,7 @@ class Number extends FilterTargetContract
     }
 
     /**
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      * @param  array<mixed>  $currentDateRange
      */
     private static function createNumberDelta(?string $prefix, Builder $builder, string $attribute, array $currentDateRange): NumberDelta
@@ -105,7 +105,7 @@ class Number extends FilterTargetContract
     }
 
     /**
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      */
     private static function createNumber(?string $prefix, Builder $builder, string $attribute): Number
     {
@@ -113,7 +113,7 @@ class Number extends FilterTargetContract
     }
 
     /**
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      * @param  array<string, mixed>  $arguments
      */
     public static function getTargetInstance(?string $prefix, Builder $builder, array $arguments): FilterTargetContract

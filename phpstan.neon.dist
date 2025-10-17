@@ -15,9 +15,8 @@ parameters:
         - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder<Illuminate\\Database\\Eloquent\\Model>::hasJoin\(\).#'
         - '#Method StickleApp\\Core\\Models\\ModelAttributes::attributable\(\) should return#'
         - '#Method StickleApp\\Core\\Models\\ModelAttributeAudit::attributable\(\) should return#'
-        - '#Method StickleApp\\Core\\Models\\Segment::segmentStatistics\(\) should return#'
-        - '#Method StickleApp\\Core\\Models\\ModelSegmentAudit::segment\(\)#'
         - '#Method StickleApp\\Core\\Models\\Segment::objects\(\) should return#'
+        - '#Class StickleApp\\Core\\Models\\.* uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types: TFactory#'
 
     excludePaths:
         - src/Commands/InstallCommand.php

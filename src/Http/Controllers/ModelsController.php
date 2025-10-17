@@ -38,9 +38,9 @@ class ModelsController
         $uid = data_get($validated, 'uid');
 
         $builder = $modelClass::query()
-            ->when($search, fn($q) => $q->where(function ($subQuery) use ($search): void {
+            ->when($search, fn ($q) => $q->where(function ($subQuery) use ($search): void {
                 $subQuery->where('name', 'ILIKE', "%{$search}%");
-            }))->when($uid, fn($q) => $q->where($model->getKeyName(), $uid));
+            }))->when($uid, fn ($q) => $q->where($model->getKeyName(), $uid));
 
         return response()->json($builder->paginate($modelsIndexRequest->integer('per_page', 25)));
     }

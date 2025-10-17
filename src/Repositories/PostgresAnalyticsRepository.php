@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Repositories;
 
-use Illuminate\Support\Facades\DB;
 use DateTimeInterface;
 use Illuminate\Container\Attributes\Config;
+use Illuminate\Support\Facades\DB;
 use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
 
 /**
@@ -19,7 +19,7 @@ final readonly class PostgresAnalyticsRepository implements AnalyticsRepositoryC
      */
     public function __construct(
         #[Config('stickle.database.tablePrefix')]
- private ?string $prefix = null,
+        private ?string $prefix = null,
     ) {}
 
     public function rollupSessions(DateTimeInterface $startDate): void

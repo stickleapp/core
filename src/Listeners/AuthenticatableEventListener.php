@@ -19,7 +19,6 @@ use Illuminate\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
-use StickleApp\Core\Models\Request as RequestModel;
 
 class AuthenticatableEventListener implements ShouldQueue
 {

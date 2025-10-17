@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Http\Controllers;
 
-use Exception;
-use StickleApp\Core\Traits\StickleEntity;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -19,6 +18,7 @@ use StickleApp\Core\Enums\RequestType;
 use StickleApp\Core\Events\Page;
 use StickleApp\Core\Events\Track;
 use StickleApp\Core\Support\ClassUtils;
+use StickleApp\Core\Traits\StickleEntity;
 
 class IngestController
 {

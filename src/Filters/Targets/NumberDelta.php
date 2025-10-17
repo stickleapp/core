@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
-use Override;
-use Illuminate\Database\Eloquent\Model;
 use DateTimeInterface;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
+use Override;
 use StickleApp\Core\Contracts\FilterTargetContract;
 
 class NumberDelta extends FilterTargetContract
 {
     /**
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      */
     public function __construct(
         #[Config('stickle.database.tablePrefix')] protected ?string $prefix,
@@ -58,7 +58,7 @@ class NumberDelta extends FilterTargetContract
 
     private function subJoin(): QueryBuilder
     {
-        $query = DB::table($this->prefix.'model_attribute_audit')
+        $builder = DB::table($this->prefix.'model_attribute_audit')
             ->where('attribute', $this->attribute)
             ->when($this->endDate instanceof DateTimeInterface, function (QueryBuilder $queryBuilder) {
                 assert($this->endDate instanceof DateTimeInterface); // PHPStan hint
@@ -67,9 +67,9 @@ class NumberDelta extends FilterTargetContract
                     $this->startDate->format('Y-m-d'),
                     $this->endDate->format('Y-m-d'),
                 ]);
-            }, fn(QueryBuilder $queryBuilder) => $queryBuilder->whereDate('day', '>=', $this->startDate->format('Y-m-d')));
+            }, fn (QueryBuilder $queryBuilder) => $queryBuilder->whereDate('day', '>=', $this->startDate->format('Y-m-d')));
 
-        return $query->select(
+        return $builder->select(
             'model_class',
             'object_uid',
             DB::raw(preg_replace('/\s+/', ' ', "

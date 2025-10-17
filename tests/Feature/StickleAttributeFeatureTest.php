@@ -26,10 +26,12 @@ it('tracks attribute changes through stickle entity', function (): void {
 it('preserves other attributes when updating', function (): void {
     $user = User::factory()->create();
 
-    // Set initial attributes
-    $user->trackable_attributes = ['hair_color' => 'brown'];
+    /* @noRector */
+    $user->trackable_attributes = ['shoe_size' => 60, 'hair_color' => 'brown'];
 
-    // Update just one
+    $user->update();
+
+    /* @noRector */
     $user->trackable_attributes = ['shoe_size' => 41];
 
     // Both attributes should be preserved

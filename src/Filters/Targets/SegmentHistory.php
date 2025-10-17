@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
-use Override;
-use InvalidArgumentException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
+use Override;
 use StickleApp\Core\Contracts\FilterTargetContract;
 use StickleApp\Core\Models\Segment as SegmentModel;
 
@@ -19,7 +19,7 @@ class SegmentHistory extends FilterTargetContract
     protected string $modelSegmentAuditTable;
 
     /**
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      */
     public function __construct(
         protected ?string $prefix,
@@ -48,7 +48,7 @@ class SegmentHistory extends FilterTargetContract
 
         // Check if join already exists to avoid duplicate joins
         $existingJoins = $this->builder->getQuery()->joins ?? [];
-        $joinExists = collect($existingJoins)->contains(fn($join): bool => $join->table === $this->modelSegmentAuditTable);
+        $joinExists = collect($existingJoins)->contains(fn ($join): bool => $join->table === $this->modelSegmentAuditTable);
 
         if (! $joinExists) {
             $this->builder->leftJoin($this->modelSegmentAuditTable, function ($join) use ($modelTable, $primaryKey): void {

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
-use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -63,7 +63,7 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
                 $query->on("{$this->prefix}segment_statistic_exports.segment_id", '=', "{$this->prefix}segments.id");
                 $query->on("{$this->prefix}segment_statistic_exports.attribute", '=', 'temp_attributes.attribute');
             })
-            ->when($segmentId, fn($query) => $query->where("{$this->prefix}segments.id", $segmentId))
+            ->when($segmentId, fn ($query) => $query->where("{$this->prefix}segments.id", $segmentId))
             ->select([
                 'temp_attributes.model_class',
                 'temp_attributes.attribute',

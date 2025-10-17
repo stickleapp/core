@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Dto;
 
-use Illuminate\Support\Facades\Date;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 
 readonly class RequestDto
 {

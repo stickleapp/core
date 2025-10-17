@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace StickleApp\Core;
 
-use Override;
-use StickleApp\Core\Support\Asset;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Override;
 use StickleApp\Core\Commands\CreatePartitionsCommand;
 use StickleApp\Core\Commands\DropPartitionsCommand;
 use StickleApp\Core\Commands\ExportSegmentsCommand;
@@ -26,6 +25,7 @@ use StickleApp\Core\Models\ModelAttributes;
 use StickleApp\Core\Models\Segment;
 use StickleApp\Core\Observers\ModelAttributesObserver;
 use StickleApp\Core\Repositories\PostgresAnalyticsRepository;
+use StickleApp\Core\Support\Asset;
 
 final class CoreServiceProvider extends ServiceProvider
 {
@@ -35,7 +35,7 @@ final class CoreServiceProvider extends ServiceProvider
     #[Override]
     public function register(): void
     {
-        $this->app->singleton('stickle.asset', fn(): \Asset => new Asset);
+        $this->app->singleton('stickle.asset', fn (): Asset => new Asset);
 
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ScheduleServiceProvider::class);

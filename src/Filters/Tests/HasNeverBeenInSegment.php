@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Tests;
 
-use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Builder;
+use InvalidArgumentException;
 use StickleApp\Core\Contracts\FilterTargetContract;
 use StickleApp\Core\Contracts\FilterTestContract;
 

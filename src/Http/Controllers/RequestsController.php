@@ -15,7 +15,7 @@ class RequestsController
     {
 
         $builder = Request::with('locationData')
-            ->when($requestsIndexRequest->filled('start_at'), fn($query) => $query->where('timestamp', '>=', $requestsIndexRequest->date('start_at')))->when($requestsIndexRequest->filled('end_at'), fn($query) => $query->where('timestamp', '<', $requestsIndexRequest->date('end_at')))->when($requestsIndexRequest->filled('model_class'), fn($query) => $query->where('model_class', $requestsIndexRequest->string('model_class')))->when($requestsIndexRequest->filled('object_uid'), fn($query) => $query->where('object_uid', $requestsIndexRequest->string('object_uid')))
+            ->when($requestsIndexRequest->filled('start_at'), fn ($query) => $query->where('timestamp', '>=', $requestsIndexRequest->date('start_at')))->when($requestsIndexRequest->filled('end_at'), fn ($query) => $query->where('timestamp', '<', $requestsIndexRequest->date('end_at')))->when($requestsIndexRequest->filled('model_class'), fn ($query) => $query->where('model_class', $requestsIndexRequest->string('model_class')))->when($requestsIndexRequest->filled('object_uid'), fn ($query) => $query->where('object_uid', $requestsIndexRequest->string('object_uid')))
             ->orderBy('timestamp', 'desc');
 
         $lengthAwarePaginator = $builder->paginate($requestsIndexRequest->integer('per_page', 250));

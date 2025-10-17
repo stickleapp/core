@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Http\Controllers;
 
-use StickleApp\Core\Support\AttributeUtils;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use StickleApp\Core\Attributes\StickleSegmentMetadata;
 use StickleApp\Core\Models\Segment;
+use StickleApp\Core\Support\AttributeUtils;
 
 class SegmentsController
 {

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters;
 
-use Exception;
 use DateTimeInterface;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use StickleApp\Core\Contracts\FilterTargetContract;
@@ -79,11 +79,11 @@ class Base
     /**
      * Create target instance based on target class type
      *
-     * @param Builder<Model> $builder
+     * @param  Builder<Model>  $builder
      */
     private function createTarget(Builder $builder): FilterTargetContract
     {
-        throw_unless(isset($this->targetClass), Exception::class, 'No target class defined');
+        throw_unless($this->targetClass !== null, Exception::class, 'No target class defined');
 
         $baseTargetClass = method_exists($this->targetClass, 'baseTarget')
             ? $this->targetClass::baseTarget()
@@ -119,7 +119,7 @@ class Base
      */
     public function apply(Builder $builder, string $operator): Builder
     {
-        throw_unless(isset($this->test), Exception::class, 'No test defined');
+        throw_unless($this->test instanceof FilterTestContract, Exception::class, 'No test defined');
 
         $filterTargetContract = $this->getTarget($builder);
 

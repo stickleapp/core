@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
-use Illuminate\Contracts\Database\Eloquent\Builder;
-use SplFileInfo;
 use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use RuntimeException;
+use SplFileInfo;
 use StickleApp\Core\Attributes\StickleSegmentMetadata;
 use StickleApp\Core\Jobs\ExportSegmentJob;
 use StickleApp\Core\Models\Segment;
@@ -39,7 +40,7 @@ final class ExportSegmentsCommand extends Command implements Isolatable
      */
     public function __construct(
         #[ConfigAttribute('stickle.database.tablePrefix')]
- private readonly ?string $prefix = null,
+        private readonly ?string $prefix = null,
     ) {
         parent::__construct();
     }
@@ -98,7 +99,10 @@ final class ExportSegmentsCommand extends Command implements Isolatable
     {
         $results = [];
 
-        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(realpath($directory)));
+        $realDirectory = realpath($directory);
+        throw_if($realDirectory === false, RuntimeException::class, "Directory not found: {$directory}");
+
+        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($realDirectory));
 
         /** @var SplFileInfo $file */
         foreach ($files as $file) {
@@ -110,7 +114,7 @@ final class ExportSegmentsCommand extends Command implements Isolatable
                 $className = str_replace(
                     ['/', '.php'],
                     ['\\', ''],
-                    substr((string) $file->getRealPath(), strlen(realpath($directory)) + 1)
+                    substr((string) $file->getRealPath(), strlen($realDirectory) + 1)
                 );
 
                 $segmentClassName = $namespace.'\\'.$className;
