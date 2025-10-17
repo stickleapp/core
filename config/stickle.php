@@ -127,7 +127,7 @@ return [
             'loadMiddleware' => env('STICKLE_TRACK_SERVER_LOAD_MIDDLEWARE', true),
             'authenticationEventsTracked' => explode(
                 ',',
-                env('STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED', 'Authenticated,CurrentDeviceLogout,Login,Logout,OtherDeviceLogout,PasswordReset,Registered,Validated,Verified')
+                (string) env('STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED', 'Authenticated,CurrentDeviceLogout,Login,Logout,OtherDeviceLogout,PasswordReset,Registered,Validated,Verified')
             ),
         ],
         'client' => [

@@ -9,19 +9,17 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');
 
-        Schema::create("{$prefix}rollups", function (Blueprint $table) {
-            $table->text('name')->nullable(false);
-            $table->text('table_name')->nullable(false);
-            $table->text('id_sequence_name')->nullable(false);
-            $table->bigInteger(('last_aggregated_id'))->default(0);
+        Schema::create("{$prefix}rollups", function (Blueprint $blueprint): void {
+            $blueprint->text('name')->nullable(false);
+            $blueprint->text('table_name')->nullable(false);
+            $blueprint->text('id_sequence_name')->nullable(false);
+            $blueprint->bigInteger(('last_aggregated_id'))->default(0);
         });
 
         // events_rollup_1min
@@ -314,10 +312,8 @@ CREATE UNIQUE INDEX {$prefix}sessions_rollup_1day_unique_idx ON {$prefix}session
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');

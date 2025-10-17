@@ -9,23 +9,21 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');
 
-        Schema::create("{$prefix}segment_statistic_exports", function (Blueprint $table) use ($prefix) {
-            $table->id();
-            $table->unsignedBigInteger('segment_id')->nullable(false);
-            $table->text('attribute')->nullable(false);
-            $table->timestamp('last_recorded_at')->nullable(false);
-            $table->timestamps();
+        Schema::create("{$prefix}segment_statistic_exports", function (Blueprint $blueprint) use ($prefix): void {
+            $blueprint->id();
+            $blueprint->unsignedBigInteger('segment_id')->nullable(false);
+            $blueprint->text('attribute')->nullable(false);
+            $blueprint->timestamp('last_recorded_at')->nullable(false);
+            $blueprint->timestamps();
 
-            $table->foreign('segment_id')->references('id')->on("{$prefix}segments");
-            $table->unique(['segment_id', 'attribute']);
+            $blueprint->foreign('segment_id')->references('id')->on("{$prefix}segments");
+            $blueprint->unique(['segment_id', 'attribute']);
         });
 
         DB::connection()->getPdo()->exec("
@@ -51,10 +49,8 @@ CREATE UNIQUE INDEX {$prefix}segment_statistics_segment_id_attribute_recorded_at
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');

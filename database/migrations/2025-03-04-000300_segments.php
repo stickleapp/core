@@ -9,76 +9,74 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');
 
-        Schema::create("{$prefix}segment_groups", function (Blueprint $table) {
-            $table->id();
-            $table->text('name');
-            $table->timestamps();
+        Schema::create("{$prefix}segment_groups", function (Blueprint $blueprint): void {
+            $blueprint->id();
+            $blueprint->text('name');
+            $blueprint->timestamps();
         });
 
-        Schema::create("{$prefix}segments", function (Blueprint $table) use ($prefix) {
-            $table->id();
-            $table->unsignedBigInteger('segment_group_id')->nullable(true);
-            $table->text('name')->nullable(false);
-            $table->text('description')->nullable(true);
-            $table->text('model_class')->nullable(false);
-            $table->text('as_class')->nullable(true);
-            $table->jsonb('as_json')->nullable(true);
-            $table->integer('sort_order')->nullable(false)->default(0);
-            $table->integer('export_interval')->nullable(false)->default(360);
-            $table->timestamp('last_exported_at')->nullable(true);
-            $table->timestamps();
+        Schema::create("{$prefix}segments", function (Blueprint $blueprint) use ($prefix): void {
+            $blueprint->id();
+            $blueprint->unsignedBigInteger('segment_group_id')->nullable(true);
+            $blueprint->text('name')->nullable(false);
+            $blueprint->text('description')->nullable(true);
+            $blueprint->text('model_class')->nullable(false);
+            $blueprint->text('as_class')->nullable(true);
+            $blueprint->jsonb('as_json')->nullable(true);
+            $blueprint->integer('sort_order')->nullable(false)->default(0);
+            $blueprint->integer('export_interval')->nullable(false)->default(360);
+            $blueprint->timestamp('last_exported_at')->nullable(true);
+            $blueprint->timestamps();
 
-            $table->unique(['model_class', 'as_class']);
-            $table->foreign('segment_group_id')->references('id')->on("{$prefix}segment_groups");
-            $table->index('segment_group_id');
+            $blueprint->unique(['model_class', 'as_class']);
+            $blueprint->foreign('segment_group_id')->references('id')->on("{$prefix}segment_groups");
+            $blueprint->index('segment_group_id');
         });
 
-        Schema::create("{$prefix}model_segment", function (Blueprint $table) {
-            $table->id();
-            $table->text('object_uid')->nullable(false);
-            $table->unsignedBigInteger('segment_id')->nullable(false);
-            $table->timestamps();
+        Schema::create("{$prefix}model_segment", function (Blueprint $blueprint): void {
+            $blueprint->id();
+            $blueprint->text('object_uid')->nullable(false);
+            $blueprint->unsignedBigInteger('segment_id')->nullable(false);
+            $blueprint->timestamps();
 
-            $table->unique(['object_uid', 'segment_id']);
+            $blueprint->unique(['object_uid', 'segment_id']);
 
-            $table->index('object_uid');
-            $table->index('segment_id');
+            $blueprint->index('object_uid');
+            $blueprint->index('segment_id');
         });
 
-        Schema::create("{$prefix}model_segment_audit", function (Blueprint $table) {
-            $table->id();
-            $table->text('object_uid')->nullable(false);
-            $table->unsignedBigInteger('segment_id')->nullable(false);
-            $table->text('operation')->nullable(false); // enum
-            $table->timestamp('recorded_at')->nullable(false);
-            $table->timestamp('event_processed_at')->nullable(true);
+        Schema::create("{$prefix}model_segment_audit", function (Blueprint $blueprint): void {
+            $blueprint->id();
+            $blueprint->text('object_uid')->nullable(false);
+            $blueprint->unsignedBigInteger('segment_id')->nullable(false);
+            $blueprint->text('operation')->nullable(false); // enum
+            $blueprint->timestamp('recorded_at')->nullable(false);
+            $blueprint->timestamp('event_processed_at')->nullable(true);
 
-            $table->index('object_uid');
-            $table->index('segment_id');
+            $blueprint->index('object_uid');
+            $blueprint->index('segment_id');
         });
 
-        Schema::create("{$prefix}model_segment_statistics", function (Blueprint $table) {
-            $table->id();
-            $table->text('object_uid')->nullable(false);
-            $table->unsignedBigInteger('segment_id')->nullable(false);
-            $table->timestamp('first_enter_recorded_at')->nullable(true);
-            $table->timestamp('first_exit_recorded_at')->nullable(true);
-            $table->timestamp('last_enter_recorded_at')->nullable(true);
-            $table->timestamp('last_exit_recorded_at')->nullable(true);
-            $table->timestamps();
+        Schema::create("{$prefix}model_segment_statistics", function (Blueprint $blueprint): void {
+            $blueprint->id();
+            $blueprint->text('object_uid')->nullable(false);
+            $blueprint->unsignedBigInteger('segment_id')->nullable(false);
+            $blueprint->timestamp('first_enter_recorded_at')->nullable(true);
+            $blueprint->timestamp('first_exit_recorded_at')->nullable(true);
+            $blueprint->timestamp('last_enter_recorded_at')->nullable(true);
+            $blueprint->timestamp('last_exit_recorded_at')->nullable(true);
+            $blueprint->timestamps();
 
-            $table->unique(['object_uid', 'segment_id']);
+            $blueprint->unique(['object_uid', 'segment_id']);
 
-            $table->index('object_uid');
-            $table->index('segment_id');
+            $blueprint->index('object_uid');
+            $blueprint->index('segment_id');
         });
 
         $sql = <<<'eof'
@@ -227,17 +225,15 @@ END; $$
 LANGUAGE PLPGSQL;
 eof;
 
-        if ($sql = preg_replace('/%s/', $prefix, $sql)) {
+        if ($sql = preg_replace('/%s/', (string) $prefix, $sql)) {
             DB::connection()->getPdo()->exec($sql);
         }
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');

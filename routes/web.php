@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use StickleApp\Core\Models\Segment;
@@ -8,10 +10,10 @@ use StickleApp\Core\Models\Segment;
  * Routes for the demo
  */
 Route::middleware(config('stickle.routes.web.middleware', []))
-    ->prefix(config('stickle.routes.web.prefix', 'stickle'))->group(function () {
+    ->prefix(config('stickle.routes.web.prefix', 'stickle'))->group(function (): void {
 
         /** Stickle UI */
-        Route::get('/live', function (Request $request) {
+        Route::get('/live', function (Request $request): Factory|View {
 
             $modelClass = config('stickle.namespaces.models').'\\User';
 
@@ -42,7 +44,7 @@ Route::middleware(config('stickle.routes.web.middleware', []))
             ->name('stickle::segments')
             ->where('modelClass', '[^/]+');
 
-        Route::get('/{modelClass}/segments', function (Request $request) {
+        Route::get('/{modelClass}/segments', function (Request $request): Factory|View {
             $modelClass = config('stickle.namespaces.models').'\\'.ucfirst($request->route('modelClass'));
 
             return view('stickle::pages/segments', [
@@ -52,9 +54,9 @@ Route::middleware(config('stickle.routes.web.middleware', []))
             ->name('stickle::segments')
             ->where('modelClass', '[^/]+');
 
-        Route::get('/{modelClass}/segments/{segmentId}', function (Request $request) {
+        Route::get('/{modelClass}/segments/{segmentId}', function (Request $request): Factory|View {
             $modelClass = config('stickle.namespaces.models').'\\'.ucfirst($request->route('modelClass'));
-            $segment = Segment::findOrFail($request->route('segmentId'));
+            $segment = Segment::query()->findOrFail($request->route('segmentId'));
 
             return view('stickle::pages/segment', [
                 'modelClass' => $request->route('modelClass'),
@@ -67,7 +69,7 @@ Route::middleware(config('stickle.routes.web.middleware', []))
 
         Route::get(
             '/{modelClass}/{uid}/{relationship}',
-            function (Request $request) {
+            function (Request $request): Factory|View {
                 $modelClass = config('stickle.namespaces.models').'\\'.ucfirst($request->route('modelClass'));
                 $model = $modelClass::findOrFail($request->route('uid'));
 
@@ -83,7 +85,7 @@ Route::middleware(config('stickle.routes.web.middleware', []))
             ->where('uid', '[^/]+')
             ->where('relationship', '[^/]+');
 
-        Route::get('/{modelClass}/{uid}', function (Request $request) {
+        Route::get('/{modelClass}/{uid}', function (Request $request): Factory|View {
             $modelClass = config('stickle.namespaces.models').'\\'.ucfirst($request->route('modelClass'));
             $model = $modelClass::findOrFail($request->route('uid'));
 
@@ -97,11 +99,9 @@ Route::middleware(config('stickle.routes.web.middleware', []))
             ->where('modelClass', '[^/]+')
             ->where('uid', '[^/]+');
 
-        Route::get('/{modelClass}', function (Request $request) {
-            return view('stickle::pages/models', [
-                'modelClass' => $request->route('modelClass'),
-            ]);
-        })
+        Route::get('/{modelClass}', fn(Request $request): Factory|View => view('stickle::pages/models', [
+            'modelClass' => $request->route('modelClass'),
+        ]))
             ->name('stickle::models')
             ->where('modelClass', '[^/]+');
 

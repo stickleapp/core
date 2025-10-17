@@ -9,23 +9,21 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');
 
-        Schema::create("{$prefix}model_relationship_statistic_exports", function (Blueprint $table) {
-            $table->id();
-            $table->text('model_class')->nullable(false);
-            $table->text('relationship')->nullable(false);
-            $table->text('attribute')->nullable(false);
-            $table->timestamp('last_recorded_at')->nullable(false);
-            $table->timestamps();
+        Schema::create("{$prefix}model_relationship_statistic_exports", function (Blueprint $blueprint): void {
+            $blueprint->id();
+            $blueprint->text('model_class')->nullable(false);
+            $blueprint->text('relationship')->nullable(false);
+            $blueprint->text('attribute')->nullable(false);
+            $blueprint->timestamp('last_recorded_at')->nullable(false);
+            $blueprint->timestamps();
 
-            $table->unique(['model_class', 'relationship', 'attribute']);
+            $blueprint->unique(['model_class', 'relationship', 'attribute']);
         });
 
         DB::connection()->getPdo()->exec("
@@ -53,10 +51,8 @@ CREATE UNIQUE INDEX {$prefix}model_relationship_statistics_model_object_uid_attr
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');

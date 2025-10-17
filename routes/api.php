@@ -16,7 +16,7 @@ use StickleApp\Core\Http\Controllers\SegmentStatisticsController;
  * API Routes
  */
 Route::middleware(config('stickle.routes.api.middleware', ['api']))
-    ->prefix(config('stickle.routes.api.prefix', 'stickle/api'))->group(function () {
+    ->prefix(config('stickle.routes.api.prefix', 'stickle/api'))->group(function (): void {
 
         Route::post('/track', [IngestController::class, 'store'])
             ->name('stickle/track');

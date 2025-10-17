@@ -9,27 +9,25 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');
 
         // model attributes
-        Schema::create(("{$prefix}model_attributes"), function (Blueprint $table) {
-            $table->id();
-            $table->text('model_class')->nullable(false);
-            $table->text('object_uid')->nullable(false);
-            $table->jsonb('data')->nullable(false);
-            $table->timestamp('synced_at')->nullable(true);
-            $table->timestamps();
+        Schema::create(("{$prefix}model_attributes"), function (Blueprint $blueprint): void {
+            $blueprint->id();
+            $blueprint->text('model_class')->nullable(false);
+            $blueprint->text('object_uid')->nullable(false);
+            $blueprint->jsonb('data')->nullable(false);
+            $blueprint->timestamp('synced_at')->nullable(true);
+            $blueprint->timestamps();
 
-            $table->unique(['model_class', 'object_uid']);
+            $blueprint->unique(['model_class', 'object_uid']);
 
-            $table->index('model_class');
-            $table->index('object_uid');
+            $blueprint->index('model_class');
+            $blueprint->index('object_uid');
         });
 
         DB::connection()->getPdo()->exec("
@@ -50,10 +48,8 @@ CREATE INDEX {$prefix}model_attribute_audit_model_object_uid_attribute_idx  ON {
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // $prefix = Config::string('stickle.database.tablePrefix');
         $prefix = config('stickle.database.tablePrefix');
