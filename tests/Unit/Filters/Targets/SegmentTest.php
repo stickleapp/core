@@ -7,9 +7,9 @@ use StickleApp\Core\Filters\Targets\Segment;
 use StickleApp\Core\Models\Segment as SegmentModel;
 use Workbench\App\Models\User;
 
-beforeEach(function () {
+beforeEach(function (): void {
     // Create a test segment for use in tests
-    $this->segment = SegmentModel::create([
+    $this->segment = \StickleApp\Core\Models\Segment::query()->create([
         'name' => 'Test Active Users',
         'model_class' => 'User',
         'as_class' => 'ActiveUsers',
@@ -17,7 +17,7 @@ beforeEach(function () {
     ]);
 });
 
-test('segment() sets target as Segment', function () {
+test('segment() sets target as Segment', function (): void {
     $filter = Filter::segment('ActiveUsers');
     $builder = User::query();
     $target = $filter->getTarget($builder);
@@ -25,7 +25,7 @@ test('segment() sets target as Segment', function () {
     expect($target)->toBeInstanceOf(Segment::class);
 });
 
-test('resolves segment by name', function () {
+test('resolves segment by name', function (): void {
     $filter = Filter::segment('Test Active Users');
     $builder = User::query();
     $target = $filter->getTarget($builder);
@@ -33,7 +33,7 @@ test('resolves segment by name', function () {
     expect($target->segmentId)->toBe($this->segment->id);
 });
 
-test('resolves segment by as_class', function () {
+test('resolves segment by as_class', function (): void {
     $filter = Filter::segment('ActiveUsers');
     $builder = User::query();
     $target = $filter->getTarget($builder);
@@ -41,7 +41,7 @@ test('resolves segment by as_class', function () {
     expect($target->segmentId)->toBe($this->segment->id);
 });
 
-test('resolves segment by numeric ID', function () {
+test('resolves segment by numeric ID', function (): void {
     $filter = Filter::segment((string) $this->segment->id);
     $builder = User::query();
     $target = $filter->getTarget($builder);
@@ -49,15 +49,15 @@ test('resolves segment by numeric ID', function () {
     expect($target->segmentId)->toBe($this->segment->id);
 });
 
-test('throws exception for non-existent segment', function () {
+test('throws exception for non-existent segment', function (): void {
     $filter = Filter::segment('NonExistentSegment');
     $builder = User::query();
 
     expect(fn () => $filter->getTarget($builder))
-        ->toThrow(\InvalidArgumentException::class, 'Segment not found: NonExistentSegment');
+        ->toThrow(InvalidArgumentException::class, 'Segment not found: NonExistentSegment');
 });
 
-test('applies correct join', function () {
+test('applies correct join', function (): void {
     $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::segment('ActiveUsers');
@@ -73,7 +73,7 @@ test('applies correct join', function () {
     expect($sql)->toContain('object_uid');
 });
 
-test('property returns correct column', function () {
+test('property returns correct column', function (): void {
     $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::segment('ActiveUsers');
@@ -83,7 +83,7 @@ test('property returns correct column', function () {
     expect($target->property())->toBe($prefix.'model_segment.segment_id');
 });
 
-test('castProperty returns property without casting', function () {
+test('castProperty returns property without casting', function (): void {
     $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::segment('ActiveUsers');
@@ -93,7 +93,7 @@ test('castProperty returns property without casting', function () {
     expect($target->castProperty())->toBe($prefix.'model_segment.segment_id');
 });
 
-test('avoids duplicate joins', function () {
+test('avoids duplicate joins', function (): void {
     $filter = Filter::segment('ActiveUsers');
     $builder = User::query();
     $target = $filter->getTarget($builder);

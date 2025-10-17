@@ -5,12 +5,12 @@ declare(strict_types=1);
 use StickleApp\Core\Models\ModelRelationshipStatistic;
 use Workbench\App\Models\User;
 
-it('returns model relationship statistics data via API request', function () {
+it('returns model relationship statistics data via API request', function (): void {
     // Create a user
     $user = User::factory()->create();
 
     // Create some model relationship statistics
-    ModelRelationshipStatistic::create([
+    ModelRelationshipStatistic::query()->create([
         'model_class' => 'User',
         'object_uid' => (string) $user->id,
         'attribute' => 'ticket_count',
@@ -24,7 +24,7 @@ it('returns model relationship statistics data via API request', function () {
         'recorded_at' => now()->subDays(7),
     ]);
 
-    ModelRelationshipStatistic::create([
+    ModelRelationshipStatistic::query()->create([
         'model_class' => 'User',
         'object_uid' => (string) $user->id,
         'attribute' => 'ticket_count',

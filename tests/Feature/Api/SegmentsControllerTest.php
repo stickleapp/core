@@ -11,29 +11,29 @@ class_alias(SegmentContract::class, 'StickleApp\\Segments\\Segment1');
 class_alias(SegmentContract::class, 'StickleApp\\Segments\\Segment2');
 class_alias(SegmentContract::class, 'StickleApp\\Segments\\Segment3');
 
-beforeEach(function () {
+beforeEach(function (): void {
     // Set the segments namespace configuration
     Config::set('stickle.namespaces.segments', 'StickleApp\\Segments');
 });
 
-it('returns segments data via API request', function () {
+it('returns segments data via API request', function (): void {
     // Create some segments
     $segments = collect([
-        Segment::create([
+        Segment::query()->create([
             'name' => 'Test Segment 1',
             'description' => 'Test segment 1 for testing',
             'model_class' => 'User',
             'as_class' => 'Segment1',
             'as_json' => '[]',
         ]),
-        Segment::create([
+        Segment::query()->create([
             'name' => 'Test Segment 2',
             'description' => 'Test segment 2 for testing',
             'model_class' => 'User',
             'as_class' => 'Segment2',
             'as_json' => '[]',
         ]),
-        Segment::create([
+        Segment::query()->create([
             'name' => 'Test Segment 3',
             'description' => 'Test segment 3 for testing',
             'model_class' => 'Customer',

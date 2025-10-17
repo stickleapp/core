@@ -6,14 +6,14 @@ use Illuminate\Support\Facades\Storage;
 use StickleApp\Core\Actions\ExportSegmentAction;
 use StickleApp\Core\Contracts\SegmentContract;
 
-beforeEach(function () {
+beforeEach(function (): void {
     Storage::fake('local');
 });
 
-it('exports segment data to a CSV file', function () {
+it('exports segment data to a CSV file', function (): void {
 
     // Create a mock segment definition
-    $segmentDefinition = Mockery::mock(SegmentContract::class);
+    $mock = Mockery::mock(SegmentContract::class);
 
     // Mock the model
     $mockModel = Mockery::mock(Model::class);
@@ -40,11 +40,11 @@ it('exports segment data to a CSV file', function () {
     $mockBuilder->shouldReceive('cursor')->andReturn($mockCollection);
 
     // Set up the segment definition to return the mock builder
-    $segmentDefinition->shouldReceive('toBuilder')->andReturn($mockBuilder);
+    $mock->shouldReceive('toBuilder')->andReturn($mockBuilder);
 
     // Execute the action
     $action = new ExportSegmentAction;
-    $filename = $action(1, $segmentDefinition);
+    $filename = $action(1, $mock);
 
     // Assert the format of the filename
     expect($filename)->toStartWith('segment-1-')->toEndWith('.csv');
@@ -56,7 +56,7 @@ it('exports segment data to a CSV file', function () {
     Mockery::close();
 });
 
-it('formats filename correctly', function () {
+it('formats filename correctly', function (): void {
 
     $action = new ExportSegmentAction;
 
@@ -68,10 +68,10 @@ it('formats filename correctly', function () {
     expect($filename)->toBe("segment-99-{$datePattern}.csv");
 });
 
-it('handles empty segments', function () {
+it('handles empty segments', function (): void {
 
     // Create a mock segment definition
-    $segmentDefinition = Mockery::mock(SegmentContract::class);
+    $mock = Mockery::mock(SegmentContract::class);
 
     // Mock the model
     $mockModel = Mockery::mock(Model::class);
@@ -88,11 +88,11 @@ it('handles empty segments', function () {
     $mockBuilder->shouldReceive('cursor')->andReturn(collect([]));
 
     // Set up the segment definition to return the mock builder
-    $segmentDefinition->shouldReceive('toBuilder')->andReturn($mockBuilder);
+    $mock->shouldReceive('toBuilder')->andReturn($mockBuilder);
 
     // Execute the action
     $action = new ExportSegmentAction;
-    $filename = $action(1, $segmentDefinition);
+    $filename = $action(1, $mock);
 
     // Assert the file was stored even though the segment is empty
     Storage::disk('local')->assertExists($filename);

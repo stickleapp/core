@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Workbench\App\Models\User;
 
-it('returns models data via API request', function () {
+it('returns models data via API request', function (): void {
     // Create some users
     $users = User::factory()->count(3)->create();
 

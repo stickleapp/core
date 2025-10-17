@@ -2,22 +2,23 @@
 
 declare(strict_types=1);
 
+use Illuminate\Http\Request;
 use Illuminate\Auth\Events\PasswordReset;
 use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
 use StickleApp\Core\Listeners\AuthenticatableEventListener;
 
-it('can be instantiated', function () {
+it('can be instantiated', function (): void {
 
     /**
-     * @var Illuminate\Http\Request
+     * @var Request
      */
-    $request = Mockery::mock(Illuminate\Http\Request::class);
+    $mock = Mockery::mock(Request::class);
 
     /**
      * @var AnalyticsRepositoryContract
      */
     $repository = Mockery::mock(AnalyticsRepositoryContract::class);
-    $listener = new AuthenticatableEventListener($request, $repository);
+    $listener = new AuthenticatableEventListener($mock, $repository);
     expect($listener)->toBeInstanceOf(AuthenticatableEventListener::class);
 });
 

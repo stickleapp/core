@@ -6,7 +6,7 @@ use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Filters\Targets\EventCountAggregateDelta;
 use Workbench\App\Models\User;
 
-test('EventCount with delta creates EventCountAggregateDelta target', function () {
+test('EventCount with delta creates EventCountAggregateDelta target', function (): void {
     $currentPeriod = [now()->subDays(7), now()];
     $previousPeriod = [now()->subDays(14), now()->subDays(7)];
 
@@ -26,7 +26,7 @@ test('EventCount with delta creates EventCountAggregateDelta target', function (
     // expect($target->previousPeriod)->toBe($previousPeriod);
 });
 
-test('EventCountAggregateDelta creates correct SQL', function () {
+test('EventCountAggregateDelta creates correct SQL', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $currentPeriod = [now()->subDays(7), now()];
     $previousPeriod = [now()->subDays(14), now()->subDays(7)];
@@ -49,8 +49,8 @@ test('EventCountAggregateDelta creates correct SQL', function () {
     expect($sql)->toContain($prefix.'requests_rollup_1day');
 });
 
-test('EventCount delta requires both date ranges', function () {
-    expect(function () {
+test('EventCount delta requires both date ranges', function (): void {
+    expect(function (): void {
         $filter = Filter::eventCount(event: 'clicked:button')
             ->sum()
             ->increased()
@@ -58,11 +58,11 @@ test('EventCount delta requires both date ranges', function () {
 
         $builder = User::query();
         $filter->getTarget($builder);
-    })->toThrow(\InvalidArgumentException::class, 'Delta type');
+    })->toThrow(InvalidArgumentException::class, 'Delta type');
 });
 
-test('EventCount with compare date range requires delta type', function () {
-    expect(function () {
+test('EventCount with compare date range requires delta type', function (): void {
+    expect(function (): void {
         $currentPeriod = [now()->subDays(7), now()];
         $previousPeriod = [now()->subDays(14), now()->subDays(7)];
 
@@ -72,10 +72,10 @@ test('EventCount with compare date range requires delta type', function () {
 
         $builder = User::query();
         $filter->getTarget($builder);
-    })->toThrow(\InvalidArgumentException::class, 'no delta type');
+    })->toThrow(InvalidArgumentException::class, 'no delta type');
 });
 
-test('EventCount supports different delta types', function () {
+test('EventCount supports different delta types', function (): void {
     $currentPeriod = [now()->subDays(7), now()];
     $previousPeriod = [now()->subDays(14), now()->subDays(7)];
 

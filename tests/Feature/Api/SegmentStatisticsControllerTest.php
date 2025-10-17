@@ -10,14 +10,14 @@ use StickleApp\Core\Models\SegmentStatistic;
 // Create mock segment class
 class_alias(SegmentContract::class, 'StickleApp\\Segments\\TestSegment');
 
-beforeEach(function () {
+beforeEach(function (): void {
     // Set the segments namespace configuration
     Config::set('stickle.namespaces.segments', 'StickleApp\\Segments');
 });
 
-it('returns segment statistics data via API request', function () {
+it('returns segment statistics data via API request', function (): void {
     // Create a segment
-    $segment = Segment::create([
+    $segment = Segment::query()->create([
         'name' => 'Test Segment',
         'description' => 'Test segment for statistics',
         'model_class' => 'User',
@@ -26,7 +26,7 @@ it('returns segment statistics data via API request', function () {
     ]);
 
     // Create some segment statistics
-    SegmentStatistic::create([
+    SegmentStatistic::query()->create([
         'segment_id' => $segment->id,
         'attribute' => 'user_count',
         'value' => 100,
@@ -38,7 +38,7 @@ it('returns segment statistics data via API request', function () {
         'recorded_at' => now()->subDays(3),
     ]);
 
-    SegmentStatistic::create([
+    SegmentStatistic::query()->create([
         'segment_id' => $segment->id,
         'attribute' => 'user_count',
         'value' => 150,

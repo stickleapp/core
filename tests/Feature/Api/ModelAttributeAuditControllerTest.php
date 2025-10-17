@@ -5,12 +5,12 @@ declare(strict_types=1);
 use StickleApp\Core\Models\ModelAttributeAudit;
 use Workbench\App\Models\User;
 
-it('returns model attribute audit data via API request', function () {
+it('returns model attribute audit data via API request', function (): void {
     // Create a user with the StickleEntity trait
     $user = User::factory()->create();
 
     // Create some model attribute audit records
-    ModelAttributeAudit::create([
+    ModelAttributeAudit::query()->create([
         'model_class' => User::class,
         'object_uid' => (string) $user->id,
         'attribute' => 'user_rating',
@@ -19,7 +19,7 @@ it('returns model attribute audit data via API request', function () {
         'timestamp' => now()->subDays(20),
     ]);
 
-    ModelAttributeAudit::create([
+    ModelAttributeAudit::query()->create([
         'model_class' => User::class,
         'object_uid' => (string) $user->id,
         'attribute' => 'user_rating',

@@ -5,7 +5,7 @@ declare(strict_types=1);
 use StickleApp\Core\Filters\Base as Filter;
 use Workbench\App\Models\User;
 
-test('Creates correct sql for text', function () {
+test('Creates correct sql for text', function (): void {
 
     $prefix = config('stickle.database.tablePrefix');
 
@@ -25,7 +25,7 @@ test('Creates correct sql for text', function () {
     expect(collect($builder->getBindings())->first())->toBe('%donkey%');
 });
 
-test('Creates correct sql for number', function () {
+test('Creates correct sql for number', function (): void {
 
     $prefix = config('stickle.database.tablePrefix');
 

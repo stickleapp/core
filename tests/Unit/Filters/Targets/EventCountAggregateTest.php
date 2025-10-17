@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
+use StickleApp\Core\Filters\Targets\EventCount;
 use StickleApp\Core\Filters\Targets\EventCountAggregate;
 use Workbench\App\Models\User;
 
-test('EventCountAggregate has correct base target', function () {
-    expect(EventCountAggregate::baseTarget())->toBe('StickleApp\\Core\\Filters\\Targets\\EventCount');
+test('EventCountAggregate has correct base target', function (): void {
+    expect(EventCountAggregate::baseTarget())->toBe(EventCount::class);
 });
 
-test('EventCountAggregate sets correct properties', function () {
+test('EventCountAggregate sets correct properties', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $event = 'user:login';
@@ -26,7 +27,7 @@ test('EventCountAggregate sets correct properties', function () {
     expect($target->property())->toBe($event);
 });
 
-test('EventCountAggregate creates correct cast property', function () {
+test('EventCountAggregate creates correct cast property', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $target = new EventCountAggregate($prefix, $builder, 'user:login', 'avg', now()->subDays(7), now());
@@ -37,7 +38,7 @@ test('EventCountAggregate creates correct cast property', function () {
     expect($castProperty)->toContain($target->joinKey());
 });
 
-test('EventCountAggregate generates consistent join key', function () {
+test('EventCountAggregate generates consistent join key', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $target = new EventCountAggregate($prefix, $builder, 'clicked:button', 'count', now()->subDays(7), now());
@@ -49,7 +50,7 @@ test('EventCountAggregate generates consistent join key', function () {
     expect($joinKey1)->toHaveLength(32); // MD5 hash length
 });
 
-test('EventCountAggregate applies join correctly', function () {
+test('EventCountAggregate applies join correctly', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $target = new EventCountAggregate($prefix, $builder, 'page:view', 'max', now()->subDays(7), now());

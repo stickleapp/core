@@ -6,7 +6,7 @@ use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Filters\Targets\Datetime;
 use Workbench\App\Models\User;
 
-test('datetime() sets target as Datetime', function () {
+test('datetime() sets target as Datetime', function (): void {
 
     $prefix = config('stickle.database.tablePrefix');
 
@@ -19,7 +19,7 @@ test('datetime() sets target as Datetime', function () {
 
 });
 
-test('Casts target property as datetime', function () {
+test('Casts target property as datetime', function (): void {
 
     $prefix = config('stickle.database.tablePrefix');
 

@@ -6,7 +6,7 @@ use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Filters\Targets\RequestCountAggregate;
 use Workbench\App\Models\User;
 
-test('requestCount() with aggregate creates RequestCountAggregate target', function () {
+test('requestCount() with aggregate creates RequestCountAggregate target', function (): void {
     $filter = Filter::requestCount(url: '/api/something')
         ->sum()
         ->betweenDates(startDate: now()->subDays(7), endDate: now());
@@ -19,7 +19,7 @@ test('requestCount() with aggregate creates RequestCountAggregate target', funct
     expect($target->aggregate)->toBe('sum');
 });
 
-test('RequestCountAggregate creates correct SQL', function () {
+test('RequestCountAggregate creates correct SQL', function (): void {
     $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::requestCount(url: '/api/something')
@@ -38,33 +38,33 @@ test('RequestCountAggregate creates correct SQL', function () {
     expect($sql)->toContain($prefix.'requests_rollup_1day');
 });
 
-test('RequestCount requires URL argument', function () {
-    expect(function () {
+test('RequestCount requires URL argument', function (): void {
+    expect(function (): void {
         $filter = Filter::requestCount(url: '')
             ->sum()
             ->betweenDates(startDate: now()->subDays(7), endDate: now());
 
         $builder = User::query();
         $filter->getTarget($builder);
-    })->toThrow(\InvalidArgumentException::class, 'URL is required');
+    })->toThrow(InvalidArgumentException::class, 'URL is required');
 });
 
-test('RequestCount requires aggregate method', function () {
-    expect(function () {
+test('RequestCount requires aggregate method', function (): void {
+    expect(function (): void {
         $filter = Filter::requestCount(url: '/api/something')
             ->betweenDates(startDate: now()->subDays(7), endDate: now());
 
         $builder = User::query();
         $filter->getTarget($builder);
-    })->toThrow(\InvalidArgumentException::class, 'Aggregate is required');
+    })->toThrow(InvalidArgumentException::class, 'Aggregate is required');
 });
 
-test('RequestCount requires date range', function () {
-    expect(function () {
+test('RequestCount requires date range', function (): void {
+    expect(function (): void {
         $filter = Filter::requestCount(url: '/api/something')
             ->sum();
 
         $builder = User::query();
         $filter->getTarget($builder);
-    })->toThrow(\InvalidArgumentException::class, 'Current DateRange is required');
+    })->toThrow(InvalidArgumentException::class, 'Current DateRange is required');
 });

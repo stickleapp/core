@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-it('returns activities data via API request', function () {
+it('returns activities data via API request', function (): void {
 
     $queryParams = http_build_query([
         'per_page' => 25,

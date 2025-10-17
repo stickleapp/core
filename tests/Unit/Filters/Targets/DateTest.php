@@ -6,7 +6,7 @@ use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Filters\Targets\Date;
 use Workbench\App\Models\User;
 
-test('date() sets target as Date', function () {
+test('date() sets target as Date', function (): void {
 
     $filter = Filter::date('a_column');
 
@@ -17,7 +17,7 @@ test('date() sets target as Date', function () {
 
 });
 
-test('casts target property as date', function () {
+test('casts target property as date', function (): void {
 
     $filter = Filter::date('a_column');
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use StickleApp\Core\Support\ClassUtils;
 
-test('directoryFromNamespace converts namespace to filesystem path using composer PSR-4 mappings', function () {
+test('directoryFromNamespace converts namespace to filesystem path using composer PSR-4 mappings', function (): void {
     // Test with App namespace (mapped to 'app/' in Laravel's composer.json)
     $result = ClassUtils::directoryFromNamespace('App\\Segments');
     expect($result)->toContain('app'.DIRECTORY_SEPARATOR.'Segments');

@@ -2,7 +2,7 @@
 
 use Workbench\App\Models\User;
 
-it('tracks attribute changes through stickle entity', function () {
+it('tracks attribute changes through stickle entity', function (): void {
     $user = User::factory()->create();
 
     // Set initial attribute
@@ -23,14 +23,11 @@ it('tracks attribute changes through stickle entity', function () {
     expect($newModel->stickleAttribute('shoe_size'))->toBe(48);
 });
 
-it('preserves other attributes when updating', function () {
+it('preserves other attributes when updating', function (): void {
     $user = User::factory()->create();
 
-    // Set multiple attributes
-    $user->trackable_attributes = [
-        'shoe_size' => 40,
-        'hair_color' => 'brown',
-    ];
+    // Set initial attributes
+    $user->trackable_attributes = ['hair_color' => 'brown'];
 
     // Update just one
     $user->trackable_attributes = ['shoe_size' => 41];

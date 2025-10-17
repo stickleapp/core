@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
+use StickleApp\Core\Filters\Targets\RequestCount;
 use StickleApp\Core\Filters\Targets\RequestCountAggregate;
 use Workbench\App\Models\User;
 
-test('RequestCountAggregate has correct base target', function () {
-    expect(RequestCountAggregate::baseTarget())->toBe('StickleApp\\Core\\Filters\\Targets\\RequestCount');
+test('RequestCountAggregate has correct base target', function (): void {
+    expect(RequestCountAggregate::baseTarget())->toBe(RequestCount::class);
 });
 
-test('RequestCountAggregate sets correct properties', function () {
+test('RequestCountAggregate sets correct properties', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $url = '/api/users';
@@ -26,7 +27,7 @@ test('RequestCountAggregate sets correct properties', function () {
     expect($target->property())->toBe($url);
 });
 
-test('RequestCountAggregate creates correct cast property', function () {
+test('RequestCountAggregate creates correct cast property', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $target = new RequestCountAggregate($prefix, $builder, '/api/users', 'sum', now()->subDays(7), now());
@@ -37,7 +38,7 @@ test('RequestCountAggregate creates correct cast property', function () {
     expect($castProperty)->toContain($target->joinKey());
 });
 
-test('RequestCountAggregate generates consistent join key', function () {
+test('RequestCountAggregate generates consistent join key', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $target = new RequestCountAggregate($prefix, $builder, '/api/users', 'count', now()->subDays(7), now());
@@ -49,7 +50,7 @@ test('RequestCountAggregate generates consistent join key', function () {
     expect($joinKey1)->toHaveLength(32); // MD5 hash length
 });
 
-test('RequestCountAggregate applies join correctly', function () {
+test('RequestCountAggregate applies join correctly', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $target = new RequestCountAggregate($prefix, $builder, '/api/users', 'avg', now()->subDays(7), now());

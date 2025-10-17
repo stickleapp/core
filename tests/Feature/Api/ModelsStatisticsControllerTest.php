@@ -5,13 +5,13 @@ declare(strict_types=1);
 use StickleApp\Core\Models\ModelAttributes;
 use Workbench\App\Models\User;
 
-it('returns models statistics data via API request', function () {
+it('returns models statistics data via API request', function (): void {
     // Create some users
     $users = User::factory()->count(3)->create();
 
     // Create model attributes with ticket_count data
     foreach ($users as $index => $user) {
-        ModelAttributes::firstOrCreate([
+        ModelAttributes::query()->firstOrCreate([
             'object_uid' => (string) $user->id,
             'model_class' => 'User',
         ], [

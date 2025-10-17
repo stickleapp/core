@@ -6,7 +6,7 @@ use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Filters\Targets\SessionCountAggregate;
 use Workbench\App\Models\User;
 
-test('sessionCount() with aggregate creates SessionCountAggregate target', function () {
+test('sessionCount() with aggregate creates SessionCountAggregate target', function (): void {
     $filter = Filter::sessionCount()
         ->sum()
         ->betweenDates(startDate: now()->subDays(7), endDate: now());
@@ -18,7 +18,7 @@ test('sessionCount() with aggregate creates SessionCountAggregate target', funct
     expect($target->aggregate)->toBe('sum');
 });
 
-test('SessionCountAggregate creates correct SQL', function () {
+test('SessionCountAggregate creates correct SQL', function (): void {
     $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::sessionCount()
@@ -37,22 +37,22 @@ test('SessionCountAggregate creates correct SQL', function () {
     expect($sql)->toContain($prefix.'sessions_rollup_1day');
 });
 
-test('SessionCount requires aggregate method', function () {
-    expect(function () {
+test('SessionCount requires aggregate method', function (): void {
+    expect(function (): void {
         $filter = Filter::sessionCount()
             ->betweenDates(startDate: now()->subDays(7), endDate: now());
 
         $builder = User::query();
         $filter->getTarget($builder);
-    })->toThrow(\InvalidArgumentException::class, 'Aggregate is required');
+    })->toThrow(InvalidArgumentException::class, 'Aggregate is required');
 });
 
-test('SessionCount requires date range', function () {
-    expect(function () {
+test('SessionCount requires date range', function (): void {
+    expect(function (): void {
         $filter = Filter::sessionCount()
             ->sum();
 
         $builder = User::query();
         $filter->getTarget($builder);
-    })->toThrow(\InvalidArgumentException::class, 'Current DateRange is required');
+    })->toThrow(InvalidArgumentException::class, 'Current DateRange is required');
 });

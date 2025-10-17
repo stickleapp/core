@@ -6,7 +6,7 @@ use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Filters\Targets\Number;
 use Workbench\App\Models\User;
 
-test('text() sets target as text', function () {
+test('text() sets target as text', function (): void {
 
     $prefix = config('stickle.database.tablePrefix');
 
@@ -19,7 +19,7 @@ test('text() sets target as text', function () {
 
 });
 
-test('Casts target property as boolean', function () {
+test('Casts target property as boolean', function (): void {
 
     $prefix = config('stickle.database.tablePrefix');
 

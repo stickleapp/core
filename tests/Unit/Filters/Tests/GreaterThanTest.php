@@ -7,7 +7,7 @@ use Workbench\App\Models\User;
 
 use function Pest\Faker\fake;
 
-test('Creates correct sql for date', function () {
+test('Creates correct sql for date', function (): void {
 
     $prefix = config('stickle.database.tablePrefix');
 
@@ -29,7 +29,7 @@ test('Creates correct sql for date', function () {
     expect(collect($builder->getBindings())->first())->toBe($date);
 });
 
-test('Creates correct sql for datetime', function () {
+test('Creates correct sql for datetime', function (): void {
 
     $prefix = config('stickle.database.tablePrefix');
 
@@ -51,7 +51,7 @@ test('Creates correct sql for datetime', function () {
     expect(collect($builder->getBindings())->first())->toBe($datetime);
 });
 
-test('works with relative dates', function () {
+test('works with relative dates', function (): void {
 
     $filter = Filter::date('a_column')
         ->greaterThan(now()->subDays(10)->format('Y-m-d'));
@@ -71,7 +71,7 @@ test('works with relative dates', function () {
     ]);
 });
 
-test('Creates correct sql for text', function () {
+test('Creates correct sql for text', function (): void {
 
     $prefix = config('stickle.database.tablePrefix');
 
@@ -93,7 +93,7 @@ test('Creates correct sql for text', function () {
     expect(collect($builder->getBindings())->first())->toBe($uuid);
 });
 
-test('Creates correct sql for number', function () {
+test('Creates correct sql for number', function (): void {
 
     $prefix = config('stickle.database.tablePrefix');
 

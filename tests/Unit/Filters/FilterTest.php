@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace FilterTest;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Exception;
 use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Traits\StickleEntity;
 
-class User extends \Illuminate\Database\Eloquent\Model
+class User extends Model
 {
+    use HasFactory;
     use StickleEntity;
 
     protected $table = 'users';
 }
 
-test('example', function () {
+test('example', function (): void {
 
     $query = User::query()
         ->stickleWhere(
@@ -26,7 +30,7 @@ test('example', function () {
     expect($query->toSql())->not()->toBeEmpty();
 });
 
-test('text filter with equals generates correct full SQL', function () {
+test('text filter with equals generates correct full SQL', function (): void {
 
     $prefix = config('stickle.database.tablePrefix');
 
@@ -46,7 +50,7 @@ test('text filter with equals generates correct full SQL', function () {
     expect($bindings)->toContain('John Doe');
 });
 
-test('number filter with greater than generates correct full SQL', function () {
+test('number filter with greater than generates correct full SQL', function (): void {
 
     $query = User::query()
         ->stickleWhere(
@@ -64,7 +68,7 @@ test('number filter with greater than generates correct full SQL', function () {
     expect($bindings)->toContain(25);
 });
 
-test('boolean filter with isTrue generates correct full SQL', function () {
+test('boolean filter with isTrue generates correct full SQL', function (): void {
 
     $query = User::query()
         ->stickleWhere(
@@ -79,7 +83,7 @@ test('boolean filter with isTrue generates correct full SQL', function () {
     expect($sql)->toContain("(data->'is_active')::boolean = true");
 });
 
-test('date filter with between generates correct full SQL', function () {
+test('date filter with between generates correct full SQL', function (): void {
 
     $startDate = now()->subMonths(6)->format('Y-m-d');
     $endDate = now()->format('Y-m-d');
@@ -99,7 +103,7 @@ test('date filter with between generates correct full SQL', function () {
     expect($query->getBindings())->toContain($startDate, $endDate);
 });
 
-test('multiple filters with AND operator generates correct full SQL', function () {
+test('multiple filters with AND operator generates correct full SQL', function (): void {
 
     $query = User::query()
         ->stickleWhere(
@@ -121,7 +125,7 @@ test('multiple filters with AND operator generates correct full SQL', function (
     expect($query->getBindings())->toContain('active', 100);
 });
 
-test('text filter with contains generates correct full SQL', function () {
+test('text filter with contains generates correct full SQL', function (): void {
 
     $query = User::query()
         ->stickleWhere(
@@ -139,7 +143,7 @@ test('text filter with contains generates correct full SQL', function () {
     expect($query->getBindings())->toContain('%test%');
 });
 
-test('eventCount filter generates correct full SQL with joins', function () {
+test('eventCount filter generates correct full SQL with joins', function (): void {
 
     $prefix = config('stickle.database.tablePrefix');
 
@@ -164,7 +168,7 @@ test('eventCount filter generates correct full SQL with joins', function () {
     expect($bindings)->not()->toBeEmpty();
 });
 
-test('Base class aggregate methods set target arguments correctly', function () {
+test('Base class aggregate methods set target arguments correctly', function (): void {
     $filter = Filter::requestCount(url: '/api/users');
 
     // Test each aggregate method
@@ -184,7 +188,7 @@ test('Base class aggregate methods set target arguments correctly', function () 
     expect($countFilter->targetArguments['aggregate'])->toBe('count');
 });
 
-test('Base class delta methods set target arguments correctly', function () {
+test('Base class delta methods set target arguments correctly', function (): void {
     $filter = Filter::requestCount(url: '/api/users');
 
     $increasedFilter = $filter->increased();
@@ -197,7 +201,7 @@ test('Base class delta methods set target arguments correctly', function () {
     expect($changedFilter->targetArguments['deltaVerb'])->toBe('changed');
 });
 
-test('Base class date range methods set target arguments correctly', function () {
+test('Base class date range methods set target arguments correctly', function (): void {
     $startDate = now()->subDays(7);
     $endDate = now();
     $compareToRange = [now()->subDays(14), now()->subDays(7)];
@@ -213,7 +217,7 @@ test('Base class date range methods set target arguments correctly', function ()
     expect($betweenDateRangesFilter->targetArguments['currentDateRange'])->toBe($currentRange);
 });
 
-test('complex filter combination generates executable SQL', function () {
+test('complex filter combination generates executable SQL', function (): void {
 
     $query = User::query()
         ->stickleWhere(
@@ -241,7 +245,7 @@ test('complex filter combination generates executable SQL', function () {
     // Verify bindings
     expect($query->getBindings())->toContain('%@gmail.com%', 10);
     // Most importantly - verify the query can be executed without errors
-    expect(function () use ($query) {
+    expect(function () use ($query): void {
         $query->get();
-    })->not()->toThrow(\Exception::class);
+    })->not()->toThrow(Exception::class);
 });

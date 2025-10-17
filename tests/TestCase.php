@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Tests;
 
+use Override;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Artisan;
 use Orchestra\Testbench\TestCase as Orchestra;
@@ -14,16 +15,17 @@ use function Orchestra\Testbench\workbench_path;
 
 class TestCase extends Orchestra
 {
-    protected static $latestResponse = null;
+    protected static $latestResponse;
 
     protected $tablePrefix;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'StickleApp\\Core\\Laravelstickle\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName): string => 'StickleApp\\Core\\Laravelstickle\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
 
     }
@@ -35,7 +37,7 @@ class TestCase extends Orchestra
         ];
     }
 
-    public function getEnvironmentSetUp($app)
+    public function getEnvironmentSetUp($app): void
     {
         config()->set('database.default', 'pgsql');
 

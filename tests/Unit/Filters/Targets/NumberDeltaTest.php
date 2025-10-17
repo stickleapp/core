@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
+use StickleApp\Core\Filters\Targets\Number;
 use StickleApp\Core\Filters\Targets\NumberDelta;
 use Workbench\App\Models\User;
 
-test('NumberDelta has correct base target', function () {
-    expect(NumberDelta::baseTarget())->toBe('StickleApp\\Core\\Filters\\Targets\\Number');
+test('NumberDelta has correct base target', function (): void {
+    expect(NumberDelta::baseTarget())->toBe(Number::class);
 });
 
-test('NumberDelta sets correct properties', function () {
+test('NumberDelta sets correct properties', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $attribute = 'score';
@@ -24,7 +25,7 @@ test('NumberDelta sets correct properties', function () {
     expect($target->property())->toBe("data->>'{$attribute}'");
 });
 
-test('NumberDelta creates correct cast property', function () {
+test('NumberDelta creates correct cast property', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $target = new NumberDelta($prefix, $builder, 'score', now()->subDays(7), now());
@@ -34,7 +35,7 @@ test('NumberDelta creates correct cast property', function () {
     expect($castProperty)->toBe("data->>'score'::numeric");
 });
 
-test('NumberDelta generates consistent join key', function () {
+test('NumberDelta generates consistent join key', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $target = new NumberDelta($prefix, $builder, 'score', now()->subDays(7), now());
@@ -46,7 +47,7 @@ test('NumberDelta generates consistent join key', function () {
     expect($joinKey1)->toHaveLength(32); // MD5 hash length
 });
 
-test('NumberDelta creates correct SQL with period', function () {
+test('NumberDelta creates correct SQL with period', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $startDate = now()->subDays(7);
@@ -64,7 +65,7 @@ test('NumberDelta creates correct SQL with period', function () {
     expect($sql)->toContain('FIRST_VALUE');
 });
 
-test('NumberDelta creates correct SQL without end date', function () {
+test('NumberDelta creates correct SQL without end date', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $target = new NumberDelta($prefix, $builder, 'balance', now()->subDays(7));

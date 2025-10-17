@@ -7,7 +7,7 @@ namespace StickleEntityTest;
 use StickleApp\Core\Models\ModelAttributes;
 use Workbench\App\Models\User;
 
-it('observed properties log changes', function () {
+it('observed properties log changes', function (): void {
 
     $user = User::factory()->create([
         'user_level' => 1,
@@ -22,10 +22,10 @@ it('observed properties log changes', function () {
     expect($user->modelAttributeAudits()->where('attribute', 'user_level')->count())->toBe(3);
 });
 
-it('gets current attribute value', function () {
+it('gets current attribute value', function (): void {
     $user = User::factory()->create();
 
-    ModelAttributes::updateOrCreate([
+    ModelAttributes::query()->updateOrCreate([
         'model_class' => class_basename($user),
         'object_uid' => $user->getKey(),
     ], [
@@ -38,10 +38,10 @@ it('gets current attribute value', function () {
     expect($shoeSize)->toBe(42);
 });
 
-it('returns null for missing attributes', function () {
+it('returns null for missing attributes', function (): void {
     $user = User::factory()->create();
 
-    ModelAttributes::firstOrCreate([
+    ModelAttributes::query()->firstOrCreate([
         'model_class' => class_basename($user),
         'object_uid' => $user->getKey(),
     ], [

@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
+use StickleApp\Core\Filters\Targets\RequestCount;
 use StickleApp\Core\Filters\Targets\RequestCountAggregateDelta;
 use Workbench\App\Models\User;
 
-test('RequestCountAggregateDelta has correct base target', function () {
-    expect(RequestCountAggregateDelta::baseTarget())->toBe('StickleApp\\Core\\Filters\\Targets\\RequestCount');
+test('RequestCountAggregateDelta has correct base target', function (): void {
+    expect(RequestCountAggregateDelta::baseTarget())->toBe(RequestCount::class);
 });
 
-test('RequestCountAggregateDelta sets correct properties', function () {
+test('RequestCountAggregateDelta sets correct properties', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $url = '/api/users';
@@ -28,7 +29,7 @@ test('RequestCountAggregateDelta sets correct properties', function () {
     expect($target->property())->toBe($url);
 });
 
-test('RequestCountAggregateDelta creates correct cast property', function () {
+test('RequestCountAggregateDelta creates correct cast property', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $previousPeriod = [now()->subDays(14), now()->subDays(7)];
@@ -42,7 +43,7 @@ test('RequestCountAggregateDelta creates correct cast property', function () {
     expect($castProperty)->toContain($target->joinKey());
 });
 
-test('RequestCountAggregateDelta generates consistent join key', function () {
+test('RequestCountAggregateDelta generates consistent join key', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $previousPeriod = [now()->subDays(14), now()->subDays(7)];
@@ -57,7 +58,7 @@ test('RequestCountAggregateDelta generates consistent join key', function () {
     expect($joinKey1)->toHaveLength(32); // MD5 hash length
 });
 
-test('RequestCountAggregateDelta applies join correctly', function () {
+test('RequestCountAggregateDelta applies join correctly', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $previousPeriod = [now()->subDays(14), now()->subDays(7)];

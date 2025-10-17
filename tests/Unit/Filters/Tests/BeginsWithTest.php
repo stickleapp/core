@@ -5,7 +5,7 @@ declare(strict_types=1);
 use StickleApp\Core\Filters\Base as Filter;
 use Workbench\App\Models\User;
 
-test('Creates correct sql for text (case insensitive)', function () {
+test('Creates correct sql for text (case insensitive)', function (): void {
 
     $filter = Filter::text('a_column')
         ->beginsWith('hello');
@@ -23,7 +23,7 @@ test('Creates correct sql for text (case insensitive)', function () {
     expect($builder->getBindings())->toEqual(['hello%']);
 });
 
-test('Creates correct sql for text (case sensitive)', function () {
+test('Creates correct sql for text (case sensitive)', function (): void {
 
     $filter = Filter::text('a_column')
         ->beginsWith('Hello', true);
@@ -41,7 +41,7 @@ test('Creates correct sql for text (case sensitive)', function () {
     expect($builder->getBindings())->toEqual(['Hello%']);
 });
 
-test('Handles special characters in search term', function () {
+test('Handles special characters in search term', function (): void {
 
     $filter = Filter::text('a_column')
         ->beginsWith('hello_world%test');
@@ -59,7 +59,7 @@ test('Handles special characters in search term', function () {
     expect($builder->getBindings())->toEqual(['hello_world%test%']);
 });
 
-test('Works with empty string', function () {
+test('Works with empty string', function (): void {
 
     $filter = Filter::text('a_column')
         ->beginsWith('');
@@ -77,7 +77,7 @@ test('Works with empty string', function () {
     expect($builder->getBindings())->toEqual(['%']);
 });
 
-test('Works with single character', function () {
+test('Works with single character', function (): void {
 
     $filter = Filter::text('a_column')
         ->beginsWith('a');
@@ -95,7 +95,7 @@ test('Works with single character', function () {
     expect($builder->getBindings())->toContain('a%');
 });
 
-test('Case sensitivity parameter defaults to false', function () {
+test('Case sensitivity parameter defaults to false', function (): void {
 
     $filter = Filter::text('a_column')
         ->beginsWith('Test');
@@ -103,7 +103,7 @@ test('Case sensitivity parameter defaults to false', function () {
     expect($filter->test->caseSensitive)->toBeFalse();
 });
 
-test('Case sensitivity parameter can be set to true', function () {
+test('Case sensitivity parameter can be set to true', function (): void {
 
     $filter = Filter::text('a_column')
         ->beginsWith('Test', true);
@@ -111,7 +111,7 @@ test('Case sensitivity parameter can be set to true', function () {
     expect($filter->test->caseSensitive)->toBeTrue();
 });
 
-test('Stores comparator correctly', function () {
+test('Stores comparator correctly', function (): void {
 
     $searchTerm = 'hello world';
 
@@ -121,7 +121,7 @@ test('Stores comparator correctly', function () {
     expect($filter->test->comparator)->toBe($searchTerm);
 });
 
-test('Does not throw error when query is executed', function () {
+test('Does not throw error when query is executed', function (): void {
 
     $query = User::query()
         ->stickleWhere(
@@ -129,7 +129,7 @@ test('Does not throw error when query is executed', function () {
                 ->beginsWith('John')
         );
 
-    expect(function () use ($query) {
+    expect(function () use ($query): void {
         $query->get();
-    })->not()->toThrow(\Exception::class);
+    })->not()->toThrow(Exception::class);
 });

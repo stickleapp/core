@@ -5,7 +5,7 @@ declare(strict_types=1);
 use StickleApp\Core\Filters\Base as Filter;
 use Workbench\App\Models\User;
 
-test('Creates correct sql', function () {
+test('Creates correct sql', function (): void {
 
     $filter = Filter::text('first_column')
         ->equalsColumn('second_column');

@@ -5,7 +5,7 @@ declare(strict_types=1);
 use StickleApp\Core\Filters\Base as Filter;
 use Workbench\App\Models\User;
 
-test('Creates correct sql', function () {
+test('Creates correct sql', function (): void {
 
     $prefix = config('stickle.database.tablePrefix');
 
@@ -23,7 +23,7 @@ test('Creates correct sql', function () {
     );
 });
 
-test('works with relative dates', function () {
+test('works with relative dates', function (): void {
 
     $filter = Filter::date('a_column')
         ->equals(now()->subDays(10)->format('Y-m-d'));

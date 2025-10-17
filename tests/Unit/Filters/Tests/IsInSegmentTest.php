@@ -6,9 +6,9 @@ use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Models\Segment as SegmentModel;
 use Workbench\App\Models\User;
 
-beforeEach(function () {
+beforeEach(function (): void {
     // Create a test segment for use in tests
-    $this->segment = SegmentModel::create([
+    $this->segment = SegmentModel::query()->create([
         'name' => 'Active Users',
         'model_class' => 'User',
         'as_class' => 'ActiveUsers',
@@ -16,7 +16,7 @@ beforeEach(function () {
     ]);
 });
 
-test('isInSegment() generates correct SQL for segment membership', function () {
+test('isInSegment() generates correct SQL for segment membership', function (): void {
     $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::segment('ActiveUsers')->isInSegment();
@@ -34,7 +34,7 @@ test('isInSegment() generates correct SQL for segment membership', function () {
     expect($sql)->toContain('is not null');
 });
 
-test('isInSegment() creates executable query', function () {
+test('isInSegment() creates executable query', function (): void {
     $filter = Filter::segment('ActiveUsers')->isInSegment();
     $builder = User::query();
 
@@ -43,12 +43,12 @@ test('isInSegment() creates executable query', function () {
     $filter->test->applyFilter($builder, $target, 'and');
 
     // Verify the query can be executed without errors
-    expect(function () use ($builder) {
+    expect(function () use ($builder): void {
         $builder->get();
-    })->not()->toThrow(\Exception::class);
+    })->not()->toThrow(Exception::class);
 });
 
-test('isInSegment() with stickleWhere integration', function () {
+test('isInSegment() with stickleWhere integration', function (): void {
     $prefix = config('stickle.database.tablePrefix');
 
     $query = User::query()

@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Workbench\App\Models\Ticket;
 use Workbench\App\Models\User;
 
-it('returns model relationship data via API request', function () {
+it('returns model relationship data via API request', function (): void {
     // Create a user with related tickets
     $user = User::factory()->create();
 

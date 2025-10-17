@@ -8,9 +8,9 @@ use Workbench\App\Models\User;
 
 // class_alias(SegmentContract::class, ' Workbench\\App\\Models\\User');
 
-it('returns segment models data via API request', function () {
+it('returns segment models data via API request', function (): void {
     // Create a segment
-    $segment = Segment::create([
+    $segment = Segment::query()->create([
         'name' => 'Test Segment',
         'description' => 'Test segment for testing',
         'model_class' => 'User',

@@ -6,7 +6,7 @@ use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Filters\Targets\Boolean;
 use Workbench\App\Models\User;
 
-test('boolean() sets target as Boolean', function () {
+test('boolean() sets target as Boolean', function (): void {
 
     $prefix = config('stickle.database.tablePrefix');
 
@@ -19,7 +19,7 @@ test('boolean() sets target as Boolean', function () {
 
 });
 
-test('Casts target property as boolean', function () {
+test('Casts target property as boolean', function (): void {
 
     $prefix = config('stickle.database.tablePrefix');
 

@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
+use StickleApp\Core\Filters\Targets\SessionCount;
 use StickleApp\Core\Filters\Targets\SessionCountAggregate;
 use Workbench\App\Models\User;
 
-test('SessionCountAggregate has correct base target', function () {
-    expect(SessionCountAggregate::baseTarget())->toBe('StickleApp\\Core\\Filters\\Targets\\SessionCount');
+test('SessionCountAggregate has correct base target', function (): void {
+    expect(SessionCountAggregate::baseTarget())->toBe(SessionCount::class);
 });
 
-test('SessionCountAggregate sets correct properties', function () {
+test('SessionCountAggregate sets correct properties', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $aggregate = 'sum';
@@ -24,7 +25,7 @@ test('SessionCountAggregate sets correct properties', function () {
     expect($target->property())->toBe('session_count');
 });
 
-test('SessionCountAggregate creates correct cast property', function () {
+test('SessionCountAggregate creates correct cast property', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $target = new SessionCountAggregate($prefix, $builder, 'avg', now()->subDays(7), now());
@@ -35,7 +36,7 @@ test('SessionCountAggregate creates correct cast property', function () {
     expect($castProperty)->toContain($target->joinKey());
 });
 
-test('SessionCountAggregate generates consistent join key', function () {
+test('SessionCountAggregate generates consistent join key', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $target = new SessionCountAggregate($prefix, $builder, 'count', now()->subDays(7), now());
@@ -47,7 +48,7 @@ test('SessionCountAggregate generates consistent join key', function () {
     expect($joinKey1)->toHaveLength(32); // MD5 hash length
 });
 
-test('SessionCountAggregate applies join correctly', function () {
+test('SessionCountAggregate applies join correctly', function (): void {
     $prefix = config('stickle.database.tablePrefix');
     $builder = User::query();
     $target = new SessionCountAggregate($prefix, $builder, 'max', now()->subDays(7), now());

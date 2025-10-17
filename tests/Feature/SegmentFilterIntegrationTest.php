@@ -2,21 +2,22 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\DB;
 use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Models\Segment as SegmentModel;
 use Workbench\App\Models\User;
 
-beforeEach(function () {
+beforeEach(function (): void {
 
     // Create test segments
-    $this->activeSegment = SegmentModel::create([
+    $this->activeSegment = SegmentModel::query()->create([
         'name' => 'Active Users',
         'model_class' => 'User',
         'as_class' => 'ActiveUsers',
         'description' => 'Currently active users',
     ]);
 
-    $this->vipSegment = SegmentModel::create([
+    $this->vipSegment = SegmentModel::query()->create([
         'name' => 'VIP Users',
         'model_class' => 'User',
         'as_class' => 'VipUsers',
@@ -30,7 +31,7 @@ beforeEach(function () {
     $this->regularUser = User::factory()->create(['name' => 'Regular User']);
 });
 
-test('segment isIn() filter finds current segment members', function () {
+test('segment isIn() filter finds current segment members', function (): void {
     $prefix = config('stickle.database.tablePrefix');
 
     // Insert current segment membership for active user
@@ -59,7 +60,7 @@ test('segment isIn() filter finds current segment members', function () {
     expect($users->first()->name)->toBe('Active User');
 });
 
-test('segment isNotIn() filter finds non-members', function () {
+test('segment isNotIn() filter finds non-members', function (): void {
     $prefix = config('stickle.database.tablePrefix');
 
     // Insert current segment membership for active user
@@ -88,7 +89,7 @@ test('segment isNotIn() filter finds non-members', function () {
     expect($users->pluck('name')->toArray())->not()->toContain('Active User');
 });
 
-test('segmentHistory hasBeenIn() filter finds historical members', function () {
+test('segmentHistory hasBeenIn() filter finds historical members', function (): void {
     $prefix = config('stickle.database.tablePrefix');
 
     // Insert historical segment entry for VIP user
@@ -119,7 +120,7 @@ test('segmentHistory hasBeenIn() filter finds historical members', function () {
     expect($users->first()->name)->toBe('VIP User');
 });
 
-test('segmentHistory hasNeverBeenIn() filter finds users who never were in segment', function () {
+test('segmentHistory hasNeverBeenIn() filter finds users who never were in segment', function (): void {
     $prefix = config('stickle.database.tablePrefix');
 
     // Insert historical segment entry for VIP user only
@@ -149,7 +150,7 @@ test('segmentHistory hasNeverBeenIn() filter finds users who never were in segme
     expect($users->pluck('name')->toArray())->not()->toContain('VIP User');
 });
 
-test('complex segment filter combinations work together', function () {
+test('complex segment filter combinations work together', function (): void {
     $prefix = config('stickle.database.tablePrefix');
 
     // Setup data
@@ -186,7 +187,7 @@ test('complex segment filter combinations work together', function () {
     expect($users->first()->name)->toBe('Active User');
 });
 
-test('segment resolution by different identifiers', function () {
+test('segment resolution by different identifiers', function (): void {
     // Test by name
     $queryByName = User::query()
         ->stickleWhere(Filter::segment('Active Users')->isInSegment());

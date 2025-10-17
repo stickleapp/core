@@ -7,9 +7,9 @@ use StickleApp\Core\Filters\Targets\SegmentHistory;
 use StickleApp\Core\Models\Segment as SegmentModel;
 use Workbench\App\Models\User;
 
-beforeEach(function () {
+beforeEach(function (): void {
     // Create a test segment for use in tests
-    $this->segment = SegmentModel::create([
+    $this->segment = SegmentModel::query()->create([
         'name' => 'Test VIP Users',
         'model_class' => 'User',
         'as_class' => 'VipUsers',
@@ -17,7 +17,7 @@ beforeEach(function () {
     ]);
 });
 
-test('segmentHistory() sets target as SegmentHistory', function () {
+test('segmentHistory() sets target as SegmentHistory', function (): void {
     $filter = Filter::segmentHistory('VipUsers');
     $builder = User::query();
     $target = $filter->getTarget($builder);
@@ -25,7 +25,7 @@ test('segmentHistory() sets target as SegmentHistory', function () {
     expect($target)->toBeInstanceOf(SegmentHistory::class);
 });
 
-test('resolves segment by name', function () {
+test('resolves segment by name', function (): void {
     $filter = Filter::segmentHistory('Test VIP Users');
     $builder = User::query();
     $target = $filter->getTarget($builder);
@@ -33,7 +33,7 @@ test('resolves segment by name', function () {
     expect($target->segmentId)->toBe($this->segment->id);
 });
 
-test('resolves segment by as_class', function () {
+test('resolves segment by as_class', function (): void {
     $filter = Filter::segmentHistory('VipUsers');
     $builder = User::query();
     $target = $filter->getTarget($builder);
@@ -41,7 +41,7 @@ test('resolves segment by as_class', function () {
     expect($target->segmentId)->toBe($this->segment->id);
 });
 
-test('resolves segment by numeric ID', function () {
+test('resolves segment by numeric ID', function (): void {
     $filter = Filter::segmentHistory((string) $this->segment->id);
     $builder = User::query();
     $target = $filter->getTarget($builder);
@@ -49,15 +49,15 @@ test('resolves segment by numeric ID', function () {
     expect($target->segmentId)->toBe($this->segment->id);
 });
 
-test('throws exception for non-existent segment', function () {
+test('throws exception for non-existent segment', function (): void {
     $filter = Filter::segmentHistory('NonExistentSegment');
     $builder = User::query();
 
     expect(fn () => $filter->getTarget($builder))
-        ->toThrow(\InvalidArgumentException::class, 'Segment not found: NonExistentSegment');
+        ->toThrow(InvalidArgumentException::class, 'Segment not found: NonExistentSegment');
 });
 
-test('applies correct join with ENTER operation filter', function () {
+test('applies correct join with ENTER operation filter', function (): void {
     $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::segmentHistory('VipUsers');
@@ -74,7 +74,7 @@ test('applies correct join with ENTER operation filter', function () {
     expect($sql)->toContain('operation');
 });
 
-test('property returns correct column', function () {
+test('property returns correct column', function (): void {
     $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::segmentHistory('VipUsers');
@@ -84,7 +84,7 @@ test('property returns correct column', function () {
     expect($target->property())->toBe($prefix.'model_segment_audit.segment_id');
 });
 
-test('castProperty returns property without casting', function () {
+test('castProperty returns property without casting', function (): void {
     $prefix = config('stickle.database.tablePrefix');
 
     $filter = Filter::segmentHistory('VipUsers');
@@ -94,7 +94,7 @@ test('castProperty returns property without casting', function () {
     expect($target->castProperty())->toBe($prefix.'model_segment_audit.segment_id');
 });
 
-test('avoids duplicate joins', function () {
+test('avoids duplicate joins', function (): void {
     $filter = Filter::segmentHistory('VipUsers');
     $builder = User::query();
     $target = $filter->getTarget($builder);

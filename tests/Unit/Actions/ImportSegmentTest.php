@@ -3,11 +3,11 @@
 use Illuminate\Support\Facades\Storage;
 use StickleApp\Core\Actions\ImportSegmentAction;
 
-beforeEach(function () {
+beforeEach(function (): void {
     Storage::fake('local');
 });
 
-it('imports segment data from CSV', function () {
+it('imports segment data from CSV', function (): void {
 
     // Create a mock CSV file
     $csvContent = "user1,1\nuser2,1\nuser3,1";
@@ -15,25 +15,25 @@ it('imports segment data from CSV', function () {
     Storage::disk('local')->put($exportFilename, $csvContent);
 
     // Create a partial mock of ImportSegment
-    $importSegment = Mockery::mock(ImportSegmentAction::class)->makePartial();
+    $legacyMock = Mockery::mock(ImportSegmentAction::class)->makePartial();
 
     // Mock the methods that would interact with the database
-    $importSegment->shouldReceive('createTmpTable')->once()->andReturn(null);
-    $importSegment->shouldReceive('loadTmpTable')->once()->andReturn(null);
-    $importSegment->shouldReceive('executeQuery')->once()->andReturn(null);
+    $legacyMock->shouldReceive('createTmpTable')->once()->andReturn(null);
+    $legacyMock->shouldReceive('loadTmpTable')->once()->andReturn(null);
+    $legacyMock->shouldReceive('executeQuery')->once()->andReturn(null);
 
     // Since we're mocking the file system operations too
-    $importSegment->shouldReceive('writeLocalFile')->once()->andReturn(null);
+    $legacyMock->shouldReceive('writeLocalFile')->once()->andReturn(null);
 
     // We'll let localFilename and tempTableName run normally
 
     // Execute the action
-    $importSegment->__invoke(1, $exportFilename);
+    $legacyMock->__invoke(1, $exportFilename);
 
     // Assertions are handled through Mockery expectations
 });
 
-it('throws exception when file is missing', function () {
+it('throws exception when file is missing', function (): void {
     $importSegment = new ImportSegmentAction;
     $nonExistentFile = 'segment-1-does-not-exist.csv';
 
@@ -41,7 +41,7 @@ it('throws exception when file is missing', function () {
         ->toThrow(Exception::class, 'File missing');
 });
 
-it('formats temp table name correctly', function () {
+it('formats temp table name correctly', function (): void {
     $importSegment = new ImportSegmentAction;
     $filename = 'segment-1-2025-03-05-120000.csv';
 
@@ -50,7 +50,7 @@ it('formats temp table name correctly', function () {
     expect($result)->toBe('_segment_1_2025_03_05_120000');
 });
 
-it('formats local filename correctly', function () {
+it('formats local filename correctly', function (): void {
     $importSegment = new ImportSegmentAction;
     $exportFilename = 'segment-1-2025-03-05-120000.csv';
 
@@ -62,6 +62,6 @@ it('formats local filename correctly', function () {
         ->toMatch('/^\/tmp\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-segment-1-2025-03-05-120000\.csv$/');
 });
 
-afterEach(function () {
+afterEach(function (): void {
     Mockery::close();
 });

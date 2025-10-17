@@ -9,21 +9,21 @@ use Mockery;
 use StickleApp\Core\Filters\Base as Filter;
 use Workbench\App\Models\User;
 
-it('will expose eloquent methods', function () {
+it('will expose eloquent methods', function (): void {
     $user = new User;
     expect(method_exists($user, 'scopeStickleWhere'))->toBeTrue();
 });
 
-it('can call stickle()', function () {
-    $filter = Mockery::mock(Filter::class);
-    $filter->shouldReceive('apply');
-    expect(User::query()->stickleWhere($filter))->toBeInstanceOf(Builder::class);
+it('can call stickle()', function (): void {
+    $mock = Mockery::mock(Filter::class);
+    $mock->shouldReceive('apply');
+    expect(User::query()->stickleWhere($mock))->toBeInstanceOf(Builder::class);
 });
 
-it('has observed attributes', function () {
+it('has observed attributes', function (): void {
     expect(User::stickleObservedAttributes())->toBeArray();
 });
 
-it('has tracked attributes', function () {
+it('has tracked attributes', function (): void {
     expect(User::stickleTrackedAttributes())->toBeArray();
 });
