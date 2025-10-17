@@ -8,8 +8,8 @@ use StickleApp\Core\Events\ModelEnteredSegment;
 
 class SendLowHealthEmail implements ShouldQueue
 {
-    public function handle(ModelEnteredSegment $event): void
+    public function handle(ModelEnteredSegment $modelEnteredSegment): void
     {
-        Log::debug('SendLowHealthEmail Handled ModelEnteredSegment', [$event]);
+        Log::debug('SendLowHealthEmail Handled ModelEnteredSegment', [$modelEnteredSegment]);
     }
 }

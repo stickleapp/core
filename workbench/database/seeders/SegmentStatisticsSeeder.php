@@ -3,6 +3,8 @@
 namespace Workbench\Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Facades\DB;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
@@ -22,7 +24,7 @@ class SegmentStatisticsSeeder extends Seeder
         Artisan::call("stickle:create-partitions {$prefix}segment_statistics public week '{$startDate->toDateString()}' 2");
 
         // Get all segments with their model information
-        $segments = \DB::table("{$prefix}segments")
+        $segments = DB::table("{$prefix}segments")
             ->select('id', 'model_class')
             ->get();
 
@@ -31,7 +33,7 @@ class SegmentStatisticsSeeder extends Seeder
         }
     }
 
-    private function populateSegmentStatistics($segment, $startDate, $endDate, $prefix): void
+    private function populateSegmentStatistics($segment, $startDate, CarbonInterface $endDate, $prefix): void
     {
         // Get model class and trackable attributes
         $modelClass = config('stickle.namespaces.models').'\\'.$segment->model_class;
@@ -48,7 +50,7 @@ class SegmentStatisticsSeeder extends Seeder
         }
 
         // Get models in this segment
-        $modelIds = \DB::table("{$prefix}model_segment")
+        $modelIds = DB::table("{$prefix}model_segment")
             ->where('segment_id', $segment->id)
             ->pluck('object_uid')
             ->toArray();
@@ -61,8 +63,8 @@ class SegmentStatisticsSeeder extends Seeder
         $currentDate = $startDate->copy();
 
         while ($currentDate->lte($endDate)) {
-            foreach ($trackedAttributes as $attribute) {
-                $this->generateStatisticForDay($segment->id, $attribute, $modelIds, $currentDate, $prefix);
+            foreach ($trackedAttributes as $trackedAttribute) {
+                $this->generateStatisticForDay($segment->id, $trackedAttribute, $modelIds, $currentDate, $prefix);
             }
             $currentDate->addDay();
         }
@@ -87,14 +89,14 @@ class SegmentStatisticsSeeder extends Seeder
         $sum = $avg * $count;
 
         // Check if record already exists
-        $exists = \DB::table("{$prefix}segment_statistics")
+        $exists = DB::table("{$prefix}segment_statistics")
             ->where('segment_id', $segmentId)
             ->where('attribute', $attribute)
             ->where('recorded_at', $date->toDateString())
             ->exists();
 
         if (! $exists) {
-            \DB::table("{$prefix}segment_statistics")->insert([
+            DB::table("{$prefix}segment_statistics")->insert([
                 'segment_id' => $segmentId,
                 'attribute' => $attribute,
                 'value' => $avg,

@@ -2,6 +2,8 @@
 
 namespace Workbench\App\Commands;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Sleep;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Support\Facades\Http;
@@ -148,32 +150,32 @@ class SendTestRequests extends Command
 
         while (true) {
 
-            $users = User::inRandomOrder()->take(5)->get();
+            $users = User::query()->inRandomOrder()->take(5)->get();
 
             foreach ($users as $user) {
 
-                $ipAddress = \DB::table("{$prefix}location_data")->inRandomOrder()->value('ip_address');
+                $ipAddress = DB::table("{$prefix}location_data")->inRandomOrder()->value('ip_address');
 
                 $randomUrls = collect($this->urls)->shuffle()->take(2);
 
-                foreach ($randomUrls as $url) {
+                foreach ($randomUrls as $randomUrl) {
                     $response = Http::withHeaders([
                         'email' => $user->email,
                         'password' => 'password',
                         'X-Forwarded-For' => $ipAddress,
-                    ])->get('http://127.0.0.1:8000'.$url);
-                    sleep(self::SLEEP_PAGE);
+                    ])->get('http://127.0.0.1:8000'.$randomUrl);
+                    Sleep::sleep(self::SLEEP_PAGE);
                 }
 
                 $randomEvents = collect($this->events)->shuffle()->take(4);
 
-                foreach ($randomEvents as $event) {
+                foreach ($randomEvents as $randomEvent) {
                     $response = Http::withHeaders([
                         'email' => $user->email,
                         'password' => 'password',
                         'X-Forwarded-For' => $ipAddress,
-                    ])->post('http://127.0.0.1:8000/users/'.$user->id.'/'.$event);
-                    sleep(self::SLEEP_TRACK);
+                    ])->post('http://127.0.0.1:8000/users/'.$user->id.'/'.$randomEvent);
+                    Sleep::sleep(self::SLEEP_TRACK);
                 }
             }
         }

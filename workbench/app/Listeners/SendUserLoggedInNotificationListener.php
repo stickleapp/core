@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Log;
 
 class SendUserLoggedInNotificationListener implements ShouldQueue
 {
-    public function handle(Authenticated $event): void
+    public function handle(Authenticated $authenticated): void
     {
-        Log::debug('SendUserLoggedInNotificationListener Handled Authenticated', [$event]);
+        Log::debug('SendUserLoggedInNotificationListener Handled Authenticated', [$authenticated]);
     }
 }

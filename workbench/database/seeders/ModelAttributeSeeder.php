@@ -82,7 +82,7 @@ class ModelAttributeSeeder extends Seeder
 
         DB::table("{$prefix}model_attributes")->truncate();
 
-        $customers = Customer::has('users')->get()->take(24);
+        $customers = Customer::query()->has('users')->get()->take(24);
 
         $stickleTrackedAttributes = Customer::stickleTrackedAttributes();
 
@@ -111,8 +111,8 @@ class ModelAttributeSeeder extends Seeder
             foreach ($users as $user) {
                 $attributes = [];
 
-                foreach ($stickleTrackedAttributes as $attribute) {
-                    $attributes[$attribute] = $user->{$attribute} ?? null;
+                foreach ($stickleTrackedAttributes as $stickleTrackedAttribute) {
+                    $attributes[$stickleTrackedAttribute] = $user->{$stickleTrackedAttribute} ?? null;
                 }
 
                 // Replace insert with upsert to handle conflicts

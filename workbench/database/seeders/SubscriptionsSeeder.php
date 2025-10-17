@@ -18,7 +18,7 @@ class SubscriptionsSeeder extends Seeder
     {
         DB::table('subscriptions')->truncate();
 
-        $customers = Customer::has('users')->get();
+        $customers = Customer::query()->has('users')->get();
 
         foreach ($customers as $customer) {
             $subscription = Subscription::factory()

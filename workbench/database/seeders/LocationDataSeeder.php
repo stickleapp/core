@@ -323,7 +323,7 @@ class LocationDataSeeder extends Seeder
         DB::table("{$prefix}location_data")->truncate();
 
         foreach (self::CITIES as $city) {
-            LocationData::create([
+            LocationData::query()->create([
                 'ip_address' => fake()->ipv4(),
                 'city' => $city['city'],
                 'country' => $city['country'],

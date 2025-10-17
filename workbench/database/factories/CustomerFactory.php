@@ -8,7 +8,7 @@ use Workbench\App\Models\Customer;
 /**
  * @template TModel of \Workbench\App\Models\Customer
  *
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<TModel>
+ * @extends Factory<TModel>
  */
 class CustomerFactory extends Factory
 {

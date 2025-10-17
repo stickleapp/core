@@ -8,7 +8,7 @@ use Workbench\App\Models\SubscriptionItem;
 /**
  * @template TModel of \Workbench\App\Models\Subscription
  *
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<TModel>
+ * @extends Factory<TModel>
  */
 class SubscriptionItemFactory extends Factory
 {

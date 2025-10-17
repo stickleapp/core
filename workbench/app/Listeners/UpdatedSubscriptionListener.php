@@ -8,8 +8,8 @@ use StickleApp\Core\Events\Track;
 
 class UpdatedSubscriptionListener implements ShouldQueue
 {
-    public function handle(Track $event): void
+    public function handle(Track $track): void
     {
-        Log::debug('UpdatedSubscriptionListener Handled Track', [$event]);
+        Log::debug('UpdatedSubscriptionListener Handled Track', [$track]);
     }
 }

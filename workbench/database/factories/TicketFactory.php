@@ -2,6 +2,7 @@
 
 namespace Workbench\Database\Factories;
 
+use Workbench\App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Workbench\App\Models\Customer;
 use Workbench\App\Models\Ticket;
@@ -9,7 +10,7 @@ use Workbench\App\Models\Ticket;
 /**
  * @template TModel of \Workbench\App\Models\Ticket
  *
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<TModel>
+ * @extends Factory<TModel>
  */
 class TicketFactory extends Factory
 {
@@ -29,7 +30,7 @@ class TicketFactory extends Factory
     {
         // Create a customer with at least one user
         $customer = Customer::factory()
-            ->has(\Workbench\App\Models\User::factory()->count(2))
+            ->has(User::factory()->count(2))
             ->create();
 
         return [

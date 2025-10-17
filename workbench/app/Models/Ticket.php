@@ -23,6 +23,7 @@ class Ticket extends Model
 
     /**
      * Customer the order belongs to.
+     * @return BelongsTo<Customer, $this>
      */
     public function customer(): BelongsTo
     {
@@ -31,6 +32,7 @@ class Ticket extends Model
 
     /**
      * User assigned to ticket
+     * @return BelongsTo<User, $this>
      */
     public function assignedTo(): BelongsTo
     {
@@ -39,6 +41,7 @@ class Ticket extends Model
 
     /**
      * User assigned to ticket
+     * @return BelongsTo<User, $this>
      */
     public function createdBy(): BelongsTo
     {

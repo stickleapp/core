@@ -9,38 +9,36 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Model::unsetEventDispatcher();
 
-        Schema::create('customers', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('parent_id')->nullable(true);
-            $table->text('name')->nullable(false);
+        Schema::create('customers', function (Blueprint $blueprint): void {
+            $blueprint->id();
+            $blueprint->unsignedBigInteger('parent_id')->nullable(true);
+            $blueprint->text('name')->nullable(false);
 
-            $table->string('stripe_id')->nullable()->index();
-            $table->string('pm_type')->nullable();
-            $table->string('pm_last_four', 4)->nullable();
-            $table->timestamp('trial_ends_at')->nullable();
+            $blueprint->string('stripe_id')->nullable()->index();
+            $blueprint->string('pm_type')->nullable();
+            $blueprint->string('pm_last_four', 4)->nullable();
+            $blueprint->timestamp('trial_ends_at')->nullable();
 
-            $table->timestamps();
+            $blueprint->timestamps();
 
-            $table->foreign('parent_id')->references('id')->on('customers');
+            $blueprint->foreign('parent_id')->references('id')->on('customers');
         });
 
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $blueprint): void {
             if (! Schema::hasColumn('users', 'customer_id')) {
-                $table->unsignedBigInteger('customer_id')->nullable(true);
-                $table->foreign('customer_id')->references('id')->on('customers');
+                $blueprint->unsignedBigInteger('customer_id')->nullable(true);
+                $blueprint->foreign('customer_id')->references('id')->on('customers');
             }
             if (! Schema::hasColumn('users', 'user_type')) {
-                $table->string('user_type')->nullable(false)->default('End User');
+                $blueprint->string('user_type')->nullable(false)->default('End User');
             }
             if (! Schema::hasColumn('users', 'user_level')) {
-                $table->integer('user_level')->nullable(false)->default(0);
+                $blueprint->integer('user_level')->nullable(false)->default(0);
             }
         });
 
@@ -53,65 +51,63 @@ return new class extends Migration
         //     $table->foreign('customer_id')->references('id')->on('customers');
         // });
 
-        Schema::create(('tickets'), function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('customer_id');
-            $table->text('title')->nullable(false);
-            $table->text('description')->nullable(true);
-            $table->text('status')->nullable(true);
-            $table->integer('rating')->nullable(true);
-            $table->text('priority')->nullable(true);
-            $table->bigInteger('assigned_to_id')->nullable(true);
-            $table->bigInteger('created_by_id')->nullable(false);
-            $table->bigInteger('resolved_by_id')->nullable(true);
-            $table->timestamp('resolved_at')->nullable(true);
-            $table->integer('resolved_in_seconds')->storedAs(
+        Schema::create(('tickets'), function (Blueprint $blueprint): void {
+            $blueprint->id();
+            $blueprint->unsignedBigInteger('customer_id');
+            $blueprint->text('title')->nullable(false);
+            $blueprint->text('description')->nullable(true);
+            $blueprint->text('status')->nullable(true);
+            $blueprint->integer('rating')->nullable(true);
+            $blueprint->text('priority')->nullable(true);
+            $blueprint->bigInteger('assigned_to_id')->nullable(true);
+            $blueprint->bigInteger('created_by_id')->nullable(false);
+            $blueprint->bigInteger('resolved_by_id')->nullable(true);
+            $blueprint->timestamp('resolved_at')->nullable(true);
+            $blueprint->integer('resolved_in_seconds')->storedAs(
                 'EXTRACT(EPOCH FROM (resolved_at - created_at))::integer'
             )->nullable();
-            $table->timestamps();
+            $blueprint->timestamps();
 
-            $table->foreign('customer_id')->references('id')->on('customers');
-            $table->foreign('assigned_to_id')->references('id')->on('users');
-            $table->foreign('created_by_id')->references('id')->on('users');
-            $table->foreign('resolved_by_id')->references('id')->on('users');
+            $blueprint->foreign('customer_id')->references('id')->on('customers');
+            $blueprint->foreign('assigned_to_id')->references('id')->on('users');
+            $blueprint->foreign('created_by_id')->references('id')->on('users');
+            $blueprint->foreign('resolved_by_id')->references('id')->on('users');
         });
 
         // Schema::table(('tickets'), function (Blueprint $table) {});
 
-        Schema::create('subscriptions', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('customer_id');
-            $table->string('type');
-            $table->string('stripe_id')->unique();
-            $table->string('stripe_status');
-            $table->string('stripe_price')->nullable();
-            $table->integer('quantity')->nullable();
-            $table->timestamp('trial_ends_at')->nullable();
-            $table->timestamp('ends_at')->nullable();
-            $table->timestamps();
+        Schema::create('subscriptions', function (Blueprint $blueprint): void {
+            $blueprint->id();
+            $blueprint->foreignId('customer_id');
+            $blueprint->string('type');
+            $blueprint->string('stripe_id')->unique();
+            $blueprint->string('stripe_status');
+            $blueprint->string('stripe_price')->nullable();
+            $blueprint->integer('quantity')->nullable();
+            $blueprint->timestamp('trial_ends_at')->nullable();
+            $blueprint->timestamp('ends_at')->nullable();
+            $blueprint->timestamps();
 
-            $table->index(['customer_id', 'stripe_status']);
+            $blueprint->index(['customer_id', 'stripe_status']);
         });
 
-        Schema::create('subscription_items', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('subscription_id');
-            $table->string('stripe_id')->unique();
-            $table->string('stripe_product');
-            $table->string('stripe_price');
-            $table->integer('quantity')->nullable();
-            $table->timestamps();
+        Schema::create('subscription_items', function (Blueprint $blueprint): void {
+            $blueprint->id();
+            $blueprint->foreignId('subscription_id');
+            $blueprint->string('stripe_id')->unique();
+            $blueprint->string('stripe_product');
+            $blueprint->string('stripe_price');
+            $blueprint->integer('quantity')->nullable();
+            $blueprint->timestamps();
 
-            $table->index(['subscription_id', 'stripe_price']);
+            $blueprint->index(['subscription_id', 'stripe_price']);
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('subscription_items');
 
@@ -119,8 +115,8 @@ return new class extends Migration
 
         Schema::dropIfExists('tickets');
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn([
+        Schema::table('users', function (Blueprint $blueprint): void {
+            $blueprint->dropColumn([
                 'customer_id', 'user_type', 'user_level',
             ]);
         });

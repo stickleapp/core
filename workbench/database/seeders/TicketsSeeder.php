@@ -18,13 +18,13 @@ class TicketsSeeder extends Seeder
     {
         DB::table('tickets')->truncate();
 
-        $customers = Customer::has('users')->get()->take(500);
+        $customers = Customer::query()->has('users')->get()->take(500);
 
         foreach ($customers as $customer) {
-            $batchCount = rand(1, 50);
+            $batchCount = random_int(1, 50);
             for ($i = 0; $i < $batchCount; $i++) {
                 $createdAt = new Carbon(fake()->dateTimeBetween($customer->created_at, now()));
-                $resolvedAt = fake()->optional(.9)->dateTimeBetween($createdAt, (clone $createdAt)->addMinutes(rand(10, 2000)));
+                $resolvedAt = fake()->optional(.9)->dateTimeBetween($createdAt, (clone $createdAt)->addMinutes(random_int(10, 2000)));
                 $agent = $customer->agents->random();
                 Ticket::factory()
                     ->create(

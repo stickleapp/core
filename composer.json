@@ -71,11 +71,7 @@
             "@composer run build",
             "@php vendor/bin/testbench serve"
         ],
-        "analyse": "vendor/bin/phpstan analyse --memory-limit=1G",
-        "analyze": "composer run analyse",
-        "test": "php -d memory_limit=1G vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage",
-        "format": "vendor/bin/pint",
         "serve": [
             "Composer\\Config::disableProcessTimeout",
             "@build",
@@ -88,6 +84,34 @@
         "migrate:seed": [
             "@php vendor/bin/testbench migrate:fresh --ansi",
             "@php vendor/bin/testbench db:seed --class=\\\\Workbench\\\\Database\\\\Seeders\\\\DatabaseSeeder --ansi"
+        ],
+        "test": [
+            "@php vendor/bin/testbench config:clear --ansi",
+            "php -d memory_limit=1G vendor/bin/pest"
+        ],
+        "analyse": [
+            "@php vendor/bin/testbench config:clear --ansi",
+            "@php vendor/bin/phpstan analyse --memory-limit=1G"
+        ],
+        "analyze": "composer run analyse",
+        "format": [
+            "@php vendor/bin/pint --dirty"
+        ],
+        "refactor": [
+            "@php vendor/bin/rector"
+        ],
+        "verify": [
+            "@refactor",
+            "@format",
+            "@test",
+            "@analyze",
+            "npm run prepare"
+        ],
+        "pre-commit": [
+            "@php vendor/bin/rector --dry-run",
+            "@php vendor/bin/pint --test",
+            "@analyze",
+            "@test"
         ]
     },
     "config": {

@@ -2,6 +2,7 @@
 
 namespace Workbench\App\Providers;
 
+use Override;
 use Illuminate\Foundation\Events\DiscoverEvents;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
@@ -14,6 +15,7 @@ class WorkbenchServiceProvider extends ServiceProvider
     /**
      * Register services.
      */
+    #[Override]
     public function register(): void {}
 
     /**
@@ -35,7 +37,7 @@ class WorkbenchServiceProvider extends ServiceProvider
         /**
          * I don't love this but it's the only way to get the class names to be discovered
          */
-        DiscoverEvents::guessClassNamesUsing(function (SplFileInfo $file, $basePath) {
+        DiscoverEvents::guessClassNamesUsing(function (SplFileInfo $file, $basePath): string {
 
             $basePath = env('PACKAGE_PATH');
 

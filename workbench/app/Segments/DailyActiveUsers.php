@@ -37,7 +37,5 @@ class DailyActiveUsers extends SegmentContract
                         now()->endOfDay()]
                 )
         );
-
-        return $this->model::where('id', '>', 300);
     }
 }

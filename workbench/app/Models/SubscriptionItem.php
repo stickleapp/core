@@ -13,6 +13,7 @@ class SubscriptionItem extends Model
 
     /**
      * Customer the order belongs to.
+     * @return BelongsTo<Subscription, $this>
      */
     public function subscription(): BelongsTo
     {

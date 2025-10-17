@@ -14,7 +14,7 @@ class SegmentsSeeder extends Seeder
      */
     public function run(): void
     {
-        $prefix = Config::string('stickle.database.tablePrefix');
+        Config::string('stickle.database.tablePrefix');
 
     }
 }

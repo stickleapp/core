@@ -3,6 +3,7 @@
 namespace Workbench\App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -52,17 +53,6 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'user_type' => UserType::class,
-    ];
-
-    /**
      * Define which attributes should be watched for changes.
      */
     public static function stickleObservedAttributes(): array
@@ -94,26 +84,37 @@ class User extends Authenticatable
         return $this->name;
     }
 
+    /**
+     * @return HasMany<Ticket, $this>
+     */
     public function ticketsAssigned(): HasMany
     {
         return $this->hasMany(Ticket::class, 'assigned_to_id');
     }
 
+    /**
+     * @return HasMany<Ticket, $this>
+     */
     public function ticketsCreated(): HasMany
     {
         return $this->hasMany(Ticket::class, 'created_by_id');
     }
 
+    /**
+     * @return HasMany<Ticket, $this>
+     */
     public function ticketsResolved(): HasMany
     {
         return $this->hasMany(Ticket::class, 'resolved_by_id');
     }
 
+    /**
+     * @return BelongsTo<Customer, $this>
+     */
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
-
     #[StickleAttributeMetadata([
         'label' => 'User Rating',
         'description' => 'The 1 to 5 star rating of the user.',
@@ -121,12 +122,11 @@ class User extends Authenticatable
         'dataType' => DataType::INTEGER,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getUserRatingAttribute($value): ?int
+    protected function userRating(): Attribute
     {
-        return $this->ticketsResolved()
-            ->avg('rating');
+        return Attribute::make(get: fn($value) => $this->ticketsResolved()
+            ->avg('rating'));
     }
-
     #[StickleAttributeMetadata([
         'label' => 'Ticket Count',
         'description' => 'The total number of tickets for the user.',
@@ -134,11 +134,10 @@ class User extends Authenticatable
         'dataType' => DataType::INTEGER,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getTicketCountAttribute(): int
+    protected function ticketCount(): Attribute
     {
-        return $this->ticketsAssigned()->count();
+        return Attribute::make(get: fn() => $this->ticketsAssigned()->count());
     }
-
     #[StickleAttributeMetadata([
         'label' => 'Open Ticket Count',
         'description' => 'The total number of open tickets for the user.',
@@ -146,13 +145,12 @@ class User extends Authenticatable
         'dataType' => DataType::INTEGER,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getOpenTicketCountAttribute(): int
+    protected function openTicketCount(): Attribute
     {
-        return $this->ticketsAssigned()
+        return Attribute::make(get: fn() => $this->ticketsAssigned()
             ->whereStatus('open')
-            ->count();
+            ->count());
     }
-
     #[StickleAttributeMetadata([
         'label' => 'Resolved Ticket Count',
         'description' => 'The total number of resolved tickets for the user.',
@@ -160,12 +158,11 @@ class User extends Authenticatable
         'dataType' => DataType::INTEGER,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getResolvedTicketCountAttribute(): int
+    protected function resolvedTicketCount(): Attribute
     {
-        return $this->ticketsResolved()
-            ->count();
+        return Attribute::make(get: fn() => $this->ticketsResolved()
+            ->count());
     }
-
     #[StickleAttributeMetadata([
         'label' => 'Tickets Resolved (Last 7 Days)',
         'description' => 'The total number of tickets closed by the customer in the last 7 days.',
@@ -173,13 +170,12 @@ class User extends Authenticatable
         'dataType' => DataType::INTEGER,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getTicketsResolvedLast7DaysAttribute(): int
+    protected function ticketsResolvedLast7Days(): Attribute
     {
-        return $this->ticketsResolved()
+        return Attribute::make(get: fn() => $this->ticketsResolved()
             ->where('resolved_at', '>=', now()->subDays(7))
-            ->count();
+            ->count());
     }
-
     #[StickleAttributeMetadata([
         'label' => 'Tickets Resolved (Last 30 Days)',
         'description' => 'The total number of tickets closed by the customer in the last 30 days.',
@@ -187,13 +183,12 @@ class User extends Authenticatable
         'dataType' => DataType::INTEGER,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getTicketsResolvedLast30DaysAttribute(): int
+    protected function ticketsResolvedLast30Days(): Attribute
     {
-        return $this->ticketsResolved()
+        return Attribute::make(get: fn() => $this->ticketsResolved()
             ->where('resolved_at', '>=', now()->subDays(30))
-            ->count();
+            ->count());
     }
-
     #[StickleAttributeMetadata([
         'label' => 'Average Resolution Time',
         'description' => 'The average resolution time for the customer.',
@@ -201,12 +196,11 @@ class User extends Authenticatable
         'dataType' => DataType::TIME,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getAverageResolutionTimeAttribute(): ?float
+    protected function averageResolutionTime(): Attribute
     {
-        return $this->ticketsResolved()
-            ->avg('resolved_in_seconds');
+        return Attribute::make(get: fn() => $this->ticketsResolved()
+            ->avg('resolved_in_seconds'));
     }
-
     #[StickleAttributeMetadata([
         'label' => 'Average Resolution Time Last 7 Days',
         'description' => 'The average resolution time for the customer in the last 7 days.',
@@ -214,13 +208,12 @@ class User extends Authenticatable
         'dataType' => DataType::TIME,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getAverageResolutionTime7DaysAttribute(): ?float
+    protected function averageResolutionTime7Days(): Attribute
     {
-        return $this->ticketsResolved()
+        return Attribute::make(get: fn() => $this->ticketsResolved()
             ->where('resolved_at', '>=', now()->subDays(7))
-            ->avg('resolved_in_seconds');
+            ->avg('resolved_in_seconds'));
     }
-
     #[StickleAttributeMetadata([
         'label' => 'Average Resolution Time Last 30 Days',
         'description' => 'The average resolution time for the customer in the last 30 days.',
@@ -228,10 +221,23 @@ class User extends Authenticatable
         'dataType' => DataType::TIME,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getAverageResolutionTime30DaysAttribute(): ?float
+    protected function averageResolutionTime30Days(): Attribute
     {
-        return $this->ticketsResolved()
+        return Attribute::make(get: fn() => $this->ticketsResolved()
             ->where('resolved_at', '>=', now()->subDays(30))
-            ->avg('resolved_in_seconds');
+            ->avg('resolved_in_seconds'));
+    }
+    /**
+     * The attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'user_type' => UserType::class,
+        ];
     }
 }

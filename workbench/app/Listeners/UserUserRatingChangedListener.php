@@ -8,8 +8,8 @@ use StickleApp\Core\Events\ModelAttributeChanged;
 
 class UserUserRatingChangedListener implements ShouldQueue
 {
-    public function handle(ModelAttributeChanged $event): void
+    public function handle(ModelAttributeChanged $modelAttributeChanged): void
     {
-        Log::debug('UserUserRatingChangedListener', [$event]);
+        Log::debug('UserUserRatingChangedListener', [$modelAttributeChanged]);
     }
 }

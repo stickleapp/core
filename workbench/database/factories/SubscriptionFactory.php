@@ -8,7 +8,7 @@ use Workbench\App\Models\Subscription;
 /**
  * @template TModel of \Workbench\App\Models\Subscription
  *
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<TModel>
+ * @extends Factory<TModel>
  */
 class SubscriptionFactory extends Factory
 {
@@ -30,23 +30,19 @@ class SubscriptionFactory extends Factory
 
         switch ($status) {
             case 'active':
-                $createdAt = now()->subDays(rand(1, 1000));
-                $trialEndsAt = null;
-                $endsAt = null;
-                break;
             case 'incomplete':
-                $createdAt = now()->subDays(rand(1, 1000));
+                $createdAt = now()->subDays(random_int(1, 1000));
                 $trialEndsAt = null;
                 $endsAt = null;
                 break;
             case 'canceled':
-                $createdAt = now()->subDays(rand(1, 1000));
+                $createdAt = now()->subDays(random_int(1, 1000));
                 $endsAt = fake()->dateTimeBetween($createdAt, now());
                 $trialEndsAt = null;
                 break;
             case 'trialing':
                 $status = 'trialing';
-                $createdAt = now()->subDays(rand(1, 30));
+                $createdAt = now()->subDays(random_int(1, 30));
                 $trialEndsAt = $createdAt->addDays(30);
                 $endsAt = null;
                 break;

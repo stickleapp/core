@@ -21,13 +21,13 @@ class CustomersSeeder extends Seeder
             ->createQuietly();
 
         // Add some children to the customers
-        $customers->each(function ($customer) {
+        $customers->each(function ($customer): void {
             Customer::factory()
                 ->count(3)
                 ->createQuietly(
                     [
                         'parent_id' => $customer->id,
-                        'created_at' => now()->subDays(rand(1, 5 * 365)),
+                        'created_at' => now()->subDays(random_int(1, 5 * 365)),
                     ]
                 );
         });

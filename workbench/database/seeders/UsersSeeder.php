@@ -28,9 +28,9 @@ class UsersSeeder extends Seeder
 
         // Add some children to the customers
         $customers = Customer::all();
-        $customers->each(function ($customer) {
+        $customers->each(function ($customer): void {
             User::factory()
-                ->count(rand(1, 5))
+                ->count(random_int(1, 5))
                 ->createQuietly(
                     [
                         'customer_id' => $customer->id,
@@ -39,7 +39,7 @@ class UsersSeeder extends Seeder
                     ]
                 );
             User::factory()
-                ->count(rand(1, 25))
+                ->count(random_int(1, 25))
                 ->createQuietly(
                     [
                         'customer_id' => $customer->id,

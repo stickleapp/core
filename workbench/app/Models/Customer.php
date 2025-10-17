@@ -3,6 +3,7 @@
 namespace Workbench\App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,16 +51,6 @@ class Customer extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
-
-    /**
      * Define which attributes should be watched for changes.
      */
     public static function stickleObservedAttributes(): array
@@ -92,7 +83,9 @@ class Customer extends Model
 
     // public static function stickleTrackedAggregates(): array {}
     // #[StickleAggregateMetadata([])
-
+    /**
+     * @return HasMany<Customer, $this>
+     */
     #[StickleRelationshipMetadata([
         'label' => 'Child Customers',
         'description' => 'The child accounts of the customer.',
@@ -106,12 +99,16 @@ class Customer extends Model
      * Parent account in a parent <> child relationship.
      *
      * For instance: Microsoft EU may have Microsoft as a parent account
+     * @return BelongsTo<Customer, $this>
      */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');
     }
 
+    /**
+     * @return HasMany<User, $this>
+     */
     #[StickleRelationshipMetadata([
         'label' => 'Users of this Customer',
         'description' => 'The users that belong to this customer.',
@@ -121,28 +118,43 @@ class Customer extends Model
         return $this->hasMany(User::class);
     }
 
+    /**
+     * @return HasMany<Ticket, $this>
+     */
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
     }
 
+    /**
+     * @return HasMany<Subscription, $this>
+     */
     public function subscriptions(): HasMany
     {
         return $this->hasMany(Subscription::class);
     }
 
+    /**
+     * @return HasMany<User, $this>
+     */
     public function endUsers(): HasMany
     {
         return $this->hasMany(User::class)
             ->where('user_type', UserType::END_USER);
     }
 
+    /**
+     * @return HasMany<User, $this>
+     */
     public function agents(): HasMany
     {
         return $this->hasMany(User::class)
             ->where('user_type', UserType::AGENT);
     }
 
+    /**
+     * @return HasMany<User, $this>
+     */
     public function admins(): HasMany
     {
         return $this->hasMany(User::class)
@@ -156,9 +168,9 @@ class Customer extends Model
         'dataType' => DataType::INTEGER,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getTicketCountAttribute(): int
+    protected function ticketCount(): Attribute
     {
-        return $this->tickets()->count();
+        return Attribute::make(get: fn() => $this->tickets()->count());
     }
 
     #[StickleAttributeMetadata([
@@ -168,11 +180,11 @@ class Customer extends Model
         'dataType' => DataType::INTEGER,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getOpenTicketCountAttribute(): int
+    protected function openTicketCount(): Attribute
     {
-        return $this->tickets()
+        return Attribute::make(get: fn() => $this->tickets()
             ->whereStatus('open')
-            ->count();
+            ->count());
     }
 
     #[StickleAttributeMetadata([
@@ -182,11 +194,11 @@ class Customer extends Model
         'dataType' => DataType::INTEGER,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getTicketsClosedAttribute(): int
+    protected function ticketsClosed(): Attribute
     {
-        return $this->tickets()
+        return Attribute::make(get: fn() => $this->tickets()
             ->whereStatus('resolved')
-            ->count();
+            ->count());
     }
 
     #[StickleAttributeMetadata([
@@ -196,12 +208,12 @@ class Customer extends Model
         'dataType' => DataType::INTEGER,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getTicketsClosedLast30DaysAttribute(): int
+    protected function ticketsClosedLast30Days(): Attribute
     {
-        return $this->tickets()
+        return Attribute::make(get: fn() => $this->tickets()
             ->whereStatus('resolved')
             ->where('resolved_at', '>=', now()->subDays(30))
-            ->count();
+            ->count());
     }
 
     #[StickleAttributeMetadata([
@@ -211,12 +223,12 @@ class Customer extends Model
         'dataType' => DataType::INTEGER,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getTicketsClosedLast7DaysAttribute(): int
+    protected function ticketsClosedLast7Days(): Attribute
     {
-        return $this->tickets()
+        return Attribute::make(get: fn() => $this->tickets()
             ->whereStatus('resolved')
             ->where('resolved_at', '>=', now()->subDays(7))
-            ->count();
+            ->count());
     }
 
     #[StickleAttributeMetadata([
@@ -226,11 +238,11 @@ class Customer extends Model
         'dataType' => DataType::TIME,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getAverageResolutionTimeAttribute(): ?float
+    protected function averageResolutionTime(): Attribute
     {
-        return $this->tickets()
+        return Attribute::make(get: fn() => $this->tickets()
             ->whereStatus('resolved')
-            ->avg('resolved_in_seconds');
+            ->avg('resolved_in_seconds'));
     }
 
     #[StickleAttributeMetadata([
@@ -240,12 +252,12 @@ class Customer extends Model
         'dataType' => DataType::TIME,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getAverageResolutionTime30DaysAttribute(): ?float
+    protected function averageResolutionTime30Days(): Attribute
     {
-        return $this->tickets()
+        return Attribute::make(get: fn() => $this->tickets()
             ->whereStatus('resolved')
             ->where('resolved_at', '>=', now()->subDays(30))
-            ->avg('resolved_in_seconds');
+            ->avg('resolved_in_seconds'));
     }
 
     #[StickleAttributeMetadata([
@@ -255,25 +267,25 @@ class Customer extends Model
         'dataType' => DataType::TIME,
         'primaryAggregate' => PrimaryAggregate::AVG,
     ])]
-    public function getAverageResolutionTime7DaysAttribute(): ?float
+    protected function averageResolutionTime7Days(): Attribute
     {
-        return $this->tickets()
+        return Attribute::make(get: fn() => $this->tickets()
             ->whereStatus('resolved')
             ->where('resolved_at', '>=', now()->subDays(7))
-            ->avg('resolved_in_seconds');
+            ->avg('resolved_in_seconds'));
     }
 
     /**
      * Their current active subscription plan.
      */
-    public function getPlanAttribute(): string
+    protected function plan(): Attribute
     {
-        return $this->subscriptions()
+        return Attribute::make(get: fn() => $this->subscriptions()
             ->where('stripe_status', 'active')
             ->latest()
             ->first()
             ?->plan
-            ?? '';
+            ?? '');
     }
 
     #[StickleAttributeMetadata([
@@ -283,14 +295,14 @@ class Customer extends Model
         'dataType' => DataType::CURRENCY,
         'primaryAggregate' => PrimaryAggregate::SUM,
     ])]
-    public function getMrrAttribute(): ?float
+    protected function mrr(): Attribute
     {
-        return match ($this->plan) {
+        return Attribute::make(get: fn(): int => match ($this->plan) {
             'basic' => 49,
             'pro' => 99,
             'enterprise' => 199,
             default => 0,
-        };
+        });
     }
 
     // #[StickleAggregateMetadata([
@@ -306,4 +318,16 @@ class Customer extends Model
     //         'value' => // sum of previous quarter....
     //     ]
     // }
+    /**
+     * The attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
 }
