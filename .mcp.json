@@ -1,9 +1,16 @@
 {
     "mcpServers": {
         "laravel-boost": {
-            "command": "./vendor/bin/testbench",
+            "command": "php",
             "args": [
+                "artisan",
                 "boost:mcp"
+            ]
+        },
+        "chrome-devtools": {
+            "command": "npx",
+            "args": [
+                "chrome-devtools-mcp@latest"
             ]
         }
     }

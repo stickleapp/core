@@ -21,9 +21,11 @@
         "laravel/prompts": "^0.3.7"
     },
     "require-dev": {
+        "driftingly/rector-laravel": "^2.1",
         "larastan/larastan": "^3.7",
         "laravel/boost": "^1.2",
         "laravel/pint": "^1.25",
+        "nesbot/carbon": "^3.10",
         "nunomaduro/collision": "^8.1.1||^7.10.0",
         "orchestra/testbench": "^10.6",
         "pestphp/pest": "^4.1",
@@ -31,7 +33,7 @@
         "pestphp/pest-plugin-faker": "^4.0",
         "pestphp/pest-plugin-laravel": "^4.0",
         "phpstan/phpstan": "^2.1",
-        "nesbot/carbon": "^3.10"
+        "rector/rector": "^2.2"
     },
     "autoload": {
         "psr-4": {

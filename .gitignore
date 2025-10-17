@@ -36,3 +36,8 @@ docs/.vitepress/cache
 
 # Claude
 .claude
+.ai
+agent-os
+
+# Rector
+storage/rector
