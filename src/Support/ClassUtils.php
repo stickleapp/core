@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Support;
 
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
+use RegexIterator;
+use Composer\Autoload\ClassLoader;
 use Illuminate\Database\Eloquent\ModelInspector;
 use Illuminate\Foundation\Application;
 use ReflectionClass;
@@ -22,9 +26,9 @@ class ClassUtils
             return false;
         }
 
-        $reflection = new ReflectionClass($class);
+        $reflectionClass = new ReflectionClass($class);
         $traits = [];
-        $currentClass = $reflection;
+        $currentClass = $reflectionClass;
 
         while ($currentClass) {
             $traits = array_merge($traits, array_keys($currentClass->getTraits()));
@@ -57,11 +61,9 @@ class ClassUtils
         $allClasses = self::getClassesInDirectory($directoryToScan, $namespace);
 
         // Filter classes by namespace and trait
-        $classesWithTrait = array_filter($allClasses, function ($className) use ($trait) {
-
+        $classesWithTrait = array_filter($allClasses, fn(string $className): bool =>
             // Check if class uses the trait
-            return self::usesTrait($className, $trait);
-        });
+            self::usesTrait($className, $trait));
 
         return array_values($classesWithTrait);
     }
@@ -81,25 +83,23 @@ class ClassUtils
             return [];
         }
 
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($directory)
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($directory)
         );
 
         // Filter for PHP files
-        $phpFiles = new \RegexIterator($files, '/\.php$/');
+        $phpFiles = new RegexIterator($files, '/\.php$/');
 
-        foreach ($phpFiles as $file) {
-            $filePath = $file->getRealPath();
+        foreach ($phpFiles as $phpFile) {
+            $filePath = $phpFile->getRealPath();
             $className = self::getClassNameFromFile($filePath);
-            if (strlen($appendNamespace)) {
+            if (strlen($appendNamespace) !== 0) {
                 $className = $appendNamespace.'\\'.self::getClassNameFromFile($filePath);
             }
             $classes[] = $className;
         }
 
-        $validClasses = array_filter($classes, function ($className) {
-            return $className !== null && class_exists($className);
-        });
+        $validClasses = array_filter($classes, fn(?string $className): bool => $className !== null && class_exists($className));
 
         // Cast to class-string array since we've verified classes exist
         return array_values($validClasses);
@@ -145,11 +145,11 @@ class ClassUtils
         }
 
         if ($className) {
-            if ($fileNamespace) {
+            if ($fileNamespace !== '' && $fileNamespace !== '0') {
                 return $fileNamespace.'\\'.$className;
             }
 
-            if ($namespace) {
+            if ($namespace !== '' && $namespace !== '0') {
                 return $namespace.'\\'.$className;
             }
 
@@ -169,19 +169,19 @@ class ClassUtils
      *    return $this->hasMany(User::class);
      *}
      *
-     * @param  \Illuminate\Foundation\Application  $app  The Laravel application
+     * @param Application $application The Laravel application
      * @param  string  $class  The class name
      * @param  array<int, string>  $relationshipClasses  The relationship classes to check against
      * @param  array<int, string>  $relatedClasses  The related classes to check against
      * @return bool True if the class has a relationship with any of the specified classes, false otherwise
      */
-    public static function hasRelationshipWith(Application $app, string $class, array $relationshipClasses, array $relatedClasses): bool
+    public static function hasRelationshipWith(Application $application, string $class, array $relationshipClasses, array $relatedClasses): bool
     {
 
         // Initialize the model inspector for the class
-        $inspector = new ModelInspector($app);
+        $modelInspector = new ModelInspector($application);
 
-        $info = $inspector->inspect(
+        $info = $modelInspector->inspect(
             $class
         );
 
@@ -189,16 +189,14 @@ class ClassUtils
         $relations = $info['relations'];
 
         // Replace the fqcn with the class name of $relationshipClasses
-        $relationshipClasses = array_map(function ($class) {
-            return class_basename($class);
-        }, $relationshipClasses);
+        $relationshipClasses = array_map(fn(string $class): string => class_basename($class), $relationshipClasses);
 
         // Check each relation to see if it relates to any of the specified classes
-        foreach ($relations as $relationInfo) {
+        foreach ($relations as $relation) {
 
-            $type = $relationInfo['type'];
+            $type = $relation['type'];
 
-            $related = $relationInfo['related'];
+            $related = $relation['related'];
 
             if (in_array($related, $relatedClasses) && in_array($type, $relationshipClasses)) {
                 return true;
@@ -209,19 +207,19 @@ class ClassUtils
     }
 
     /**
-     * @param  \Illuminate\Foundation\Application  $app  The Laravel application
+     * @param Application $application The Laravel application
      * @param  string  $class  The class name
      * @param  array<int, string>  $relationshipClasses  The eloquent relationship classes to allow
      * @param  array<int, string>  $relatedClasses  The related classes to check against
      * @return array<int, array<string, mixed>> An array of Laravel Relationships
      */
-    public static function getRelationshipsWith(Application $app, string $class, array $relationshipClasses, array $relatedClasses): array
+    public static function getRelationshipsWith(Application $application, string $class, array $relationshipClasses, array $relatedClasses): array
     {
 
         // Initialize the model inspector for the class
-        $inspector = new ModelInspector($app);
+        $modelInspector = new ModelInspector($application);
 
-        $info = $inspector->inspect(
+        $info = $modelInspector->inspect(
             $class
         );
 
@@ -229,21 +227,19 @@ class ClassUtils
         $relations = $info['relations'];
 
         // Replace the fqcn with the class name of $relationshipClasses
-        $relationshipClasses = array_map(function ($class) {
-            return class_basename($class);
-        }, $relationshipClasses);
+        $relationshipClasses = array_map(fn(string $class): string => class_basename($class), $relationshipClasses);
 
         $return = [];
 
         // Check each relation to see if it relates to any of the specified classes
-        foreach ($relations as $relationInfo) {
+        foreach ($relations as $relation) {
 
-            $type = $relationInfo['type'];
+            $type = $relation['type'];
 
-            $related = $relationInfo['related'];
+            $related = $relation['related'];
 
             if (in_array($related, $relatedClasses) && in_array($type, $relationshipClasses)) {
-                $return[] = $relationInfo;
+                $return[] = $relation;
             }
         }
 
@@ -260,9 +256,9 @@ class ClassUtils
             return [];
         }
 
-        $reflection = new ReflectionClass($class);
+        $reflectionClass = new ReflectionClass($class);
 
-        return $reflection->getDefaultProperties();
+        return $reflectionClass->getDefaultProperties();
     }
 
     /**
@@ -337,7 +333,7 @@ class ClassUtils
         $autoloadFunctions = spl_autoload_functions();
 
         foreach ($autoloadFunctions as $autoloadFunction) {
-            if (is_array($autoloadFunction) && $autoloadFunction[0] instanceof \Composer\Autoload\ClassLoader) {
+            if (is_array($autoloadFunction) && $autoloadFunction[0] instanceof ClassLoader) {
                 $psr4Prefixes = $autoloadFunction[0]->getPrefixesPsr4();
                 if (! empty($psr4Prefixes)) {
                     return $psr4Prefixes;
@@ -368,7 +364,7 @@ class ClassUtils
 
         // Include autoload-dev PSR-4 mappings
         if (isset($composerData['autoload-dev']['psr-4'])) {
-            $mappings = array_merge($mappings, $composerData['autoload-dev']['psr-4']);
+            return array_merge($mappings, $composerData['autoload-dev']['psr-4']);
         }
 
         return $mappings;

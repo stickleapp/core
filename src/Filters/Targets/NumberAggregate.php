@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
+use Override;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Container\Attributes\Config;
@@ -16,7 +19,7 @@ use StickleApp\Core\Contracts\FilterTargetContract;
 class NumberAggregate extends FilterTargetContract
 {
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      */
     public function __construct(
         #[Config('stickle.database.tablePrefix')] protected ?string $prefix,
@@ -29,7 +32,7 @@ class NumberAggregate extends FilterTargetContract
 
     public static function baseTarget(): string
     {
-        return 'StickleApp\\Core\\Filters\\Targets\\Number';
+        return Number::class;
     }
 
     public function property(): ?string
@@ -37,6 +40,7 @@ class NumberAggregate extends FilterTargetContract
         return $this->attribute;
     }
 
+    #[Override]
     public function castProperty(): mixed
     {
         return sprintf('number_aggregate_%s', $this->joinKey());
@@ -58,10 +62,10 @@ class NumberAggregate extends FilterTargetContract
 
     private function subJoin(): QueryBuilder
     {
-        return \DB::table($this->prefix.'model_attributes')
+        return DB::table($this->prefix.'model_attributes')
             ->where('model_class', $this->builder->getModel()->getMorphClass())
-            ->whereDate('updated_at', '>=', Carbon::parse($this->startDate)->toDateString())
-            ->whereDate('updated_at', '<', Carbon::parse($this->endDate)->toDateString())
+            ->whereDate('updated_at', '>=', Date::parse($this->startDate)->toDateString())
+            ->whereDate('updated_at', '<', Date::parse($this->endDate)->toDateString())
             ->groupBy(['model_class', 'object_uid'])
             ->select('model_class', 'object_uid', DB::raw("{$this->aggregate}((data->>'{$this->attribute}')::numeric) as {$this->castProperty()}"));
     }
@@ -81,8 +85,8 @@ class NumberAggregate extends FilterTargetContract
         $this->builder->leftJoinSub(
             $subJoin,
             $joinKey,
-            function (JoinClause $join) use ($model, $joinKey) {
-                $join->on($joinKey.'.object_uid', '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
+            function (JoinClause $joinClause) use ($model, $joinKey): void {
+                $joinClause->on($joinKey.'.object_uid', '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
             }
         );
     }

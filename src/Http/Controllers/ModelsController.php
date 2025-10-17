@@ -15,10 +15,10 @@ use StickleApp\Core\Traits\StickleEntity;
  */
 class ModelsController
 {
-    public function index(ModelsIndexRequest $request): JsonResponse
+    public function index(ModelsIndexRequest $modelsIndexRequest): JsonResponse
     {
 
-        $validated = $request->validated();
+        $validated = $modelsIndexRequest->validated();
 
         $modelClass = data_get($validated, 'model_class');
 
@@ -38,14 +38,10 @@ class ModelsController
         $uid = data_get($validated, 'uid');
 
         $builder = $modelClass::query()
-            ->when($search, function ($q) use ($search) {
-                return $q->where(function ($subQuery) use ($search) {
-                    $subQuery->where('name', 'ILIKE', "%{$search}%");
-                });
-            })->when($uid, function ($q) use ($uid, $model) {
-                return $q->where($model->getKeyName(), $uid);
-            });
+            ->when($search, fn($q) => $q->where(function ($subQuery) use ($search): void {
+                $subQuery->where('name', 'ILIKE', "%{$search}%");
+            }))->when($uid, fn($q) => $q->where($model->getKeyName(), $uid));
 
-        return response()->json($builder->paginate($request->integer('per_page', 25)));
+        return response()->json($builder->paginate($modelsIndexRequest->integer('per_page', 25)));
     }
 }

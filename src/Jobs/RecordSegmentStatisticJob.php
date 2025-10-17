@@ -29,7 +29,7 @@ class RecordSegmentStatisticJob implements ShouldQueue
      */
     public function uniqueId(): string
     {
-        return md5(get_class($this).(string) $this->segmentId);
+        return md5(static::class.$this->segmentId);
     }
 
     /**

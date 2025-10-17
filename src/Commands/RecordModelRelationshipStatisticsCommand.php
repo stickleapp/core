@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
+use StickleApp\Core\Traits\StickleEntity;
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
@@ -47,7 +49,7 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
         // Get all classes with the StickleEntity trait
         $modelClasses = ClassUtils::getClassesWithTrait(
             config('stickle.namespaces.models'),
-            \StickleApp\Core\Traits\StickleEntity::class
+            StickleEntity::class
         );
 
         $attributes = [];
@@ -55,12 +57,12 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
             $stickleTrackedAttributes = $modelClass::stickleTrackedAttributes();
             if ($relationships = ClassUtils::getRelationshipsWith(app(), $modelClass, [HasMany::class], $modelClasses)) {
                 foreach ($relationships as $relationship) {
-                    foreach ($stickleTrackedAttributes as $attribute) {
+                    foreach ($stickleTrackedAttributes as $stickleTrackedAttribute) {
                         $attributes[] = [
                             'model_class' => $modelClass,
                             'relationship' => $relationship['name'],
                             'related_class' => $relationship['related'],
-                            'attribute' => $attribute,
+                            'attribute' => $stickleTrackedAttribute,
                         ];
                     }
                 }
@@ -76,7 +78,7 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
             DB::table('temp_attributes')->insert($attributes);
 
             return DB::table('temp_attributes')
-                ->leftJoin("{$this->prefix}model_relationship_statistic_exports", function ($query) {
+                ->leftJoin("{$this->prefix}model_relationship_statistic_exports", function ($query): void {
                     $query->on("{$this->prefix}model_relationship_statistic_exports.model_class", '=', 'temp_attributes.model_class');
                     $query->on("{$this->prefix}model_relationship_statistic_exports.relationship", '=', 'temp_attributes.relationship');
                     $query->on("{$this->prefix}model_relationship_statistic_exports.attribute", '=', 'temp_attributes.attribute');
@@ -89,8 +91,8 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
                     'last_recorded_at',
                 ])
                 ->orderByRaw('last_recorded_at asc NULLS FIRST')
-                ->where(function ($query) {
-                    $query->where("{$this->prefix}model_relationship_statistic_exports.last_recorded_at", '<', now()->subMinutes(config('stickle.schedule.recordModelRelationshipStatistics', 360)))
+                ->where(function (Builder $builder): void {
+                    $builder->where("{$this->prefix}model_relationship_statistic_exports.last_recorded_at", '<', now()->subMinutes(config('stickle.schedule.recordModelRelationshipStatistics', 360)))
                         ->orWhereNull("{$this->prefix}model_relationship_statistic_exports.last_recorded_at");
                 })
                 ->limit((int) $limit)
@@ -98,12 +100,7 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
         });
 
         foreach ($rows as $row) {
-            RecordModelRelationshipStatisticJob::dispatch(
-                $row->model_class,
-                $row->relationship,
-                $row->related_class,
-                $row->attribute
-            );
+            dispatch(new RecordModelRelationshipStatisticJob($row->model_class, $row->relationship, $row->related_class, $row->attribute));
         }
     }
 }

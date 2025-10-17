@@ -24,7 +24,7 @@ class ModelExitedSegment implements ShouldBroadcast
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
+     * @return array<int, Channel>
      */
     public function broadcastOn(): array
     {
@@ -34,7 +34,7 @@ class ModelExitedSegment implements ShouldBroadcast
             ),
             new Channel(
                 sprintf(config('stickle.broadcasting.channels.object'),
-                    str_replace('\\', '-', strtolower(get_class($this->model))),
+                    str_replace('\\', '-', strtolower($this->model::class)),
                     $this->model->getKey()
                 )
             ),

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class ModelAttributes extends Model
 {
+    use HasFactory;
     /**
      * Creates a new analytics repository instance.
      */
@@ -41,21 +43,23 @@ class ModelAttributes extends Model
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * Why doesn't casts() function work?
-     */
-    protected $casts = [
-        'data' => 'array',
-    ];
-
-    /**
      * Get the parent attributable model
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo<Model, ModelAttributes>
+     * @return MorphTo<Model, ModelAttributes>
      */
     public function attributable(): MorphTo
     {
         return $this->morphTo();
+    }
+    /**
+     * Get the attributes that should be cast.
+     *
+     * Why doesn't casts() function work?
+     */
+    protected function casts(): array
+    {
+        return [
+            'data' => 'array',
+        ];
     }
 }

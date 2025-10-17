@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Override;
+use Carbon\Carbon;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,10 +19,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $location
  * @property string $ip_address
  * @property array<string, mixed>|null $properties
- * @property \Carbon\Carbon $timestamp
+ * @property Carbon $timestamp
  */
 class Request extends Model
 {
+    use HasFactory;
     /**
      * The table associated with the model.
      */
@@ -49,6 +53,7 @@ class Request extends Model
     /**
      * Get the table associated with the model.
      */
+    #[Override]
     public function getTable()
     {
         if (! $this->table) {

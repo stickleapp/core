@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
+use Illuminate\Support\Facades\Date;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
@@ -32,9 +33,8 @@ final class DropPartitionsCommand extends Command implements Isolatable
     /**
      * Create a new command instance.
      */
-    public function __construct(
-        #[ConfigAttribute('stickle.database.tablePrefix')] protected ?string $prefix = null,
-    ) {
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -60,7 +60,7 @@ final class DropPartitionsCommand extends Command implements Isolatable
         /** @var string $priorToDate */
         $priorToDate = $this->argument('prior_to_date');
 
-        $startDate = Carbon::parse($priorToDate);
+        $startDate = Date::parse($priorToDate);
 
         $select = sprintf(
             "SELECT table_schema, table_name FROM information_schema.tables WHERE table_schema = '%s' AND table_name ILIKE '%s_%s%%' and table_name < '%s_%s_%s'",
@@ -70,7 +70,7 @@ final class DropPartitionsCommand extends Command implements Isolatable
                 $interval,
                 $existingTable,
                 $interval,
-                preg_replace('/[^A-Za-z0-9 ]/', '', $startDate->format('YmdHis')),
+                preg_replace('/[^A-Za-z0-9 ]/', '', (string) $startDate->format('YmdHis')),
             ]
         );
 

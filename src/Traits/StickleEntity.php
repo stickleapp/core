@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Traits;
 
+use Illuminate\Database\Query\Expression;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Exception;
+use StickleApp\Core\Enums\ChartType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -35,50 +39,47 @@ trait StickleEntity
         return (new self)->getTable();
     }
 
-    public static function bootStickleEntity()
+    public static function bootStickleEntity(): void
     {
 
         /**
          * Used when building queries to prevent duplicate joins
          */
-        Builder::macro('hasJoin', function ($table, $alias = null) {
-            return collect($this->getQuery()->joins)->contains(function ($join) use ($table, $alias) {
-                if ($join->table instanceof \Illuminate\Database\Query\Expression) {
-                    return $join->table->getValue($join->getGrammar()) === "({$table}) as \"{$alias}\"";
-                } else {
-                    return $join->table === $table;
-                }
-            });
-        });
+        Builder::macro('hasJoin', fn($table, $alias = null) => collect($this->getQuery()->joins)->contains(function ($join) use ($table, $alias): bool {
+            if ($join->table instanceof Expression) {
+                return $join->table->getValue($join->getGrammar()) === "({$table}) as \"{$alias}\"";
+            }
+            return $join->table === $table;
+        }));
 
-        Builder::macro('joinRelationship', function (Relation $relation, string $alias, string $joinType = 'inner') {
+        Builder::macro('joinRelationship', function (Relation $relation, string $alias, string $joinType = 'inner'): object {
 
             $relatedTable = $relation->getRelated()->getTable();
             $parentTable = $relation->getParent()->getTable();
 
             // Handle different relationship types
-            if ($relation instanceof \Illuminate\Database\Eloquent\Relations\HasOneOrMany) {
+            if ($relation instanceof HasOneOrMany) {
                 $foreignKey = $relation->getQualifiedForeignKeyName();
                 $localKey = $relation->getQualifiedParentKeyName();
             } elseif ($relation instanceof \Illuminate\Database\Eloquent\Relations\BelongsTo) {
                 $foreignKey = $relation->getQualifiedForeignKeyName();
                 $localKey = $relation->getQualifiedOwnerKeyName();
             } else {
-                throw new \Exception('Unsupported relation type: '.get_class($relation));
+                throw new Exception('Unsupported relation type: '.$relation::class);
             }
 
             // If the related table is aliased, we need to adjust the foreign key
             $foreignKey = str_replace($relatedTable, $alias, $relation->getQualifiedForeignKeyName());
 
             // Get the basic query constraints (like where clauses) from the relation
-            $baseQuery = $relation->getQuery();
-            $wheres = $baseQuery->getQuery()->wheres;
+            $builder = $relation->getQuery();
+            $wheres = $builder->getQuery()->wheres;
 
             // Apply the join
-            $tableToJoin = $alias ? "$relatedTable as $alias" : $relatedTable;
-            $joinTable = $alias ? $alias : $relatedTable;
+            $tableToJoin = $alias !== '' && $alias !== '0' ? "$relatedTable as $alias" : $relatedTable;
+            $joinTable = $alias ?: $relatedTable;
 
-            $this->join($tableToJoin, function ($join) use ($foreignKey, $localKey, $wheres, $joinTable) {
+            $this->join($tableToJoin, function ($join) use ($foreignKey, $localKey, $wheres, $joinTable): void {
                 $join->on($foreignKey, '=', $localKey);
 
                 // Apply any additional constraints from the relationship
@@ -86,7 +87,7 @@ trait StickleEntity
                     if ($where['type'] === 'Basic') {
                         // Adjust column name if it doesn't include a table prefix
                         $column = $where['column'];
-                        if (strpos($column, '.') === false) {
+                        if (!str_contains($column, '.')) {
                             $column = "$joinTable.$column";
                         }
 
@@ -101,7 +102,7 @@ trait StickleEntity
         /**
          * When a StickleEntity model is created, log observed attributes
          */
-        static::created(function (Model $model) {
+        static::created(function (Model $model): void {
 
             $observableAttributeKeys = $model::stickleObservedAttributes();
 
@@ -111,7 +112,7 @@ trait StickleEntity
         /**
          * When a stickleEntity model is updated, log observed attributes
          */
-        static::updated(function (Model $model) {
+        static::updated(function (Model $model): void {
 
             $observableAttributeKeys = array_intersect($model::stickleObservedAttributes(), array_keys($model->getDirty()));
 
@@ -123,7 +124,7 @@ trait StickleEntity
     /**
      * Enables a ->stickleWhere() method on the model
      */
-    public static function scopeStickleWhere(Builder $builder, Filter $filter)
+    public static function scopeStickleWhere(Builder $builder, Filter $filter): Builder
     {
 
         $prefix = config('stickle.database.tablePrefix');
@@ -132,7 +133,7 @@ trait StickleEntity
          * We'll need this join for the filters but do not want to add it twice
          */
         if (! $builder->hasJoin("{$prefix}model_attributes")) {
-            $builder->leftJoin("{$prefix}model_attributes", function ($join) use ($prefix) {
+            $builder->leftJoin("{$prefix}model_attributes", function ($join) use ($prefix): void {
                 $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw(self::getTableName().'.id::text'));
                 $join->where("{$prefix}model_attributes.model_class", '=', self::class);
             });
@@ -144,7 +145,7 @@ trait StickleEntity
     /**
      * Enables a ->stickleOrWhere() method on the model
      */
-    public static function scopeStickleOrWhere(Builder $builder, Filter $filter)
+    public static function scopeStickleOrWhere(Builder $builder, Filter $filter): Builder
     {
         $prefix = config('stickle.database.tablePrefix');
 
@@ -152,7 +153,7 @@ trait StickleEntity
          * We'll need this join for the filters but do not want to add it twice
          */
         if (! $builder->hasJoin("{$prefix}model_attributes")) {
-            $builder->leftJoin("{$prefix}model_attributes", function ($join) use ($prefix) {
+            $builder->leftJoin("{$prefix}model_attributes", function ($join) use ($prefix): void {
                 $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw(self::getTableName().'.'.self::getKeyName().'::text'));
                 $join->where("{$prefix}model_attributes.model_class", '=', self::class);
             });
@@ -194,16 +195,25 @@ trait StickleEntity
         return [];
     }
 
+    /**
+     * @return HasOne<ModelAttributes, $this>
+     */
     public function modelAttributes(): HasOne
     {
         return $this->hasOne(ModelAttributes::class, 'object_uid')->where('model_class', class_basename(self::class));
     }
 
+    /**
+     * @return HasMany<ModelAttributeAudit, $this>
+     */
     public function modelAttributeAudits(): HasMany
     {
         return $this->hasMany(ModelAttributeAudit::class, 'object_uid')->where('model_class', class_basename(self::class));
     }
 
+    /**
+     * @return HasMany<ModelRelationshipStatistic, $this>
+     */
     public function modelRelationshipStatistics(): HasMany
     {
         return $this->hasMany(ModelRelationshipStatistic::class, 'object_uid')->where('model_class', class_basename(self::class));
@@ -215,17 +225,17 @@ trait StickleEntity
     public function stickleRelationships(?array $relations = []): Collection
     {
 
-        $relations = $relations ?? [HasMany::class, BelongsTo::class];
+        $relations ??= [HasMany::class, BelongsTo::class];
 
         // Get all classes with the StickleEntity trait
         $stickleEntityClasses = ClassUtils::getClassesWithTrait(
             config('stickle.namespaces.models'),
-            \StickleApp\Core\Traits\StickleEntity::class
+            StickleEntity::class
         );
 
         $relationships = ClassUtils::getRelationshipsWith(app(), self::class, $relations, $stickleEntityClasses);
 
-        array_walk($relationships, function (&$relationship) {
+        array_walk($relationships, function (array &$relationship): void {
             $attribute = AttributeUtils::getAttributeForMethod(
                 self::class,
                 $relationship['name'],
@@ -252,7 +262,7 @@ trait StickleEntity
     protected function trackableAttributes(): Attribute
     {
         return Attribute::make(
-            get: function () {
+            get: function (): void {
                 $this->modelAttributes()
                     ->firstOrNew(
                         [
@@ -261,7 +271,7 @@ trait StickleEntity
                         ]
                     )->data ?? [];
             },
-            set: function ($value) {
+            set: function ($value): void {
                 if (is_array($value)) {
                     $modelAttributes = $this
                         ->modelAttributes()
@@ -320,14 +330,14 @@ trait StickleEntity
 
         // Directly build chart data for tracked attributes
         $chartData = [];
-        foreach ($trackedAttributes as $attribute) {
-            $meta = $metadata[$attribute] ?? [];
+        foreach ($trackedAttributes as $trackedAttribute) {
+            $meta = $metadata[$trackedAttribute] ?? [];
             $chartData[] = [
-                'key' => $attribute,
+                'key' => $trackedAttribute,
                 'modelClass' => static::class,
-                'attribute' => $attribute,
-                'chartType' => $meta['chartType'] ?? \StickleApp\Core\Enums\ChartType::LINE,
-                'label' => $meta['label'] ?? Str::title(str_replace('_', ' ', $attribute)),
+                'attribute' => $trackedAttribute,
+                'chartType' => $meta['chartType'] ?? ChartType::LINE,
+                'label' => $meta['label'] ?? Str::title(str_replace('_', ' ', $trackedAttribute)),
                 'description' => $meta['description'] ?? null,
                 'dataType' => $meta['dataType'] ?? null,
                 'primaryAggregateType' => $meta['primaryAggregateType'] ?? null,

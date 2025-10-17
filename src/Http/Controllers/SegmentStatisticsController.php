@@ -12,13 +12,13 @@ class SegmentStatisticsController
 {
     public function index(Request $request): JsonResponse
     {
-        $prefix = config('stickle.database.tablePrefix');
+        config('stickle.database.tablePrefix');
 
-        $attribute = $request->string('attribute');
+        $request->string('attribute');
 
         $segmentId = $request->integer('segment_id');
 
-        $segment = Segment::findOrFail($segmentId);
+        $segment = Segment::query()->findOrFail($segmentId);
 
         // Date ranges
         $currentPeriodStart = $request->date('date_from') ?? now()->subDays(30);
@@ -58,12 +58,10 @@ class SegmentStatisticsController
         }
 
         // Add time-series data points for visualization
-        $timeSeriesData = $statisticsEntries->map(function ($entry) {
-            return [
-                'timestamp' => $entry->recorded_at,
-                'value' => $entry->value_avg ? (float) $entry->value_avg : null,
-            ];
-        });
+        $timeSeriesData = $statisticsEntries->map(fn($entry): array => [
+            'timestamp' => $entry->recorded_at,
+            'value' => $entry->value_avg ? (float) $entry->value_avg : null,
+        ]);
 
         $response = [
             'time_series' => $timeSeriesData,

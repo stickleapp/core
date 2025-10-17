@@ -29,7 +29,7 @@ class ImportSegmentJob implements ShouldQueue
      */
     public function uniqueId(): string
     {
-        return md5(get_class($this).(string) $this->segmentId);
+        return md5(static::class.$this->segmentId);
     }
 
     /**
@@ -45,11 +45,11 @@ class ImportSegmentJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(ImportSegmentAction $importSegment): void
+    public function handle(ImportSegmentAction $importSegmentAction): void
     {
         Log::debug('ImportSegmentJob', ['segment_id' => $this->segmentId, 'exportFilename' => $this->exportFilename]);
 
-        $importSegment(
+        $importSegmentAction(
             segmentId: $this->segmentId,
             exportFilename: $this->exportFilename
         );

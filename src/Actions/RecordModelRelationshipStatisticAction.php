@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Actions;
 
+use Illuminate\Support\Collection;
+use stdClass;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -28,27 +30,18 @@ class RecordModelRelationshipStatisticAction
             attribute: $attribute
         );
 
-        /** @var \Illuminate\Support\Collection<int, \stdClass> $items */
+        /** @var Collection<int, stdClass> $items */
         $items = $builder->get();
 
-        ModelRelationshipStatistic::upsert(
-            $items->map(function ($item) {
-                return (array) $item;
-            })->toArray(),
-            uniqueBy: ['model_class', 'object_uid', 'relationship', 'attribute', 'recorded_at'],
-            update: ['value', 'value_avg', 'value_sum', 'value_min', 'value_max', 'value_count']
-        );
+        ModelRelationshipStatistic::query()->upsert($items->map(fn($item): array => (array) $item)->all(), uniqueBy: ['model_class', 'object_uid', 'relationship', 'attribute', 'recorded_at'], update: ['value', 'value_avg', 'value_sum', 'value_min', 'value_max', 'value_count']);
 
-        ModelRelationshipStatisticExport::updateOrCreate(
-            [
-                'model_class' => $modelClass,
-                'relationship' => $relationship,
-                'attribute' => $attribute,
-            ],
-            [
-                'last_recorded_at' => now(),
-            ]
-        );
+        ModelRelationshipStatisticExport::query()->updateOrCreate([
+            'model_class' => $modelClass,
+            'relationship' => $relationship,
+            'attribute' => $attribute,
+        ], [
+            'last_recorded_at' => now(),
+        ]);
     }
 
     private function builder(
@@ -70,7 +63,7 @@ class RecordModelRelationshipStatisticAction
             relation: (new $model)->$relationship(),
             alias: $relationship
         )
-            ->join("{$prefix}model_attributes", function ($join) use ($prefix, $relationship, $relatedModel) {
+            ->join("{$prefix}model_attributes", function ($join) use ($prefix, $relationship, $relatedModel): void {
                 $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw('"'.$relationship.'"."'.$relatedModel->getKeyName().'"::text'));
                 $join->where("{$prefix}model_attributes.model_class", '=', class_basename($relatedModel));
             })

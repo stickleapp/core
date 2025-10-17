@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Contracts;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 abstract class FilterTargetContract
 {
-    /** @var Builder<\Illuminate\Database\Eloquent\Model> */
+    /** @var Builder<Model> */
     public Builder $builder;
 
     public function castValue(mixed $value): mixed

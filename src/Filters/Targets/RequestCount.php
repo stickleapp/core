@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
+use InvalidArgumentException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use StickleApp\Core\Contracts\FilterTargetContract;
 
@@ -26,16 +28,12 @@ class RequestCount extends FilterTargetContract
 
     private static function validateUrl(?string $url): void
     {
-        if (! $url) {
-            throw new \InvalidArgumentException('URL is required for RequestCount filter targets. You should have passed `url` as a paramter of your target (ex. Filter::requestCount(\'/api/users\')).');
-        }
+        throw_unless($url, InvalidArgumentException::class, 'URL is required for RequestCount filter targets. You should have passed `url` as a paramter of your target (ex. Filter::requestCount(\'/api/users\')).');
     }
 
     private static function validateAggregate(?string $aggregate): void
     {
-        if (! $aggregate) {
-            throw new \InvalidArgumentException('Aggregate is required for RequestCount filter targets. Did you call sum(), avg(), min(), max(), or count()?');
-        }
+        throw_unless($aggregate, InvalidArgumentException::class, 'Aggregate is required for RequestCount filter targets. Did you call sum(), avg(), min(), max(), or count()?');
     }
 
     /**
@@ -44,13 +42,9 @@ class RequestCount extends FilterTargetContract
      */
     private static function validateDateRanges(array $currentDateRange, array $compareToDateRange, bool $hasDelta): void
     {
-        if (count($currentDateRange) !== 2) {
-            throw new \InvalidArgumentException('Current DateRange is required. Did you call betweenDates() or betweenDateRanges() on your filter?');
-        }
+        throw_if(count($currentDateRange) !== 2, InvalidArgumentException::class, 'Current DateRange is required. Did you call betweenDates() or betweenDateRanges() on your filter?');
 
-        if ($hasDelta && count($compareToDateRange) !== 2) {
-            throw new \InvalidArgumentException('Delta type (increased, decreased, changed) is specified but no $compareToDateRange is specified. Did you call betweenDateRanges() on your filter.');
-        }
+        throw_if($hasDelta && count($compareToDateRange) !== 2, InvalidArgumentException::class, 'Delta type (increased, decreased, changed) is specified but no $compareToDateRange is specified. Did you call betweenDateRanges() on your filter.');
     }
 
     /**
@@ -58,17 +52,13 @@ class RequestCount extends FilterTargetContract
      */
     private static function validateDeltaConfiguration(?string $deltaVerb, array $compareToDateRange): void
     {
-        if ($deltaVerb && count($compareToDateRange) !== 2) {
-            throw new \InvalidArgumentException('Delta type (increased, decreased, changed) is specified but no compare-to date range is provided. Did you call betweenDateRanges() on your filter?');
-        }
+        throw_if($deltaVerb && count($compareToDateRange) !== 2, InvalidArgumentException::class, 'Delta type (increased, decreased, changed) is specified but no compare-to date range is provided. Did you call betweenDateRanges() on your filter?');
 
-        if (! $deltaVerb && count($compareToDateRange) === 2) {
-            throw new \InvalidArgumentException('A `$compareToDateRange` is provided but no delta type (increased, decreased, changed) is specified. Call increased(), decreased(), or changed().');
-        }
+        throw_if(! $deltaVerb && count($compareToDateRange) === 2, InvalidArgumentException::class, 'A `$compareToDateRange` is provided but no delta type (increased, decreased, changed) is specified. Call increased(), decreased(), or changed().');
     }
 
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      * @param  array<mixed>  $currentDateRange
      * @param  array<mixed>  $compareToDateRange
      */
@@ -78,7 +68,7 @@ class RequestCount extends FilterTargetContract
     }
 
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      * @param  array<mixed>  $currentDateRange
      */
     private static function createRequestCountAggregate(?string $prefix, Builder $builder, string $url, string $aggregate, array $currentDateRange): RequestCountAggregate
@@ -87,7 +77,7 @@ class RequestCount extends FilterTargetContract
     }
 
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      * @param  array<string, mixed>  $arguments
      */
     public static function getTargetInstance(?string $prefix, Builder $builder, array $arguments): FilterTargetContract

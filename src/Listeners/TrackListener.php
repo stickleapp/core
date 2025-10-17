@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Listeners;
 
+use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -18,18 +19,18 @@ class TrackListener implements ShouldQueue
      */
     public function __construct(public readonly AnalyticsRepositoryContract $repository) {}
 
-    public function handle(Track $event): void
+    public function handle(Track $track): void
     {
-        Log::debug('TrackListener->handle()', [$event]);
+        Log::debug('TrackListener->handle()', [$track]);
 
-        $request = Request::create([
+        Request::query()->create([
             'type' => 'track',
-            'model_class' => $event->payload->model_class,
-            'object_uid' => $event->payload->object_uid,
-            'session_uid' => $event->payload->session_uid,
-            'ip_address' => $event->payload->ip_address,
-            'timestamp' => $event->payload->timestamp,
-            'properties' => $event->payload->properties ?? [],
+            'model_class' => $track->payload->model_class,
+            'object_uid' => $track->payload->object_uid,
+            'session_uid' => $track->payload->session_uid,
+            'ip_address' => $track->payload->ip_address,
+            'timestamp' => $track->payload->timestamp,
+            'properties' => $track->payload->properties ?? [],
         ]);
 
         /**
@@ -41,9 +42,9 @@ class TrackListener implements ShouldQueue
          * i_did_a_thing => IDidAThingListener
          * IDidAThing => IDidAThingListener
          */
-        Log::debug('TrackListener->handle() - listeners', [$event]);
+        Log::debug('TrackListener->handle() - listeners', [$track]);
 
-        $listenerClass = $this->listenerName($event);
+        $listenerClass = $this->listenerName($track);
 
         Log::info('Listener class name: ', [$listenerClass]);
 
@@ -57,22 +58,20 @@ class TrackListener implements ShouldQueue
 
         $listener = new $listenerClass;
 
-        if (! method_exists($listener, 'handle')) {
-            throw new \Exception('Listener class does not have handle method');
-        }
+        throw_unless(method_exists($listener, 'handle'), Exception::class, 'Listener class does not have handle method');
 
-        $listener->handle($event);
+        $listener->handle($track);
     }
 
     /**
      * Format the name of the listener class file that -- should it exist --
      * will handle this event
      */
-    public function listenerName(Track $event): string
+    public function listenerName(Track $track): string
     {
         return config('stickle.namespaces.listeners').
             '\\'.
-            Str::studly(class_basename($event->payload->properties['name'] ?? 'unknown')).
+            Str::studly(class_basename($track->payload->properties['name'] ?? 'unknown')).
             'Listener';
     }
 }

@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Tests;
 
+use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Builder;
 use StickleApp\Core\Contracts\FilterTargetContract;
 use StickleApp\Core\Contracts\FilterTestContract;
 
 class HasNeverBeenInSegment extends FilterTestContract
 {
-    public function applyFilter(Builder $builder, FilterTargetContract $target, string $operator): Builder
+    public function applyFilter(Builder $builder, FilterTargetContract $filterTargetContract, string $operator): Builder
     {
-        if ($target->property() === null) {
-            throw new \InvalidArgumentException('Filter target property cannot be null');
-        }
+        throw_if($filterTargetContract->property() === null, InvalidArgumentException::class, 'Filter target property cannot be null');
 
-        return $builder->whereNull($target->property());
+        return $builder->whereNull($filterTargetContract->property());
     }
 }

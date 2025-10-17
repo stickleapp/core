@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
+use Override;
+use Illuminate\Database\Eloquent\Model;
 use DateTimeInterface;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +17,7 @@ use StickleApp\Core\Contracts\FilterTargetContract;
 class NumberAggregateDelta extends FilterTargetContract
 {
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      * @param  array<DateTimeInterface>  $currentPeriod
      * @param  array<DateTimeInterface>  $previousPeriod
      */
@@ -31,7 +33,7 @@ class NumberAggregateDelta extends FilterTargetContract
 
     public static function baseTarget(): string
     {
-        return 'StickleApp\\Core\\Filters\\Targets\\Number';
+        return Number::class;
     }
 
     public function property(): ?string
@@ -39,6 +41,7 @@ class NumberAggregateDelta extends FilterTargetContract
         return $this->attribute;
     }
 
+    #[Override]
     public function castProperty(): mixed
     {
         return sprintf('number_aggregate_delta_%s', $this->joinKey());
@@ -70,8 +73,8 @@ class NumberAggregateDelta extends FilterTargetContract
 
         return DB::table($this->prefix.'model_attributes')
             ->where('model_class', $this->builder->getModel()->getMorphClass())
-            ->where(function ($query) use ($currentStart, $currentEnd, $previousStart, $previousEnd) {
-                $query->whereBetween('updated_at', [$currentStart, $currentEnd])
+            ->where(function (\Illuminate\Contracts\Database\Query\Builder $builder) use ($currentStart, $currentEnd, $previousStart, $previousEnd): void {
+                $builder->whereBetween('updated_at', [$currentStart, $currentEnd])
                     ->orWhereBetween('updated_at', [$previousStart, $previousEnd]);
             })
             ->groupBy(['model_class', 'object_uid'])
@@ -100,8 +103,8 @@ class NumberAggregateDelta extends FilterTargetContract
         $this->builder->leftJoinSub(
             $this->subJoin(),
             $joinKey,
-            function (JoinClause $join) use ($model, $joinKey) {
-                $join->on($joinKey.'.object_uid', '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
+            function (JoinClause $joinClause) use ($model, $joinKey): void {
+                $joinClause->on($joinKey.'.object_uid', '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
             }
         );
     }

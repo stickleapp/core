@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Actions;
 
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -21,13 +22,11 @@ class ImportSegmentAction
         // Retrieve from storage
         /** @var string $disk * */
         $disk = config('stickle.filesystem.disks.exports');
-        $storage = Storage::disk($disk);
+        $filesystem = Storage::disk($disk);
 
-        if ($storage->missing($exportFilename)) {
-            throw new \Exception('File missing');
-        }
+        throw_if($filesystem->missing($exportFilename), Exception::class, 'File missing');
 
-        $contents = $storage->get($exportFilename) ?? '';
+        $contents = $filesystem->get($exportFilename) ?? '';
 
         $localFilename = $this->localFilename($exportFilename);
 
@@ -134,7 +133,7 @@ eof;
     public function localFilename(string $exportFilename): string
     {
         return '/tmp/'.
-            (string) Str::uuid().
+            Str::uuid().
             '-'.
             $exportFilename;
     }

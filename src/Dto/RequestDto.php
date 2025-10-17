@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Dto;
 
+use Illuminate\Support\Facades\Date;
 use Carbon\Carbon;
 
 readonly class RequestDto
@@ -33,11 +34,11 @@ readonly class RequestDto
             model_class: $data['model_class'],
             object_uid: $data['object_uid'],
             session_uid: $data['session_uid'],
+            timestamp: $data['timestamp'] instanceof Carbon ? $data['timestamp'] : Date::parse($data['timestamp']),
+            model: $data['model'] instanceof ModelDto ? $data['model'] : ModelDto::fromArray($data['model']),
             ip_address: $data['ip_address'],
             properties: $data['properties'] ?? null,
-            timestamp: $data['timestamp'] instanceof Carbon ? $data['timestamp'] : Carbon::parse($data['timestamp']),
             location_data: isset($data['location_data']) ? LocationDataDto::fromArray($data['location_data']) : null,
-            model: $data['model'] instanceof ModelDto ? $data['model'] : ModelDto::fromArray($data['model']),
         );
     }
 

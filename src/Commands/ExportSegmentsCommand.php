@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use SplFileInfo;
 use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
@@ -36,7 +38,8 @@ final class ExportSegmentsCommand extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
-        #[ConfigAttribute('stickle.database.tablePrefix')] protected ?string $prefix = null,
+        #[ConfigAttribute('stickle.database.tablePrefix')]
+ private readonly ?string $prefix = null,
     ) {
         parent::__construct();
     }
@@ -67,15 +70,15 @@ final class ExportSegmentsCommand extends Command implements Isolatable
          * Insert any segments from this analysis into the `segments` table.
          * If the segment already exists, ignore it.
          */
-        Segment::insertOrIgnore($segments);
+        Segment::query()->insertOrIgnore($segments);
 
         /**
          * Return a list of segments to export considering the export_interval
          * and the last_exported_at timestamp.
          */
-        $segments = Segment::where(function ($query) {
-            $query->where("{$this->prefix}segments.last_exported_at", null);
-            $query->orWhere("{$this->prefix}segments.last_exported_at", '<', DB::raw("NOW() - INTERVAL '1 minute' * export_interval"));
+        $segments = Segment::query()->where(function (Builder $builder): void {
+            $builder->where("{$this->prefix}segments.last_exported_at", null);
+            $builder->orWhere("{$this->prefix}segments.last_exported_at", '<', DB::raw("NOW() - INTERVAL '1 minute' * export_interval"));
         })
             ->limit((int) $this->argument('limit'))
             ->get();
@@ -85,7 +88,7 @@ final class ExportSegmentsCommand extends Command implements Isolatable
 
         foreach ($segments as $segment) {
             Log::info('ExportSegments Dispatching', ['segment_id' => $segment->id]);
-            ExportSegmentJob::dispatch($segment);
+            dispatch(new ExportSegmentJob($segment));
             $segment->update(['last_exported_at' => now()]);
         }
     }
@@ -97,7 +100,7 @@ final class ExportSegmentsCommand extends Command implements Isolatable
 
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(realpath($directory)));
 
-        /** @var \SplFileInfo $file */
+        /** @var SplFileInfo $file */
         foreach ($files as $file) {
             if ($file->isFile() && $file->getExtension() === 'php') {
 
@@ -107,7 +110,7 @@ final class ExportSegmentsCommand extends Command implements Isolatable
                 $className = str_replace(
                     ['/', '.php'],
                     ['\\', ''],
-                    substr($file->getRealPath(), strlen(realpath($directory)) + 1)
+                    substr((string) $file->getRealPath(), strlen(realpath($directory)) + 1)
                 );
 
                 $segmentClassName = $namespace.'\\'.$className;

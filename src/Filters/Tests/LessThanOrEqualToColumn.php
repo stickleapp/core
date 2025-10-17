@@ -13,8 +13,8 @@ class LessThanOrEqualToColumn extends FilterTestContract
 {
     public function __construct(public string $comparator) {}
 
-    public function applyFilter(Builder $builder, FilterTargetContract $target, string $operator): Builder
+    public function applyFilter(Builder $builder, FilterTargetContract $filterTargetContract, string $operator): Builder
     {
-        return $builder->whereColumn(DB::raw($target->castProperty()), '<=', $this->comparator);
+        return $builder->whereColumn(DB::raw($filterTargetContract->castProperty()), '<=', $this->comparator);
     }
 }

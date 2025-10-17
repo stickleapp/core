@@ -31,7 +31,7 @@ class ExportSegmentJob implements ShouldQueue
      */
     public function uniqueId(): string
     {
-        return md5(get_class($this).(string) $this->segment->id);
+        return md5(static::class.$this->segment->id);
     }
 
     /**
@@ -44,7 +44,7 @@ class ExportSegmentJob implements ShouldQueue
         return [new WithoutOverlapping($this->uniqueId())];
     }
 
-    public function handle(ExportSegmentAction $exportSegment): void
+    public function handle(ExportSegmentAction $exportSegmentAction): void
     {
 
         Log::debug('ExportSegment Job', ['segment' => $this->segment]);
@@ -53,14 +53,11 @@ class ExportSegmentJob implements ShouldQueue
 
         /** @var SegmentContract $segment */
         $segment = new $class;
-        $exportFilename = $exportSegment(
+        $exportFilename = $exportSegmentAction(
             segmentId: $this->segment->id,
             segmentDefinition: $segment
         );
 
-        ImportSegmentJob::dispatch(
-            $this->segment->id,
-            $exportFilename
-        );
+        dispatch(new ImportSegmentJob($this->segment->id, $exportFilename));
     }
 }

@@ -15,11 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 final readonly class InjectJavascriptTrackingCode
 {
     /**
-     * Creates a new middleware instance.
-     */
-    public function __construct() {}
-
-    /**
      * Handle an incoming request.
      *
      * @param  Closure(Request): (Response)  $next

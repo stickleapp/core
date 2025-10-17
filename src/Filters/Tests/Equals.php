@@ -13,8 +13,8 @@ class Equals extends FilterTestContract
 {
     public function __construct(public mixed $comparator) {}
 
-    public function applyFilter(Builder $builder, FilterTargetContract $target, string $operator): Builder
+    public function applyFilter(Builder $builder, FilterTargetContract $filterTargetContract, string $operator): Builder
     {
-        return $builder->where(DB::raw($target->castProperty()), $this->comparator);
+        return $builder->where(DB::raw($filterTargetContract->castProperty()), $this->comparator);
     }
 }

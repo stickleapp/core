@@ -16,9 +16,9 @@ class GroupListener implements ShouldQueue
      */
     public function __construct(public AnalyticsRepositoryContract $repository) {}
 
-    public function handle(Group $event): void
+    public function handle(Group $group): void
     {
-        Log::debug('GroupListener->handle()', [$event]);
+        Log::debug('GroupListener->handle()', [$group]);
 
         // $this->repository->saveGroup(
 

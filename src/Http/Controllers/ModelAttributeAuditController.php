@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Http\Controllers;
 
+use StickleApp\Core\Traits\StickleEntity;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -19,21 +20,21 @@ class ModelAttributeAuditController
         ]);
 
         $request->validate([
-            'uid' => 'required|string',
-            'attribute' => 'required|string',
-            'model_class' => 'required|string',
+            'uid' => ['required', 'string'],
+            'attribute' => ['required', 'string'],
+            'model_class' => ['required', 'string'],
         ]);
 
-        $attribute = $request->string('attribute');
+        $request->string('attribute');
 
         $modelClass = config('stickle.namespaces.models').'\\'.
-            (string) $request->string('model_class');
+            $request->string('model_class');
 
         if (! class_exists($modelClass)) {
             return response()->json(['error' => 'Model not found'], 404);
         }
 
-        if (! ClassUtils::usesTrait($modelClass, 'StickleApp\\Core\\Traits\\StickleEntity')) {
+        if (! ClassUtils::usesTrait($modelClass, StickleEntity::class)) {
             return response()->json(['error' => 'Model does not use StickleEntity trait'], 400);
         }
 
@@ -78,12 +79,10 @@ class ModelAttributeAuditController
         }
 
         // Add time-series data points for visualization
-        $timeSeriesData = $auditEntries->map(function ($entry) {
-            return [
-                'timestamp' => $entry->timestamp,
-                'value' => is_numeric($entry->value) ? (float) $entry->value : null,
-            ];
-        });
+        $timeSeriesData = $auditEntries->map(fn($entry): array => [
+            'timestamp' => $entry->timestamp,
+            'value' => is_numeric($entry->value) ? (float) $entry->value : null,
+        ]);
 
         $response = [
             'time_series' => $timeSeriesData,

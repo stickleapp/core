@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Actions;
 
+use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use StickleApp\Core\Contracts\SegmentContract;
@@ -12,12 +13,12 @@ class ExportSegmentAction
 {
     public function __invoke(
         int $segmentId,
-        SegmentContract $segmentDefinition
+        SegmentContract $segmentContract
     ): string {
 
         Log::info(self::class, func_get_args());
 
-        $builder = $segmentDefinition->toBuilder();
+        $builder = $segmentContract->toBuilder();
 
         $builder
             ->selectRaw($builder->getModel()->getTable().'.'.$builder->getModel()->getKeyName().' as object_uid')
@@ -26,18 +27,14 @@ class ExportSegmentAction
         $csvFile = tmpfile();
 
         $metaData = stream_get_meta_data($csvFile);
-        if (! isset($metaData['uri'])) {
-            throw new \Exception('Cannot get temporary file path');
-        }
+        throw_unless(isset($metaData['uri']), Exception::class, 'Cannot get temporary file path');
 
         /** @var string $csvPath */
         $csvPath = $metaData['uri'];
 
-        if (! $fd = fopen($csvPath, 'w')) {
-            throw new \Exception('Cannot open file');
-        }
+        throw_unless($fd = fopen($csvPath, 'w'), Exception::class, 'Cannot open file');
 
-        $builder->cursor()->each(function ($item) use ($fd) {
+        $builder->cursor()->each(function ($item) use ($fd): void {
             /** @var array<int, string> $asArray * */
             $asArray = $item->toArray();
             fputcsv($fd, $asArray);

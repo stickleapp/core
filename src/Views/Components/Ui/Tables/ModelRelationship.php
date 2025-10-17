@@ -31,7 +31,7 @@ class ModelRelationship extends Component
         return view('stickle::components/ui/tables/model-relationship');
     }
 
-    public function relatedModel()
+    public function relatedModel(): string
     {
         $relatedModel = $this->model->{$this->relationship}()->getRelated();
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Http\Controllers;
 
+use StickleApp\Core\Traits\StickleEntity;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +21,7 @@ class ModelsStatisticsController
     {
         $prefix = config('stickle.database.tablePrefix');
 
-        $attribute = $request->string('attribute');
+        $stringable = $request->string('attribute');
 
         $modelClass = $request->string('model_class');
 
@@ -30,7 +31,7 @@ class ModelsStatisticsController
             return response()->json(['error' => 'Model not found'], 404);
         }
 
-        if (! ClassUtils::usesTrait($modelClass, 'StickleApp\\Core\\Traits\\StickleEntity')) {
+        if (! ClassUtils::usesTrait($modelClass, StickleEntity::class)) {
             return response()->json(['error' => 'Model does not use StickleEntity trait'], 400);
         }
 
@@ -38,25 +39,25 @@ class ModelsStatisticsController
         $model = $modelClass::query()->getModel();
 
         $builder = $modelClass::query()
-            ->join("{$prefix}model_attributes", function ($join) use ($prefix, $model) {
+            ->join("{$prefix}model_attributes", function ($join) use ($prefix, $model): void {
                 $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
                 $join->where("{$prefix}model_attributes.model_class", '=', class_basename($model));
             })
             ->selectRaw(
                 "AVG((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_avg",
-                [$attribute]
+                [$stringable]
             )
             ->selectRaw(
                 "MIN((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_min",
-                [$attribute]
+                [$stringable]
             )
             ->selectRaw(
                 "MAX((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_max",
-                [$attribute]
+                [$stringable]
             )
             ->selectRaw(
                 "SUM((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_sum",
-                [$attribute]
+                [$stringable]
             )
             ->selectRaw(
                 'COUNT(*) as value_count'

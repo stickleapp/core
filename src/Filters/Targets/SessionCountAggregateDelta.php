@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
+use Override;
+use Illuminate\Database\Eloquent\Model;
 use DateTimeInterface;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +17,7 @@ use StickleApp\Core\Contracts\FilterTargetContract;
 class SessionCountAggregateDelta extends FilterTargetContract
 {
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      * @param  array<DateTimeInterface>  $currentPeriod
      * @param  array<DateTimeInterface>  $previousPeriod
      */
@@ -30,7 +32,7 @@ class SessionCountAggregateDelta extends FilterTargetContract
 
     public static function baseTarget(): string
     {
-        return 'StickleApp\\Core\\Filters\\Targets\\SessionCount';
+        return SessionCount::class;
     }
 
     public function property(): ?string
@@ -38,6 +40,7 @@ class SessionCountAggregateDelta extends FilterTargetContract
         return 'session_count';
     }
 
+    #[Override]
     public function castProperty(): mixed
     {
         return sprintf('session_count_aggregate_delta_%s', $this->joinKey());
@@ -68,8 +71,8 @@ class SessionCountAggregateDelta extends FilterTargetContract
 
         return DB::table($this->prefix.'sessions_rollup_1day')
             ->where('model_class', $this->builder->getModel()->getMorphClass())
-            ->where(function ($query) use ($currentStart, $currentEnd, $previousStart, $previousEnd) {
-                $query->whereBetween('day', [$currentStart, $currentEnd])
+            ->where(function (\Illuminate\Contracts\Database\Query\Builder $builder) use ($currentStart, $currentEnd, $previousStart, $previousEnd): void {
+                $builder->whereBetween('day', [$currentStart, $currentEnd])
                     ->orWhereBetween('day', [$previousStart, $previousEnd]);
             })
             ->groupBy(['model_class', 'object_uid'])
@@ -98,8 +101,8 @@ class SessionCountAggregateDelta extends FilterTargetContract
         $this->builder->leftJoinSub(
             $this->subJoin(),
             $joinKey,
-            function (JoinClause $join) use ($model, $joinKey) {
-                $join->on($joinKey.'.object_uid', '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
+            function (JoinClause $joinClause) use ($model, $joinKey): void {
+                $joinClause->on($joinKey.'.object_uid', '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
             }
         );
     }

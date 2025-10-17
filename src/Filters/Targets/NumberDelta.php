@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
+use Override;
+use Illuminate\Database\Eloquent\Model;
 use DateTimeInterface;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +17,7 @@ use StickleApp\Core\Contracts\FilterTargetContract;
 class NumberDelta extends FilterTargetContract
 {
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      */
     public function __construct(
         #[Config('stickle.database.tablePrefix')] protected ?string $prefix,
@@ -27,7 +29,7 @@ class NumberDelta extends FilterTargetContract
 
     public static function baseTarget(): string
     {
-        return 'StickleApp\\Core\\Filters\\Targets\\Number';
+        return Number::class;
     }
 
     public function property(): ?string
@@ -35,6 +37,7 @@ class NumberDelta extends FilterTargetContract
         return "data->>'{$this->attribute}'";
     }
 
+    #[Override]
     public function castProperty(): mixed
     {
         return sprintf('%s::numeric', $this->property());
@@ -55,18 +58,16 @@ class NumberDelta extends FilterTargetContract
 
     private function subJoin(): QueryBuilder
     {
-        $query = \DB::table($this->prefix.'model_attribute_audit')
+        $query = DB::table($this->prefix.'model_attribute_audit')
             ->where('attribute', $this->attribute)
-            ->when($this->endDate !== null, function (QueryBuilder $query) {
-                assert($this->endDate !== null); // PHPStan hint
+            ->when($this->endDate instanceof DateTimeInterface, function (QueryBuilder $queryBuilder) {
+                assert($this->endDate instanceof DateTimeInterface); // PHPStan hint
 
-                return $query->whereBetween('day', [
+                return $queryBuilder->whereBetween('day', [
                     $this->startDate->format('Y-m-d'),
                     $this->endDate->format('Y-m-d'),
                 ]);
-            }, function (QueryBuilder $query) {
-                return $query->whereDate('day', '>=', $this->startDate->format('Y-m-d'));
-            });
+            }, fn(QueryBuilder $queryBuilder) => $queryBuilder->whereDate('day', '>=', $this->startDate->format('Y-m-d')));
 
         return $query->select(
             'model_class',
@@ -96,8 +97,8 @@ class NumberDelta extends FilterTargetContract
         $this->builder->leftJoinSub(
             $subJoin,
             $joinKey,
-            function (JoinClause $join) use ($model, $joinKey) {
-                $join->on($joinKey.'.object_uid', '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
+            function (JoinClause $joinClause) use ($model, $joinKey): void {
+                $joinClause->on($joinKey.'.object_uid', '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
             }
         );
     }

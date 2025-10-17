@@ -11,38 +11,30 @@ use StickleApp\Core\Models\Request;
 
 class RequestsController
 {
-    public function index(RequestsIndexRequest $request): JsonResponse
+    public function index(RequestsIndexRequest $requestsIndexRequest): JsonResponse
     {
 
         $builder = Request::with('locationData')
-            ->when($request->filled('start_at'), function ($query) use ($request) {
-                return $query->where('timestamp', '>=', $request->date('start_at'));
-            })->when($request->filled('end_at'), function ($query) use ($request) {
-                return $query->where('timestamp', '<', $request->date('end_at'));
-            })->when($request->filled('model_class'), function ($query) use ($request) {
-                return $query->where('model_class', $request->string('model_class'));
-            })->when($request->filled('object_uid'), function ($query) use ($request) {
-                return $query->where('object_uid', $request->string('object_uid'));
-            })
+            ->when($requestsIndexRequest->filled('start_at'), fn($query) => $query->where('timestamp', '>=', $requestsIndexRequest->date('start_at')))->when($requestsIndexRequest->filled('end_at'), fn($query) => $query->where('timestamp', '<', $requestsIndexRequest->date('end_at')))->when($requestsIndexRequest->filled('model_class'), fn($query) => $query->where('model_class', $requestsIndexRequest->string('model_class')))->when($requestsIndexRequest->filled('object_uid'), fn($query) => $query->where('object_uid', $requestsIndexRequest->string('object_uid')))
             ->orderBy('timestamp', 'desc');
 
-        $paginated = $builder->paginate($request->integer('per_page', 250));
+        $lengthAwarePaginator = $builder->paginate($requestsIndexRequest->integer('per_page', 250));
 
         return response()->json([
-            'data' => RequestResource::collection($paginated->items()),
+            'data' => RequestResource::collection($lengthAwarePaginator->items()),
             'links' => [
-                'first' => $paginated->url(1),
-                'last' => $paginated->url($paginated->lastPage()),
-                'prev' => $paginated->previousPageUrl(),
-                'next' => $paginated->nextPageUrl(),
+                'first' => $lengthAwarePaginator->url(1),
+                'last' => $lengthAwarePaginator->url($lengthAwarePaginator->lastPage()),
+                'prev' => $lengthAwarePaginator->previousPageUrl(),
+                'next' => $lengthAwarePaginator->nextPageUrl(),
             ],
             'meta' => [
-                'current_page' => $paginated->currentPage(),
-                'from' => $paginated->firstItem(),
-                'last_page' => $paginated->lastPage(),
-                'per_page' => $paginated->perPage(),
-                'to' => $paginated->lastItem(),
-                'total' => $paginated->total(),
+                'current_page' => $lengthAwarePaginator->currentPage(),
+                'from' => $lengthAwarePaginator->firstItem(),
+                'last_page' => $lengthAwarePaginator->lastPage(),
+                'per_page' => $lengthAwarePaginator->perPage(),
+                'to' => $lengthAwarePaginator->lastItem(),
+                'total' => $lengthAwarePaginator->total(),
             ],
         ]);
     }

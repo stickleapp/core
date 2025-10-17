@@ -16,9 +16,9 @@ class IdentifyListener implements ShouldQueue
      */
     public function __construct(public readonly AnalyticsRepositoryContract $repository) {}
 
-    public function handle(Identify $event): void
+    public function handle(Identify $identify): void
     {
-        Log::debug('IdentifyListener->handle()', [$event]);
+        Log::debug('IdentifyListener->handle()', [$identify]);
 
         // $this->repository->saveGroup(
 

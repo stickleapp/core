@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Casts;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 /**
@@ -18,7 +19,7 @@ class PostGISPoint implements CastsAttributes
         }
 
         // Extract coordinates directly from PostGIS point value
-        $result = \DB::selectOne(
+        $result = DB::selectOne(
             'SELECT ST_Y(?::geometry) as lat, ST_X(?::geometry) as lng',
             [$value, $value]
         );
@@ -37,7 +38,7 @@ class PostGISPoint implements CastsAttributes
 
         if (is_array($value) && isset($value['lat'], $value['lng'])) {
             // Create PostGIS point using Eloquent's raw expression
-            return \DB::raw("ST_GeogFromText('POINT({$value['lng']} {$value['lat']})')");
+            return DB::raw("ST_GeogFromText('POINT({$value['lng']} {$value['lat']})')");
         }
 
         return $value;

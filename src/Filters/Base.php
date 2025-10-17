@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters;
 
+use Exception;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -12,11 +13,11 @@ use StickleApp\Core\Contracts\FilterTestContract;
 
 class Base
 {
-    public ?FilterTestContract $test;
+    public ?FilterTestContract $test = null;
 
     public ?FilterTargetContract $target = null;
 
-    public ?string $targetClass;
+    public ?string $targetClass = null;
 
     /** @var array<mixed> */
     public ?array $targetArguments = [];
@@ -33,9 +34,7 @@ class Base
 
         $targetClass = 'StickleApp\Core\Filters\Targets\\'.ucfirst($method);
 
-        if (! class_exists($targetClass)) {
-            throw new \Exception("Target class $targetClass does not exist");
-        }
+        throw_unless(class_exists($targetClass), Exception::class, "Target class $targetClass does not exist");
 
         $filter = new self;
 
@@ -75,20 +74,16 @@ class Base
     //     if ($name === 'target') {
     //         throw new \Exception('Target property cannot be accessed directly. Use getTarget() method with a Builder instance.');
     //     }
-
     //     throw new \Exception("Property {$name} does not exist");
     // }
-
     /**
      * Create target instance based on target class type
      *
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      */
     private function createTarget(Builder $builder): FilterTargetContract
     {
-        if (! isset($this->targetClass)) {
-            throw new \Exception('No target class defined');
-        }
+        throw_unless(isset($this->targetClass), Exception::class, 'No target class defined');
 
         $baseTargetClass = method_exists($this->targetClass, 'baseTarget')
             ? $this->targetClass::baseTarget()
@@ -101,9 +96,7 @@ class Base
                 $this->targetArguments
             );
 
-            if (! $target instanceof FilterTargetContract) {
-                throw new \Exception('Target instance must implement FilterTargetContract');
-            }
+            throw_unless($target instanceof FilterTargetContract, Exception::class, 'Target instance must implement FilterTargetContract');
 
             return $target;
         }
@@ -115,9 +108,7 @@ class Base
             ...$this->targetArguments
         );
 
-        if (! $target instanceof FilterTargetContract) {
-            throw new \Exception('Target instance must implement FilterTargetContract');
-        }
+        throw_unless($target instanceof FilterTargetContract, Exception::class, 'Target instance must implement FilterTargetContract');
 
         return $target;
     }
@@ -128,17 +119,15 @@ class Base
      */
     public function apply(Builder $builder, string $operator): Builder
     {
-        if (! isset($this->test)) {
-            throw new \Exception('No test defined');
-        }
+        throw_unless(isset($this->test), Exception::class, 'No test defined');
 
-        $target = $this->getTarget($builder);
+        $filterTargetContract = $this->getTarget($builder);
 
-        $target->applyJoin();
+        $filterTargetContract->applyJoin();
 
         return $this->test->applyFilter(
-            $target->builder,
-            $target,
+            $filterTargetContract->builder,
+            $filterTargetContract,
             $operator
         );
     }

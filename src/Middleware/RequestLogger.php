@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Middleware;
 
+use Illuminate\Support\Facades\Date;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
@@ -64,7 +65,7 @@ class RequestLogger
         $user = $request->user();
 
         $modelDto = $user ? new ModelDto(
-            model_class: get_class($user),
+            model_class: $user::class,
             object_uid: (string) $user->id,
             label: $user->stickleLabel(),
             raw: $user->toArray(),
@@ -84,6 +85,8 @@ class RequestLogger
             model_class: $user ? class_basename($user) : 'Guest',
             object_uid: $user ? (string) $user->getKey() : 'guest',
             session_uid: $request->session()->getId(),
+            timestamp: Date::now(),
+            model: $modelDto,
             ip_address: $ipAddress,
             properties: [
                 'name' => $request->path(),
@@ -100,12 +103,10 @@ class RequestLogger
                 'method' => $request->getMethod(),
                 'status_code' => $this->getStatusCode($response),
             ],
-            timestamp: Carbon::now(),
-            location_data: ($locationData = LocationData::find($ipAddress)) ? LocationDataDto::fromArray($locationData->toArray()) : null,
-            model: $modelDto
+            location_data: ($locationData = LocationData::query()->find($ipAddress)) ? LocationDataDto::fromArray($locationData->toArray()) : null
         );
 
-        Page::dispatch($requestDto);
+        event(new Page($requestDto));
     }
 
     /**
@@ -123,18 +124,13 @@ class RequestLogger
         }
 
         // Check URL patterns
-        foreach ($this->ignoredPatterns as $pattern) {
-            if ($request->is($pattern)) {
+        foreach ($this->ignoredPatterns as $ignoredPattern) {
+            if ($request->is($ignoredPattern)) {
                 return true;
             }
         }
-
         // Check for Telescope header
-        if ($request->hasHeader('X-Telescope-Request')) {
-            return true;
-        }
-
-        return false;
+        return $request->hasHeader('X-Telescope-Request');
     }
 
     /**
@@ -142,9 +138,13 @@ class RequestLogger
      */
     protected function isLivewireRequest(Request $request): bool
     {
-        return $request->hasHeader('X-Livewire') ||
-               $request->routeIs('livewire.*') ||
-               str_contains($request->path(), 'livewire/message');
+        if ($request->hasHeader('X-Livewire')) {
+            return true;
+        }
+        if ($request->routeIs('livewire.*')) {
+            return true;
+        }
+        return str_contains($request->path(), 'livewire/message');
     }
 
     /**

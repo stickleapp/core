@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\Log;
@@ -41,22 +42,16 @@ final class ProcessSegmentEventsCommand extends Command implements Isolatable
         /**
          * Retrieve the unprocessed model_segment events
          */
-        $builder = ModelSegmentAudit::with('segment')
-            ->where(function ($query) {
-                $query->whereNull('event_processed_at');
+        ModelSegmentAudit::with('segment')
+            ->where(function (Builder $builder): void {
+                $builder->whereNull('event_processed_at');
             })
             // ->lazyById(1000, column: 'id')
-            ->each(function ($item) {
+            ->each(function ($item): void {
                 if (data_get($item, 'operation') === 'ENTER' && $item->segment !== null) {
-                    ModelEnteredSegment::dispatch(
-                        $item->object,
-                        $item->segment
-                    );
+                    event(new ModelEnteredSegment($item->object, $item->segment));
                 } elseif (data_get($item, 'operation') === 'EXIT' && $item->segment !== null) {
-                    ModelExitedSegment::dispatch(
-                        $item->object,
-                        $item->segment
-                    );
+                    event(new ModelExitedSegment($item->object, $item->segment));
                 }
                 $item->update(['event_processed_at' => now()]);
             });

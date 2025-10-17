@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
+use Override;
+use InvalidArgumentException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Builder;
 use StickleApp\Core\Contracts\FilterTargetContract;
@@ -11,7 +14,7 @@ use StickleApp\Core\Contracts\FilterTargetContract;
 class Number extends FilterTargetContract
 {
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      */
     public function __construct(
         #[Config('stickle.database.tablePrefix')] protected ?string $prefix,
@@ -24,6 +27,7 @@ class Number extends FilterTargetContract
         return "data->'{$this->attribute}'";
     }
 
+    #[Override]
     public function castProperty(): mixed
     {
         return sprintf('(%s)::numeric', $this->property());
@@ -46,9 +50,7 @@ class Number extends FilterTargetContract
 
     private static function validateAttribute(?string $attribute): void
     {
-        if (! $attribute) {
-            throw new \InvalidArgumentException('Attribute is required for Number filter targets. You should have passed an attribute as a parameter of your target (ex. Filter::Number(\'price\')).');
-        }
+        throw_unless($attribute, InvalidArgumentException::class, 'Attribute is required for Number filter targets. You should have passed an attribute as a parameter of your target (ex. Filter::Number(\'price\')).');
     }
 
     /**
@@ -57,17 +59,11 @@ class Number extends FilterTargetContract
      */
     private static function validateDateRanges(array $currentDateRange, array $compareToDateRange, bool $aggregate, bool $hasDelta): void
     {
-        if ($aggregate && count($currentDateRange) !== 2) {
-            throw new \InvalidArgumentException('Current date range is required when using aggregates. Did you call betweenDates() or betweenDateRanges() on your filter?');
-        }
+        throw_if($aggregate && count($currentDateRange) !== 2, InvalidArgumentException::class, 'Current date range is required when using aggregates. Did you call betweenDates() or betweenDateRanges() on your filter?');
 
-        if ($hasDelta && count($currentDateRange) !== 2) {
-            throw new \InvalidArgumentException('Current date range is required when using delta comparisons. Did you call betweenDates() or betweenDateRanges() on your filter?');
-        }
+        throw_if($hasDelta && count($currentDateRange) !== 2, InvalidArgumentException::class, 'Current date range is required when using delta comparisons. Did you call betweenDates() or betweenDateRanges() on your filter?');
 
-        if ($aggregate && $hasDelta && count($compareToDateRange) !== 2) {
-            throw new \InvalidArgumentException('Compare-to date range is required when using delta comparisons with aggregates. Did you call betweenDateRanges() on your filter?');
-        }
+        throw_if($aggregate && $hasDelta && count($compareToDateRange) !== 2, InvalidArgumentException::class, 'Compare-to date range is required when using delta comparisons with aggregates. Did you call betweenDateRanges() on your filter?');
     }
 
     /**
@@ -75,17 +71,13 @@ class Number extends FilterTargetContract
      */
     private static function validateDeltaConfiguration(?string $deltaVerb, array $compareToDateRange): void
     {
-        if ($deltaVerb && count($compareToDateRange) !== 2) {
-            throw new \InvalidArgumentException('Delta type (increased, decreased, changed) is specified but no compare-to date range is provided. Did you call betweenDateRanges() on your filter?');
-        }
+        throw_if($deltaVerb && count($compareToDateRange) !== 2, InvalidArgumentException::class, 'Delta type (increased, decreased, changed) is specified but no compare-to date range is provided. Did you call betweenDateRanges() on your filter?');
 
-        if (! $deltaVerb && count($compareToDateRange) === 2) {
-            throw new \InvalidArgumentException('A compare-to date range is provided but no delta type (increased, decreased, changed) is specified. Call increased(), decreased(), or changed().');
-        }
+        throw_if(! $deltaVerb && count($compareToDateRange) === 2, InvalidArgumentException::class, 'A compare-to date range is provided but no delta type (increased, decreased, changed) is specified. Call increased(), decreased(), or changed().');
     }
 
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      * @param  array<mixed>  $currentDateRange
      * @param  array<mixed>  $compareToDateRange
      */
@@ -95,7 +87,7 @@ class Number extends FilterTargetContract
     }
 
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      * @param  array<mixed>  $currentDateRange
      */
     private static function createNumberAggregate(?string $prefix, Builder $builder, string $attribute, string $aggregate, array $currentDateRange): NumberAggregate
@@ -104,7 +96,7 @@ class Number extends FilterTargetContract
     }
 
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      * @param  array<mixed>  $currentDateRange
      */
     private static function createNumberDelta(?string $prefix, Builder $builder, string $attribute, array $currentDateRange): NumberDelta
@@ -113,7 +105,7 @@ class Number extends FilterTargetContract
     }
 
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      */
     private static function createNumber(?string $prefix, Builder $builder, string $attribute): Number
     {
@@ -121,7 +113,7 @@ class Number extends FilterTargetContract
     }
 
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      * @param  array<string, mixed>  $arguments
      */
     public static function getTargetInstance(?string $prefix, Builder $builder, array $arguments): FilterTargetContract

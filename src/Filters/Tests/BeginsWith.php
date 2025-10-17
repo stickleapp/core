@@ -13,8 +13,8 @@ class BeginsWith extends FilterTestContract
 {
     public function __construct(public string $comparator, public bool $caseSensitive = false) {}
 
-    public function applyFilter(Builder $builder, FilterTargetContract $target, string $operator): Builder
+    public function applyFilter(Builder $builder, FilterTargetContract $filterTargetContract, string $operator): Builder
     {
-        return $builder->whereLike(DB::raw($target->property()), sprintf('%s%%', $this->comparator), $this->caseSensitive, $operator);
+        return $builder->whereLike(DB::raw($filterTargetContract->property()), sprintf('%s%%', $this->comparator), $this->caseSensitive, $operator);
     }
 }

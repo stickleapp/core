@@ -28,7 +28,6 @@ final class RollupSessionsCommand extends Command implements Isolatable
      * Create a new command instance.
      */
     public function __construct(
-        #[ConfigAttribute('stickle.database.tablePrefix')] protected ?string $prefix,
         public readonly AnalyticsRepositoryContract $repository
     ) {
         parent::__construct();

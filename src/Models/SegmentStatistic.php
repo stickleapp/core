@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -17,10 +19,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $value_min
  * @property float $value_max
  * @property float $value_avg
- * @property \Illuminate\Support\Carbon $recorded_at
+ * @property Carbon $recorded_at
  */
 class SegmentStatistic extends Model
 {
+    use HasFactory;
     public $timestamps = false;
 
     /**

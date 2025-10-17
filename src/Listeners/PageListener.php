@@ -17,18 +17,18 @@ class PageListener implements ShouldQueue
      */
     public function __construct(public readonly AnalyticsRepositoryContract $repository) {}
 
-    public function handle(Page $event): void
+    public function handle(Page $page): void
     {
-        Log::debug('PageListener->handle()', [$event]);
+        Log::debug('PageListener->handle()', [$page]);
 
-        $request = Request::create([
+        Request::query()->create([
             'type' => 'page',
-            'model_class' => $event->payload->model_class,
-            'object_uid' => $event->payload->object_uid,
-            'session_uid' => $event->payload->session_uid,
-            'ip_address' => $event->payload->ip_address,
-            'timestamp' => $event->payload->timestamp,
-            'properties' => $event->payload->properties ?? [],
+            'model_class' => $page->payload->model_class,
+            'object_uid' => $page->payload->object_uid,
+            'session_uid' => $page->payload->session_uid,
+            'ip_address' => $page->payload->ip_address,
+            'timestamp' => $page->payload->timestamp,
+            'properties' => $page->payload->properties ?? [],
         ]);
 
     }

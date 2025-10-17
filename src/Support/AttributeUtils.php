@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Support;
 
+use Exception;
 use Attribute;
 use ReflectionClass;
 use ReflectionMethod;
@@ -15,24 +16,18 @@ class AttributeUtils
      */
     public static function getAllAttributesForClass_targetClass(string $className, ?string $attributeClass = null): array
     {
-        if (! class_exists($className)) {
-            throw new \Exception('Class not found');
-        }
+        throw_unless(class_exists($className), Exception::class, 'Class not found');
 
-        if ($attributeClass !== null) {
-            if (! class_exists($attributeClass)) {
-                throw new \Exception('Attribute not found');
-            }
-        }
+        throw_if($attributeClass !== null && ! class_exists($attributeClass), Exception::class, 'Attribute not found');
 
-        $reflection = new ReflectionClass($className);
+        $reflectionClass = new ReflectionClass($className);
         $metadata = [];
 
         // Check class for the attribute
-        $classAttributes = $reflection->getAttributes($attributeClass);
+        $classAttributes = $reflectionClass->getAttributes($attributeClass);
 
-        foreach ($classAttributes as $attribute) {
-            $instance = $attribute->newInstance();
+        foreach ($classAttributes as $classAttribute) {
+            $instance = $classAttribute->newInstance();
             if (property_exists($instance, 'value')) {
                 $metadata[$attributeClass] = $instance->value;
             }
@@ -46,21 +41,15 @@ class AttributeUtils
      */
     public static function getAllAttributesForClass_targetMethod(string $className, ?string $attributeClass = null): array
     {
-        if (! class_exists($className)) {
-            throw new \Exception('Class not found');
-        }
+        throw_unless(class_exists($className), Exception::class, 'Class not found');
 
-        if ($attributeClass !== null) {
-            if (! class_exists($attributeClass)) {
-                throw new \Exception('Attribute not found');
-            }
-        }
+        throw_if($attributeClass !== null && ! class_exists($attributeClass), Exception::class, 'Attribute not found');
 
-        $reflection = new ReflectionClass($className);
+        $reflectionClass = new ReflectionClass($className);
         $metadata = [];
 
         // Check methods for the attribute
-        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+        foreach ($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             $methodName = $method->getName();
 
             // Match for accessor methods (get*Attribute)
@@ -71,12 +60,12 @@ class AttributeUtils
                 // First, add underscore before each uppercase letter
                 $pattern = '/(?<!^)[A-Z]/';
                 $result = preg_replace($pattern, '_$0', $attributeName);
-                $attributeName = $result !== null ? $result : $attributeName;
+                $attributeName = $result ?? $attributeName;
 
                 // Then add underscore before numeric sequences
                 $pattern = '/([a-zA-Z])(\d+)/';
                 $result = preg_replace($pattern, '$1_$2', $attributeName);
-                $attributeName = $result !== null ? $result : $attributeName;
+                $attributeName = $result ?? $attributeName;
 
                 $attributeName = strtolower($attributeName);
 
@@ -99,21 +88,15 @@ class AttributeUtils
      */
     public static function getAllAttributesForClass_targetProperty(string $className, ?string $attributeClass = null): array
     {
-        if (! class_exists($className)) {
-            throw new \Exception('Class not found');
-        }
+        throw_unless(class_exists($className), Exception::class, 'Class not found');
 
-        if ($attributeClass !== null) {
-            if (! class_exists($attributeClass)) {
-                throw new \Exception('Attribute not found');
-            }
-        }
+        throw_if($attributeClass !== null && ! class_exists($attributeClass), Exception::class, 'Attribute not found');
 
-        $reflection = new ReflectionClass($className);
+        $reflectionClass = new ReflectionClass($className);
         $metadata = [];
 
         // Check properties for the attribute (if needed)
-        foreach ($reflection->getProperties() as $property) {
+        foreach ($reflectionClass->getProperties() as $property) {
             $attributes = $property->getAttributes($attributeClass);
             if (! empty($attributes)) {
                 $instance = $attributes[0]->newInstance();
@@ -135,23 +118,17 @@ class AttributeUtils
 
     public static function getAttributeForMethod(string $className, string $methodName, string $attributeClass): mixed
     {
-        if (! class_exists($className)) {
-            throw new \Exception('Class not found');
-        }
+        throw_unless(class_exists($className), Exception::class, 'Class not found');
 
-        if (! class_exists($attributeClass)) {
-            throw new \Exception('Attribute not found');
-        }
+        throw_unless(class_exists($attributeClass), Exception::class, 'Attribute not found');
 
-        $reflection = new ReflectionClass($className);
+        $reflectionClass = new ReflectionClass($className);
 
-        if (! $reflection->hasMethod($methodName)) {
-            throw new \Exception('Method not found');
-        }
+        throw_unless($reflectionClass->hasMethod($methodName), Exception::class, 'Method not found');
 
-        $method = $reflection->getMethod($methodName);
+        $reflectionMethod = $reflectionClass->getMethod($methodName);
 
-        $attributes = $method->getAttributes($attributeClass);
+        $attributes = $reflectionMethod->getAttributes($attributeClass);
 
         if (empty($attributes)) {
             return [];

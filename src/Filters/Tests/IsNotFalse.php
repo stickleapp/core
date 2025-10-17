@@ -11,13 +11,11 @@ use StickleApp\Core\Contracts\FilterTestContract;
 
 class IsNotFalse extends FilterTestContract
 {
-    public function __construct() {}
-
-    public function applyFilter(Builder $builder, FilterTargetContract $target, string $operator): Builder
+    public function applyFilter(Builder $builder, FilterTargetContract $filterTargetContract, string $operator): Builder
     {
-        return $builder->where(function (Builder $query) use ($target) {
-            $query->where(DB::raw($target->castProperty()), '!=', false);
-            $query->orWhereNull(DB::raw($target->castProperty()));
+        return $builder->where(function (Builder $builder) use ($filterTargetContract): void {
+            $builder->where(DB::raw($filterTargetContract->castProperty()), '!=', false);
+            $builder->orWhereNull(DB::raw($filterTargetContract->castProperty()));
         });
     }
 }

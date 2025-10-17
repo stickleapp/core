@@ -13,8 +13,8 @@ class GreaterThanOrEqualTo extends FilterTestContract
 {
     public function __construct(public mixed $comparator) {}
 
-    public function applyFilter(Builder $builder, FilterTargetContract $target, string $operator): Builder
+    public function applyFilter(Builder $builder, FilterTargetContract $filterTargetContract, string $operator): Builder
     {
-        return $builder->where(DB::raw($target->castProperty()), '>=', $target->castValue($this->comparator), $operator);
+        return $builder->where(DB::raw($filterTargetContract->castProperty()), '>=', $filterTargetContract->castValue($this->comparator), $operator);
     }
 }

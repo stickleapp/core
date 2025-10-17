@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Http\Controllers;
 
+use StickleApp\Core\Support\AttributeUtils;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use StickleApp\Core\Attributes\StickleSegmentMetadata;
@@ -14,17 +15,17 @@ class SegmentsController
     public function index(Request $request): JsonResponse
     {
         $builder = Segment::query()
-            ->when($request->input('model_class'), function ($query) use ($request) {
+            ->when($request->input('model_class'), function ($query) use ($request): void {
                 $query->where('model_class', $request->input('model_class'));
             });
 
         // Get the paginated results
-        $segments = $builder->paginate($request->integer('per_page', 15));
+        $lengthAwarePaginator = $builder->paginate($request->integer('per_page', 15));
 
         // Add metadata to each segment
-        $segments->through(function (Segment $segment) {
+        $lengthAwarePaginator->through(function (Segment $segment): Segment {
 
-            if (! $metadata = \StickleApp\Core\Support\AttributeUtils::getAttributeForClass(
+            if (! $metadata = AttributeUtils::getAttributeForClass(
                 config('stickle.namespaces.segments').'\\'.$segment->as_class,
                 StickleSegmentMetadata::class
             )) {
@@ -39,6 +40,6 @@ class SegmentsController
             return $segment;
         });
 
-        return response()->json($segments);
+        return response()->json($lengthAwarePaginator);
     }
 }

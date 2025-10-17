@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
+use Override;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Builder;
 use StickleApp\Core\Contracts\FilterTargetContract;
@@ -11,7 +13,7 @@ use StickleApp\Core\Contracts\FilterTargetContract;
 class Datetime extends FilterTargetContract
 {
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      */
     public function __construct(
         #[Config('stickle.database.tablePrefix')] protected ?string $prefix,
@@ -24,6 +26,7 @@ class Datetime extends FilterTargetContract
         return "data->>'{$this->attribute}'";
     }
 
+    #[Override]
     public function castProperty(): mixed
     {
         return sprintf('%s::datetime', $this->property());

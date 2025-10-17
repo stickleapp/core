@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core;
 
+use Override;
+use StickleApp\Core\Support\Asset;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
@@ -30,11 +32,10 @@ final class CoreServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
+    #[Override]
     public function register(): void
     {
-        $this->app->singleton('stickle.asset', function () {
-            return new \StickleApp\Core\Support\Asset;
-        });
+        $this->app->singleton('stickle.asset', fn(): \Asset => new Asset);
 
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ScheduleServiceProvider::class);
@@ -55,10 +56,10 @@ final class CoreServiceProvider extends ServiceProvider
         Route::bind('segment', function (string $value) {
 
             if (is_numeric($value)) {
-                return Segment::findOrFail($value);
+                return Segment::query()->findOrFail($value);
             }
 
-            return Segment::where('as_class', $value)->firstOrFail();
+            return Segment::query()->where('as_class', $value)->firstOrFail();
         });
 
         if (config('stickle.tracking.server.loadMiddleware') === true) {

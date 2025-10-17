@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Repositories;
 
+use Illuminate\Support\Facades\DB;
 use DateTimeInterface;
 use Illuminate\Container\Attributes\Config;
 use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
@@ -11,13 +12,14 @@ use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
 /**
  * @internal
  */
-final class PostgresAnalyticsRepository implements AnalyticsRepositoryContract
+final readonly class PostgresAnalyticsRepository implements AnalyticsRepositoryContract
 {
     /**
      * Creates a new analytics repository instance.
      */
     public function __construct(
-        #[Config('stickle.database.tablePrefix')] protected ?string $prefix = null,
+        #[Config('stickle.database.tablePrefix')]
+ private ?string $prefix = null,
     ) {}
 
     public function rollupSessions(DateTimeInterface $startDate): void
@@ -58,6 +60,6 @@ INSERT INTO {$this->prefix}sessions_rollup_1day (
 ON CONFLICT (model_class, object_uid, day) DO UPDATE SET session_count = EXCLUDED.session_count;
 sql;
 
-        \DB::statement(sprintf($sql, $startDate->format('Y-m-d'), $startDate->format('Y-m-d')));
+        DB::statement(sprintf($sql, $startDate->format('Y-m-d'), $startDate->format('Y-m-d')));
     }
 }

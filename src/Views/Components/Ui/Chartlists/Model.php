@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Views\Components\Ui\Chartlists;
 
+use StickleApp\Core\Traits\StickleEntity;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\View\Component;
 use Illuminate\View\View;
@@ -33,7 +34,7 @@ class Model extends Component
 
     public function chartData(): array
     {
-        if (! ClassUtils::usesTrait($this->model, 'StickleApp\\Core\\Traits\\StickleEntity')) {
+        if (! ClassUtils::usesTrait($this->model, StickleEntity::class)) {
             return [];
         }
 

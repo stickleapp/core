@@ -14,32 +14,26 @@ class ModelAttributesObserver
     /**
      * Handle the ModelAttributes "saved" event.
      */
-    public function saved(ModelAttributes $modelAttribute): void
+    public function saved(ModelAttributes $modelAttributes): void
     {
 
-        $from = $modelAttribute->getOriginal('data');
-        $to = $modelAttribute->getAttribute('data');
+        $from = $modelAttributes->getOriginal('data');
+        $to = $modelAttributes->getAttribute('data');
 
         $diff = $this->getChangedAttributes($from, $to);
 
         foreach ($diff as $property => $changes) {
             // This may be slow
-            ModelAttributeAudit::firstOrCreate([
-                'model_class' => $modelAttribute->model_class,
-                'object_uid' => $modelAttribute->object_uid,
+            ModelAttributeAudit::query()->firstOrCreate([
+                'model_class' => $modelAttributes->model_class,
+                'object_uid' => $modelAttributes->object_uid,
                 'attribute' => $property,
                 'timestamp' => now(),
             ], [
                 'value_old' => Arr::get($changes, 'value_old'),
                 'value_new' => Arr::get($changes, 'value_new'),
             ]);
-            ModelAttributeChanged::dispatch(
-                $modelAttribute->model_class,
-                $modelAttribute->object_uid,
-                $property,
-                Arr::get($changes, 'value_old'),
-                Arr::get($changes, 'value_new')
-            );
+            event(new ModelAttributeChanged($modelAttributes->model_class, $modelAttributes->object_uid, $property, Arr::get($changes, 'value_old'), Arr::get($changes, 'value_new')));
         }
     }
 
@@ -51,8 +45,8 @@ class ModelAttributesObserver
     public function getChangedAttributes(?array $original = [], ?array $modified = []): array
     {
 
-        $original = $original ?? [];
-        $modified = $modified ?? [];
+        $original ??= [];
+        $modified ??= [];
         $changed = [];
 
         foreach ($original as $key => $value) {

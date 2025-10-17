@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Views\Components\Ui\Chartlists;
 
+use StickleApp\Core\Traits\StickleEntity;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\View\Component;
 use Illuminate\View\View;
@@ -36,7 +37,7 @@ class Segment extends Component
 
         $modelClass = config('stickle.namespaces.models').'\\'.$this->segment->model_class;
 
-        if (! ClassUtils::usesTrait($modelClass, 'StickleApp\\Core\\Traits\\StickleEntity')) {
+        if (! ClassUtils::usesTrait($modelClass, StickleEntity::class)) {
             return [];
         }
 

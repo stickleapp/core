@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
@@ -52,15 +54,15 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
         $classes = $this->getClassesWithTrait(StickleEntity::class, $directory, $namespace);
 
         foreach ($classes as $class) {
-            /** @var \Illuminate\Database\Eloquent\Model $model */
+            /** @var Model $model */
             $model = new $class;
 
             $builder = $class::query()->leftJoin(
-                "{$this->prefix}model_attributes", function ($join) use ($model) {
+                "{$this->prefix}model_attributes", function ($join) use ($model): void {
                     $join->on(
                         "{$this->prefix}model_attributes.object_uid",
                         '=',
-                        \DB::raw($model->getTable().'.'.$model->getKeyName().'::text')
+                        DB::raw($model->getTable().'.'.$model->getKeyName().'::text')
                     );
                     $join->where(
                         "{$this->prefix}model_attributes.model_class",
@@ -68,13 +70,13 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
                         $model::class
                     );
                 }
-            )->where(function ($query) {
+            )->where(function ($query): void {
                 $query->where('synced_at', '<', now()->subMinutes(config('stickle.schedule.recordModelAttributes', 360)))
                     ->orWhereNull('synced_at');
             })->limit($limit)->select("{$model->getTable()}.*");
 
             foreach ($builder->cursor() as $stickleEntity) {
-                dispatch(function () use ($stickleEntity) {
+                dispatch(function () use ($stickleEntity): void {
                     $attributes = $stickleEntity->getStickleTrackedAttributes();
                     $stickleEntity->trackable_attributes = $stickleEntity->only($attributes);
                 });
@@ -99,7 +101,7 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
                 $className = $modelsNamespace.'\\'.str_replace(
                     ['/', '.php'],
                     ['\\', ''],
-                    substr($file->getRealPath(), strlen($modelsDirectory) + 1)
+                    substr((string) $file->getRealPath(), strlen($modelsDirectory) + 1)
                 );
                 $a[] = $className;
                 $traits = class_uses($className);

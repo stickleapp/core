@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core;
 
+use Carbon\CarbonInterval;
+use Override;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\ServiceProvider;
 
@@ -15,7 +17,7 @@ class ScheduleServiceProvider extends ServiceProvider
             $this->schedulePartitionJobs();
         }
 
-        $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
 
             // Register the rollup sessions command
             $schedule->command('stickle:rollup-sessions', [
@@ -33,7 +35,7 @@ class ScheduleServiceProvider extends ServiceProvider
 
     protected function schedulePartitionJobs(): void
     {
-        $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
 
             $tablePrefix = config('stickle.database.tablePrefix');
             $schema = config('stickle.database.schema');
@@ -110,28 +112,28 @@ class ScheduleServiceProvider extends ServiceProvider
                 $tablePrefix.'requests_rollup_1min',
                 $schema,
                 $intervalRequests,
-                now()->add(\Carbon\CarbonInterval::fromString($extentionRequests))->format('Y-m-d'),
+                now()->add(CarbonInterval::fromString($extentionRequests))->format('Y-m-d'),
             ])->twiceDailyAt(8, 20, 0);
 
             $schedule->command('stickle:create-partitions', [
                 $tablePrefix.'requests_rollup_5min',
                 $schema,
                 $intervalRequests,
-                now()->add(\Carbon\CarbonInterval::fromString($extentionRequests))->format('Y-m-d'),
+                now()->add(CarbonInterval::fromString($extentionRequests))->format('Y-m-d'),
             ])->twiceDailyAt(9, 21, 0);
 
             $schedule->command('stickle:create-partitions', [
                 $tablePrefix.'requests_rollup_1hr',
                 $schema,
                 $intervalRequests,
-                now()->add(\Carbon\CarbonInterval::fromString($extentionRequests))->format('Y-m-d'),
+                now()->add(CarbonInterval::fromString($extentionRequests))->format('Y-m-d'),
             ])->twiceDailyAt(10, 22, 0);
 
             $schedule->command('stickle:create-partitions', [
                 $tablePrefix.'requests_rollup_1day',
                 $schema,
                 $intervalRequests,
-                now()->add(\Carbon\CarbonInterval::fromString($extentionRequests))->format('Y-m-d'),
+                now()->add(CarbonInterval::fromString($extentionRequests))->format('Y-m-d'),
             ])->twiceDailyAt(11, 23, 0);
 
             // Requests partition dropping
@@ -139,28 +141,28 @@ class ScheduleServiceProvider extends ServiceProvider
                 $tablePrefix.'requests_rollup_1min',
                 $schema,
                 $intervalRequests,
-                now()->sub(\Carbon\CarbonInterval::fromString($retentionRequests))->format('Y-m-d'),
+                now()->sub(CarbonInterval::fromString($retentionRequests))->format('Y-m-d'),
             ])->twiceDailyAt(0, 12, 30);
 
             $schedule->command('stickle:drop-partitions', [
                 $tablePrefix.'requests_rollup_5min',
                 $schema,
                 $intervalRequests,
-                now()->sub(\Carbon\CarbonInterval::fromString($retentionRequests))->format('Y-m-d'),
+                now()->sub(CarbonInterval::fromString($retentionRequests))->format('Y-m-d'),
             ])->twiceDailyAt(1, 13, 30);
 
             $schedule->command('stickle:drop-partitions', [
                 $tablePrefix.'requests_rollup_1hr',
                 $schema,
                 $intervalRequests,
-                now()->sub(\Carbon\CarbonInterval::fromString($retentionRequests))->format('Y-m-d'),
+                now()->sub(CarbonInterval::fromString($retentionRequests))->format('Y-m-d'),
             ])->twiceDailyAt(2, 14, 30);
 
             $schedule->command('stickle:drop-partitions', [
                 $tablePrefix.'requests_rollup_1day',
                 $schema,
                 $intervalRequests,
-                now()->sub(\Carbon\CarbonInterval::fromString($retentionRequests))->format('Y-m-d'),
+                now()->sub(CarbonInterval::fromString($retentionRequests))->format('Y-m-d'),
             ])->twiceDailyAt(3, 15, 30);
 
             // Sessions partition creation
@@ -168,7 +170,7 @@ class ScheduleServiceProvider extends ServiceProvider
                 $tablePrefix.'sessions_rollup_1day',
                 $schema,
                 $intervalSessions,
-                now()->add(\Carbon\CarbonInterval::fromString($extentionSessions))->format('Y-m-d'),
+                now()->add(CarbonInterval::fromString($extentionSessions))->format('Y-m-d'),
             ])->twiceDailyAt(4, 16, 30);
 
             // Sessions partition dropping
@@ -176,10 +178,11 @@ class ScheduleServiceProvider extends ServiceProvider
                 $tablePrefix.'sessions_rollup_1day',
                 $schema,
                 $intervalSessions,
-                now()->sub(\Carbon\CarbonInterval::fromString($retentionSessions))->format('Y-m-d'),
+                now()->sub(CarbonInterval::fromString($retentionSessions))->format('Y-m-d'),
             ])->twiceDailyAt(5, 17, 30);
         });
     }
 
+    #[Override]
     public function register() {}
 }

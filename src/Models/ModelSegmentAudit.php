@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ModelSegmentAudit extends Model
 {
+    use HasFactory;
     public $timestamps = false;
 
     /**
@@ -62,7 +64,7 @@ class ModelSegmentAudit extends Model
     /**
      * Get the Object associated with the audit
      *
-     * @return \Illuminate\Database\Eloquent\Casts\Attribute<Model, string>
+     * @return Attribute<Model, string>
      */
     protected function object(): Attribute
     {
@@ -82,7 +84,7 @@ class ModelSegmentAudit extends Model
     /**
      * Get the Segment associated with the audit
      *
-     * @return BelongsTo<Segment, ModelSegmentAudit>
+     * @return BelongsTo<Segment, $this>
      */
     public function segment(): BelongsTo
     {

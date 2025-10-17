@@ -15,7 +15,7 @@ class Asset
             if ($contents !== false) {
                 $manifest = json_decode($contents, true);
                 if (is_array($manifest) && array_key_exists($path, $manifest)) {
-                    return asset('vendor/stickleapp/core/'.ltrim($manifest[$path]['file'], '/'));
+                    return asset('vendor/stickleapp/core/'.ltrim((string) $manifest[$path]['file'], '/'));
                 }
             }
         }

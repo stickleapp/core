@@ -11,10 +11,8 @@ use StickleApp\Core\Contracts\FilterTestContract;
 
 class IsNull extends FilterTestContract
 {
-    public function __construct() {}
-
-    public function applyFilter(Builder $builder, FilterTargetContract $target, string $operator): Builder
+    public function applyFilter(Builder $builder, FilterTargetContract $filterTargetContract, string $operator): Builder
     {
-        return $builder->whereNull(DB::raw($target->castProperty()));
+        return $builder->whereNull(DB::raw($filterTargetContract->castProperty()));
     }
 }

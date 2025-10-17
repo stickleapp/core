@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
+use Override;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Container\Attributes\Config;
@@ -16,7 +19,7 @@ use StickleApp\Core\Contracts\FilterTargetContract;
 class EventCountAggregate extends FilterTargetContract
 {
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      */
     public function __construct(
         #[Config('stickle.database.tablePrefix')] protected ?string $prefix,
@@ -29,7 +32,7 @@ class EventCountAggregate extends FilterTargetContract
 
     public static function baseTarget(): string
     {
-        return 'StickleApp\\Core\\Filters\\Targets\\EventCount';
+        return EventCount::class;
     }
 
     public function property(): string
@@ -37,6 +40,7 @@ class EventCountAggregate extends FilterTargetContract
         return $this->event;
     }
 
+    #[Override]
     public function castProperty(): mixed
     {
         return sprintf('event_count_aggregate_%s', $this->joinKey());
@@ -58,12 +62,12 @@ class EventCountAggregate extends FilterTargetContract
 
     private function subJoin(): QueryBuilder
     {
-        return \DB::table($this->prefix.'requests_rollup_1day')
+        return DB::table($this->prefix.'requests_rollup_1day')
             ->where('type', 'event')
             ->where('name', $this->event)
             ->where('model_class', $this->builder->getModel()->getMorphClass())
-            ->whereDate('day', '>=', Carbon::parse($this->startDate)->toDateString())
-            ->whereDate('day', '<', Carbon::parse($this->endDate)->toDateString())
+            ->whereDate('day', '>=', Date::parse($this->startDate)->toDateString())
+            ->whereDate('day', '<', Date::parse($this->endDate)->toDateString())
             ->groupBy(['model_class', 'object_uid'])
             ->select('model_class', 'object_uid', DB::raw("{$this->aggregate}(request_count) as {$this->castProperty()}"));
     }
@@ -83,8 +87,8 @@ class EventCountAggregate extends FilterTargetContract
         $this->builder->leftJoinSub(
             $subJoin,
             $joinKey,
-            function (JoinClause $join) use ($model, $joinKey) {
-                $join->on($joinKey.'.object_uid', '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
+            function (JoinClause $joinClause) use ($model, $joinKey): void {
+                $joinClause->on($joinKey.'.object_uid', '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
             }
         );
     }

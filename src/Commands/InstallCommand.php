@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
+use StickleApp\Core\CoreServiceProvider;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
@@ -69,154 +70,152 @@ class InstallCommand extends Command
             ->note('This can mean different things in different apps.')
             ->note('90% of the time that means your `User` model but it can also include other models such as `Company`, `Organization`, or `Account`.')
             ->text(
-                name: 'STICKLE_NAMESPACES_MODELS',
                 label: 'Where do you place your laravel models?',
-                validate: ['STICKLE_NAMESPACES_MODELS' => 'string|required'],
+                default: 'App\Models',
                 required: true,
+                validate: ['STICKLE_NAMESPACES_MODELS' => 'string|required'],
                 hint: 'Full namespace, e.g. `App\Models`',
-                default: 'App\Models'
+                name: 'STICKLE_NAMESPACES_MODELS'
             )
             ->note('Stickle makes it super simple to react to client-side events using server-side code.')
             ->text(
-                name: 'STICKLE_NAMESPACES_LISTENERS',
                 label: 'Where do you place your event listeners?',
-                validate: ['STICKLE_NAMESPACES_LISTENERS' => 'string|required'],
+                default: 'App\Listeners',
                 required: true,
+                validate: ['STICKLE_NAMESPACES_LISTENERS' => 'string|required'],
                 hint: 'Full namespace, e.g. `App\Listeners`',
-                default: 'App\Listeners'
+                name: 'STICKLE_NAMESPACES_LISTENERS'
             )
             ->note('If you can use Eloquent then you can build powerful Customer segments that Stickle will track for you.')
             ->warning('If if you can\'t write an Eloquent query, you probably should stop now but, hey, that\'s your call.')
             ->pause('Did I scare you away? No? Press ENTER key to continue...')
             ->text(
-                name: 'STICKLE_NAMESPACES_SEGMENTS',
                 label: 'Where will you place your Stickle Segments?',
-                validate: ['STICKLE_NAMESPACES_SEGMENTS' => 'string|required'],
+                default: 'App\Segments',
                 required: true,
+                validate: ['STICKLE_NAMESPACES_SEGMENTS' => 'string|required'],
                 hint: 'Full namespace, e.g. `App\Segments`',
-                default: 'App\Segments'
+                name: 'STICKLE_NAMESPACES_SEGMENTS'
             )
             ->note('Stickle will need access to your primary database.')
             ->warning('It **will** query existing tables and create new ones.')
             ->warning('It **won\'t** modify or delete any of your existing tables.')
             ->suggest(
-                name: 'STICKLE_DATABASE_SCHEMA',
                 label: 'Which database schema should be used?',
-                validate: ['connection' => 'string|required'],
-                required: true,
-                default: 'public',
                 options: fn () => collect(config('database.connections'))
-                    ->filter(fn ($connection) => $connection['driver'] === 'pgsql')
-                    ->map(fn ($connection, $name) => $connection['schema'] ?? 'public')
+                    ->filter(fn ($connection): bool => $connection['driver'] === 'pgsql')
+                    ->map(fn ($connection, $name): mixed => $connection['schema'] ?? 'public')
                     ->unique()
                     ->values()
-                    ->toArray()
+                    ->toArray(),
+                default: 'public',
+                required: true,
+                validate: ['connection' => 'string|required'],
+                name: 'STICKLE_DATABASE_SCHEMA'
             )
             ->note('Stickle can prefix the name of tables it creates with a string to help keep things organized and prevent name collision.')
             ->text(
-                name: 'STICKLE_DATABASE_TABLE_PREFIX',
                 label: 'Would you like to prefix your Stickle table names with a short string?',
+                default: 'stc_',
                 validate: ['STICKLE_DATABASE_TABLE_PREFIX' => 'string|min:0|max:10'],
-                default: 'stc_'
+                name: 'STICKLE_DATABASE_TABLE_PREFIX'
             )
             ->confirm(
-                name: 'STICKLE_DATABASE_ENABLE_PARTITIONS',
                 label: 'Would you like to use partitioning?',
                 default: true,
-                required: false,
                 yes: 'Yes',
                 no: 'No',
-                hint: 'PostgreSQL only - If you have a high volume of events and page views, this make Stickle more performant.'
+                required: false,
+                hint: 'PostgreSQL only - If you have a high volume of events and page views, this make Stickle more performant.',
+                name: 'STICKLE_DATABASE_ENABLE_PARTITIONS'
             )
             ->note('Stickle needs access to a disk to store files for loading large data sets.')
             ->suggest(
-                name: 'STICKLE_FILESYSTEM_DISK_EXPORTS',
                 label: 'What storage disk should be used for data exports?',
-                validate: ['STICKLE_FILESYSTEM_DISK_EXPORTS' => 'string'],
-                required: true,
+                options: fn () => array_keys(config('filesystems.disks')),
                 default: 'local',
-                options: fn () => array_keys(config('filesystems.disks'))
+                required: true,
+                validate: ['STICKLE_FILESYSTEM_DISK_EXPORTS' => 'string'],
+                name: 'STICKLE_FILESYSTEM_DISK_EXPORTS'
             )
             ->note('Stickle can track every request received using server-side middleware.')
             ->confirm(
-                name: 'STICKLE_TRACK_SERVER_LOAD_MIDDLEWARE',
                 label: 'Do you want to track server requests using middleware?',
                 default: true,
-                required: true,
                 yes: 'Yes',
-                no: 'No'
+                no: 'No',
+                required: true,
+                name: 'STICKLE_TRACK_SERVER_LOAD_MIDDLEWARE'
             )
             ->note('Stickle can track Laravel authentication events such as logins, logouts, password resets, etc.')
             ->confirm(
-                name: 'STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED',
                 label: 'Do you want to track Laravel authentication events?',
                 default: true,
-                required: true,
                 yes: 'Yes',
-                no: 'No'
+                no: 'No',
+                required: true,
+                name: 'STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED'
             )
             ->note('Stickle can track insert a small Javascript snippet that will track user events and page views.')
             ->note('You can further configure this tracking code to track custom client-side events.')
             ->confirm(
-                name: 'STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE',
                 label: 'Do you want to track client-side requests using Javascript?',
                 default: true,
-                required: true,
                 yes: 'Yes',
-                no: 'No'
+                no: 'No',
+                required: true,
+                name: 'STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE'
             )
             ->note('StickleUI gives you visual access to your data.')
             ->note('By default, it is available at `/stickle` but you can change it.')
             ->text(
-                name: 'STICKLE_WEB_PREFIX',
                 label: 'What path would you like to use for accessing StickleUI?',
+                default: 'stickle',
                 required: true,
                 validate: ['STICKLE_WEB_PREFIX' => 'string'],
-                default: 'stickle'
+                name: 'STICKLE_WEB_PREFIX'
             )
             ->note('Stickle will apply middleware you require to the web routes.')
             ->text(
-                name: 'STICKLE_WEB_MIDDLEWARE',
                 label: 'What middleware would you like to apply to the web routes?',
+                default: 'web',
                 validate: ['STICKLE_WEB_MIDDLEWARE' => 'string'],
-                default: 'web'
+                name: 'STICKLE_WEB_MIDDLEWARE'
             )
             ->note('Stickle exposes some API routes used by the UI.')
             ->note('We prefix the routes (`api/stickle`) to distinguish them from your other routes.')
             ->text(
-                name: 'STICKLE_API_PREFIX',
                 label: 'What prefix would you like to use for the API routes?',
+                default: 'api/stickle',
                 validate: ['STICKLE_API_PREFIX' => 'string'],
-                default: 'api/stickle'
+                name: 'STICKLE_API_PREFIX'
             )
             ->note('Stickle will apply middleware you require to the API routes.')
             ->text(
-                name: 'STICKLE_API_MIDDLEWARE',
                 label: 'What middleware would you like to apply to the API routes?',
+                default: 'api',
                 validate: ['STICKLE_API_MIDDLEWARE' => 'string'],
-                default: 'api'
+                name: 'STICKLE_API_MIDDLEWARE'
             )
             ->note('Stickle processes some items in real-time but other items are refreshed on a schedule.')
             ->note('You can specify how frequently data should be refreshed.')
             ->text(
-                name: 'interval',
                 label: 'How long should we wait before refreshing data?',
-                validate: ['interval' => 'required|int|min:1'],
+                default: '360',
                 required: true,
+                validate: ['interval' => 'required|int|min:1'],
                 hint: 'Every X minutes',
-                default: '360'
+                name: 'interval'
             )
             ->info('Please review your settings.')
             ->note('You can change any of these settings in config/stickle.php.')
             ->add(function ($settings) use ($labels) {
                 $rows = collect($settings)
-                    ->reject(fn ($value, $key) => is_numeric($key))
-                    ->map(function ($value, $key) use ($labels) {
-                        return [
-                            'label' => (string) $labels[$key] ?? $key,
-                            'value' => (string) $value,
-                        ];
-                    });
+                    ->reject(fn ($value, $key): bool => is_numeric($key))
+                    ->map(fn($value, $key): array => [
+                        'label' => (string) $labels[$key] ?? $key,
+                        'value' => (string) $value,
+                    ]);
 
                 return table(
                     headers: ['Setting', 'Value'],
@@ -230,7 +229,7 @@ class InstallCommand extends Command
         )) {
 
             // Clear out the notes() etc, with numerical indexes
-            $settings = collect($settings)->reject(fn ($value, $key) => is_numeric($key))->toArray();
+            $settings = collect($settings)->reject(fn ($value, $key): bool => is_numeric($key))->toArray();
 
             $settings = $this->formatSettings($settings);
 
@@ -240,7 +239,7 @@ class InstallCommand extends Command
 
             $this->call('vendor:publish', [
                 '--force' => true,
-                '--provider' => 'StickleApp\Core\CoreServiceProvider',
+                '--provider' => CoreServiceProvider::class,
             ]);
 
             info('Configuration published successfully!');
@@ -307,13 +306,13 @@ class InstallCommand extends Command
 
             $repoUrl = 'https://github.com/stickleapp/core';
 
-            if (PHP_OS_FAMILY == 'Darwin') {
+            if (PHP_OS_FAMILY === 'Darwin') {
                 exec("open {$repoUrl}");
             }
-            if (PHP_OS_FAMILY == 'Windows') {
+            if (PHP_OS_FAMILY === 'Windows') {
                 exec("start {$repoUrl}");
             }
-            if (PHP_OS_FAMILY == 'Linux') {
+            if (PHP_OS_FAMILY === 'Linux') {
                 exec("xdg-open {$repoUrl}");
             }
         }
@@ -322,12 +321,12 @@ class InstallCommand extends Command
 
     }
 
-    private function installReverb()
+    private function installReverb(): void
     {
         $this->call('install:broadcasting');
     }
 
-    private function runMigrations()
+    private function runMigrations(): void
     {
         $this->call('migrate');
     }
@@ -370,7 +369,7 @@ class InstallCommand extends Command
             $envValue = is_bool($value) ? ($value ? 'true' : 'false') : $value;
 
             // If value contains spaces or special characters, wrap it in quotes
-            if (is_string($value) && preg_match('/\s|[^a-zA-Z0-9_.]/', $envValue)) {
+            if (is_string($value) && preg_match('/\s|[^a-zA-Z0-9_.]/', (string) $envValue)) {
                 $envValue = '"'.str_replace(['"', '\\'], ['\"', '\\\\\\\\'], $envValue).'"';
             }
 

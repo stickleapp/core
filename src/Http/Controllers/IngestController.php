@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Http\Controllers;
 
+use Exception;
+use StickleApp\Core\Traits\StickleEntity;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -48,7 +50,7 @@ class IngestController
                 'request' => $request->getContent(),
             ]);
 
-            throw new \Exception('Request invalid');
+            throw new Exception('Request invalid');
         }
 
         $validated = $validator->validated();
@@ -67,19 +69,15 @@ class IngestController
 
         foreach (data_get($validated, 'payload') as $item) {
 
-            if (! $modelClass = $this->modelClass(
+            throw_unless($modelClass = $this->modelClass(
                 data_get($item, 'model_class'),
                 $request->user()
-            )) {
-                throw new \Exception('Model class not specified');
-            }
+            ), Exception::class, 'Model class not specified');
 
-            if (! $objectUid = $this->objectUid(
+            throw_unless($objectUid = $this->objectUid(
                 data_get($item, 'object_uid'),
                 $request->user()
-            )) {
-                throw new \Exception('Object id not specified');
-            }
+            ), Exception::class, 'Object id not specified');
 
             $itemProperties = array_merge($defaultProperties, data_get($item, 'properties', []));
 
@@ -88,19 +86,19 @@ class IngestController
                 model_class: $modelClass,
                 object_uid: $objectUid,
                 session_uid: $request->session()->getId(),
+                timestamp: data_get($item, 'timestamp', $dt),
+                model: $this->getModelDto($modelClass, $objectUid),
                 ip_address: $request->ip(),
                 properties: $itemProperties,
-                timestamp: data_get($item, 'timestamp', $dt),
-                location_data: null,
-                model: $this->getModelDto($modelClass, $objectUid)
+                location_data: null
             );
 
             switch ($item['type']) {
                 case 'page':
-                    Page::dispatch($requestDto);
+                    event(new Page($requestDto));
                     break;
                 case 'track':
-                    Track::dispatch($requestDto);
+                    event(new Track($requestDto));
                     break;
             }
         }
@@ -124,7 +122,7 @@ class IngestController
     private function objectUid(?string $explicit, ?object $model): ?string
     {
         if ($explicit) {
-            return (string) $explicit;
+            return $explicit;
         }
 
         if ($model && property_exists($model, 'id')) {
@@ -141,7 +139,7 @@ class IngestController
     {
         return ClassUtils::getClassesWithTrait(
             config('stickle.namespaces.models'),
-            \StickleApp\Core\Traits\StickleEntity::class
+            StickleEntity::class
         );
     }
 
@@ -149,13 +147,9 @@ class IngestController
     {
         $fullModelClass = config('stickle.namespaces.models').'\\'.Str::ucfirst($modelClass);
 
-        if (! class_exists($fullModelClass)) {
-            throw new \Exception('Model not found: '.$fullModelClass);
-        }
+        throw_unless(class_exists($fullModelClass), Exception::class, 'Model not found: '.$fullModelClass);
 
-        if (! ClassUtils::usesTrait($fullModelClass, 'StickleApp\\Core\\Traits\\StickleEntity')) {
-            throw new \Exception('Model does not use StickleTrait.');
-        }
+        throw_unless(ClassUtils::usesTrait($fullModelClass, StickleEntity::class), Exception::class, 'Model does not use StickleTrait.');
 
         $model = $fullModelClass::findOrFail($objectUid);
 

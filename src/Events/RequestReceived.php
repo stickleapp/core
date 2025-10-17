@@ -27,7 +27,7 @@ class RequestReceived implements ShouldBroadcast
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
+     * @return array<int, Channel>
      */
     public function broadcastOn(): array
     {
@@ -37,7 +37,7 @@ class RequestReceived implements ShouldBroadcast
             ),
             new Channel(
                 sprintf(config('stickle.broadcasting.channels.object'),
-                    str_replace('\\', '-', strtolower(data_get($this->payload, 'model_class'))),
+                    str_replace('\\', '-', strtolower((string) data_get($this->payload, 'model_class'))),
                     data_get($this->payload, 'object_uid')
                 )
             ),

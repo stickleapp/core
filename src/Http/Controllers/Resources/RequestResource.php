@@ -2,6 +2,9 @@
 
 namespace StickleApp\Core\Http\Controllers\Resources;
 
+use Override;
+use Exception;
+use StickleApp\Core\Traits\StickleEntity;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
@@ -24,6 +27,7 @@ class RequestResource extends JsonResource
      *
      * @return array<string, mixed>
      */
+    #[Override]
     public function toArray(Request $request): array
     {
 
@@ -47,13 +51,9 @@ class RequestResource extends JsonResource
     {
         $modelClass = config('stickle.namespaces.models').'\\'.Str::ucfirst($this->model_class);
 
-        if (! class_exists($modelClass)) {
-            throw new \Exception('Model not found: '.$modelClass);
-        }
+        throw_unless(class_exists($modelClass), Exception::class, 'Model not found: '.$modelClass);
 
-        if (! ClassUtils::usesTrait($modelClass, 'StickleApp\\Core\\Traits\\StickleEntity')) {
-            throw new \Exception('Model does not use StickleTrait.');
-        }
+        throw_unless(ClassUtils::usesTrait($modelClass, StickleEntity::class), Exception::class, 'Model does not use StickleTrait.');
 
         $model = $modelClass::findOrFail($this->object_uid);
 

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
+use Override;
+use InvalidArgumentException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use StickleApp\Core\Contracts\FilterTargetContract;
@@ -16,7 +19,7 @@ class SegmentHistory extends FilterTargetContract
     protected string $modelSegmentAuditTable;
 
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      */
     public function __construct(
         protected ?string $prefix,
@@ -32,6 +35,7 @@ class SegmentHistory extends FilterTargetContract
         return $this->modelSegmentAuditTable.'.segment_id';
     }
 
+    #[Override]
     public function castProperty(): mixed
     {
         return $this->property();
@@ -44,12 +48,10 @@ class SegmentHistory extends FilterTargetContract
 
         // Check if join already exists to avoid duplicate joins
         $existingJoins = $this->builder->getQuery()->joins ?? [];
-        $joinExists = collect($existingJoins)->contains(function ($join) {
-            return $join->table === $this->modelSegmentAuditTable;
-        });
+        $joinExists = collect($existingJoins)->contains(fn($join): bool => $join->table === $this->modelSegmentAuditTable);
 
         if (! $joinExists) {
-            $this->builder->leftJoin($this->modelSegmentAuditTable, function ($join) use ($modelTable, $primaryKey) {
+            $this->builder->leftJoin($this->modelSegmentAuditTable, function ($join) use ($modelTable, $primaryKey): void {
                 $join->on(DB::raw($modelTable.'.'.$primaryKey.'::text'), '=', $this->modelSegmentAuditTable.'.object_uid')
                     ->where($this->modelSegmentAuditTable.'.segment_id', '=', $this->segmentId)
                     ->where($this->modelSegmentAuditTable.'.operation', '=', 'ENTER');
@@ -68,13 +70,11 @@ class SegmentHistory extends FilterTargetContract
         }
 
         // Otherwise, look up by name or as_class
-        $segment = SegmentModel::where('name', $identifier)
+        $segment = SegmentModel::query()->where('name', $identifier)
             ->orWhere('as_class', $identifier)
             ->first();
 
-        if (! $segment) {
-            throw new \InvalidArgumentException("Segment not found: {$identifier}");
-        }
+        throw_unless($segment, InvalidArgumentException::class, "Segment not found: {$identifier}");
 
         return $segment->id;
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
+use Illuminate\Support\Facades\Date;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
@@ -40,9 +41,8 @@ final class CreatePartitionsCommand extends Command implements Isolatable
     /**
      * Create a new command instance.
      */
-    public function __construct(
-        #[ConfigAttribute('stickle.database.tablePrefix')] protected ?string $prefix = null,
-    ) {
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -72,7 +72,7 @@ final class CreatePartitionsCommand extends Command implements Isolatable
         /**
          * Verify the existing table exists
          */
-        $startDate = Carbon::parse($periodStart);
+        $startDate = Date::parse($periodStart);
 
         // Adjust start date to the beginning of the specified interval
         switch (strtolower($interval)) {
@@ -103,7 +103,7 @@ final class CreatePartitionsCommand extends Command implements Isolatable
 
             $end = $startDate->copy()->add($interval, $i + 1);
 
-            $partitionName = sprintf($existingTable.'_%s_%s', $interval, preg_replace('/[^A-Za-z0-9 ]/', '', $start->format('YmdHis')));
+            $partitionName = sprintf($existingTable.'_%s_%s', $interval, preg_replace('/[^A-Za-z0-9 ]/', '', (string) $start->format('YmdHis')));
 
             $sql = "CREATE TABLE IF NOT EXISTS $schema.$partitionName PARTITION OF $existingTable FOR VALUES FROM ('$start') TO ('$end')";
 

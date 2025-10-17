@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Targets;
 
+use Override;
+use Illuminate\Database\Eloquent\Model;
 use DateTimeInterface;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +17,7 @@ use StickleApp\Core\Contracts\FilterTargetContract;
 class EventCountAggregateDelta extends FilterTargetContract
 {
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $builder
+     * @param Builder<Model> $builder
      * @param  array<DateTimeInterface>  $currentPeriod
      * @param  array<DateTimeInterface>  $previousPeriod
      */
@@ -31,7 +33,7 @@ class EventCountAggregateDelta extends FilterTargetContract
 
     public static function baseTarget(): string
     {
-        return 'StickleApp\\Core\\Filters\\Targets\\EventCount';
+        return EventCount::class;
     }
 
     public function property(): ?string
@@ -39,6 +41,7 @@ class EventCountAggregateDelta extends FilterTargetContract
         return $this->event;
     }
 
+    #[Override]
     public function castProperty(): mixed
     {
         return sprintf('event_count_aggregate_delta_%s', $this->joinKey());
@@ -68,11 +71,11 @@ class EventCountAggregateDelta extends FilterTargetContract
         $previousStart = $this->previousPeriod[0]->format('Y-m-d');
         $previousEnd = $this->previousPeriod[1]->format('Y-m-d');
 
-        return \DB::table($this->prefix.'requests_rollup_1day')
+        return DB::table($this->prefix.'requests_rollup_1day')
             ->where('type', 'event')
             ->where('name', $this->event)
             ->where('model_class', $this->builder->getModel()->getMorphClass())
-            ->where(function ($query) use ($currentStart, $currentEnd, $previousStart, $previousEnd) {
+            ->where(function ($query) use ($currentStart, $currentEnd, $previousStart, $previousEnd): void {
                 $query->whereBetween('day', [$currentStart, $currentEnd])
                     ->orWhereBetween('day', [$previousStart, $previousEnd]);
             })
@@ -102,8 +105,8 @@ class EventCountAggregateDelta extends FilterTargetContract
         $this->builder->leftJoinSub(
             $this->subJoin(),
             $joinKey,
-            function (JoinClause $join) use ($model, $joinKey) {
-                $join->on($joinKey.'.object_uid', '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
+            function (JoinClause $joinClause) use ($model, $joinKey): void {
+                $joinClause->on($joinKey.'.object_uid', '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
             }
         );
     }

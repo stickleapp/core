@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Console\Command;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Contracts\Console\Isolatable;
@@ -58,21 +59,19 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
 
         $rows = DB::table('temp_attributes')
             ->join("{$this->prefix}segments", "{$this->prefix}segments.model_class", '=', 'temp_attributes.model')
-            ->leftJoin("{$this->prefix}segment_statistic_exports", function ($query) {
+            ->leftJoin("{$this->prefix}segment_statistic_exports", function ($query): void {
                 $query->on("{$this->prefix}segment_statistic_exports.segment_id", '=', "{$this->prefix}segments.id");
                 $query->on("{$this->prefix}segment_statistic_exports.attribute", '=', 'temp_attributes.attribute');
             })
-            ->when($segmentId, function ($query) use ($segmentId) {
-                return $query->where("{$this->prefix}segments.id", $segmentId);
-            })
+            ->when($segmentId, fn($query) => $query->where("{$this->prefix}segments.id", $segmentId))
             ->select([
                 'temp_attributes.model_class',
                 'temp_attributes.attribute',
                 "{$this->prefix}segments.id as segment_id",
                 'last_recorded_at',
             ])
-            ->where(function ($query) {
-                $query->where("{$this->prefix}segment_statistic_exports.last_recorded_at", '<', now()->subMinutes(config('stickle.schedule.recordSegmentStatistics', 360)))
+            ->where(function (Builder $builder): void {
+                $builder->where("{$this->prefix}segment_statistic_exports.last_recorded_at", '<', now()->subMinutes(config('stickle.schedule.recordSegmentStatistics', 360)))
                     ->orWhereNull("{$this->prefix}segment_statistic_exports.last_recorded_at");
             })
             ->orderByRaw('last_recorded_at asc NULLS FIRST')
@@ -80,10 +79,7 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
             ->get();
 
         foreach ($rows as $row) {
-            RecordSegmentStatisticJob::dispatch(
-                $row->segment_id,
-                $row->attribute,
-            );
+            dispatch(new RecordSegmentStatisticJob($row->segment_id, $row->attribute));
         }
     }
 
@@ -105,10 +101,10 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
 
             $stickleTrackedAttributes = $modelClass::stickleObservedAttributes();
             $stickleTrackedAttributes[] = 'count';
-            foreach ($stickleTrackedAttributes as $attribute) {
-                $return[md5($modelClass.$attribute)] = [
+            foreach ($stickleTrackedAttributes as $stickleTrackedAttribute) {
+                $return[md5($modelClass.$stickleTrackedAttribute)] = [
                     'model_class' => $modelClass,
-                    'attribute' => $attribute,
+                    'attribute' => $stickleTrackedAttribute,
                 ];
             }
         }

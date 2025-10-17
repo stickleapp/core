@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Filters\Tests;
 
+use Illuminate\Support\Facades\Date;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -14,11 +15,11 @@ class WillOccurAfter extends FilterTestContract
 {
     public function __construct(public mixed $comparator) {}
 
-    public function applyFilter(Builder $builder, FilterTargetContract $target, string $operator): Builder
+    public function applyFilter(Builder $builder, FilterTargetContract $filterTargetContract, string $operator): Builder
     {
-        return $builder->where(function ($query) use ($target) {
-            $query->where(DB::raw($target->castProperty()), '>', $target->castValue($this->comparator));
-            $query->where(DB::raw($target->castProperty()), '>', Carbon::now()->toDateTimeString());
+        return $builder->where(function (\Illuminate\Contracts\Database\Query\Builder $builder) use ($filterTargetContract): void {
+            $builder->where(DB::raw($filterTargetContract->castProperty()), '>', $filterTargetContract->castValue($this->comparator));
+            $builder->where(DB::raw($filterTargetContract->castProperty()), '>', Date::now()->toDateTimeString());
         });
     }
 }

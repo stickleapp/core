@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class ModelAttributeAudit extends Model
 {
+    use HasFactory;
     public $timestamps = false;
 
     /**
@@ -52,7 +54,7 @@ class ModelAttributeAudit extends Model
     /**
      * Get the parent attributable model
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo<Model, Model>
+     * @return MorphTo<Model, Model>
      */
     public function attributable(): MorphTo
     {

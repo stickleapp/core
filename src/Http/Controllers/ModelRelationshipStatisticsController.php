@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Http\Controllers;
 
+use StickleApp\Core\Traits\StickleEntity;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -13,7 +14,7 @@ class ModelRelationshipStatisticsController
 {
     public function index(Request $request): JsonResponse
     {
-        $prefix = config('stickle.database.tablePrefix');
+        config('stickle.database.tablePrefix');
 
         $attribute = $request->string('attribute')->toString();
 
@@ -27,7 +28,7 @@ class ModelRelationshipStatisticsController
             return response()->json(['error' => 'Model not found'], 404);
         }
 
-        if (! ClassUtils::usesTrait($modelClass, 'StickleApp\\Core\\Traits\\StickleEntity')) {
+        if (! ClassUtils::usesTrait($modelClass, StickleEntity::class)) {
             return response()->json(['error' => 'Model does not use StickleEntity trait'], 400);
         }
 
@@ -70,12 +71,10 @@ class ModelRelationshipStatisticsController
         }
 
         // Add time-series data points for visualization
-        $timeSeriesData = $statisticsEntries->map(function ($entry) {
-            return [
-                'timestamp' => $entry->recorded_at,
-                'value' => is_numeric($entry->value_avg) ? (float) $entry->value_avg : null,
-            ];
-        });
+        $timeSeriesData = $statisticsEntries->map(fn($entry): array => [
+            'timestamp' => $entry->recorded_at,
+            'value' => is_numeric($entry->value_avg) ? (float) $entry->value_avg : null,
+        ]);
 
         // Assemble the response
         $response = [

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Views\Components\Ui\Chartlists;
 
+use Exception;
+use StickleApp\Core\Traits\StickleEntity;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\View\Component;
 use Illuminate\View\View;
@@ -35,15 +37,11 @@ class ModelRelationship extends Component
     public function chartData(): array
     {
 
-        $modelClass = get_class($this->model);
+        $modelClass = $this->model::class;
 
-        if (! class_exists($modelClass)) {
-            throw new \Exception('Model not found');
-        }
+        throw_unless(class_exists($modelClass), Exception::class, 'Model not found');
 
-        if (! ClassUtils::usesTrait($modelClass, 'StickleApp\\Core\\Traits\\StickleEntity')) {
-            throw new \Exception('Model does not use StickleTrait.');
-        }
+        throw_unless(ClassUtils::usesTrait($modelClass, StickleEntity::class), Exception::class, 'Model does not use StickleTrait.');
 
         return $modelClass::getStickleChartData();
     }

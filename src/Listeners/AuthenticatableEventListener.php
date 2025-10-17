@@ -39,10 +39,10 @@ class AuthenticatableEventListener implements ShouldQueue
         $timestamp = new DateTime;
 
         $properties = [
-            'name' => get_class($event) ?: 'UnknownEvent',
+            'name' => $event::class ?: 'UnknownEvent',
         ];
 
-        $request = RequestModel::create([
+        \StickleApp\Core\Models\Request::query()->create([
             'type' => 'track',
             'model_class' => class_basename($event->user),
             'object_uid' => (string) $event->user->id,
@@ -56,7 +56,7 @@ class AuthenticatableEventListener implements ShouldQueue
     /**
      * Register the listeners for the subscriber.
      */
-    public function subscribe(Dispatcher $events): void
+    public function subscribe(Dispatcher $dispatcher): void
     {
         $eventClasses = [
             'Authenticated' => Authenticated::class,
@@ -72,10 +72,10 @@ class AuthenticatableEventListener implements ShouldQueue
 
         $trackedEvents = config('stickle.tracking.server.authenticationEventsTracked', []);
 
-        foreach ($trackedEvents as $eventName) {
-            if (isset($eventClasses[$eventName])) {
-                $events->listen(
-                    $eventClasses[$eventName],
+        foreach ($trackedEvents as $trackedEvent) {
+            if (isset($eventClasses[$trackedEvent])) {
+                $dispatcher->listen(
+                    $eventClasses[$trackedEvent],
                     [AuthenticatableEventListener::class, 'onEvent']
                 );
             }
