@@ -39,73 +39,13 @@ class ScheduleServiceProvider extends ServiceProvider
 
             $tablePrefix = config('stickle.database.tablePrefix');
             $schema = config('stickle.database.schema');
-            // $intervalEvents = config('stickle.database.partitions.events.interval');
-            // $extentionEvents = config('stickle.database.partitions.events.extension');
-            // $retentionEvents = config('stickle.database.partitions.events.retention');
+
             $intervalRequests = config('stickle.database.partitions.requests.interval');
             $extentionRequests = config('stickle.database.partitions.requests.extension');
             $retentionRequests = config('stickle.database.partitions.requests.retention');
             $intervalSessions = config('stickle.database.partitions.sessions.interval');
             $extentionSessions = config('stickle.database.partitions.sessions.extension');
             $retentionSessions = config('stickle.database.partitions.sessions.retention');
-
-            // // Events partition creation
-            // $schedule->command('stickle:create-partitions', [
-            //     $tablePrefix.'events_rollup_1min',
-            //     $schema,
-            //     $intervalEvents,
-            //     now()->add(\Carbon\CarbonInterval::fromString($extentionEvents))->format('Y-m-d'),
-            // ])->twiceDailyAt(0, 12, 0);
-
-            // $schedule->command('stickle:create-partitions', [
-            //     $tablePrefix.'events_rollup_5min',
-            //     $schema,
-            //     $intervalEvents,
-            //     now()->add(\Carbon\CarbonInterval::fromString($extentionEvents))->format('Y-m-d'),
-            // ])->twiceDailyAt(1, 13, 0);
-
-            // $schedule->command('stickle:create-partitions', [
-            //     $tablePrefix.'events_rollup_1hr',
-            //     $schema,
-            //     $intervalEvents,
-            //     now()->add(\Carbon\CarbonInterval::fromString($extentionEvents))->format('Y-m-d'),
-            // ])->twiceDailyAt(2, 14, 0);
-
-            // $schedule->command('stickle:create-partitions', [
-            //     $tablePrefix.'events_rollup_1day',
-            //     $schema,
-            //     $intervalEvents,
-            //     now()->add(\Carbon\CarbonInterval::fromString($extentionEvents))->format('Y-m-d'),
-            // ])->twiceDailyAt(3, 15, 0);
-
-            // // Events partition dropping
-            // $schedule->command('stickle:drop-partitions', [
-            //     $tablePrefix.'events_rollup_1min',
-            //     $schema,
-            //     $intervalEvents,
-            //     now()->sub(\Carbon\CarbonInterval::fromString($retentionEvents))->format('Y-m-d'),
-            // ])->twiceDailyAt(4, 16, 0);
-
-            // $schedule->command('stickle:drop-partitions', [
-            //     $tablePrefix.'events_rollup_5min',
-            //     $schema,
-            //     $intervalEvents,
-            //     now()->sub(\Carbon\CarbonInterval::fromString($retentionEvents))->format('Y-m-d'),
-            // ])->twiceDailyAt(5, 17, 0);
-
-            // $schedule->command('stickle:drop-partitions', [
-            //     $tablePrefix.'events_rollup_1hr',
-            //     $schema,
-            //     $intervalEvents,
-            //     now()->sub(\Carbon\CarbonInterval::fromString($retentionEvents))->format('Y-m-d'),
-            // ])->twiceDailyAt(6, 18, 0);
-
-            // $schedule->command('stickle:drop-partitions', [
-            //     $tablePrefix.'events_rollup_1day',
-            //     $schema,
-            //     $intervalEvents,
-            //     now()->sub(\Carbon\CarbonInterval::fromString($retentionEvents))->format('Y-m-d'),
-            // ])->twiceDailyAt(7, 19, 0);
 
             // Requests partition creation
             $schedule->command('stickle:create-partitions', [
