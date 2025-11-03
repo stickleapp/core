@@ -55,7 +55,7 @@ class ExportSegmentJob implements ShouldQueue
         $segment = new $class;
         $exportFilename = $exportSegmentAction(
             segmentId: $this->segment->id,
-            segmentDefinition: $segment
+            segmentContract: $segment
         );
 
         dispatch(new ImportSegmentJob($this->segment->id, $exportFilename));

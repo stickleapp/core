@@ -82,10 +82,11 @@ final class DevScheduleCommand extends Command
 
         foreach ($requestsTables as $table) {
             $this->call('stickle:create-partitions', [
-                'table' => $table,
+                'existing_table' => $table,
                 'schema' => $schema,
                 'interval' => $intervalRequests,
-                'end_date' => $extensionDate,
+                'period_start' => $extensionDate,
+                'interval_count' => 3,
             ]);
         }
 
@@ -95,29 +96,29 @@ final class DevScheduleCommand extends Command
 
         foreach ($requestsTables as $requestTable) {
             $this->call('stickle:drop-partitions', [
-                'table' => $requestTable,
+                'existing_table' => $requestTable,
                 'schema' => $schema,
                 'interval' => $intervalRequests,
-                'before_date' => $retentionDate,
+                'prior_to_date' => $retentionDate,
             ]);
         }
 
         // Create partitions for sessions table
         $this->info('Creating partitions for sessions table...');
         $this->call('stickle:create-partitions', [
-            'table' => $tablePrefix.'sessions_rollup_1day',
+            'existing_table' => $tablePrefix.'sessions_rollup_1day',
             'schema' => $schema,
             'interval' => $intervalSessions,
-            'end_date' => now()->add(CarbonInterval::fromString($extentionSessions))->format('Y-m-d'),
+            'period_start' => now()->add(CarbonInterval::fromString($extentionSessions))->format('Y-m-d'),
         ]);
 
         // Drop old partitions for sessions table
         $this->info('Dropping old partitions for sessions table...');
         $this->call('stickle:drop-partitions', [
-            'table' => $tablePrefix.'sessions_rollup_1day',
+            'existing_table' => $tablePrefix.'sessions_rollup_1day',
             'schema' => $schema,
             'interval' => $intervalSessions,
-            'before_date' => now()->sub(CarbonInterval::fromString($retentionSessions))->format('Y-m-d'),
+            'prior_to_date' => now()->sub(CarbonInterval::fromString($retentionSessions))->format('Y-m-d'),
         ]);
 
         $this->newLine();
