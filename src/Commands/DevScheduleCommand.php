@@ -71,7 +71,7 @@ final class DevScheduleCommand extends Command
 
         // Create partitions for requests tables
         $this->info('Creating partitions for requests tables...');
-        $extensionDate = now()->add(CarbonInterval::fromString($extentionRequests))->format('Y-m-d');
+        $extensionDate = now()->format('Y-m-d');
 
         $requestsTables = [
             $tablePrefix.'requests',
@@ -110,7 +110,8 @@ final class DevScheduleCommand extends Command
             'existing_table' => $tablePrefix.'sessions_rollup_1day',
             'schema' => $schema,
             'interval' => $intervalSessions,
-            'period_start' => now()->add(CarbonInterval::fromString($extentionSessions))->format('Y-m-d'),
+            'period_start' => now()->format('Y-m-d'),
+            'interval_count' => 3,
         ]);
 
         // Drop old partitions for sessions table
