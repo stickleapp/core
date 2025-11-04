@@ -74,6 +74,7 @@ final class DevScheduleCommand extends Command
         $extensionDate = now()->add(CarbonInterval::fromString($extentionRequests))->format('Y-m-d');
 
         $requestsTables = [
+            $tablePrefix.'requests',
             $tablePrefix.'requests_rollup_1min',
             $tablePrefix.'requests_rollup_5min',
             $tablePrefix.'requests_rollup_1hr',

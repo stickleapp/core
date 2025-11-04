@@ -49,6 +49,14 @@ class ScheduleServiceProvider extends ServiceProvider
 
             // Requests partition creation
             $schedule->command('stickle:create-partitions', [
+                $tablePrefix.'requests',
+                $schema,
+                $intervalRequests,
+                now()->add(CarbonInterval::fromString($extentionRequests))->format('Y-m-d'),
+            ])->twiceDailyAt(7, 19, 0);
+
+            // Requests partition creation
+            $schedule->command('stickle:create-partitions', [
                 $tablePrefix.'requests_rollup_1min',
                 $schema,
                 $intervalRequests,
