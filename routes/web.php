@@ -14,7 +14,6 @@ Route::middleware(config('stickle.routes.web.middleware', []))
 
         /** Stickle UI */
         Route::get('/live', function (Request $request): Factory|View {
-
             $modelClass = config('stickle.namespaces.models').'\\User';
 
             if ($request->filled(['model_class', 'uid'])) {

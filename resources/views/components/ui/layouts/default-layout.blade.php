@@ -12,10 +12,10 @@
     <link rel="preload" as="style" href="{{ \StickleApp\Core\Facades\Asset::url('resources/css/app.css') }}" />
     <link rel="modulepreload" as="script" href="{{ \StickleApp\Core\Facades\Asset::url('resources/js/app.js') }}" />
     <link rel="stylesheet" href="{{ \StickleApp\Core\Facades\Asset::url('resources/css/app.css') }}" />
-    <script type="module" src="{{ \StickleApp\Core\Facades\Asset::url('resources/js/app.cjsss') }}"></script>
+    <script type="module" src="{{ \StickleApp\Core\Facades\Asset::url('resources/js/app.js') }}"></script>
     @else
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @endproduction
+    @endif
 
     <!-- Alpine.js -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.8/cdn.js"></script>
@@ -58,10 +58,8 @@
   ```
 -->
     <div x-data="{ isOpen: false }">
-        @include('stickle::components.ui.layouts.partials.menu', ['models =>
-        $models()'])
-        @include('stickle::components.ui.layouts.partials.sidebar', ['models
-        => $models()'])
+        @include('stickle::components.ui.layouts.partials.menu', ['models => $models()'])
+        @include('stickle::components.ui.layouts.partials.sidebar', ['models => $models()'])
 
         <div class="lg:pl-72">
             <!-- HEADER -->

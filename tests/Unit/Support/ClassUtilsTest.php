@@ -20,6 +20,11 @@ test('directoryFromNamespace converts namespace to filesystem path using compose
     expect($result)->toContain('src'.DIRECTORY_SEPARATOR.'Support'.DIRECTORY_SEPARATOR.'Helpers');
     expect($result)->toEndWith('src'.DIRECTORY_SEPARATOR.'Support'.DIRECTORY_SEPARATOR.'Helpers');
 
+    // Test with Workbench namespace (mapped to 'workbench/app/' in composer.json autoload-dev)
+    $result = ClassUtils::directoryFromNamespace('Workbench\\App\\Models');
+    expect($result)->toContain('workbench'.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'Models');
+    expect($result)->toEndWith('workbench'.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'Models');
+
     // Test fallback for unmapped namespace
     $result = ClassUtils::directoryFromNamespace('UnmappedNamespace\\Models');
     expect($result)->toContain('UnmappedNamespace'.DIRECTORY_SEPARATOR.'Models');

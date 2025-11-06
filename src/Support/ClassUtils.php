@@ -47,15 +47,9 @@ class ClassUtils
      */
     public static function getClassesWithTrait(string $namespace, string $trait): array
     {
-        // Determine base directory (adjust as needed for your project structure)
-        $baseDir = dirname(__DIR__, 2);
 
-        // Convert namespace to potential relative path
-        $namespacePath = str_replace('\\', DIRECTORY_SEPARATOR, $namespace);
-        $searchDir = $baseDir.DIRECTORY_SEPARATOR.$namespacePath;
-
-        // If the specific namespace directory doesn't exist, fall back to scanning from the base
-        $directoryToScan = is_dir($searchDir) ? $searchDir : $baseDir;
+        // Use Composer's PSR-4 mappings to find the correct directory for this namespace
+        $directoryToScan = self::directoryFromNamespace($namespace);
 
         // Get all classes in the directory
         $allClasses = self::getClassesInDirectory($directoryToScan, $namespace);
@@ -78,7 +72,6 @@ class ClassUtils
     public static function getClassesInDirectory(string $directory, string $appendNamespace = ''): array
     {
         $classes = [];
-
         if (! is_dir($directory)) {
             return [];
         }
@@ -93,6 +86,7 @@ class ClassUtils
         foreach ($phpFiles as $phpFile) {
             $filePath = $phpFile->getRealPath();
             $className = self::getClassNameFromFile($filePath);
+
             if (strlen($appendNamespace) !== 0) {
                 $className = $appendNamespace.'\\'.self::getClassNameFromFile($filePath);
             }
@@ -271,6 +265,7 @@ class ClassUtils
     {
 
         $app = app();
+
         // @phpstan-ignore-next-line method.alreadyNarrowedType
         $basePath = method_exists($app, 'basePath') ? $app->basePath() : base_path();
 
