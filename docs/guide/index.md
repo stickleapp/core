@@ -100,3 +100,4 @@ Or dive deeper:
 - [Configuration](/guide/configuration) - Complete configuration reference
 - [Tracking Attributes](/guide/tracking-attributes) - Learn how to track model attributes
 - [Customer Segments](/guide/segments) - Build powerful customer segments
+- [StickleUI Dashboard](/guide/stickle-ui) - Explore the built-in analytics dashboard

@@ -480,6 +480,7 @@ protected $listen = [
 
 ## Next Steps
 
+- **[Events Reference](/guide/events-reference)** - Complete event reference with all properties
 - **[JavaScript Tracking](/guide/javascript-tracking)** - Learn how to dispatch custom events from the client
 - **[Customer Segments](/guide/segments)** - Create segments that trigger events
 - **[Tracking Attributes](/guide/tracking-attributes)** - Define attributes to monitor

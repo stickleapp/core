@@ -25,109 +25,51 @@ export default defineConfig({
                         text: "What is Stickle?",
                         link: "/guide/index",
                     },
-                    { text: "Use Cases", link: "/guide/use-cases" },
+                ],
+            },
+            {
+                text: "Getting Started",
+                collapsed: false,
+                items: [
                     { text: "Installation", link: "/guide/installation" },
+                    { text: "Quick Start", link: "/guide/quick-start" },
                     { text: "Configuration", link: "/guide/configuration" },
-                    { text: "Getting Started", link: "/guide/getting-started" },
                 ],
             },
             {
-                text: "Ingesting Customer Data",
+                text: "Core Features",
                 collapsed: false,
                 items: [
-                    { text: "Javascript SDK", link: "/guide/javascript-sdk" },
                     {
-                        text: "Request Middleware",
-                        link: "/guide/request-middleware",
+                        text: "Tracking Attributes",
+                        link: "/guide/tracking-attributes",
                     },
+                    { text: "Customer Segments", link: "/guide/segments" },
+                    { text: "Filters", link: "/guide/filters" },
+                    { text: "Event Listeners", link: "/guide/event-listeners" },
                     {
-                        text: "Illuminate\\Auth Events",
-                        link: "/guide/illuminate-auth-events",
+                        text: "JavaScript Tracking",
+                        link: "/guide/javascript-tracking",
                     },
+                    { text: "StickleUI Dashboard", link: "/guide/stickle-ui" },
                 ],
             },
             {
-                text: "Customer Segments",
+                text: "Reference",
                 collapsed: false,
                 items: [
-                    {
-                        text: "What are Segments?",
-                        link: "/guide/what-are-segments",
-                    },
-                    {
-                        text: "Creating Segments",
-                        link: "/guide/creating-segments",
-                    },
-                    {
-                        text: "Eloquent Methods",
-                        link: "/guide/eloquent-methods",
-                    },
+                    { text: "API Endpoints", link: "/guide/api-endpoints" },
+                    { text: "Filter Reference", link: "/guide/filter-reference" },
+                    { text: "Events Reference", link: "/guide/events-reference" },
                 ],
             },
             {
-                text: "Tracking Historical Data",
+                text: "Advanced",
                 collapsed: false,
                 items: [
-                    {
-                        text: "Models",
-                        link: "/guide/tracking-model-attributes",
-                    },
-                    {
-                        text: "Segments",
-                        link: "/guide/tracking-segments",
-                    },
-                ],
-            },
-            {
-                text: "Aggregating Data",
-                collapsed: false,
-                items: [
-                    {
-                        text: "Model Attributes",
-                        link: "/guide/aggregate-attributes",
-                    },
-                ],
-            },
-            {
-                text: "Event Listeners",
-                collapsed: false,
-                items: [
-                    {
-                        text: "User Events",
-                        link: "/guide/listeners-user-events",
-                    },
-                    { text: "Page Views", link: "/guide/listeners-page-views" },
-                    {
-                        text: "Segment Events",
-                        link: "/guide/listeners-segment-events",
-                    },
-                    {
-                        text: "Model Attribute Changes",
-                        link: "/guide/listeners-model-attribute-changes",
-                    },
-                    {
-                        text: "Illuminate\\Auth Events",
-                        link: "/guide/listeners-illuminate-auth-events",
-                    },
-                ],
-            },
-            {
-                text: "Querying Customer Data",
-                collapsed: false,
-                items: [
-                    { text: "Custom Scopes", link: "/guide/scopes" },
-                    { text: "API Endpoints", link: "/guide/endpoints" },
-                ],
-            },
-            {
-                text: "StickleUI",
-                collapsed: false,
-                items: [
-                    {
-                        text: "Getting Started",
-                        link: "/guide/ui-getting-started",
-                    },
-                    { text: "Customizing", link: "/guide/ui-customizing" },
+                    { text: "Recipes", link: "/guide/recipes" },
+                    { text: "Deployment", link: "/guide/deployment" },
+                    { text: "Troubleshooting", link: "/guide/troubleshooting" },
                 ],
             },
         ],
