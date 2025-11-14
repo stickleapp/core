@@ -2,34 +2,47 @@
 outline: deep
 ---
 
-# Getting Started
+# Installation
 
-## Installation
-
-### Prerequisites
+## Prerequisites
 
 Stickle requires:
 
 -   PHP 8.2+
 -   Laravel 12.0+.
 
-### Include
+## Installing Stickle
 
-You may use Composer to require stickle into your PHP project:
+### Step 1: Require via Composer
 
-```
-$ composer require stickleapp/core
-```
+Use Composer to require Stickle into your Laravel project:
 
-### Install
-
-Stickle provides an installer that will guide you through your Stickle installation. You can run the intaller via the `artisan` command:
-
-```
-$ php artisan stickle:install
+```bash
+composer require stickleapp/core
 ```
 
-### Advanced
+### Step 2: Run the Installer
+
+Stickle provides an installer that will guide you through configuration. Run it via artisan:
+
+```bash
+php artisan stickle:install
+```
+
+The installer will:
+- Publish configuration files
+- Run database migrations
+- Set up default tracking options
+
+### Step 3: Run Migrations
+
+Migrations are typically run by the installer, but you can run them manually if needed:
+
+```bash
+php artisan migrate
+```
+
+## Advanced Installation
 
 The following are handled by the `stickle:install` command but you may need to run them independently at some point.
 
@@ -51,30 +64,46 @@ You can manually configure these settings if necessary.
 
 #### Migrations
 
-`stickle:install` will run the required migrations but you can run them manually if necessary `php artisan migrate`.
+The `stickle:install` command will run the required migrations automatically. If you need to run them manually:
 
+```bash
+php artisan migrate
 ```
-$ php artisan migrate
-```
 
-### Running Stickle
+## Running Stickle
 
-Once installed, you need to make sure you are running your cron jobs and your Reverb server.
+Once installed, Stickle requires two background services to be running.
 
-#### Scheduled Tasks
+### Scheduled Tasks
 
-Stickle runs several scheduled tasks in the background. Make sure you have a queue worker running. For development, run:
+Stickle runs several scheduled tasks in the background to process analytics data. During development, run:
 
-```
+```bash
 php artisan schedule:work
-
 ```
 
-#### Laravel Reverb
+For production, configure your server's cron to run Laravel's scheduler. Add this to your crontab:
 
-If you are using Laravel Reverb you will need to start it. For development, run:
-
+```bash
+* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
 ```
+
+### Laravel Reverb (Optional)
+
+If you want real-time features (live event streaming, real-time UI updates), start Laravel Reverb. For development:
+
+```bash
 php artisan reverb:start
-
 ```
+
+For production, run Reverb as a background service. See the [Laravel Reverb documentation](https://laravel.com/docs/reverb) for details.
+
+## Next Steps
+
+You're now ready to start using Stickle! Here's what to do next:
+
+- **[Quick Start Guide](/guide/quick-start)** - Get up and running in 15 minutes
+- **[Configuration](/guide/configuration)** - Fine-tune your Stickle installation
+- **[Tracking Attributes](/guide/tracking-attributes)** - Learn how to track model attributes
+
+For deployment to production, see our **[Deployment Guide](/guide/deployment)**.

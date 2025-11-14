@@ -2,9 +2,9 @@
 outline: deep
 ---
 
-# Stickle Eloquent Methods
+# Filters and Eloquent Methods
 
-Stickle adds additional filter options to Eloquent through two Eloquent Scopes `stickle()` and `stickleOrWhere()` which behave in the same way as `where()` and `orWhere()` respectively.
+Stickle adds powerful filter options to Eloquent through two scopes: `stickleWhere()` and `stickleOrWhere()`, which behave like `where()` and `orWhere()` but enable filtering by user behavior, events, and tracked attributes.
 
 These scopes accept a single Filter object (`StickleApp\Core\Filters\Base`) that defines a filter which will be applied to your query builder.
 
@@ -344,3 +344,197 @@ $users = User::stickleWhere(Filter::text('bio')->contains('developer'))->get();
 // Users where 'job_title' begins with 'Senior'
 $users = User::stickleWhere(Filter::text('job_title')->beginsWith('Senior'))->get();
 ```
+
+## Creating Custom Scopes
+
+While you can use filters directly in your queries, creating custom scopes makes your code more readable and maintainable. Laravel's local scopes are perfect for encapsulating common Stickle filters.
+
+### Basic Custom Scopes
+
+Create scopes using the `Filter` facade:
+
+```php
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use StickleApp\Core\Filters\Filter;
+
+class User extends Model
+{
+    /**
+     * Scope a query to only include users active in the last 7 days
+     */
+    public function scopeActive(Builder $query): void
+    {
+        $query->stickleWhere(
+            Filter::requestCount('/dashboard')
+                ->count()
+                ->betweenDates(startDate: now()->subDays(7), endDate: now())
+                ->greaterThan(0)
+        );
+    }
+
+    /**
+     * Scope a query to include high-value users (purchase amount > $1000)
+     */
+    public function scopeHighValue(Builder $query): void
+    {
+        $query->stickleWhere(
+            Filter::number('purchase_amount')
+                ->sum()
+                ->betweenDates(startDate: now()->subYear(), endDate: now())
+                ->greaterThan(1000)
+        );
+    }
+
+    /**
+     * Scope a query to include users with growing engagement
+     */
+    public function scopeGrowingEngagement(Builder $query): void
+    {
+        $query->stickleWhere(
+            Filter::eventCount('page:view')
+                ->count()
+                ->increased()
+                ->betweenDateRanges(
+                    compareToDateRange: [now()->subMonths(2), now()->subMonth()],
+                    currentDateRange: [now()->subMonth(), now()]
+                )
+                ->greaterThan(5)
+        );
+    }
+
+    /**
+     * Scope a query to include premium subscribers
+     */
+    public function scopePremium(Builder $query): void
+    {
+        $query->stickleWhere(
+            Filter::boolean('is_premium')->isTrue()
+        );
+    }
+}
+```
+
+### Complex Scopes with Multiple Filters
+
+Combine multiple filters using `stickleWhere()` and `stickleOrWhere()`:
+
+```php
+/**
+ * Scope for users likely to churn (low activity + no recent purchases)
+ */
+public function scopeLikelyToChurn(Builder $query): void
+{
+    $query->stickleWhere(
+        // Low session activity in the last 30 days
+        Filter::sessionCount()
+            ->count()
+            ->betweenDates(startDate: now()->subDays(30), endDate: now())
+            ->lessThan(3)
+    )->stickleWhere(
+        // No purchases in the last 60 days
+        Filter::eventCount('purchase:completed')
+            ->count()
+            ->betweenDates(startDate: now()->subDays(60), endDate: now())
+            ->equals(0)
+    );
+}
+
+/**
+ * Scope for power users (high engagement OR high value)
+ */
+public function scopePowerUsers(Builder $query): void
+{
+    $query->stickleWhere(
+        // High event activity
+        Filter::eventCount('button:click')
+            ->count()
+            ->betweenDates(startDate: now()->subDays(30), endDate: now())
+            ->greaterThan(100)
+    )->stickleOrWhere(
+        // OR high purchase value
+        Filter::number('purchase_amount')
+            ->sum()
+            ->betweenDates(startDate: now()->subDays(30), endDate: now())
+            ->greaterThan(500)
+    );
+}
+```
+
+### Segment-Based Scopes
+
+For performance-critical applications, create scopes that filter by pre-computed segments:
+
+```php
+/**
+ * Scope a query to only return users currently in the 'ActiveUsers' segment
+ */
+public function scopeActive(Builder $query): void
+{
+    $query->stickleWhere(
+        Filter::segment('ActiveUsers')->isInSegment()
+    );
+}
+
+/**
+ * Scope for users in multiple segments
+ */
+public function scopeEngagedCustomers(Builder $query): void
+{
+    $query->stickleWhere(
+        Filter::segment('HighEngagement')->isInSegment()
+    )->stickleWhere(
+        Filter::segment('RecentPurchasers')->isInSegment()
+    );
+}
+```
+
+::: warning Performance Consideration
+Segment-based filters use pre-calculated data and may be slightly stale (segments are updated periodically). Use direct filters when real-time accuracy is essential.
+:::
+
+### Using Custom Scopes
+
+Once defined, use scopes naturally in your queries:
+
+```php
+use App\Models\User;
+
+// Single scope
+$activeUsers = User::active()->get();
+
+// Multiple scopes
+$powerUsers = User::active()->highValue()->get();
+
+// Combining with regular Eloquent methods
+$recentPowerUsers = User::active()
+    ->highValue()
+    ->where('created_at', '>', now()->subDays(30))
+    ->orderBy('created_at', 'desc')
+    ->paginate(25);
+
+// Complex combinations
+$targetUsers = User::active()
+    ->orWhere(function ($query) {
+        $query->growingEngagement()->premium();
+    })
+    ->get();
+```
+
+## Performance Tips
+
+1. **Use segments for frequently queried filters** - Pre-compute expensive filters as segments
+2. **Limit date ranges** - Smaller date ranges perform better than large historical queries
+3. **Index your model attributes** - Ensure tracked attributes are properly indexed
+4. **Combine filters efficiently** - Use `stickleWhere()` for AND conditions and `stickleOrWhere()` for OR conditions
+
+## Next Steps
+
+Now that you understand filters:
+
+- **[Customer Segments](/guide/segments)** - Build segments using filters
+- **[Tracking Attributes](/guide/tracking-attributes)** - Define attributes to filter on
+- **[Filter Reference](/guide/filter-reference)** - Quick reference of all filter methods
+- **[Recipes](/guide/recipes)** - Real-world filter examples
