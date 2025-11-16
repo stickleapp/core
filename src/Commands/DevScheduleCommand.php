@@ -63,10 +63,10 @@ final class DevScheduleCommand extends Command
         $schema = config('stickle.database.schema');
 
         $intervalRequests = config('stickle.database.partitions.requests.interval');
-        $extentionRequests = config('stickle.database.partitions.requests.extension');
+        config('stickle.database.partitions.requests.extension');
         $retentionRequests = config('stickle.database.partitions.requests.retention');
         $intervalSessions = config('stickle.database.partitions.sessions.interval');
-        $extentionSessions = config('stickle.database.partitions.sessions.extension');
+        config('stickle.database.partitions.sessions.extension');
         $retentionSessions = config('stickle.database.partitions.sessions.retention');
 
         // Create partitions for requests tables

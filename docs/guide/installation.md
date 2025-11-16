@@ -72,7 +72,17 @@ php artisan migrate
 
 ## Running Stickle
 
-Once installed, Stickle requires two background services to be running.
+Once installed, Stickle requires background services to be running.
+
+### Queue Worker
+
+Stickle processes jobs asynchronously via Laravel's queue system. During development, run:
+
+```bash
+php artisan queue:work
+```
+
+For production, configure a process monitor like Supervisor to keep the queue worker running. See the [Laravel Queue documentation](https://laravel.com/docs/queues#supervisor-configuration) for details.
 
 ### Scheduled Tasks
 

@@ -8,52 +8,18 @@ Get Stickle up and running in your Laravel application in 15 minutes. This guide
 
 ## Prerequisites
 
-Before you begin, make sure you have:
+Before you begin, make sure you have completed the **[Installation Guide](/guide/installation)**. You should have:
 
-- **PHP 8.2+**
-- **Laravel 12.0+**
-- A fresh or existing Laravel application
-- Database configured and running
+- Stickle installed via Composer
+- Set your initial configuration
+- Migrations run
+- Required services running (queue worker, scheduled tasks, and optionally Reverb)
 
-## Step 1: Install Stickle
+With your installation complete and required services running, you are ready to begin customizing your Stickle conguration.
 
-Install Stickle via Composer:
+## Step 1: Add StickleEntity Trait
 
-```bash
-composer require stickleapp/core
-```
-
-Run the Stickle installer:
-
-```bash
-php artisan stickle:install
-```
-
-The installer will guide you through configuration options. For this quick start, accept the defaults.
-
-Run migrations:
-
-```bash
-php artisan migrate
-```
-
-Start the required services:
-
-```bash
-# Terminal 1: Start queue worker
-php artisan schedule:work
-
-# Terminal 2: Start Laravel Reverb (for real-time features)
-php artisan reverb:start
-```
-
-::: tip
-For production, you'll configure these as background services. For now, these terminal commands are perfect for development.
-:::
-
-## Step 2: Add StickleEntity Trait
-
-Add the `StickleEntity` trait to your User model and define which attributes to track:
+Add the `StickleEntity` trait to your "customer" model or models. These are models that you want to track. Typically this is "Users" and often a table such as "Customers", "Accounts" or "Tenants". 
 
 ```php
 <?php
@@ -92,7 +58,7 @@ class User extends Authenticatable
 - `stickleTrackedAttributes()` - Attributes that Stickle tracks over time for analytics
 - `stickleObservedAttributes()` - Attributes that dispatch events when they change
 
-## Step 3: Track a Custom Attribute
+## Step 2: Track a Custom Attribute
 
 Let's add a calculated attribute that tracks how many days since a user registered:
 
@@ -142,7 +108,18 @@ Don't forget the import at the top:
 use Illuminate\Database\Eloquent\Casts\Attribute;
 ```
 
-## Step 4: Create Your First Segment
+::: tip Manually Sync Attributes
+After adding new tracked attributes to your models, you can manually trigger a sync:
+
+```bash
+# TODO: Create stickle:sync-attributes command
+php artisan stickle:sync-attributes
+```
+
+This will immediately record the new attributes for all your models. Otherwise, attributes are synced automatically on the schedule.
+:::
+
+## Step 3: Create Your First Segment
 
 Create a segment to identify active users. First, create the segments directory:
 
@@ -193,7 +170,18 @@ class ActiveUsers extends Segment
 - Automatically recalculates every 6 hours
 - Tracks segment membership over time
 
-## Step 5: View Your Data in StickleUI
+::: tip Manually Sync Segments
+After creating new segments, you can manually trigger an export:
+
+```bash
+# TODO: Create stickle:sync-segments command
+php artisan stickle:sync-segments
+```
+
+This will immediately export your new segments. Otherwise, segments are exported automatically on the schedule (every 5 minutes).
+:::
+
+## Step 4: View Your Data in StickleUI
 
 Stickle is now tracking your users! Open your application in a browser and navigate to:
 
@@ -215,7 +203,7 @@ You'll see:
 3. **Check Segments** - `/stickle/user/segments` - See your Active Users segment
 4. **Watch Events** - `/stickle/events` - Real-time event stream
 
-## Step 6: Test It Out
+## Step 5: Test It Out
 
 Let's generate some activity to see Stickle in action:
 
