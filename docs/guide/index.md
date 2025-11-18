@@ -46,12 +46,11 @@ Stickle isn't a replacement for Google Analytics. It doesn't track anonymous vis
 
 Ready to get started?
 
-::: tip Quick Start
-Follow our [Quick Start Guide](/guide/quick-start) to get Stickle running in your Laravel application in 15 minutes.
+::: tip Basic Setup
+Follow our [Installation Guide](/guide/installation) to get Stickle running in your Laravel application in 15 minutes.
 :::
 
 Or dive deeper:
-- [Installation](/guide/installation) - Detailed installation instructions
 - [Configuration](/guide/configuration) - Complete configuration reference
 - [Tracking Attributes](/guide/tracking-attributes) - Learn how to track model attributes
 - [Customer Segments](/guide/segments) - Build powerful customer segments

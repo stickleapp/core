@@ -14,7 +14,7 @@
 - [x] Write "What is Stickle?" section (2 paragraphs)
 - [x] Add key features section (6 bullet points from homepage)
 - [x] Add "When to Use Stickle" section (from use-cases.md)
-- [x] Add "Next Steps" with link to quick-start
+- [x] Add "Next Steps" with link to basic-setup
 - [x] Proofread for clarity
 
 **Sources:**
@@ -24,11 +24,11 @@
 
 ---
 
-### ✅ Task 1.2: Create quick-start.md
+### ✅ Task 1.2: Create basic-setup.md
 **Estimate:** 3 hours | **Priority:** HIGH
 
 **Checklist:**
-- [x] Create `/docs/guide/quick-start.md`
+- [x] Create `/docs/guide/basic-setup.md`
 - [x] Write prerequisites section
 - [x] Write Step 1: Add StickleEntity trait (complete code)
 - [x] Write Step 2: Track first attribute (complete code)
@@ -484,7 +484,7 @@
   - [x] Formatting consistent
   - [x] Links work
 - [x] Proofread `installation.md`
-- [x] Proofread `quick-start.md`
+- [x] Proofread `basic-setup.md`
 - [x] Proofread `configuration.md`
 - [x] Proofread `tracking-attributes.md`
 - [x] Proofread `segments.md`

@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
@@ -17,9 +18,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use StickleApp\Core\Attributes\StickleAttributeMetadata;
-use StickleApp\Core\Attributes\StickleObservedAttribute;
 use StickleApp\Core\Attributes\StickleRelationshipMetadata;
-use StickleApp\Core\Attributes\StickleTrackedAttribute;
 use StickleApp\Core\Enums\ChartType;
 use StickleApp\Core\Filters\Base as Filter;
 use StickleApp\Core\Models\ModelAttributeAudit;
@@ -181,55 +180,25 @@ trait StickleEntity
     }
 
     /**
-     * Helper method to extract attribute names from properties and methods
-     * that have the specified PHP attribute.
-     *
-     * @param  class-string  $attributeClass
-     */
-    protected static function getAttributesWithAttribute(string $attributeClass): array
-    {
-        $reflectionClass = new \ReflectionClass(static::class);
-        $attributes = [];
-
-        // Check properties for the attribute
-        foreach ($reflectionClass->getProperties() as $property) {
-            $propertyAttributes = $property->getAttributes($attributeClass);
-            if (! empty($propertyAttributes)) {
-                $attributes[] = $property->getName();
-            }
-        }
-
-        // Check methods for the attribute (for Eloquent accessors)
-        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_PROTECTED) as $method) {
-            $methodAttributes = $method->getAttributes($attributeClass);
-            if (! empty($methodAttributes)) {
-                // Convert camelCase method name to snake_case attribute name
-                $attributeName = Str::snake($method->getName());
-                $attributes[] = $attributeName;
-            }
-        }
-
-        return array_unique($attributes);
-    }
-
-    /**
      * Define which attributes should be watched for changes.
-     * Override this method in your model to specify observed attributes,
-     * or use the #[StickleObservedAttribute] attribute on properties/methods.
+     * Override this method in your model to specify observed attributes.
+     *
+     * @return array<int, string> Array of database column names to observe
      */
     public static function stickleObservedAttributes(): array
     {
-        return static::getAttributesWithAttribute(StickleObservedAttribute::class);
+        return [];
     }
 
     /**
      * Define which attributes should be tracked over time for analytics.
-     * Override this method in your model to specify tracked attributes,
-     * or use the #[StickleTrackedAttribute] attribute on properties/methods.
+     * Override this method in your model to specify tracked attributes.
+     *
+     * @return array<int, string> Array of database column names to track
      */
     public static function stickleTrackedAttributes(): array
     {
-        return static::getAttributesWithAttribute(StickleTrackedAttribute::class);
+        return [];
     }
 
     /**

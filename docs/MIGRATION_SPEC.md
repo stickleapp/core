@@ -24,7 +24,7 @@
 
 #### Getting Started (3 files)
 - `installation.md` - Installation steps [UPDATE]
-- `quick-start.md` - 15-minute tutorial [NEW]
+- `basic-setup.md` - 15-minute tutorial [NEW]
 - `configuration.md` - Config reference [KEEP]
 
 #### Core Features (6 files)
@@ -100,19 +100,19 @@
 [From use-cases.md]
 
 ## Next Steps
-[Link to quick-start.md]
+[Link to basic-setup.md]
 ```
 
 **Acceptance Criteria:**
 - [ ] Clear 2-paragraph explanation
 - [ ] 6 key features listed
 - [ ] Use cases explained
-- [ ] Links to quick-start
+- [ ] Links to basic-setup
 - [ ] No marketing fluff
 
 ---
 
-### Task 1.2: Create quick-start.md
+### Task 1.2: Create basic-setup.md
 **Type:** NEW
 **Priority:** HIGH
 **Estimated Time:** 3 hours
@@ -125,7 +125,7 @@
 
 **Structure:**
 ```markdown
-# Quick Start Guide
+# Basic Setup Guide
 
 ## Prerequisites
 [PHP 8.2+, Laravel 12+]
@@ -853,7 +853,7 @@ sidebar: [
     text: "Getting Started",
     items: [
       { text: "Installation", link: "/guide/installation" },
-      { text: "Quick Start", link: "/guide/quick-start" },
+      { text: "Basic Setup", link: "/guide/basic-setup" },
       { text: "Configuration", link: "/guide/configuration" },
     ],
   },
@@ -948,7 +948,7 @@ sidebar: [
 
 ### Day 1-2: Core Structure
 - Task 1.1: Create index.md (2h)
-- Task 1.2: Create quick-start.md (3h)
+- Task 1.2: Create basic-setup.md (3h)
 - Task 1.3: Update installation.md (1h)
 - Task 1.4: Keep configuration.md (15m)
 

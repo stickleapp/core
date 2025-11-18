@@ -42,6 +42,21 @@ Migrations are typically run by the installer, but you can run them manually if 
 php artisan migrate
 ```
 
+### Step 4: Install Laravel Reverb (Optional)
+
+If you want real-time features like live event streaming and real-time UI updates, install Laravel Reverb as your websockets server:
+
+```bash
+php artisan install:broadcasting
+```
+
+This command will:
+- Install the Laravel Reverb package
+- Publish Reverb configuration files
+- Configure broadcasting in your application
+
+For more details, see the [Laravel Reverb documentation](https://laravel.com/docs/reverb).
+
 ## Advanced Installation
 
 The following are handled by the `stickle:install` command but you may need to run them independently at some point.
@@ -112,7 +127,7 @@ For production, run Reverb as a background service. See the [Laravel Reverb docu
 
 You're now ready to start using Stickle! Here's what to do next:
 
-- **[Quick Start Guide](/guide/quick-start)** - Get up and running in 15 minutes
+- **[Basic Setup Guide](/guide/basic-setup)** - Get up and running in 15 minutes
 - **[Configuration](/guide/configuration)** - Fine-tune your Stickle installation
 - **[Tracking Attributes](/guide/tracking-attributes)** - Learn how to track model attributes
 

@@ -32,7 +32,7 @@ export default defineConfig({
                 collapsed: false,
                 items: [
                     { text: "Installation", link: "/guide/installation" },
-                    { text: "Quick Start", link: "/guide/quick-start" },
+                    { text: "Basic Setup", link: "/guide/basic-setup" },
                     { text: "Configuration", link: "/guide/configuration" },
                 ],
             },

@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use StickleApp\Core\Attributes\StickleAttributeMetadata;
-use StickleApp\Core\Attributes\StickleObservedAttribute;
-use StickleApp\Core\Attributes\StickleTrackedAttribute;
 use StickleApp\Core\Enums\ChartType;
 use StickleApp\Core\Enums\DataType;
 use StickleApp\Core\Enums\PrimaryAggregate;
@@ -59,10 +57,29 @@ class User extends Authenticatable
         return $this->name;
     }
 
+    public static function stickleObservedAttributes(): array
+    {
+        return ['user_level'];
+    }
+
+    public static function stickleTrackedAttributes(): array
+    {
+        return [
+            'user_rating',
+            'ticket_count',
+            'open_ticket_count',
+            'resolved_ticket_count',
+            'tickets_resolved_last_7_days',
+            'tickets_resolved_last_30_days',
+            'average_resolution_time',
+            'average_resolution_time_7_days',
+            'average_resolution_time_30_days',
+        ];
+    }
+
     /**
      * User level accessor - marked as observed to track changes.
      */
-    #[StickleObservedAttribute]
     protected function userLevel(): Attribute
     {
         return Attribute::make();
@@ -100,7 +117,6 @@ class User extends Authenticatable
         return $this->belongsTo(Customer::class);
     }
 
-    #[StickleTrackedAttribute]
     #[StickleAttributeMetadata([
         'label' => 'User Rating',
         'description' => 'The 1 to 5 star rating of the user.',
@@ -114,7 +130,6 @@ class User extends Authenticatable
             ->avg('rating'));
     }
 
-    #[StickleTrackedAttribute]
     #[StickleAttributeMetadata([
         'label' => 'Ticket Count',
         'description' => 'The total number of tickets for the user.',
@@ -127,7 +142,6 @@ class User extends Authenticatable
         return Attribute::make(get: fn () => $this->ticketsAssigned()->count());
     }
 
-    #[StickleTrackedAttribute]
     #[StickleAttributeMetadata([
         'label' => 'Open Ticket Count',
         'description' => 'The total number of open tickets for the user.',
@@ -142,7 +156,6 @@ class User extends Authenticatable
             ->count());
     }
 
-    #[StickleTrackedAttribute]
     #[StickleAttributeMetadata([
         'label' => 'Resolved Ticket Count',
         'description' => 'The total number of resolved tickets for the user.',
@@ -156,7 +169,6 @@ class User extends Authenticatable
             ->count());
     }
 
-    #[StickleTrackedAttribute]
     #[StickleAttributeMetadata([
         'label' => 'Tickets Resolved (Last 7 Days)',
         'description' => 'The total number of tickets closed by the customer in the last 7 days.',
@@ -171,7 +183,6 @@ class User extends Authenticatable
             ->count());
     }
 
-    #[StickleTrackedAttribute]
     #[StickleAttributeMetadata([
         'label' => 'Tickets Resolved (Last 30 Days)',
         'description' => 'The total number of tickets closed by the customer in the last 30 days.',
@@ -186,7 +197,6 @@ class User extends Authenticatable
             ->count());
     }
 
-    #[StickleTrackedAttribute]
     #[StickleAttributeMetadata([
         'label' => 'Average Resolution Time',
         'description' => 'The average resolution time for the customer.',
@@ -200,7 +210,6 @@ class User extends Authenticatable
             ->avg('resolved_in_seconds'));
     }
 
-    #[StickleTrackedAttribute]
     #[StickleAttributeMetadata([
         'label' => 'Average Resolution Time Last 7 Days',
         'description' => 'The average resolution time for the customer in the last 7 days.',
@@ -215,7 +224,6 @@ class User extends Authenticatable
             ->avg('resolved_in_seconds'));
     }
 
-    #[StickleTrackedAttribute]
     #[StickleAttributeMetadata([
         'label' => 'Average Resolution Time Last 30 Days',
         'description' => 'The average resolution time for the customer in the last 30 days.',

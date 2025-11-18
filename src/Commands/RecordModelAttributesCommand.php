@@ -10,8 +10,7 @@ use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
+use StickleApp\Core\Support\ClassUtils;
 use StickleApp\Core\Traits\StickleEntity;
 
 final class RecordModelAttributesCommand extends Command implements Isolatable
@@ -19,9 +18,8 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
     /**
      * @var string
      */
-    protected $signature = 'stickle:record-model-attributes {directory : The full path where the Model classes are stored.}
-                                                    {namespace : The namespace of the Model classes.}
-                                                    {limit? : The maximum number of models to record.}';
+    protected $signature = 'stickle:record-model-attributes {namespace : The namespace of the Model classes.}
+                                                            {limit? : The maximum number of models to record.}';
 
     /**
      * @var string
@@ -44,14 +42,12 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
     {
         Log::info(self::class, $this->arguments());
 
-        /** @var string $directory */
-        $directory = $this->argument('directory');
         /** @var string $namespace */
         $namespace = $this->argument('namespace');
         $limit = $this->argument('limit') ?? 1000;
 
         // Get all classes with the StickleEntity trait
-        $classes = $this->getClassesWithTrait(StickleEntity::class, $directory, $namespace);
+        $classes = ClassUtils::getClassesWithTrait($namespace, StickleEntity::class);
 
         foreach ($classes as $class) {
             /** @var Model $model */
@@ -82,36 +78,5 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
                 });
             }
         }
-    }
-
-    /**
-     * @param  class-string  $checkForTrait
-     * @return array<int, string>
-     */
-    private function getClassesWithTrait(string $checkForTrait, string $modelsDirectory, string $modelsNamespace): array
-    {
-        $results = [];
-
-        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($modelsDirectory));
-        $a = [];
-        foreach ($files as $file) {
-
-            if ($file->isFile() && $file->getExtension() === 'php') {
-
-                $className = $modelsNamespace.'\\'.str_replace(
-                    ['/', '.php'],
-                    ['\\', ''],
-                    substr((string) $file->getRealPath(), strlen($modelsDirectory) + 1)
-                );
-                $a[] = $className;
-                $traits = class_uses($className);
-
-                if ($traits && array_key_exists($checkForTrait, $traits)) {
-                    $results[] = $className;
-                }
-            }
-        }
-
-        return $results;
     }
 }
