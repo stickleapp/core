@@ -19,7 +19,7 @@ class ModelRelationshipStatisticsSeeder extends Seeder
 
         $date = now()->subDays(25)->toDateString();
 
-        Artisan::call("stickle:create-partitions {$prefix}model_relationship_statistics public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$prefix}model_relationship_statistics public week '{$date}' 5");
 
         $sql = <<<sql
 INSERT INTO {$prefix}model_relationship_statistics (model_class, object_uid, relationship, attribute, value_min, value_max, value_avg, value_count, value_sum, recorded_at)

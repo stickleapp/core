@@ -21,7 +21,7 @@ class SegmentStatisticsSeeder extends Seeder
         $startDate = now()->subDays(25);
         $endDate = now();
 
-        Artisan::call("stickle:create-partitions {$prefix}segment_statistics public week '{$startDate->toDateString()}' 2");
+        Artisan::call("stickle:create-partitions {$prefix}segment_statistics public week '{$startDate->toDateString()}' 5");
 
         // Get all segments with their model information
         $segments = DB::table("{$prefix}segments")

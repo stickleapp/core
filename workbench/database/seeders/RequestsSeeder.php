@@ -20,11 +20,11 @@ class RequestsSeeder extends Seeder
 
         $date = now()->subDays(25)->toDateString();
 
-        Artisan::call("stickle:create-partitions {$prefix}requests public week '{$date}' 2");
-        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_1min public week '{$date}' 2");
-        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_5min public week '{$date}' 2");
-        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_1hr public week '{$date}' 2");
-        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_1day public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$prefix}requests public week '{$date}' 5");
+        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_1min public week '{$date}' 5");
+        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_5min public week '{$date}' 5");
+        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_1hr public week '{$date}' 5");
+        Artisan::call("stickle:create-partitions {$prefix}requests_rollup_1day public week '{$date}' 5");
 
         $sql = <<<SQL
 INSERT INTO {$prefix}requests (

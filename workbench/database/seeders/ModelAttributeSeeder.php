@@ -78,7 +78,7 @@ class ModelAttributeSeeder extends Seeder
 
         $date = now()->subDays(25)->toDateString();
 
-        Artisan::call("stickle:create-partitions {$prefix}model_attribute_audit public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$prefix}model_attribute_audit public week '{$date}' 5");
 
         DB::table("{$prefix}model_attributes")->truncate();
 

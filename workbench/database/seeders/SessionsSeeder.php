@@ -16,9 +16,9 @@ class SessionsSeeder extends Seeder
     {
         $prefix = Config::string('stickle.database.tablePrefix');
 
-        $date = now()->subDays(90)->toDateString();
+        $date = now()->subDays(21)->toDateString();
 
-        Artisan::call("stickle:create-partitions {$prefix}sessions_rollup_1day public week '{$date}' 2");
+        Artisan::call("stickle:create-partitions {$prefix}sessions_rollup_1day public week '{$date}' 5");
 
         Artisan::call('stickle:rollup-sessions 90');
     }

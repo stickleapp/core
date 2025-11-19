@@ -73,7 +73,7 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
 
             foreach ($builder->cursor() as $stickleEntity) {
                 dispatch(function () use ($stickleEntity): void {
-                    $attributes = $stickleEntity->getStickleTrackedAttributes();
+                    $attributes = $stickleEntity->stickleTrackedAttributes();
                     $stickleEntity->trackable_attributes = $stickleEntity->only($attributes);
                 });
             }
