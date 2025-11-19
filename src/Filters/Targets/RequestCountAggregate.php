@@ -23,7 +23,7 @@ class RequestCountAggregate extends FilterTargetContract
     public function __construct(
         #[Config('stickle.database.tablePrefix')] protected ?string $prefix,
         public Builder $builder,
-        public string $url,
+        public ?string $url,
         public string $aggregate,
         public ?DateTimeInterface $startDate = null,
         public ?DateTimeInterface $endDate = null
@@ -62,8 +62,8 @@ class RequestCountAggregate extends FilterTargetContract
     private function subJoin(): QueryBuilder
     {
         return DB::table($this->prefix.'requests_rollup_1day')
-            ->where('type', 'event')
-            ->where('url', $this->url)
+            ->where('type', 'request')
+            ->when($this->url, fn ($query) => $query->where('url', $this->url))
             ->where('model_class', $this->builder->getModel()->getMorphClass())
             ->whereDate('day', '>=', Date::parse($this->startDate)->toDateString())
             ->whereDate('day', '<', Date::parse($this->endDate)->toDateString())

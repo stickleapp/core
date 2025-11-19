@@ -26,9 +26,9 @@ class RequestCount extends FilterTargetContract
         ];
     }
 
-    private static function validateUrl(?string $url): void
+    private static function validateUrl(): void
     {
-        throw_unless($url, InvalidArgumentException::class, 'URL is required for RequestCount filter targets. You should have passed `url` as a paramter of your target (ex. Filter::requestCount(\'/api/users\')).');
+        // throw_unless($url, InvalidArgumentException::class, 'URL is required for RequestCount filter targets. You should have passed `url` as a paramter of your target (ex. Filter::requestCount(\'/api/users\')).');
     }
 
     private static function validateAggregate(?string $aggregate): void
@@ -62,7 +62,7 @@ class RequestCount extends FilterTargetContract
      * @param  array<mixed>  $currentDateRange
      * @param  array<mixed>  $compareToDateRange
      */
-    private static function createRequestCountAggregateDelta(?string $prefix, Builder $builder, string $url, string $aggregate, string $deltaVerb, array $compareToDateRange, array $currentDateRange): RequestCountAggregateDelta
+    private static function createRequestCountAggregateDelta(?string $prefix, Builder $builder, ?string $url, string $aggregate, string $deltaVerb, array $compareToDateRange, array $currentDateRange): RequestCountAggregateDelta
     {
         return new RequestCountAggregateDelta($prefix, $builder, $url, $aggregate, $deltaVerb, $currentDateRange, $compareToDateRange);
     }
@@ -71,7 +71,7 @@ class RequestCount extends FilterTargetContract
      * @param  Builder<Model>  $builder
      * @param  array<mixed>  $currentDateRange
      */
-    private static function createRequestCountAggregate(?string $prefix, Builder $builder, string $url, string $aggregate, array $currentDateRange): RequestCountAggregate
+    private static function createRequestCountAggregate(?string $prefix, Builder $builder, ?string $url, string $aggregate, array $currentDateRange): RequestCountAggregate
     {
         return new RequestCountAggregate($prefix, $builder, $url, $aggregate, $currentDateRange[0], $currentDateRange[1] ?? now());
     }
@@ -84,15 +84,28 @@ class RequestCount extends FilterTargetContract
     {
         $params = self::parseArguments($arguments);
 
-        self::validateUrl($params['url']);
+        self::validateUrl();
         self::validateAggregate($params['aggregate']);
         self::validateDateRanges($params['currentDateRange'], $params['compareToDateRange'], (bool) $params['deltaVerb']);
         self::validateDeltaConfiguration($params['deltaVerb'], $params['compareToDateRange']);
 
         if ($params['deltaVerb']) {
-            return self::createRequestCountAggregateDelta($prefix, $builder, $params['url'], $params['aggregate'], $params['deltaVerb'], $params['compareToDateRange'], $params['currentDateRange']);
+            return self::createRequestCountAggregateDelta(
+                prefix: $prefix,
+                builder: $builder,
+                url: $params['url'],
+                aggregate: $params['aggregate'],
+                deltaVerb: $params['deltaVerb'],
+                compareToDateRange: $params['compareToDateRange'],
+                currentDateRange: $params['currentDateRange']);
         }
 
-        return self::createRequestCountAggregate($prefix, $builder, $params['url'], $params['aggregate'], $params['currentDateRange']);
+        return self::createRequestCountAggregate(
+            prefix: $prefix,
+            builder: $builder,
+            url: $params['url'],
+            aggregate: $params['aggregate'],
+            currentDateRange: $params['currentDateRange']
+        );
     }
 }

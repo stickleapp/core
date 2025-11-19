@@ -63,7 +63,7 @@ trait StickleEntity
             if ($relation instanceof HasOneOrMany) {
                 $foreignKey = $relation->getQualifiedForeignKeyName();
                 $localKey = $relation->getQualifiedParentKeyName();
-            } elseif ($relation instanceof \Illuminate\Database\Eloquent\Relations\BelongsTo) {
+            } elseif ($relation instanceof BelongsTo) {
                 $foreignKey = $relation->getQualifiedForeignKeyName();
                 $localKey = $relation->getQualifiedOwnerKeyName();
             } else {

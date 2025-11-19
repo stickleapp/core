@@ -148,7 +148,9 @@ class Customer extends Model
     ])]
     protected function ticketCount(): Attribute
     {
-        return Attribute::make(get: fn () => $this->tickets()->count());
+        return Attribute::make(
+            get: fn () => $this->tickets_count ?? $this->tickets()->count()
+        );
     }
 
     #[StickleTrackedAttribute]

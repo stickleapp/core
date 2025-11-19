@@ -24,7 +24,7 @@ class RequestCountAggregateDelta extends FilterTargetContract
     public function __construct(
         #[Config('stickle.database.tablePrefix')] protected ?string $prefix,
         public Builder $builder,
-        public string $url,
+        public ?string $url,
         public string $aggregate,
         public string $deltaVerb,
         public array $previousPeriod,
@@ -72,8 +72,8 @@ class RequestCountAggregateDelta extends FilterTargetContract
         $previousEnd = $this->previousPeriod[1]->format('Y-m-d');
 
         return DB::table($this->prefix.'requests_rollup_1day')
-            ->where('type', 'event')
-            ->where('url', $this->url)
+            ->where('type', 'request')
+            ->when($this->url, fn ($query) => $query->where('url', $this->url))
             ->where('model_class', $this->builder->getModel()->getMorphClass())
             ->where(function (\Illuminate\Contracts\Database\Query\Builder $builder) use ($currentStart, $currentEnd, $previousStart, $previousEnd): void {
                 $builder->whereBetween('day', [$currentStart, $currentEnd])

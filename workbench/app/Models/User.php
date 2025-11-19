@@ -78,14 +78,6 @@ class User extends Authenticatable
     }
 
     /**
-     * User level accessor - marked as observed to track changes.
-     */
-    protected function userLevel(): Attribute
-    {
-        return Attribute::make();
-    }
-
-    /**
      * @return HasMany<Ticket, $this>
      */
     public function ticketsAssigned(): HasMany

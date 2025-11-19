@@ -38,17 +38,6 @@ test('RequestCountAggregate creates correct SQL', function (): void {
     expect($sql)->toContain($prefix.'requests_rollup_1day');
 });
 
-test('RequestCount requires URL argument', function (): void {
-    expect(function (): void {
-        $filter = Filter::requestCount(url: '')
-            ->sum()
-            ->betweenDates(startDate: now()->subDays(7), endDate: now());
-
-        $builder = User::query();
-        $filter->getTarget($builder);
-    })->toThrow(InvalidArgumentException::class, 'URL is required');
-});
-
 test('RequestCount requires aggregate method', function (): void {
     expect(function (): void {
         $filter = Filter::requestCount(url: '/api/something')

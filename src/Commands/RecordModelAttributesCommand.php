@@ -18,7 +18,7 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
     /**
      * @var string
      */
-    protected $signature = 'stickle:record-model-attributes {namespace : The namespace of the Model classes.}
+    protected $signature = 'stickle:record-model-attributes {namespace? : The namespace of the Model classes.}
                                                             {limit? : The maximum number of models to record.}';
 
     /**
@@ -43,8 +43,8 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
         Log::info(self::class, $this->arguments());
 
         /** @var string $namespace */
-        $namespace = $this->argument('namespace');
-        $limit = $this->argument('limit') ?? 1000;
+        $namespace = $this->argument('namespace') ?? config('stickle.namespaces.models');
+        $limit = $this->argument('limit');
 
         // Get all classes with the StickleEntity trait
         $classes = ClassUtils::getClassesWithTrait($namespace, StickleEntity::class);
@@ -53,23 +53,25 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
             /** @var Model $model */
             $model = new $class;
 
-            $builder = $class::query()->leftJoin(
-                "{$this->prefix}model_attributes", function ($join) use ($model): void {
-                    $join->on(
-                        "{$this->prefix}model_attributes.object_uid",
-                        '=',
-                        DB::raw($model->getTable().'.'.$model->getKeyName().'::text')
-                    );
-                    $join->where(
-                        "{$this->prefix}model_attributes.model_class",
-                        '=',
-                        $model::class
-                    );
-                }
-            )->where(function ($query): void {
-                $query->where('synced_at', '<', now()->subMinutes(config('stickle.schedule.recordModelAttributes', 360)))
-                    ->orWhereNull('synced_at');
-            })->limit($limit)->select("{$model->getTable()}.*");
+            $builder = $class::query()
+                ->leftJoin(
+                    "{$this->prefix}model_attributes", function ($join) use ($model): void {
+                        $join->on(
+                            "{$this->prefix}model_attributes.object_uid",
+                            '=',
+                            DB::raw($model->getTable().'.'.$model->getKeyName().'::text')
+                        );
+                        $join->where(
+                            "{$this->prefix}model_attributes.model_class",
+                            '=',
+                            $model::class
+                        );
+                    }
+                )->where(function ($query): void {
+                    $query->where('synced_at', '<', now()->subMinutes(config('stickle.schedule.recordModelAttributes', 360)))
+                        ->orWhereNull('synced_at');
+                })->when($limit, fn ($query) => $query->limit($limit))
+                ->select("{$model->getTable()}.*");
 
             foreach ($builder->cursor() as $stickleEntity) {
                 dispatch(function () use ($stickleEntity): void {

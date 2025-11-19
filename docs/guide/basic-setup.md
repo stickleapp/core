@@ -76,15 +76,48 @@ After adding new tracked attributes to your models, you can manually trigger a s
 php artisan stickle:record-model-attributes 
 ```
 
-This will immediately record the new attributes for all your models. Otherwise, attributes are synced automatically on the schedule.
+This will immediately record the new attributes for all your models. 
+
+Otherwise, attributes are synced automatically on the schedule.
 :::
 
-## Step 3: Create Your First Segment
+## Step 3: Create Your First Segments
 
-Create a segment to identify active users. First, create the segments directory:
+Create segments to identify all and active users. You can adapt these to fit your system.
+
+First, create the segments directory:
 
 ```bash
 mkdir -p app/Segments
+```
+
+Create `app/Segments/AllUsers.php`:
+
+```php
+<?php
+
+namespace App\Segments;
+
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use StickleApp\Core\Attributes\StickleSegmentMetadata;
+use StickleApp\Core\Contracts\Segment;
+use StickleApp\Core\Filters\Filter;
+
+#[StickleSegmentMetadata([
+    'name' => 'All Users',
+    'description' => 'Every user in your system',
+    'exportInterval' => 360, // Re-calculate every 6 hours
+])]
+class AllUsers extends Segment
+{
+    public string $model = User::class;
+
+    public function toBuilder(): Builder
+    {
+        return $this->model::query();
+    }
+}
 ```
 
 Create `app/Segments/ActiveUsers.php`:
@@ -102,7 +135,7 @@ use StickleApp\Core\Filters\Filter;
 
 #[StickleSegmentMetadata([
     'name' => 'Active Users',
-    'description' => 'Users who have logged in within the last 7 days',
+    'description' => 'Users that have made a request in the last 7 days',
     'exportInterval' => 360, // Re-calculate every 6 hours
 ])]
 class ActiveUsers extends Segment
@@ -114,9 +147,10 @@ class ActiveUsers extends Segment
         return $this->model::query()
             ->stickleWhere(
                 Filter::requestCount()
+                    ->count()
                     ->greaterThan(0)
                     ->betweenDates(
-                        now()->subDays(7)->startOfDay()
+                        startDate: now()->subDays(7)->startOfDay(),
                     )
             );
     }

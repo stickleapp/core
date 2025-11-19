@@ -11,10 +11,6 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use RuntimeException;
-use SplFileInfo;
 use StickleApp\Core\Attributes\StickleSegmentMetadata;
 use StickleApp\Core\Jobs\ExportSegmentJob;
 use StickleApp\Core\Models\Segment;
@@ -26,14 +22,13 @@ final class ExportSegmentsCommand extends Command implements Isolatable
     /**
      * @var string
      */
-    protected $signature = 'stickle:export-segments {namespace : The namespace of the Segment classes.}
-                                                    {limit : The maximum number of segments to export.}
-                                                    {directory? : The directory where the Segment classes are located.}';
+    protected $signature = 'stickle:export-segments {namespace? : The namespace of the Segment classes.}
+                                                    {limit? : The maximum number of segments to export.}';
 
     /**
      * @var string
      */
-    protected $description = 'Look at the segments in the designated directory, if necessary, export them.';
+    protected $description = 'Look at the segments in the designated namespace, if necessary, export them.';
 
     /**
      * Create a new command instance.
@@ -53,19 +48,20 @@ final class ExportSegmentsCommand extends Command implements Isolatable
         Log::info(self::class, $this->arguments());
 
         /** @var string $namespace */
-        $namespace = $this->argument('namespace');
-        /** @var string|null $directory */
-        $directory = $this->argument('directory');
+        $namespace = $this->argument('namespace') ?? config('stickle.namespaces.segments');
+        $limit = $this->argument('limit');
 
-        $directory = $directory ?: ClassUtils::directoryFromNamespace(
-            namespace: $namespace
+        // Get all segment classes in the namespace
+        $segmentClasses = ClassUtils::getClassesInDirectory(
+            ClassUtils::directoryFromNamespace($namespace),
+            $namespace
         );
 
         /**
          * Using Reflection, create an array containing all of the segments
          * in the designated directory.
          */
-        $segments = $this->getSegmentSyncDefinitions($directory, $namespace);
+        $segments = $this->getSegmentSyncDefinitions($segmentClasses);
 
         /**
          * Insert any segments from this analysis into the `segments` table.
@@ -81,11 +77,8 @@ final class ExportSegmentsCommand extends Command implements Isolatable
             $builder->where("{$this->prefix}segments.last_exported_at", null);
             $builder->orWhere("{$this->prefix}segments.last_exported_at", '<', DB::raw("NOW() - INTERVAL '1 minute' * export_interval"));
         })
-            ->limit((int) $this->argument('limit'))
+            ->when($limit, fn ($query) => $query->limit((int) $limit))
             ->get();
-
-        // ExportSegmentJob::dispatch(Segment::find(1));
-        // exit;
 
         foreach ($segments as $segment) {
             Log::info('ExportSegments Dispatching', ['segment_id' => $segment->id]);
@@ -94,51 +87,34 @@ final class ExportSegmentsCommand extends Command implements Isolatable
         }
     }
 
-    /** @return array<int<0, max>, array<string, mixed>> */
-    public function getSegmentSyncDefinitions(string $directory, string $namespace): array
+    /**
+     * @param  array<int, class-string>  $segmentClasses
+     * @return array<int<0, max>, array<string, mixed>>
+     */
+    public function getSegmentSyncDefinitions(array $segmentClasses): array
     {
         $results = [];
 
-        $realDirectory = realpath($directory);
-        throw_if($realDirectory === false, RuntimeException::class, "Directory not found: {$directory}");
+        foreach ($segmentClasses as $segmentClass) {
+            $defaultProperties = ClassUtils::getDefaultAttributesForClass($segmentClass);
 
-        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($realDirectory));
+            $model = Arr::get($defaultProperties, 'model');
 
-        /** @var SplFileInfo $file */
-        foreach ($files as $file) {
-            if ($file->isFile() && $file->getExtension() === 'php') {
+            $metadata = AttributeUtils::getAttributeForClass(
+                $segmentClass,
+                StickleSegmentMetadata::class
+            );
 
-                /**
-                 * @var class-string $className
-                 */
-                $className = str_replace(
-                    ['/', '.php'],
-                    ['\\', ''],
-                    substr((string) $file->getRealPath(), strlen($realDirectory) + 1)
-                );
-
-                $segmentClassName = $namespace.'\\'.$className;
-
-                $defaultProperties = ClassUtils::getDefaultAttributesForClass($segmentClassName);
-
-                $model = Arr::get($defaultProperties, 'model');
-
-                $metadata = AttributeUtils::getAttributeForClass(
-                    $segmentClassName,
-                    StickleSegmentMetadata::class
-                );
-
-                $results[] = [
-                    'name' => data_get($metadata, 'name'),
-                    'description' => data_get($metadata, 'description'),
-                    'model_class' => class_basename($model),
-                    'as_class' => $className,
-                    'as_json' => null,
-                    'export_interval' => data_get($metadata, 'exportInterval', config('stickle.schedule.exportSegments')),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            }
+            $results[] = [
+                'name' => data_get($metadata, 'name'),
+                'description' => data_get($metadata, 'description'),
+                'model_class' => class_basename($model),
+                'as_class' => class_basename($segmentClass),
+                'as_json' => null,
+                'export_interval' => data_get($metadata, 'exportInterval', config('stickle.schedule.exportSegments')),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
         }
 
         return $results;
