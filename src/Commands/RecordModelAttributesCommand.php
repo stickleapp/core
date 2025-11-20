@@ -10,6 +10,7 @@ use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use StickleApp\Core\Jobs\RecordModelAttributesJob;
 use StickleApp\Core\Support\ClassUtils;
 use StickleApp\Core\Traits\StickleEntity;
 
@@ -74,10 +75,7 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
                 ->select("{$model->getTable()}.*");
 
             foreach ($builder->cursor() as $stickleEntity) {
-                dispatch(function () use ($stickleEntity): void {
-                    $attributes = $stickleEntity->stickleTrackedAttributes();
-                    $stickleEntity->trackable_attributes = $stickleEntity->only($attributes);
-                });
+                dispatch(new RecordModelAttributesJob($stickleEntity));
             }
         }
     }
