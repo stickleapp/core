@@ -34,5 +34,8 @@
         <env name="DB_USERNAME" value="postgres"/>
         <env name="DB_PASSWORD" value="postgres"/>
         <env name="STICKLE_DATABASE_TABLE_PREFIX" value="stc_"/>
+        <env name="STICKLE_NAMESPACES_MODELS" value="Workbench\App\Models"/>
+        <env name="STICKLE_NAMESPACES_SEGMENTS" value="Workbench\App\Segments"/>
+        <env name="STICKLE_NAMESPACES_LISTENERS" value="Workbench\App\Listeners"/>
     </php>
 </phpunit>
