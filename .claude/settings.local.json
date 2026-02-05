@@ -20,11 +20,13 @@
       "Bash(composer analyse:*)",
       "Bash(afplay:*)",
       "WebFetch(domain:github.com)",
-      "WebSearch"
+      "WebSearch",
+      "WebFetch(domain:devdojo.com)"
     ]
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
-    "laravel-boost"
+    "laravel-boost",
+    "chrome-devtools"
   ]
 }
