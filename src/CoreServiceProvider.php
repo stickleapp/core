@@ -54,19 +54,19 @@ final class CoreServiceProvider extends ServiceProvider
         ModelAttributes::observe(ModelAttributesObserver::class);
 
         /** Allows URLs using Segment Class instead of ID */
-        Route::bind("segment", function (string $value) {
+        Route::bind('segment', function (string $value) {
             if (is_numeric($value)) {
                 return Segment::query()->findOrFail($value);
             }
 
-            return Segment::query()->where("as_class", $value)->firstOrFail();
+            return Segment::query()->where('as_class', $value)->firstOrFail();
         });
 
-        if (config("stickle.tracking.server.loadMiddleware") === true) {
+        if (config('stickle.tracking.server.loadMiddleware') === true) {
             $kernel->pushMiddleware(RequestLogger::class);
         }
 
-        if (config("stickle.tracking.client.loadMiddleware") === true) {
+        if (config('stickle.tracking.client.loadMiddleware') === true) {
             $kernel->pushMiddleware(InjectJavascriptTrackingCode::class);
         }
 
@@ -90,26 +90,26 @@ final class CoreServiceProvider extends ServiceProvider
         /**
          * Load Migrations to update the database
          */
-        $this->loadMigrationsFrom(__DIR__ . "/../database/migrations");
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         /**
          * Load resources used by this package
          */
         Blade::componentNamespace(
-            "StickleApp\\Core\\Views\\Components",
-            "stickle",
+            'StickleApp\\Core\\Views\\Components',
+            'stickle',
         );
 
         /**
          * Publish resources used by this package
          */
-        $this->loadViewsFrom(__DIR__ . "/../resources/views", "stickle");
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'stickle');
 
         /**
          * Publish Config file
          */
         $this->publishes([
-            __DIR__ . "/../config/stickle.php" => config_path("stickle.php"),
+            __DIR__.'/../config/stickle.php' => config_path('stickle.php'),
         ]);
 
         /**
@@ -117,18 +117,18 @@ final class CoreServiceProvider extends ServiceProvider
          */
         $this->publishes(
             [
-                __DIR__ . "/../public/build" => public_path(
-                    "vendor/stickleapp/core",
+                __DIR__.'/../public/build' => public_path(
+                    'vendor/stickleapp/core',
                 ),
             ],
-            "package-assets",
+            'package-assets',
         );
 
         /**
          * Load Routes
          */
-        $this->loadRoutesFrom(__DIR__ . "/../routes/api.php");
-        $this->loadRoutesFrom(__DIR__ . "/../routes/web.php");
-        $this->loadRoutesFrom(__DIR__ . "/../routes/channels.php");
+        $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/channels.php');
     }
 }
