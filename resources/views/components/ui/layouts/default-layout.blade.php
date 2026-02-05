@@ -49,27 +49,27 @@
 </head>
 
 <body class="h-full">
-    <!--
-  This example requires updating your template:
+    {{-- Toast Notifications --}}
+    <x-stickle::ui.primitives.toast position="top-right" />
 
-  ```
-  <html class="h-full bg-white">
-  <body class="h-full">
-  ```
--->
     <div x-data="{ isOpen: false }">
         @include('stickle::components.ui.layouts.partials.menu', ['models => $models()'])
-        @include('stickle::components.ui.layouts.partials.sidebar', ['models => $models()'])
 
-        <div class="lg:pl-72">
-            <!-- HEADER -->
+        <!-- Layout wrapper -->
+        <div class="relative isolate flex min-h-svh w-full bg-white max-lg:flex-col lg:bg-zinc-100">
+
+            <!-- Sidebar (desktop) -->
+            @include('stickle::components.ui.layouts.partials.sidebar', ['models => $models()'])
+
+            <!-- Mobile header -->
             @include('stickle::components.ui.layouts.partials.header')
 
-            <main class="py-10">
-                <!-- CONTAINER -->
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <!-- Your content -->
-                    {{ $slot }}
+            <!-- Main content -->
+            <main class="flex flex-1 flex-col pb-2 lg:min-w-0 lg:pt-2 lg:pr-2 lg:pl-64">
+                <div class="grow p-6 lg:rounded-lg lg:bg-white lg:p-10 lg:shadow-xs lg:ring-1 lg:ring-zinc-950/5">
+                    <div class="mx-auto max-w-6xl">
+                        {{ $slot }}
+                    </div>
                 </div>
             </main>
         </div>

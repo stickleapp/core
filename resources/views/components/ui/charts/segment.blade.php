@@ -1,18 +1,18 @@
-<div x-data="chartData{{ md5($endpoint) }}()">
+<div x-data="chartData{{ md5($endpoint) }}()" class="h-full">
     <div
-        class="gap-x-4 gap-y-2 bg-white shadow-sm overflow-hidden sm:rounded-lg"
+        class="h-full flex flex-col gap-x-4 gap-y-2 bg-white shadow-sm overflow-hidden sm:rounded-lg"
     >
         <div
-            class="flex flex-wrap items-baseline justify-between px-4 py-10 sm:px-6 xl:px-8"
+            class="flex-1 flex flex-col px-4 py-6 sm:px-6 xl:px-8"
         >
-            <dt class="text-sm/6 font-medium text-gray-500">{{ $label }}</dt>
-            <dd>@include('stickle::components.ui.charts.primatives.delta')</dd>
+            <dt class="text-sm/6 font-medium text-gray-500 truncate">{{ $label }}</dt>
             <dd
-                class="w-full flex-none text-3xl/10 font-medium tracking-tight text-gray-900"
+                class="text-3xl/10 font-medium tracking-tight text-gray-900 mt-1"
                 x-text="currentValue"
             ></dd>
+            <dd class="mt-1">@include('stickle::components.ui.charts.primatives.delta')</dd>
         </div>
-        <div class="w-full" style="height: 150px">
+        <div class="w-full shrink-0" style="height: 112px">
             <canvas x-ref="{{ $key }}" id="{{ $key }}"></canvas>
         </div>
     </div>
@@ -85,7 +85,7 @@
 
                 // Create gradient for the chart fill
                 const ctx = this.$refs['{{ $key }}'].getContext('2d');
-                const gradient = ctx.createLinearGradient(0, 0, 0, 150);
+                const gradient = ctx.createLinearGradient(0, 0, 0, 112);
                 gradient.addColorStop(0, 'rgba(250, 204, 21, 0.7)');
                 gradient.addColorStop(1, 'rgba(250, 204, 21, 0.1)');
 

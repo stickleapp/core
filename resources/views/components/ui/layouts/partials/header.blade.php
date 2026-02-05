@@ -1,56 +1,36 @@
-<div class="sticky top-0 z-40 lg:mx-auto lg:max-w-7xl lg:px-8">
-    <div
-        class="flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-xs sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none"
+<!-- Mobile header -->
+<header class="flex items-center justify-between px-4 py-2 lg:hidden">
+    <button
+        type="button"
+        @click="isOpen = true"
+        class="-m-2.5 p-2.5 text-zinc-950"
     >
-        <button
-            type="button"
-            @click="isOpen = true"
-            class="-m-2.5 p-2.5 text-gray-700 lg:hidden"
+        <span class="sr-only">Open sidebar</span>
+        <svg
+            class="size-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            aria-hidden="true"
         >
-            <span class="sr-only">Open sidebar</span>
-            <svg
-                class="size-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                aria-hidden="true"
-                data-slot="icon"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                />
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+            />
+        </svg>
+    </button>
+
+    <button
+        type="button"
+        class="-m-1.5 flex items-center p-1.5"
+    >
+        <span class="sr-only">Your profile</span>
+        <span class="inline-flex size-8 items-center justify-center rounded-full bg-zinc-200">
+            <svg class="size-5 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
             </svg>
-        </button>
-
-        <!-- Separator -->
-        <div class="h-6 w-px bg-gray-200 lg:hidden" aria-hidden="true"></div>
-
-        <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-            <form class="grid flex-1 grid-cols-1" action="#" method="GET">
-                <input
-                    type="search"
-                    name="search"
-                    aria-label="Search"
-                    class="col-start-1 row-start-1 block size-full bg-white pl-8 text-base text-gray-900 outline-hidden placeholder:text-gray-400 sm:text-sm/6"
-                    placeholder="Search"
-                />
-                <svg
-                    class="pointer-events-none col-start-1 row-start-1 size-5 self-center text-gray-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                    data-slot="icon"
-                >
-                    <path
-                        fill-rule="evenodd"
-                        d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-                        clip-rule="evenodd"
-                    />
-                </svg>
-            </form>
-        </div>
-    </div>
-</div>
+        </span>
+    </button>
+</header>

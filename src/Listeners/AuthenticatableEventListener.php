@@ -71,13 +71,8 @@ class AuthenticatableEventListener implements ShouldQueue
 
         $trackedEvents = config('stickle.tracking.server.authenticationEventsTracked', []);
 
-        foreach ($trackedEvents as $trackedEvent) {
-            if (isset($eventClasses[$trackedEvent])) {
-                $dispatcher->listen(
-                    $eventClasses[$trackedEvent],
-                    [AuthenticatableEventListener::class, 'onEvent']
-                );
-            }
+        foreach (array_intersect_key($eventClasses, array_flip($trackedEvents)) as $eventClass) {
+            $dispatcher->listen($eventClass, [AuthenticatableEventListener::class, 'onEvent']);
         }
     }
 }

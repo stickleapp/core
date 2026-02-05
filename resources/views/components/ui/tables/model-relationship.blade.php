@@ -75,9 +75,10 @@
                 </div>
             </div>
 
-            <!-- Table Content -->
+            <!-- Table Content (desktop) -->
             <div
                 x-show="!$store.tableData.isLoading && !$store.tableData.error"
+                class="hidden lg:block"
             >
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
@@ -119,6 +120,7 @@
                                             :href="modelUrl('{{
                                                 $relatedModel()
                                             }}', item)"
+                                            class="text-blue-600 hover:text-blue-800"
                                             ><span
                                                 x-text="item[column.key]"
                                             ></span
@@ -130,7 +132,46 @@
                     </tbody>
                 </table>
 
-                <!-- Empty State -->
+                <!-- Empty State (desktop) -->
+                <div
+                    x-show="!$store.tableData.isLoading && $store.tableData.items.length === 0"
+                    class="p-8 text-center text-gray-500"
+                >
+                    No data available
+                </div>
+            </div>
+
+            <!-- List View (mobile) -->
+            <div
+                x-show="!$store.tableData.isLoading && !$store.tableData.error"
+                class="lg:hidden divide-y divide-gray-200"
+            >
+                <template
+                    x-for="(item, index) in $store.tableData.items"
+                    :key="index"
+                >
+                    <a
+                        :href="modelUrl('{{ $relatedModel() }}', item)"
+                        class="block py-3 hover:bg-gray-50"
+                    >
+                        <div class="flex items-center justify-between">
+                            <span
+                                class="text-sm font-medium text-gray-900 truncate"
+                                x-text="item.name || item.email || 'ID: ' + item.id"
+                            ></span>
+                            <svg class="w-4 h-4 text-gray-400 flex-shrink-0 ml-2" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                            </svg>
+                        </div>
+                        <div class="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
+                            <span x-show="item.email" x-text="item.email"></span>
+                            <span x-show="item.status" x-text="item.status"></span>
+                            <span x-show="item.created_at" x-text="item.created_at"></span>
+                        </div>
+                    </a>
+                </template>
+
+                <!-- Empty State (mobile) -->
                 <div
                     x-show="!$store.tableData.isLoading && $store.tableData.items.length === 0"
                     class="p-8 text-center text-gray-500"

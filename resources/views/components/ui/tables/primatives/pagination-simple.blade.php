@@ -1,7 +1,7 @@
 <div
     x-data="pagination()"
     x-show="!$store.tableData.isLoading && !$store.tableData.error"
-    class="border-t border-gray-200 bg-white py-3 px-0 sm:px-6"
+    class="mt-6 border-t border-gray-200 bg-white py-3 px-0 sm:px-6"
 >
     <!-- Mobile view pagination -->
     <div class="flex flex-1 justify-between md:hidden">
@@ -132,7 +132,7 @@
             </nav>
         </div>
     </div>
-    <div class="flex flex-1 w-full">
+    <div class="flex flex-1 items-center justify-center gap-2 w-full">
         <label class="text-sm text-gray-600">Items per page:</label>
         <select
             x-model="$store.tableData.perPage"

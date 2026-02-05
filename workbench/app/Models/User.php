@@ -15,7 +15,7 @@ use StickleApp\Core\Enums\DataType;
 use StickleApp\Core\Enums\PrimaryAggregate;
 use StickleApp\Core\Traits\StickleEntity;
 use Workbench\App\Enums\UserType;
-use Workbench\Database\Factories\UserFactory;
+use Workbench\Workbench\Database\Factories\UserFactory;
 
 class User extends Authenticatable
 {

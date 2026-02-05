@@ -21,7 +21,16 @@
       "Bash(afplay:*)",
       "WebFetch(domain:github.com)",
       "WebSearch",
-      "WebFetch(domain:devdojo.com)"
+      "WebFetch(domain:devdojo.com)",
+      "WebFetch(domain:catalyst-demo.tailwindui.com)",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__emulate",
+      "mcp__chrome-devtools__take_snapshot",
+      "mcp__chrome-devtools__click",
+      "mcp__chrome-devtools__evaluate_script",
+      "Bash(ls:*)",
+      "Bash(npm run build:*)",
+      "mcp__chrome-devtools__navigate_page"
     ]
   },
   "enableAllProjectMcpServers": true,

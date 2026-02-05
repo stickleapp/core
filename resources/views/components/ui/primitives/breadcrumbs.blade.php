@@ -1,0 +1,42 @@
+@props([
+    'items' => [],
+    'homeUrl' => '/',
+    'homeLabel' => 'Home',
+    'showHome' => true,
+])
+
+<nav {{ $attributes->merge(['class' => 'flex', 'aria-label' => 'Breadcrumb']) }}>
+    <ol class="inline-flex items-center space-x-1 text-sm text-neutral-500">
+        @if($showHome)
+            <li class="flex items-center h-full">
+                <a href="{{ $homeUrl }}" class="py-1 text-gray-400 hover:text-neutral-900">
+                    <svg class="w-5 h-5 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.707-1.707l7-7Z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="sr-only">{{ $homeLabel }}</span>
+                </a>
+            </li>
+        @endif
+
+        @foreach($items as $index => $item)
+            <li class="flex items-center">
+                <svg class="w-5 h-5 shrink-0 text-gray-400/70" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                </svg>
+
+                @if($loop->last)
+                    <span class="ml-2 text-sm font-medium text-neutral-600" aria-current="page">
+                        {{ $item['name'] ?? $item['label'] ?? '' }}
+                    </span>
+                @else
+                    <a
+                        href="{{ $item['url'] ?? $item['href'] ?? '#' }}"
+                        class="ml-2 text-sm font-normal text-neutral-500 hover:text-neutral-900"
+                    >
+                        {{ $item['name'] ?? $item['label'] ?? '' }}
+                    </a>
+                @endif
+            </li>
+        @endforeach
+    </ol>
+</nav>
