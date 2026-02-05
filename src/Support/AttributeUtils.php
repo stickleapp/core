@@ -49,8 +49,8 @@ class AttributeUtils
         $metadata = [];
 
         // Check methods for the attribute
-        foreach ($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-            $methodName = $method->getName();
+        foreach ($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
+            $methodName = $reflectionMethod->getName();
 
             // Match for accessor methods (get*Attribute)
             if (preg_match('/^get(.+)Attribute$/', $methodName, $matches)) {
@@ -69,7 +69,7 @@ class AttributeUtils
 
                 $attributeName = strtolower($attributeName);
 
-                $attributes = $method->getAttributes($attributeClass);
+                $attributes = $reflectionMethod->getAttributes($attributeClass);
 
                 if (! empty($attributes)) {
                     $instance = $attributes[0]->newInstance();
@@ -96,12 +96,12 @@ class AttributeUtils
         $metadata = [];
 
         // Check properties for the attribute (if needed)
-        foreach ($reflectionClass->getProperties() as $property) {
-            $attributes = $property->getAttributes($attributeClass);
+        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+            $attributes = $reflectionProperty->getAttributes($attributeClass);
             if (! empty($attributes)) {
                 $instance = $attributes[0]->newInstance();
                 if (property_exists($instance, 'value')) {
-                    $metadata[$attributeClass][$property->getName()] = $instance->value;
+                    $metadata[$attributeClass][$reflectionProperty->getName()] = $instance->value;
                 }
             }
         }
@@ -113,7 +113,7 @@ class AttributeUtils
     {
         $attributes = self::getAllAttributesForClass_targetClass($className, $attributeClass);
 
-        return data_get($attributes, $attributeClass, null);
+        return data_get($attributes, $attributeClass);
     }
 
     public static function getAttributeForMethod(string $className, string $methodName, string $attributeClass): mixed

@@ -19,9 +19,9 @@ return RectorConfig::configure()
         __DIR__.'/src',
         __DIR__.'/workbench/app',
         __DIR__.'/workbench/bootstrap',
-        __DIR__.'/workbench/config',
+        // __DIR__.'/workbench/config',
         __DIR__.'/workbench/database',
-        __DIR__.'/workbench/public',
+        // __DIR__ . "/workbench/public",
         __DIR__.'/workbench/resources',
         __DIR__.'/workbench/routes',
     ])
@@ -35,9 +35,7 @@ return RectorConfig::configure()
             __DIR__.'/src/Models/ModelAttributes.php',
         ],
     ])
-    ->withCache(
-        cacheDirectory: __DIR__.'/storage/rector'
-    )
+    ->withCache(cacheDirectory: __DIR__.'/storage/rector')
     ->withPhpSets(php83: true)
     ->withSetProviders(LaravelSetProvider::class)
     ->withSets([

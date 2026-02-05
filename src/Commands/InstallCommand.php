@@ -132,7 +132,7 @@ class InstallCommand extends Command
             ->note('Stickle needs access to a disk to store files for loading large data sets.')
             ->suggest(
                 label: 'What storage disk should be used for data exports?',
-                options: fn () => array_keys(config('filesystems.disks')),
+                options: fn (): array => array_keys(config('filesystems.disks')),
                 default: 'local',
                 required: true,
                 validate: ['STICKLE_FILESYSTEM_DISK_EXPORTS' => 'string'],

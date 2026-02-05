@@ -24,8 +24,8 @@ class ModelAttributesObserver
 
         foreach ($diff as $property => $changes) {
 
-            $valueOld = Arr::get($changes, 'value_old', null);
-            $valueNew = Arr::get($changes, 'value_new', null);
+            $valueOld = Arr::get($changes, 'value_old');
+            $valueNew = Arr::get($changes, 'value_new');
 
             // This may be slow
             ModelAttributeAudit::query()->firstOrCreate([

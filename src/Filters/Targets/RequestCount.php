@@ -18,10 +18,10 @@ class RequestCount extends FilterTargetContract
     private static function parseArguments(array $arguments): array
     {
         return [
-            'deltaVerb' => data_get($arguments, 'deltaVerb', null),
+            'deltaVerb' => data_get($arguments, 'deltaVerb'),
             'currentDateRange' => data_get($arguments, 'currentDateRange', []),
             'compareToDateRange' => data_get($arguments, 'compareToDateRange', []),
-            'url' => data_get($arguments, 'url', data_get($arguments, '0', null)),
+            'url' => data_get($arguments, 'url', data_get($arguments, '0')),
             'aggregate' => data_get($arguments, 'aggregate'),
         ];
     }

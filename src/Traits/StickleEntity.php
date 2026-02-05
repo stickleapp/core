@@ -308,7 +308,7 @@ trait StickleEntity
             return null;
         }
 
-        return data_get($modelAttributesObject->data, $attribute, null);
+        return data_get($modelAttributesObject->data, $attribute);
     }
 
     public static function getStickleChartData(): array

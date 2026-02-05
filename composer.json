@@ -36,6 +36,9 @@
         "rector/rector": "^2.2"
     },
     "autoload": {
+        "files": [
+            "src/helpers.php"
+        ],
         "psr-4": {
             "StickleApp\\Core\\": "src/",
             "StickleApp\\Core\\Database\\Factories\\": "database/factories/",

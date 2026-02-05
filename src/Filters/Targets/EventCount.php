@@ -18,10 +18,10 @@ class EventCount extends FilterTargetContract
     private static function parseArguments(array $arguments): array
     {
         return [
-            'deltaVerb' => data_get($arguments, 'deltaVerb', null),
+            'deltaVerb' => data_get($arguments, 'deltaVerb'),
             'currentDateRange' => data_get($arguments, 'currentDateRange', []),
             'compareToDateRange' => data_get($arguments, 'compareToDateRange', []),
-            'event' => data_get($arguments, 'event', data_get($arguments, '0', null)),
+            'event' => data_get($arguments, 'event', data_get($arguments, '0')),
             'aggregate' => data_get($arguments, 'aggregate'),
         ];
     }

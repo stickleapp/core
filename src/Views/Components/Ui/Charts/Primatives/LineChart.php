@@ -11,8 +11,6 @@ class LineChart extends Component
 {
     /**
      * Create the component instance.
-     *
-     * @return void
      */
     public function __construct(
         public string $key,

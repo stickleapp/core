@@ -40,10 +40,10 @@ class Number extends FilterTargetContract
     private static function parseArguments(array $arguments): array
     {
         return [
-            'deltaVerb' => data_get($arguments, 'deltaVerb', null),
+            'deltaVerb' => data_get($arguments, 'deltaVerb'),
             'currentDateRange' => data_get($arguments, 'currentDateRange', []),
             'compareToDateRange' => data_get($arguments, 'compareToDateRange', []),
-            'attribute' => data_get($arguments, 'attribute', data_get($arguments, '0', null)),
+            'attribute' => data_get($arguments, 'attribute', data_get($arguments, '0')),
             'aggregate' => data_get($arguments, 'aggregate'),
         ];
     }

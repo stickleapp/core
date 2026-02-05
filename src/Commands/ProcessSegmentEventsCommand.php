@@ -25,14 +25,6 @@ final class ProcessSegmentEventsCommand extends Command implements Isolatable
     protected $description = 'Triggger events for new inserts/deletes into the model_segment table.';
 
     /**
-     * Create a new command instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(): void

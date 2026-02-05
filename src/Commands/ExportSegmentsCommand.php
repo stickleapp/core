@@ -74,7 +74,7 @@ final class ExportSegmentsCommand extends Command implements Isolatable
          * and the last_exported_at timestamp.
          */
         $segments = Segment::query()->where(function (Builder $builder): void {
-            $builder->where("{$this->prefix}segments.last_exported_at", null);
+            $builder->where("{$this->prefix}segments.last_exported_at");
             $builder->orWhere("{$this->prefix}segments.last_exported_at", '<', DB::raw("NOW() - INTERVAL '1 minute' * export_interval"));
         })
             ->when($limit, fn ($query) => $query->limit((int) $limit))

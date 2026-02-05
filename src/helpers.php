@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace StickleApp\Core\Support;
-
-class Asset
-{
-    public function url(string $path): string
+if (! function_exists('stickle_asset')) {
+    /**
+     * Generate a URL for a Stickle package asset.
+     */
+    function stickle_asset(string $path): string
     {
         $manifestPath = public_path('vendor/stickleapp/core/manifest.json');
 

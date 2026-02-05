@@ -183,7 +183,7 @@ class ClassUtils
         $relations = $info['relations'];
 
         // Replace the fqcn with the class name of $relationshipClasses
-        $relationshipClasses = array_map(fn (string $class): string => class_basename($class), $relationshipClasses);
+        $relationshipClasses = array_map(class_basename(...), $relationshipClasses);
 
         // Check each relation to see if it relates to any of the specified classes
         foreach ($relations as $relation) {
@@ -221,7 +221,7 @@ class ClassUtils
         $relations = $info['relations'];
 
         // Replace the fqcn with the class name of $relationshipClasses
-        $relationshipClasses = array_map(fn (string $class): string => class_basename($class), $relationshipClasses);
+        $relationshipClasses = array_map(class_basename(...), $relationshipClasses);
 
         $return = [];
 

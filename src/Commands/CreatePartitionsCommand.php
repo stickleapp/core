@@ -38,14 +38,6 @@ final class CreatePartitionsCommand extends Command implements Isolatable
     protected $description = 'Created a time-based partitions of the rollup tables (or any table).';
 
     /**
-     * Create a new command instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      */
     public function handle(): void

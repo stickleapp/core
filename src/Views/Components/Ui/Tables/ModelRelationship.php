@@ -12,8 +12,6 @@ class ModelRelationship extends Component
 {
     /**
      * Create the component instance.
-     *
-     * @return void
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,

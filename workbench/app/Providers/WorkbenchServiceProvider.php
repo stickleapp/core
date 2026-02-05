@@ -47,7 +47,7 @@ class WorkbenchServiceProvider extends ServiceProvider
 
             $class = Str::replaceLast('.php', '', $class);
 
-            $parts = array_map('ucfirst', explode(DIRECTORY_SEPARATOR, $class));
+            $parts = array_map(ucfirst(...), explode(DIRECTORY_SEPARATOR, $class));
 
             return implode('\\', $parts);
         });

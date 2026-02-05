@@ -18,7 +18,7 @@ class SessionCount extends FilterTargetContract
     private static function parseArguments(array $arguments): array
     {
         return [
-            'deltaVerb' => data_get($arguments, 'deltaVerb', null),
+            'deltaVerb' => data_get($arguments, 'deltaVerb'),
             'currentDateRange' => data_get($arguments, 'currentDateRange', []),
             'compareToDateRange' => data_get($arguments, 'compareToDateRange', []),
             'aggregate' => data_get($arguments, 'aggregate'),

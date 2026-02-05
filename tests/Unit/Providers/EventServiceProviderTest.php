@@ -12,7 +12,7 @@ it('can be instantiated', function (): void {
 });
 
 it('registers events correctly', function (): void {
-    $dispatcher = app(Dispatcher::class);
+    $dispatcher = resolve(Dispatcher::class);
     $listeners = $dispatcher->getListeners(Identify::class);
     expect($listeners)
         ->toBeArray()

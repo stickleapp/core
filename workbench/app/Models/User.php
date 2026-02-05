@@ -15,7 +15,7 @@ use StickleApp\Core\Enums\DataType;
 use StickleApp\Core\Enums\PrimaryAggregate;
 use StickleApp\Core\Traits\StickleEntity;
 use Workbench\App\Enums\UserType;
-use Workbench\Workbench\Database\Factories\UserFactory;
+use Workbench\Database\Factories\UserFactory;
 
 class User extends Authenticatable
 {
@@ -47,10 +47,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
 
     public function stickleLabel(): string
     {
@@ -109,125 +106,152 @@ class User extends Authenticatable
         return $this->belongsTo(Customer::class);
     }
 
-    #[StickleAttributeMetadata([
-        'label' => 'User Rating',
-        'description' => 'The 1 to 5 star rating of the user.',
-        'chartType' => ChartType::LINE,
-        'dataType' => DataType::INTEGER,
-        'primaryAggregate' => PrimaryAggregate::AVG,
-    ])]
+    #[
+        StickleAttributeMetadata([
+            'label' => 'User Rating',
+            'description' => 'The 1 to 5 star rating of the user.',
+            'chartType' => ChartType::LINE,
+            'dataType' => DataType::INTEGER,
+            'primaryAggregate' => PrimaryAggregate::AVG,
+        ]),
+    ]
     protected function userRating(): Attribute
     {
-        return Attribute::make(get: fn ($value) => $this->ticketsResolved()
-            ->avg('rating'));
+        return Attribute::make(
+            get: fn ($value) => $this->ticketsResolved()->avg('rating'),
+        );
     }
 
-    #[StickleAttributeMetadata([
-        'label' => 'Ticket Count',
-        'description' => 'The total number of tickets for the user.',
-        'chartType' => ChartType::LINE,
-        'dataType' => DataType::INTEGER,
-        'primaryAggregate' => PrimaryAggregate::AVG,
-    ])]
+    #[
+        StickleAttributeMetadata([
+            'label' => 'Ticket Count',
+            'description' => 'The total number of tickets for the user.',
+            'chartType' => ChartType::LINE,
+            'dataType' => DataType::INTEGER,
+            'primaryAggregate' => PrimaryAggregate::AVG,
+        ]),
+    ]
     protected function ticketCount(): Attribute
     {
         return Attribute::make(get: fn () => $this->ticketsAssigned()->count());
     }
 
-    #[StickleAttributeMetadata([
-        'label' => 'Open Ticket Count',
-        'description' => 'The total number of open tickets for the user.',
-        'chartType' => ChartType::LINE,
-        'dataType' => DataType::INTEGER,
-        'primaryAggregate' => PrimaryAggregate::AVG,
-    ])]
+    #[
+        StickleAttributeMetadata([
+            'label' => 'Open Ticket Count',
+            'description' => 'The total number of open tickets for the user.',
+            'chartType' => ChartType::LINE,
+            'dataType' => DataType::INTEGER,
+            'primaryAggregate' => PrimaryAggregate::AVG,
+        ]),
+    ]
     protected function openTicketCount(): Attribute
     {
-        return Attribute::make(get: fn () => $this->ticketsAssigned()
-            ->whereStatus('open')
-            ->count());
+        return Attribute::make(
+            get: fn () => $this->ticketsAssigned()->whereStatus('open')->count(),
+        );
     }
 
-    #[StickleAttributeMetadata([
-        'label' => 'Resolved Ticket Count',
-        'description' => 'The total number of resolved tickets for the user.',
-        'chartType' => ChartType::LINE,
-        'dataType' => DataType::INTEGER,
-        'primaryAggregate' => PrimaryAggregate::AVG,
-    ])]
+    #[
+        StickleAttributeMetadata([
+            'label' => 'Resolved Ticket Count',
+            'description' => 'The total number of resolved tickets for the user.',
+            'chartType' => ChartType::LINE,
+            'dataType' => DataType::INTEGER,
+            'primaryAggregate' => PrimaryAggregate::AVG,
+        ]),
+    ]
     protected function resolvedTicketCount(): Attribute
     {
-        return Attribute::make(get: fn () => $this->ticketsResolved()
-            ->count());
+        return Attribute::make(get: fn () => $this->ticketsResolved()->count());
     }
 
-    #[StickleAttributeMetadata([
-        'label' => 'Tickets Resolved (Last 7 Days)',
-        'description' => 'The total number of tickets closed by the customer in the last 7 days.',
-        'chartType' => ChartType::LINE,
-        'dataType' => DataType::INTEGER,
-        'primaryAggregate' => PrimaryAggregate::AVG,
-    ])]
+    #[
+        StickleAttributeMetadata([
+            'label' => 'Tickets Resolved (Last 7 Days)',
+            'description' => 'The total number of tickets closed by the customer in the last 7 days.',
+            'chartType' => ChartType::LINE,
+            'dataType' => DataType::INTEGER,
+            'primaryAggregate' => PrimaryAggregate::AVG,
+        ]),
+    ]
     protected function ticketsResolvedLast7Days(): Attribute
     {
-        return Attribute::make(get: fn () => $this->ticketsResolved()
-            ->where('resolved_at', '>=', now()->subDays(7))
-            ->count());
+        return Attribute::make(
+            get: fn () => $this->ticketsResolved()
+                ->where('resolved_at', '>=', now()->subDays(7))
+                ->count(),
+        );
     }
 
-    #[StickleAttributeMetadata([
-        'label' => 'Tickets Resolved (Last 30 Days)',
-        'description' => 'The total number of tickets closed by the customer in the last 30 days.',
-        'chartType' => ChartType::LINE,
-        'dataType' => DataType::INTEGER,
-        'primaryAggregate' => PrimaryAggregate::AVG,
-    ])]
+    #[
+        StickleAttributeMetadata([
+            'label' => 'Tickets Resolved (Last 30 Days)',
+            'description' => 'The total number of tickets closed by the customer in the last 30 days.',
+            'chartType' => ChartType::LINE,
+            'dataType' => DataType::INTEGER,
+            'primaryAggregate' => PrimaryAggregate::AVG,
+        ]),
+    ]
     protected function ticketsResolvedLast30Days(): Attribute
     {
-        return Attribute::make(get: fn () => $this->ticketsResolved()
-            ->where('resolved_at', '>=', now()->subDays(30))
-            ->count());
+        return Attribute::make(
+            get: fn () => $this->ticketsResolved()
+                ->where('resolved_at', '>=', now()->subDays(30))
+                ->count(),
+        );
     }
 
-    #[StickleAttributeMetadata([
-        'label' => 'Average Resolution Time',
-        'description' => 'The average resolution time for the customer.',
-        'chartType' => ChartType::LINE,
-        'dataType' => DataType::TIME,
-        'primaryAggregate' => PrimaryAggregate::AVG,
-    ])]
+    #[
+        StickleAttributeMetadata([
+            'label' => 'Average Resolution Time',
+            'description' => 'The average resolution time for the customer.',
+            'chartType' => ChartType::LINE,
+            'dataType' => DataType::TIME,
+            'primaryAggregate' => PrimaryAggregate::AVG,
+        ]),
+    ]
     protected function averageResolutionTime(): Attribute
     {
-        return Attribute::make(get: fn () => $this->ticketsResolved()
-            ->avg('resolved_in_seconds'));
+        return Attribute::make(
+            get: fn () => $this->ticketsResolved()->avg('resolved_in_seconds'),
+        );
     }
 
-    #[StickleAttributeMetadata([
-        'label' => 'Average Resolution Time Last 7 Days',
-        'description' => 'The average resolution time for the customer in the last 7 days.',
-        'chartType' => ChartType::LINE,
-        'dataType' => DataType::TIME,
-        'primaryAggregate' => PrimaryAggregate::AVG,
-    ])]
+    #[
+        StickleAttributeMetadata([
+            'label' => 'Average Resolution Time Last 7 Days',
+            'description' => 'The average resolution time for the customer in the last 7 days.',
+            'chartType' => ChartType::LINE,
+            'dataType' => DataType::TIME,
+            'primaryAggregate' => PrimaryAggregate::AVG,
+        ]),
+    ]
     protected function averageResolutionTime7Days(): Attribute
     {
-        return Attribute::make(get: fn () => $this->ticketsResolved()
-            ->where('resolved_at', '>=', now()->subDays(7))
-            ->avg('resolved_in_seconds'));
+        return Attribute::make(
+            get: fn () => $this->ticketsResolved()
+                ->where('resolved_at', '>=', now()->subDays(7))
+                ->avg('resolved_in_seconds'),
+        );
     }
 
-    #[StickleAttributeMetadata([
-        'label' => 'Average Resolution Time Last 30 Days',
-        'description' => 'The average resolution time for the customer in the last 30 days.',
-        'chartType' => ChartType::LINE,
-        'dataType' => DataType::TIME,
-        'primaryAggregate' => PrimaryAggregate::AVG,
-    ])]
+    #[
+        StickleAttributeMetadata([
+            'label' => 'Average Resolution Time Last 30 Days',
+            'description' => 'The average resolution time for the customer in the last 30 days.',
+            'chartType' => ChartType::LINE,
+            'dataType' => DataType::TIME,
+            'primaryAggregate' => PrimaryAggregate::AVG,
+        ]),
+    ]
     protected function averageResolutionTime30Days(): Attribute
     {
-        return Attribute::make(get: fn () => $this->ticketsResolved()
-            ->where('resolved_at', '>=', now()->subDays(30))
-            ->avg('resolved_in_seconds'));
+        return Attribute::make(
+            get: fn () => $this->ticketsResolved()
+                ->where('resolved_at', '>=', now()->subDays(30))
+                ->avg('resolved_in_seconds'),
+        );
     }
 
     /**
