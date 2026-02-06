@@ -32,6 +32,6 @@ class ResponsiveTabs extends Component
      */
     public function desktopTabs(): array
     {
-        return array_filter($this->tabs, fn ($tab) => ! ($tab['hideOnDesktop'] ?? false));
+        return array_filter($this->tabs, fn (array $tab): bool => ! ($tab['hideOnDesktop'] ?? false));
     }
 }
