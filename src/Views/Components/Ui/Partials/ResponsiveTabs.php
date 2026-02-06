@@ -26,4 +26,12 @@ class ResponsiveTabs extends Component
     {
         return view('stickle::components/ui/partials/responsive-tabs');
     }
+
+    /**
+     * Get tabs visible on desktop (filters out hideOnDesktop tabs).
+     */
+    public function desktopTabs(): array
+    {
+        return array_filter($this->tabs, fn ($tab) => ! ($tab['hideOnDesktop'] ?? false));
+    }
 }

@@ -1,3 +1,4 @@
+@php $desktopTabs = $desktopTabs(); @endphp
 <div class="grid grid-cols-1 {{ $responsiveClass }}:hidden">
     <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
     <select id="{{ $id }}Select" aria-label="Select a tab"
@@ -17,7 +18,7 @@
 @if(!$hideTabs)
 <div class="hidden {{ $responsiveClass }}:block">
     <nav id="{{ $id }}Tabs" class="flex space-x-4" aria-label="Tabs">
-        @foreach($tabs as $tab)
+        @foreach($desktopTabs as $tab)
         <a href="#" data-target="{{ $tab['target'] }}"
             class="rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-70">{{ $tab["label"] }}</a>
         @endforeach

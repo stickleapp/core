@@ -18,47 +18,53 @@
         {{ $model->stickleLabel() }}
     </h1>
 
-    <div class="w-full mb-4">
-        <div class="mb-4">
-            <x-stickle::ui.partials.model-navigation :model="$model" id="modelNavigation">
-            </x-stickle::ui.partials.model-navigation>
-        </div>
+    {{-- Desktop: Statistics Carousel (hidden on mobile) --}}
+    <div class="hidden lg:block mb-6">
+        <x-stickle::ui.chartlists.model-carousel :model="$model">
+        </x-stickle::ui.chartlists.model-carousel>
     </div>
 
-    <div class="w-full flex flex-col md:flex-row">
-        <div class="modelNavigationContent w-full md:w-3/5 md:pr-4 md:block">
+    {{-- Tabs Section --}}
+    <div class="w-full">
+        <div class="mb-4">
+            <x-stickle::ui.partials.responsive-tabs :tabs="[
+                    [
+                        'label' => 'Statistics',
+                        'target' => 'modelStatistics',
+                        'hideOnDesktop' => true,
+                    ],
+                    [
+                        'label' => 'Details',
+                        'target' => 'modelDetails',
+                    ],
+                    [
+                        'label' => 'Events',
+                        'target' => 'modelEvents',
+                    ],
+                ]" id="modelTabs" responsiveClass="lg">
+            </x-stickle::ui.partials.responsive-tabs>
+        </div>
+
+        {{-- Statistics Tab Content (mobile only, hidden on desktop) --}}
+        <div id="modelStatistics" class="modelTabsContent w-full hidden lg:hidden">
+            <x-stickle::ui.chartlists.model :model="$model">
+            </x-stickle::ui.chartlists.model>
+        </div>
+
+        {{-- Details Tab Content --}}
+        <div id="modelDetails" class="modelTabsContent w-full hidden">
             <x-stickle::ui.model-attributes :model="$model"
                 :heading="\Illuminate\Support\Str::of($model->stickleLabel())->headline()" :subheading="sprintf('A full list of your %s attributes.',
             \Illuminate\Support\Str::of($modelClass)->plural())">
             </x-stickle::ui.model-attributes>
         </div>
 
-        <div id="modelSidebar" class="modelNavigationContent w-full md:w-2/5 md:pl-4 md:block">
-            <div class="w-full mb-4">
-                <div class="mb-4">
-                    <x-stickle::ui.partials.responsive-tabs :tabs="[
-                            [
-                                'label' => 'Statistics',
-                                'target' => 'modelStatistics',
-                            ],
-                            [
-                                'label' => 'Events',
-                                'target' => 'modelEvents',
-                            ],
-                        ]" id="modelSideBarToggle">
-                    </x-stickle::ui.partials.responsive-tabs>
-                </div>
-                <div id="modelStatistics" class="modelSideBarToggleContent w-full hidden">
-                    <x-stickle::ui.chartlists.model :model="$model">
-                    </x-stickle::ui.chartlists.model>
-                </div>
-                <div id="modelEvents" class="modelSideBarToggleContent w-full hidden">
-                    <x-stickle::ui.timelines.events :channel="sprintf(config('stickle.broadcasting.channels.object'),
-                    str_replace('\\', '-', strtolower(class_basename($model))),
-                    $model->getKey()
-                )"></x-stickle::ui.timelines.events>
-                </div>
-            </div>
+        {{-- Events Tab Content --}}
+        <div id="modelEvents" class="modelTabsContent w-full hidden">
+            <x-stickle::ui.timelines.events :channel="sprintf(config('stickle.broadcasting.channels.object'),
+            str_replace('\\', '-', strtolower(class_basename($model))),
+            $model->getKey()
+        )"></x-stickle::ui.timelines.events>
         </div>
     </div>
 </x-stickle::ui.layouts.default-layout>
