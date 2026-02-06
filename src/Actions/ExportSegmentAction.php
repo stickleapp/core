@@ -21,10 +21,10 @@ class ExportSegmentAction
 
         $builder
             ->selectRaw(
-                $builder->getModel()->getTable() .
-                    "." .
-                    $builder->getModel()->getKeyName() .
-                    " as object_uid",
+                $builder->getModel()->getTable().
+                    '.'.
+                    $builder->getModel()->getKeyName().
+                    ' as object_uid',
             )
             ->selectRaw("{$segmentId} as segment_id");
 
@@ -32,24 +32,24 @@ class ExportSegmentAction
 
         $metaData = stream_get_meta_data($csvFile);
         throw_unless(
-            isset($metaData["uri"]),
+            isset($metaData['uri']),
             Exception::class,
-            "Cannot get temporary file path",
+            'Cannot get temporary file path',
         );
 
         /** @var string $csvPath */
-        $csvPath = $metaData["uri"];
+        $csvPath = $metaData['uri'];
 
         throw_unless(
-            $fd = fopen($csvPath, "w"),
+            $fd = fopen($csvPath, 'w'),
             Exception::class,
-            "Cannot open file",
+            'Cannot open file',
         );
 
         $builder->cursor()->each(function ($item) use ($fd): void {
             /** @var array<int, string> $asArray * */
             $asArray = $item->toArray();
-            fputcsv($fd, $asArray, ",", '"', "");
+            fputcsv($fd, $asArray, ',', '"', '');
         });
 
         fclose($fd);
@@ -57,18 +57,18 @@ class ExportSegmentAction
         $filename = $this->formatFilename($segmentId);
 
         /** @var string $disk * */
-        $disk = config("stickle.filesystem.disks.exports");
-        Storage::disk($disk)->putFileAs("", $csvPath, $filename);
+        $disk = config('stickle.filesystem.disks.exports');
+        Storage::disk($disk)->putFileAs('', $csvPath, $filename);
 
         return $filename;
     }
 
     public function formatFilename(int $segmentId): string
     {
-        return "segment-" .
-            $segmentId .
-            "-" .
-            date("Y-m-d-H-i-s", time()) .
-            ".csv";
+        return 'segment-'.
+            $segmentId.
+            '-'.
+            date('Y-m-d-H-i-s', time()).
+            '.csv';
     }
 }
