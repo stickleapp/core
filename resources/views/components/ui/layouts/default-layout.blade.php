@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
     <title>{{ config("app.name", "Laravel") }}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('vendor/stickle/favicon.svg') }}" />
 
     @if(file_exists(public_path('build/manifest.json')) && !in_array(app()->environment(), ['local', 'development']))
     <link rel="preload" as="style" href="{{ stickle_asset('resources/css/app.css') }}" />
