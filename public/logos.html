@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stickle Brand Assets</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+            color: #1a1a1a;
+            background: #fafafa;
+            padding: 80px 40px;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 64px;
+            line-height: 1.5;
+        }
+
+        .section {
+            margin-bottom: 64px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #999;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .logo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .logo-card {
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .logo-preview {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 40px;
+            min-height: 180px;
+        }
+
+        .logo-preview.light {
+            background: #ffffff;
+        }
+
+        .logo-preview.dark {
+            background: #111111;
+        }
+
+        .logo-preview img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .logo-preview img.logo-text {
+            width: 280px;
+        }
+
+        .logo-preview img.logo-icon {
+            width: 80px;
+        }
+
+        .logo-info {
+            padding: 16px 20px;
+            background: #fff;
+            border-top: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .logo-filename {
+            font-size: 12px;
+            color: #999;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+        }
+
+        .color-section {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .color-swatch {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            background: #fff;
+            min-width: 220px;
+        }
+
+        .swatch {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .swatch-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .swatch-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .swatch-value {
+            font-size: 12px;
+            color: #999;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+        }
+
+        .guidelines {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+            padding: 24px;
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+        }
+
+        .guidelines ul {
+            padding-left: 20px;
+        }
+
+        .guidelines li {
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Brand Assets</h1>
+    <h2>Stickle Logo</h2>
+    <p class="subtitle">
+        Official logo files for Stickle. Use these assets consistently across all media.<br>
+        All logos are provided as SVG for scalability.
+    </p>
+
+    <div class="section">
+        <div class="section-title">Full Logo</div>
+        <div class="logo-grid">
+            <div class="logo-card">
+                <div class="logo-preview light">
+                    <img src="../resources/img/logos/stickle-logo-text.svg" alt="Stickle logo" class="logo-text">
+                </div>
+                <div class="logo-info">
+                    <span class="logo-label">Light background</span>
+                    <span class="logo-filename">stickle-logo-text.svg</span>
+                </div>
+            </div>
+            <div class="logo-card">
+                <div class="logo-preview dark">
+                    <img src="../resources/img/logos/stickle-logo-text.darkmode.svg" alt="Stickle logo dark mode" class="logo-text">
+                </div>
+                <div class="logo-info">
+                    <span class="logo-label">Dark background</span>
+                    <span class="logo-filename">stickle-logo-text.darkmode.svg</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Icon Only</div>
+        <div class="logo-grid">
+            <div class="logo-card">
+                <div class="logo-preview light">
+                    <img src="../resources/img/logos/stickle-logo.svg" alt="Stickle icon" class="logo-icon">
+                </div>
+                <div class="logo-info">
+                    <span class="logo-label">Light background</span>
+                    <span class="logo-filename">stickle-logo.svg</span>
+                </div>
+            </div>
+            <div class="logo-card">
+                <div class="logo-preview dark">
+                    <img src="../resources/img/logos/stickle-logo.darkmode.svg" alt="Stickle icon dark mode" class="logo-icon">
+                </div>
+                <div class="logo-info">
+                    <span class="logo-label">Dark background</span>
+                    <span class="logo-filename">stickle-logo.darkmode.svg</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Brand Colors</div>
+        <div class="color-section">
+            <div class="color-swatch">
+                <div class="swatch" style="background: #2563EB;"></div>
+                <div class="swatch-info">
+                    <span class="swatch-name">Stickle Blue</span>
+                    <span class="swatch-value">#2563EB</span>
+                </div>
+            </div>
+            <div class="color-swatch">
+                <div class="swatch" style="background: #2563EB; opacity: 0.7;"></div>
+                <div class="swatch-info">
+                    <span class="swatch-name">Stickle Blue 70%</span>
+                    <span class="swatch-value">#2563EB @ 0.7</span>
+                </div>
+            </div>
+            <div class="color-swatch">
+                <div class="swatch" style="background: #2563EB; opacity: 0.4;"></div>
+                <div class="swatch-info">
+                    <span class="swatch-name">Stickle Blue 40%</span>
+                    <span class="swatch-value">#2563EB @ 0.4</span>
+                </div>
+            </div>
+            <div class="color-swatch">
+                <div class="swatch" style="background: #FFFFFF; border: 1px solid #e5e5e5;"></div>
+                <div class="swatch-info">
+                    <span class="swatch-name">White (dark mode)</span>
+                    <span class="swatch-value">#FFFFFF</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Usage Guidelines</div>
+        <div class="guidelines">
+            <ul>
+                <li>Use the red logo on light or white backgrounds.</li>
+                <li>Use the white (dark mode) logo on dark or black backgrounds.</li>
+                <li>Maintain clear space around the logo equal to the height of the icon.</li>
+                <li>Do not alter the colors, proportions, or opacity of the logo elements.</li>
+                <li>Do not place the light logo on dark backgrounds or vice versa.</li>
+                <li>Minimum display width: 120px for the full logo, 24px for the icon.</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>
