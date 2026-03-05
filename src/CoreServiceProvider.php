@@ -51,7 +51,9 @@ final class CoreServiceProvider extends ServiceProvider
     {
         $kernel = $this->app->make(Kernel::class);
 
-        ModelAttributes::observe(ModelAttributesObserver::class);
+        if (config('stickle.tracking.server.modelAttributes') === true) {
+            ModelAttributes::observe(ModelAttributesObserver::class);
+        }
 
         /** Allows URLs using Segment Class instead of ID */
         Route::bind('segment', function (string $value) {

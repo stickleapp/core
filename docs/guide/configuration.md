@@ -218,6 +218,12 @@ Settings that control tracking behavior for both server-side and client-side eve
 
 Server-side tracking configuration options.
 
+#### `STICKLE_TRACK_SERVER_MODEL_ATTRIBUTES`
+
+Whether to observe model attribute changes. When disabled, the model attribute observer is not registered and no `ObjectAttributeChanged` events will be dispatched on model save.
+
+_Default: true_
+
 #### `STICKLE_TRACK_SERVER_LOAD_MIDDLEWARE`
 
 Whether to automatically load server-side tracking middleware.

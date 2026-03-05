@@ -467,6 +467,16 @@ class User extends Model
 }
 ```
 
+## Disabling Attribute Observing
+
+To disable automatic observation of model attribute changes entirely, set the following in your `.env`:
+
+```env
+STICKLE_TRACK_SERVER_MODEL_ATTRIBUTES=false
+```
+
+When disabled, the model attribute observer is not registered and no `ObjectAttributeChanged` events will be dispatched on model save. Scheduled tracking via `STICKLE_FREQUENCY_RECORD_MODEL_ATTRIBUTES` is not affected.
+
 ## Performance Considerations
 
 ### Automatic Updates
