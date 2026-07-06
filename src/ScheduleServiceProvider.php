@@ -37,15 +37,27 @@ class ScheduleServiceProvider extends ServiceProvider
     {
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
 
-            $tablePrefix = config('stickle.database.tablePrefix');
-            $schema = config('stickle.database.schema');
+            $tablePrefix = config('stickle.database.tablePrefix', 'stc_');
+            $schema = config('stickle.database.schema', 'public');
 
-            $intervalRequests = config('stickle.database.partitions.requests.interval');
-            $extentionRequests = config('stickle.database.partitions.requests.extension');
-            $retentionRequests = config('stickle.database.partitions.requests.retention');
-            $intervalSessions = config('stickle.database.partitions.sessions.interval');
-            $extentionSessions = config('stickle.database.partitions.sessions.extension');
-            $retentionSessions = config('stickle.database.partitions.sessions.retention');
+            // Fallback defaults mirror config/stickle.php so an install that upgrades
+            // without re-publishing its config still schedules (rather than crashing
+            // on a null interval when CarbonInterval::fromString() runs).
+            $intervalRequests = config('stickle.database.partitions.requests.interval', 'week');
+            $extentionRequests = config('stickle.database.partitions.requests.extension', '1 week');
+            $retentionRequests = config('stickle.database.partitions.requests.retention', '1 years');
+            $intervalSessions = config('stickle.database.partitions.sessions.interval', 'week');
+            $extentionSessions = config('stickle.database.partitions.sessions.extension', '1 week');
+            $retentionSessions = config('stickle.database.partitions.sessions.retention', '1 years');
+            $intervalModelAttributeAudit = config('stickle.database.partitions.model_attribute_audit.interval', 'week');
+            $extentionModelAttributeAudit = config('stickle.database.partitions.model_attribute_audit.extension', '1 week');
+            $retentionModelAttributeAudit = config('stickle.database.partitions.model_attribute_audit.retention', '1 years');
+            $intervalSegmentStatistics = config('stickle.database.partitions.segment_statistics.interval', 'week');
+            $extentionSegmentStatistics = config('stickle.database.partitions.segment_statistics.extension', '1 week');
+            $retentionSegmentStatistics = config('stickle.database.partitions.segment_statistics.retention', '1 years');
+            $intervalModelRelationshipStatistics = config('stickle.database.partitions.model_relationship_statistics.interval', 'week');
+            $extentionModelRelationshipStatistics = config('stickle.database.partitions.model_relationship_statistics.extension', '1 week');
+            $retentionModelRelationshipStatistics = config('stickle.database.partitions.model_relationship_statistics.retention', '1 years');
 
             // Requests partition creation
             $schedule->command('stickle:create-partitions', [
@@ -128,6 +140,54 @@ class ScheduleServiceProvider extends ServiceProvider
                 $intervalSessions,
                 now()->sub(CarbonInterval::fromString($retentionSessions))->format('Y-m-d'),
             ])->twiceDailyAt(5, 17, 30);
+
+            // Model attribute audit partition creation
+            $schedule->command('stickle:create-partitions', [
+                $tablePrefix.'model_attribute_audit',
+                $schema,
+                $intervalModelAttributeAudit,
+                now()->add(CarbonInterval::fromString($extentionModelAttributeAudit))->format('Y-m-d'),
+            ])->twiceDailyAt(6, 18, 0);
+
+            // Model attribute audit partition dropping
+            $schedule->command('stickle:drop-partitions', [
+                $tablePrefix.'model_attribute_audit',
+                $schema,
+                $intervalModelAttributeAudit,
+                now()->sub(CarbonInterval::fromString($retentionModelAttributeAudit))->format('Y-m-d'),
+            ])->twiceDailyAt(6, 18, 10);
+
+            // Segment statistics partition creation
+            $schedule->command('stickle:create-partitions', [
+                $tablePrefix.'segment_statistics',
+                $schema,
+                $intervalSegmentStatistics,
+                now()->add(CarbonInterval::fromString($extentionSegmentStatistics))->format('Y-m-d'),
+            ])->twiceDailyAt(6, 18, 20);
+
+            // Segment statistics partition dropping
+            $schedule->command('stickle:drop-partitions', [
+                $tablePrefix.'segment_statistics',
+                $schema,
+                $intervalSegmentStatistics,
+                now()->sub(CarbonInterval::fromString($retentionSegmentStatistics))->format('Y-m-d'),
+            ])->twiceDailyAt(6, 18, 30);
+
+            // Model relationship statistics partition creation
+            $schedule->command('stickle:create-partitions', [
+                $tablePrefix.'model_relationship_statistics',
+                $schema,
+                $intervalModelRelationshipStatistics,
+                now()->add(CarbonInterval::fromString($extentionModelRelationshipStatistics))->format('Y-m-d'),
+            ])->twiceDailyAt(6, 18, 40);
+
+            // Model relationship statistics partition dropping
+            $schedule->command('stickle:drop-partitions', [
+                $tablePrefix.'model_relationship_statistics',
+                $schema,
+                $intervalModelRelationshipStatistics,
+                now()->sub(CarbonInterval::fromString($retentionModelRelationshipStatistics))->format('Y-m-d'),
+            ])->twiceDailyAt(6, 18, 50);
         });
     }
 

@@ -47,6 +47,11 @@ class TestCase extends Orchestra
         config()->set('stickle.namespaces.listeners', env('STICKLE_NAMESPACES_LISTENERS'));
         config()->set('stickle.database.tablePrefix', env('STICKLE_DATABASE_TABLE_PREFIX'));
 
+        // The package config is only published (not merged) by CoreServiceProvider, so
+        // config defaults are absent under testbench. Enable model-attribute tracking so
+        // the ModelAttributesObserver is registered, matching a real (published) install.
+        config()->set('stickle.tracking.server.modelAttributes', true);
+
         // This fixes a bug in GitHub Actions runner. But find out why it's needed.
         config()->set('stickle.broadcasting.channels.object', 'stickle.object.%s.%s');
 

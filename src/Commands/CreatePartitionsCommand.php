@@ -60,39 +60,29 @@ final class CreatePartitionsCommand extends Command implements Isolatable
         $periodStart = $this->argument('period_start');
         $intervalCount = (int) $this->argument('interval_count') ?: 1;
 
-        /**
-         * Verify the existing table exists
-         */
-        $startDate = Date::parse($periodStart);
+        // Snap the requested period start to the beginning of its interval.
+        $startDate = $this->startOfInterval(Date::parse($periodStart), $interval);
 
-        // Adjust start date to the beginning of the specified interval
-        switch (strtolower($interval)) {
-            case 'day':
-                $startDate = $startDate->startOfDay();
-                break;
-            case 'week':
-                $startDate = $startDate->startOfWeek(Carbon::MONDAY); // ISO week starts on Monday
-                break;
-            case 'month':
-                $startDate = $startDate->startOfMonth();
-                break;
-            case 'year':
-                $startDate = $startDate->startOfYear();
-                break;
-            default:
-                $this->info("Unknown interval type: $interval. Using date as is.");
-        }
+        // The exclusive end of the requested window: period_start + intervalCount intervals.
+        $targetEnd = $startDate->copy()->add($interval, $intervalCount);
 
-        $finished = false;
+        // Always guarantee the current period is covered. When period_start is in
+        // the future (as the scheduler passes it: now + extension), back-fill from
+        // the current period so "now" — and any gap up to period_start — has a
+        // partition. Historical backfills (period_start in the past) are untouched.
+        $currentPeriodStart = $this->startOfInterval(Date::now(), $interval);
 
-        $i = 0;
+        $cursor = $startDate->lessThan($currentPeriodStart)
+            ? $startDate->copy()
+            : $currentPeriodStart->copy();
+
         $partitionsCreated = 0;
 
-        while (! $finished) {
+        while ($cursor->lessThan($targetEnd)) {
 
-            $start = $startDate->copy()->add($interval, $i);
+            $start = $cursor->copy();
 
-            $end = $startDate->copy()->add($interval, $i + 1);
+            $end = $cursor->copy()->add($interval, 1);
 
             $partitionName = sprintf($existingTable.'_%s_%s', $interval, preg_replace('/[^A-Za-z0-9 ]/', '', (string) $start->format('YmdHis')));
 
@@ -102,15 +92,31 @@ final class CreatePartitionsCommand extends Command implements Isolatable
 
             $this->info("Created partition: $partitionName (FROM '$start' TO '$end')");
 
-            $i++;
+            $cursor = $end;
             $partitionsCreated++;
-
-            // Stop after creating the requested number of partitions
-            if ($partitionsCreated >= $intervalCount) {
-                $finished = true;
-            }
         }
 
         $this->info("Successfully created $partitionsCreated partition(s) for table $existingTable");
+    }
+
+    /**
+     * Snap a date to the beginning of the given interval.
+     */
+    private function startOfInterval(Carbon $date, string $interval): Carbon
+    {
+        switch (strtolower($interval)) {
+            case 'day':
+                return $date->startOfDay();
+            case 'week':
+                return $date->startOfWeek(Carbon::MONDAY); // ISO week starts on Monday
+            case 'month':
+                return $date->startOfMonth();
+            case 'year':
+                return $date->startOfYear();
+            default:
+                $this->info("Unknown interval type: $interval. Using date as is.");
+
+                return $date;
+        }
     }
 }

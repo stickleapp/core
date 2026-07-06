@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Commands;
 
+use Carbon\CarbonInterval;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
@@ -295,11 +296,23 @@ class InstallCommand extends Command
 
             info('Migrations ran successfully!');
 
+            if (data_get($settings, 'STICKLE_DATABASE_ENABLE_PARTITIONS', true)) {
+
+                spin(
+                    fn () => $this->createInitialPartitions(),
+                    'Creating initial table partitions...'
+                );
+
+                info('Initial table partitions created!');
+            }
+
         } else {
 
             info('You can run the migrations later by running:');
 
             note('php artisan migrate');
+
+            note('Then create the initial partitions with: php artisan stickle:create-partitions');
         }
 
         if (confirm('Would you like to star our repo on GitHub?')) {
@@ -329,6 +342,55 @@ class InstallCommand extends Command
     private function runMigrations(): void
     {
         $this->call('migrate');
+    }
+
+    /**
+     * Seed the initial table partitions so a fresh install can accept writes
+     * immediately, rather than waiting for the first scheduled partition job.
+     *
+     * Mirrors the tables maintained by ScheduleServiceProvider. Because
+     * CreatePartitionsCommand back-fills the current period, each call creates
+     * both the current partition and the future (extension) partition.
+     */
+    private function createInitialPartitions(): void
+    {
+        // Read the same config the migrations used, so we target the tables that
+        // were just created (whatever prefix/schema is in effect).
+        $prefix = config('stickle.database.tablePrefix');
+        $schema = config('stickle.database.schema', 'public');
+
+        $requestsInterval = config('stickle.database.partitions.requests.interval', 'week');
+        $requestsExtension = config('stickle.database.partitions.requests.extension', '1 week');
+        $sessionsInterval = config('stickle.database.partitions.sessions.interval', 'week');
+        $sessionsExtension = config('stickle.database.partitions.sessions.extension', '1 week');
+        $auditInterval = config('stickle.database.partitions.model_attribute_audit.interval', 'week');
+        $auditExtension = config('stickle.database.partitions.model_attribute_audit.extension', '1 week');
+        $segmentStatsInterval = config('stickle.database.partitions.segment_statistics.interval', 'week');
+        $segmentStatsExtension = config('stickle.database.partitions.segment_statistics.extension', '1 week');
+        $relationshipStatsInterval = config('stickle.database.partitions.model_relationship_statistics.interval', 'week');
+        $relationshipStatsExtension = config('stickle.database.partitions.model_relationship_statistics.extension', '1 week');
+
+        /** @var array<int, array{0: string, 1: string, 2: string}> $tables */
+        $tables = [
+            [$prefix.'requests', $requestsInterval, $requestsExtension],
+            [$prefix.'requests_rollup_1min', $requestsInterval, $requestsExtension],
+            [$prefix.'requests_rollup_5min', $requestsInterval, $requestsExtension],
+            [$prefix.'requests_rollup_1hr', $requestsInterval, $requestsExtension],
+            [$prefix.'requests_rollup_1day', $requestsInterval, $requestsExtension],
+            [$prefix.'sessions_rollup_1day', $sessionsInterval, $sessionsExtension],
+            [$prefix.'model_attribute_audit', $auditInterval, $auditExtension],
+            [$prefix.'segment_statistics', $segmentStatsInterval, $segmentStatsExtension],
+            [$prefix.'model_relationship_statistics', $relationshipStatsInterval, $relationshipStatsExtension],
+        ];
+
+        foreach ($tables as [$table, $interval, $extension]) {
+            $this->call('stickle:create-partitions', [
+                'existing_table' => $table,
+                'schema' => $schema,
+                'interval' => $interval,
+                'period_start' => now()->add(CarbonInterval::fromString($extension))->format('Y-m-d'),
+            ]);
+        }
     }
 
     /**

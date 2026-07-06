@@ -45,20 +45,6 @@ return [
         'tablePrefix' => env('STICKLE_DATABASE_TABLE_PREFIX', 'stc_'),
         'partitionsEnabled' => env('STICKLE_DATABASE_ENABLE_PARTITIONS', true),
         'partitions' => [
-            'events' => [
-                'interval' => env(
-                    'STICKLE_DATABASE_PARTITIONS_EVENTS_INTERVAL',
-                    'week',
-                ),
-                'extension' => env(
-                    'STICKLE_DATABASE_PARTITIONS_EVENTS_EXTENSION',
-                    '1 week',
-                ),
-                'retention' => env(
-                    'STICKLE_DATABASE_PARTITIONS_EVENTS_RETENTION',
-                    '1 years',
-                ),
-            ],
             'requests' => [
                 'interval' => env(
                     'STICKLE_DATABASE_PARTITIONS_REQUESTS_INTERVAL',
@@ -84,6 +70,48 @@ return [
                 ),
                 'retention' => env(
                     'STICKLE_DATABASE_PARTITIONS_SESSIONS_RETENTION',
+                    '1 years',
+                ),
+            ],
+            'model_attribute_audit' => [
+                'interval' => env(
+                    'STICKLE_DATABASE_PARTITIONS_MODEL_ATTRIBUTE_AUDIT_INTERVAL',
+                    'week',
+                ),
+                'extension' => env(
+                    'STICKLE_DATABASE_PARTITIONS_MODEL_ATTRIBUTE_AUDIT_EXTENSION',
+                    '1 week',
+                ),
+                'retention' => env(
+                    'STICKLE_DATABASE_PARTITIONS_MODEL_ATTRIBUTE_AUDIT_RETENTION',
+                    '1 years',
+                ),
+            ],
+            'segment_statistics' => [
+                'interval' => env(
+                    'STICKLE_DATABASE_PARTITIONS_SEGMENT_STATISTICS_INTERVAL',
+                    'week',
+                ),
+                'extension' => env(
+                    'STICKLE_DATABASE_PARTITIONS_SEGMENT_STATISTICS_EXTENSION',
+                    '1 week',
+                ),
+                'retention' => env(
+                    'STICKLE_DATABASE_PARTITIONS_SEGMENT_STATISTICS_RETENTION',
+                    '1 years',
+                ),
+            ],
+            'model_relationship_statistics' => [
+                'interval' => env(
+                    'STICKLE_DATABASE_PARTITIONS_MODEL_RELATIONSHIP_STATISTICS_INTERVAL',
+                    'week',
+                ),
+                'extension' => env(
+                    'STICKLE_DATABASE_PARTITIONS_MODEL_RELATIONSHIP_STATISTICS_EXTENSION',
+                    '1 week',
+                ),
+                'retention' => env(
+                    'STICKLE_DATABASE_PARTITIONS_MODEL_RELATIONSHIP_STATISTICS_RETENTION',
                     '1 years',
                 ),
             ],
