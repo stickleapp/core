@@ -8,7 +8,7 @@ use Workbench\App\Models\User;
 
 beforeEach(function (): void {
     // Create a test segment for use in tests
-    $this->segment = \StickleApp\Core\Models\Segment::query()->create([
+    $this->segment = StickleApp\Core\Models\Segment::query()->create([
         'name' => 'Test Active Users',
         'model_class' => 'User',
         'as_class' => 'ActiveUsers',

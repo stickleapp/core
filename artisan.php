@@ -2,6 +2,8 @@
 <?php
 
 use Filament\Commands\MakePanelCommand;
+use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Artisan;
 
@@ -10,12 +12,12 @@ require __DIR__.'/vendor/autoload.php';
 // Bootstrap Laravel (if used inside a Laravel app)
 // $app = require_once __DIR__.'/bootstrap/app.php';
 
-$app = new Illuminate\Foundation\Application(
+$app = new Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
 
 $app->singleton(
-    Illuminate\Contracts\Http\Kernel::class,
+    Kernel::class,
     ConsoleKernel::class
 );
 
