@@ -152,7 +152,48 @@ Filesystem disk configurations for different storage needs.
 
 Laravel filesystem disk to use for storing segment exports and related files.
 
+Only used when [`STICKLE_USE_CSV_EXPORTS`](#stickle_use_csv_exports) is `true`. The
+default segment sync writes no files.
+
 _Default: 'local'_
+
+## Segments
+
+### `STICKLE_USE_CSV_EXPORTS`
+
+Selects how a segment's membership is reconciled.
+
+_Default: `false`_
+
+#### `false` (default) — in-database sync
+
+`SyncSegmentAction` reconciles membership in a single SQL statement. Both ends of the
+operation are the same database, so no file, no external binary and no shared disk are
+involved, and a failure raises a PDO exception rather than passing silently.
+
+#### `true` — legacy CSV round trip
+
+`ExportSegmentAction` writes the segment query to a CSV, hands the filename to a second
+queued job (`ImportSegmentJob`), which loads it back with a `psql \copy`. Both paths are
+equivalent in result and both are idempotent, so enable this only if you specifically
+need it. It carries real requirements and known hazards:
+
+- **Requires the `psql` binary** on every worker that runs `ImportSegmentJob` — it is
+  shelled out to via `exec()`. If `psql` is missing the COPY fails, its exit code is
+  discarded, and reconciliation proceeds against an **empty temp table**, deleting the
+  segment's entire membership and firing a spurious `EXIT` for every member. The job
+  still reports success.
+- **Requires a shared exports disk.** `ExportSegmentJob` and `ImportSegmentJob` are
+  separate queued jobs, so on any multi-instance or containerised host (Cloud Run, ECS,
+  Kubernetes, or simply more than one queue worker) they will not share a local
+  filesystem, and the import fails with `File missing`. `local` is only safe when a
+  single machine runs both jobs; anything else needs `s3`, `gcs`, or similar.
+- **Leaks the database password.** The import interpolates it into a shell string as
+  `PGPASSWORD=…`, where it is visible in the process list to any local user.
+- **Is broken by `$appends`.** Each CSV row is built from the model's `toArray()`, which
+  includes appended accessors — so any model declaring `protected $appends` emits extra
+  columns and the COPY fails with `extra data after last expected column`. The default
+  SQL path never hydrates models and is unaffected.
 
 ## Routes
 
