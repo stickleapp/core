@@ -138,11 +138,60 @@ return [
     |
     | Stickle needs to save some files, such as exports, usually temporarily.
     | This defines the filesystem disk to use for these files.
+    |
+    | Only used when segments.useCsvExports is true. The default segment sync
+    | runs entirely inside PostgreSQL and writes no files.
     */
     'filesystem' => [
         'disks' => [
             'exports' => env('STICKLE_FILESYSTEM_DISK_EXPORTS', 'local'),
         ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Segments
+    |--------------------------------------------------------------------------
+    |
+    | useCsvExports selects how a segment's membership is reconciled.
+    |
+    | FALSE (default) — SyncSegmentAction reconciles membership in a single
+    | SQL statement. Both ends of the operation are the same database, so no
+    | file, no external binary, and no shared disk are involved. A failure
+    | raises a PDO exception rather than passing silently.
+    |
+    | TRUE — the legacy ExportSegmentAction/ImportSegmentAction pair: the
+    | segment query is written to a CSV, handed to a second queued job, and
+    | loaded back with a `psql \copy`. Only enable this if you specifically
+    | need it. It carries real operational requirements and known hazards:
+    |
+    |   * Requires the `psql` binary on every worker that runs
+    |     ImportSegmentJob. It is shelled out to via exec(). If psql is absent
+    |     the COPY fails, the exit code is discarded, and the reconciliation
+    |     proceeds against an EMPTY temp table — which deletes the segment's
+    |     entire membership and fires a spurious EXIT for every member. The
+    |     job still reports success.
+    |
+    |   * Requires a shared exports disk. ExportSegmentJob and ImportSegmentJob
+    |     are separate queued jobs, so on any multi-instance or containerised
+    |     host (Cloud Run, ECS, Kubernetes, multiple queue workers) they will
+    |     not share a local filesystem. 'local' works only when a single
+    |     machine runs both jobs; anything else needs a shared disk (s3, gcs).
+    |
+    |   * Leaks the database password. loadTmpTable() interpolates the password
+    |     into a shell string as PGPASSWORD=..., where it is visible in the
+    |     process list to any local user.
+    |
+    |   * Is broken by $appends. The export builds each CSV row from the model's
+    |     toArray(), which includes appended accessors — so any model declaring
+    |     protected $appends emits extra columns and the COPY fails with
+    |     "extra data after last expected column". The SQL path never hydrates
+    |     models and is unaffected.
+    |
+    | Both paths are equivalent in result and both are idempotent.
+    */
+    'segments' => [
+        'useCsvExports' => env('STICKLE_USE_CSV_EXPORTS', false),
     ],
 
     /*

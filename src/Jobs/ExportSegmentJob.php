@@ -9,6 +9,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Actions\ExportSegmentAction;
+use StickleApp\Core\Actions\SyncSegmentAction;
 use StickleApp\Core\Contracts\SegmentContract;
 use StickleApp\Core\Models\Segment;
 
@@ -44,8 +45,10 @@ class ExportSegmentJob implements ShouldQueue
         return [new WithoutOverlapping($this->uniqueId())];
     }
 
-    public function handle(ExportSegmentAction $exportSegmentAction): void
-    {
+    public function handle(
+        ExportSegmentAction $exportSegmentAction,
+        SyncSegmentAction $syncSegmentAction,
+    ): void {
 
         Log::debug('ExportSegment Job', ['segment' => $this->segment]);
 
@@ -53,6 +56,19 @@ class ExportSegmentJob implements ShouldQueue
 
         /** @var SegmentContract $segment */
         $segment = new $class;
+
+        // Default: reconcile in-database, no file and no second job.
+        if (! config('stickle.segments.useCsvExports', false)) {
+            $syncSegmentAction(
+                segmentId: $this->segment->id,
+                segmentContract: $segment
+            );
+
+            return;
+        }
+
+        // Legacy CSV round trip — see config('stickle.segments.useCsvExports')
+        // for its requirements (psql binary, shared exports disk) and hazards.
         $exportFilename = $exportSegmentAction(
             segmentId: $this->segment->id,
             segmentContract: $segment
