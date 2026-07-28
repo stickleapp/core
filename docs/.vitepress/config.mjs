@@ -10,6 +10,8 @@ export default defineConfig({
         "core/guide/": "core/guide/what-is-stickle.md",
     },
     base: "/core/",
+    // Internal design docs — not part of the published site.
+    srcExclude: ["superpowers/**"],
     themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
         nav: [
