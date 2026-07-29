@@ -1,0 +1,78 @@
+# Shared Testbench configuration for package development.
+#
+# Testbench resolves testbench.yaml -> testbench.yaml.example -> testbench.yaml.dist
+# and uses the first it finds. This file is committed so every clone gets the same
+# providers, build steps and asset tags. To override anything locally (a different
+# database port, your own Reverb host), copy this to testbench.yaml -- that name is
+# gitignored and takes precedence.
+#
+# Keep machine-specific absolute paths out of this file.
+
+laravel: "@testbench"
+
+providers:
+  - Workbench\App\Providers\WorkbenchServiceProvider
+  - StickleApp\Core\CoreServiceProvider
+  - StickleApp\Core\EventServiceProvider
+  - StickleApp\Core\ScheduleServiceProvider
+
+migrations:
+  - workbench/database/migrations
+
+seeders:
+  - Workbench\Database\Seeders\DatabaseSeeder
+
+workbench:
+  start: "/"
+  install: true
+  health: false
+  discovers:
+    config: true
+    web: true
+    api: true
+    commands: false
+    components: false
+    views: false
+  # NOTE: db-wipe and migrate-fresh mean `workbench:build` destroys the database.
+  # `composer dev`, `composer serve` and `composer start` all run it first.
+  # Use `vendor/bin/testbench serve` for a non-destructive server.
+  build:
+    - asset-publish
+    - db-wipe
+    - migrate-fresh
+  assets:
+    - laravel-assets
+    # Publish the package's own build so the workbench resolves assets exactly
+    # the way an installing app does. Without this, local dev reads a different
+    # manifest than production and a broken publish only shows up after deploy.
+    - package-assets
+  sync:
+    - from: storage
+      to: workbench/storage
+      reverse: true
+
+env:
+  APP_ENV: local
+  APP_DEBUG: true
+  APP_KEY: AckfSECXIvnK5r28GVIWUAxmbBSjTsmF
+  STICKLE_NAMESPACES_LISTENERS: Workbench\App\Listeners
+  STICKLE_NAMESPACES_SEGMENTS: Workbench\App\Segments
+  STICKLE_NAMESPACES_MODELS: Workbench\App\Models
+  QUEUE_CONNECTION: sync
+  STICKLE_DATABASE_TABLE_PREFIX: stc_
+  STICKLE_SCHEMA: public
+  DB_CONNECTION: pgsql
+  DB_HOST: 127.0.0.1
+  DB_PORT: 5432
+  DB_DATABASE: stickle-core
+  DB_USERNAME: root
+  DB_PASSWORD:
+  LOG_CHANNEL: stack
+  SESSION_DRIVER: database
+  BROADCAST_CONNECTION: null
+  REVERB_APP_ID: 1001
+  REVERB_APP_KEY: laravel-herd
+  REVERB_APP_SECRET: secret
+  REVERB_HOST: "reverb.herd.test"
+  REVERB_PORT: 443
+  REVERB_SCHEME: https

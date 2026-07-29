@@ -27,6 +27,7 @@ _ide_helper_models.php
 # Misc
 phpunit.xml
 phpstan.neon
+# Local override; the shared testbench.yaml.dist is committed.
 testbench.yaml
 /coverage
 
