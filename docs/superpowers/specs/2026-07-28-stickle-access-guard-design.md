@@ -1,7 +1,10 @@
 # Require an Access Guard for Stickle Routes
 
 **Date:** 2026-07-28
-**Status:** Approved, ready for implementation planning
+**Status:** SUPERSEDED by `2026-07-29-stickle-access-guard-design.md`. Retained for the problem
+statement, which is unchanged. The design below was not implemented — routes are no longer omitted
+when unconfigured, there is no setup page, no `routes/ingest.php` split, and no `access.middleware`
+config key. Authorization is the `viewStickle` Gate alone.
 
 ## Problem
 
