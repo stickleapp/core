@@ -240,9 +240,10 @@ ability that was never defined, so an application that has not defined
 viewStickle is closed without any deny-by-default code of our own.
 
 POST /track stays outside the group. The browser snippet posts from
-unauthenticated visitors, and the tests assert it returns 422 rather
-than 403 under every gate state -- a validation failure proves the
-request reached the controller.
+unauthenticated visitors, so the test asserts the property that matters:
+its status is identical under all three gate states and is never 403.
+Pinning a number would have been wrong -- IngestController throws on
+invalid input rather than returning 422, and its success path is a 204.
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
 EOF
