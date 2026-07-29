@@ -18,6 +18,6 @@ if (! function_exists('stickle_asset')) {
      */
     function stickle_asset(string $path): string
     {
-        return app('stickle.vite')->asset($path);
+        return resolve('stickle.vite')->asset($path);
     }
 }
