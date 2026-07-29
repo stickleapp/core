@@ -215,7 +215,12 @@
                 ["unavailable", "failed", "disconnected"].includes(state);
 
             if (window.Echo && channel) {
-                window.Echo.channel(channel).listenToAll((eventName, data) => {
+                // Private: Stickle's events broadcast on private channels, so
+                // this subscription is authorized against viewStickle at
+                // /broadcasting/auth before any event reaches the browser. A
+                // rejected subscription falls through to polling below, which
+                // is authorized by the same ability.
+                window.Echo.private(channel).listenToAll((eventName, data) => {
                     if (data && data.payload) {
                         deliver([data.payload]);
                     }

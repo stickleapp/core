@@ -38,9 +38,10 @@ window.Stickle = new Stickle({
     enabledTransports: ["ws", "wss"],
 });
 
-Stickle.channel(`orders.${this.order.id}`).listen(
-    "OrderShipmentStatusUpdated",
-    (e) => {
-        console.log(e.order.name);
-    }
-);
+// Stickle's events broadcast on private channels, so subscriptions go through
+// /broadcasting/auth and are authorized against the viewStickle ability.
+// Echo.private(), not Echo.channel(): a public subscription is never
+// authorized, and no Stickle event is published on one.
+window.Echo.private("stickle.firehose").listenToAll((eventName, event) => {
+    console.log(eventName, event);
+});
