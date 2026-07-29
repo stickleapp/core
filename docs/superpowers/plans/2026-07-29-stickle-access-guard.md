@@ -600,20 +600,25 @@ it('cannot be opened by unsetting the configured middleware', function (): void 
     $this->get('/stickle/live')->assertForbidden();
 });
 
-it('still applies the configured transport middleware', function (): void {
+it('composes the configured transport middleware ahead of the guard', function (): void {
 
-    // Without a login route the auth middleware's redirect would throw
-    // RouteNotFoundException rather than producing an assertable response.
-    Route::get('/login', fn (): string => 'login')->name('login');
+    $route = collect(Route::getRoutes()->getRoutes())
+        ->first(fn ($route): bool => $route->uri() === 'stickle/live');
 
-    config()->set('stickle.routes.web.middleware', ['web', 'auth']);
+    expect($route)->not->toBeNull();
 
-    Gate::define('viewStickle', fn ($user = null): bool => true);
+    $middleware = $route->gatherMiddleware();
 
-    // auth runs ahead of the guard, so an unauthenticated visitor is sent to
-    // log in rather than shown a bare 403. This is the only reason these
-    // config keys were kept, so it is worth asserting rather than assuming.
-    $this->get('/stickle/live')->assertRedirect('/login');
+    // The configured list supplies transport and the route file appends the
+    // guard after it. NOTE: this asserts composition only. Routes are
+    // registered at boot, so a test body cannot config()->set() new middleware
+    // onto an already-registered route -- an earlier draft of this plan tried
+    // exactly that and was unrunnable. Proving that a configured 'auth'
+    // redirects end to end is therefore NOT covered; see the ledger.
+    expect($middleware)->toContain('web')
+        ->and($middleware)->toContain('can:viewStickle')
+        ->and(array_search('can:viewStickle', $middleware, true))
+        ->toBeGreaterThan(array_search('web', $middleware, true));
 });
 
 it('does not read the removed environment variables', function (): void {
