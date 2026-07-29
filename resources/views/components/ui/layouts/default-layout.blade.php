@@ -7,16 +7,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
     <title>{{ config("app.name", "Laravel") }}</title>
-    <link rel="icon" type="image/svg+xml" href="{{ asset('vendor/stickle/favicon.svg') }}" />
+    <link rel="icon" type="image/svg+xml" href="{{ asset('vendor/stickleapp/core/favicon.svg') }}" />
 
-    @if(file_exists(public_path('build/manifest.json')) && !in_array(app()->environment(), ['local', 'development']))
-    <link rel="preload" as="style" href="{{ stickle_asset('resources/css/app.css') }}" />
-    <link rel="modulepreload" as="script" href="{{ stickle_asset('resources/js/app.js') }}" />
-    <link rel="stylesheet" href="{{ stickle_asset('resources/css/app.css') }}" />
-    <script type="module" src="{{ stickle_asset('resources/js/app.js') }}"></script>
-    @else
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @endif
+    {{-- Stickle's own assets, published by `vendor:publish --tag=package-assets`. --}}
+    {{ app('stickle.vite') }}
 
     <!-- Alpine.js -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.8/cdn.js"></script>
@@ -68,7 +62,10 @@
             <!-- Main content -->
             <main class="flex flex-1 flex-col pb-2 lg:min-w-0 lg:pt-2 lg:pr-2 lg:pl-64">
                 <div class="grow p-6 lg:rounded-lg lg:bg-white lg:p-10 lg:shadow-xs lg:ring-1 lg:ring-zinc-950/5">
-                    <div class="mx-auto max-w-6xl">
+                    {{-- Constrained but left-aligned against the sidebar. Was
+                         `mx-auto max-w-6xl`; dropping mx-auto keeps the reading
+                         width without centring it in dead space. --}}
+                    <div class="max-w-6xl">
                         {{ $slot }}
                     </div>
                 </div>

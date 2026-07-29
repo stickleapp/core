@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# Dry-run the quality checks that `composer pre-commit` defines. Nothing is
+# rewritten -- rector and pint run in check mode, so the hook reports and stops
+# rather than editing files out from under the commit.
+#
+# Enable with `npm install`, or directly:  git config core.hooksPath .githooks
+# Bypass with --no-verify.
+
+set -e
+
+if [ ! -d vendor ]; then
+    echo "pre-commit: vendor missing, skipping PHP checks." >&2
+    exit 0
+fi
+
+composer pre-commit

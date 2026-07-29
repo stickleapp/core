@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace StickleApp\Core;
 
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Foundation\Vite;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -45,6 +46,28 @@ final class CoreServiceProvider extends ServiceProvider
             AnalyticsRepositoryContract::class,
             PostgresAnalyticsRepository::class,
         );
+
+        /**
+         * Resolve Stickle's own assets.
+         *
+         * A dedicated Vite instance, not the application's, so the host app's
+         * `@vite` is untouched. The build directory matches where
+         * `vendor:publish --tag=package-assets` copies the assets, and the hot
+         * file matches `hotFile` in vite.config.js -- so HMR during package
+         * development and published assets in an installed app resolve through
+         * one code path with no environment branching.
+         *
+         * If the assets have not been published this throws
+         * ViteManifestNotFoundException naming the exact missing path, rather
+         * than silently emitting a URL that 404s.
+         */
+        $this->app->singleton('stickle.vite', fn (): Vite => (new Vite)
+            ->useBuildDirectory('vendor/stickleapp/core')
+            ->useHotFile(public_path('vendor/stickleapp/core/hot'))
+            ->withEntryPoints([
+                'resources/css/app.css',
+                'resources/js/app.js',
+            ]));
     }
 
     public function boot(Kernel $kernel): void
@@ -121,6 +144,11 @@ final class CoreServiceProvider extends ServiceProvider
             [
                 __DIR__.'/../public/build' => public_path(
                     'vendor/stickleapp/core',
+                ),
+                // favicon.svg lives outside public/build, so the directory copy
+                // above misses it and the layout's icon link 404s without this.
+                __DIR__.'/../public/favicon.svg' => public_path(
+                    'vendor/stickleapp/core/favicon.svg',
                 ),
             ],
             'package-assets',

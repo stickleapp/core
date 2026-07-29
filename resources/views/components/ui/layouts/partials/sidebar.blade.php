@@ -4,11 +4,7 @@
         <!-- Brand section -->
         <div class="flex flex-col border-b border-zinc-950/5 p-4">
             <a href="/stickle" class="flex items-center gap-2">
-                <img
-                    class="h-8 w-auto"
-                    src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=zinc&shade=900"
-                    alt="Stickle"
-                />
+                <x-stickle::ui.logo class="size-8 shrink-0 text-zinc-950" />
                 <span class="text-sm font-semibold text-zinc-950">Stickle</span>
             </a>
         </div>

@@ -39,7 +39,10 @@ class WorkbenchServiceProvider extends ServiceProvider
          */
         DiscoverEvents::guessClassNamesUsing(function (SplFileInfo $file, $basePath): string {
 
-            $basePath = env('PACKAGE_PATH');
+            // The package root, derived from this file's location rather than an
+            // env var, so testbench.yaml.dist stays portable across machines.
+            // workbench/app/Providers -> workbench/app -> workbench -> package root
+            $basePath = dirname(__DIR__, 3);
 
             $class = trim(Str::replaceFirst($basePath, '', $file->getRealPath()));
 

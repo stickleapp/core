@@ -12,8 +12,10 @@
             ></dd>
             <dd class="mt-1">@include('stickle::components.ui.charts.primatives.delta')</dd>
         </div>
+        {{-- `block` matters: a canvas is inline by default, so it sits on the text
+             baseline and leaves a few px of white below it inside the card. --}}
         <div class="w-full shrink-0" style="height: 112px">
-            <canvas x-ref="{{ $key }}" id="{{ $key }}"></canvas>
+            <canvas x-ref="{{ $key }}" id="{{ $key }}" class="block h-full w-full"></canvas>
         </div>
     </div>
 </div>
@@ -101,11 +103,18 @@
                                 borderWidth: 2,
                                 fill: true,
 
+                                // Let the line, fill and points draw past the chart
+                                // area instead of being inset by their own radius
+                                // and stroke width, so the series bleeds to the
+                                // card edge. The card's overflow-hidden trims it
+                                // to the rounded corners.
+                                clip: false,
+
                                 pointRadius: 2, // Size of the points (adjust as needed)
                                 pointBackgroundColor: "white", // White center
                                 pointBorderColor: "rgba(250, 204, 21, .7)", // Same as line color
                                 pointBorderWidth: 1, // Border thickness
-                                pointHoverRadius: 2, // Slightly larger on hover
+                                pointHoverRadius: 4, // Slightly larger on hover
                                 pointHoverBackgroundColor: "white",
                                 pointHoverBorderColor: "rgba(250, 204, 21, 1)", // Full opacity on hover
                                 pointHoverBorderWidth: 1,
@@ -135,11 +144,36 @@
                                 },
                             },
                         },
+                        // intersect:false means the nearest point along the x
+                        // axis wins, so a 2px dot does not have to be hit exactly.
+                        interaction: { mode: 'index', intersect: false },
                         plugins: {
                             legend: { display: false },
-                            tooltip: { enabled: false },
+                            tooltip: {
+                                enabled: true,
+                                displayColors: false,
+                                callbacks: {
+                                    title: (items) => {
+                                        const d = new Date(items[0].label);
+                                        return isNaN(d) ? items[0].label : d.toLocaleDateString(undefined, {
+                                            year: 'numeric', month: 'short', day: 'numeric',
+                                        });
+                                    },
+                                    // formattedValue passes the raw value through
+                                    // (54.806); cap the noise at two decimals.
+                                    label: (item) => Number(item.parsed.y).toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                    }),
+                                },
+                            },
                         },
-                        layout: { padding: 0 },
+                        // autoPadding:false is the one that matters. Chart.js
+                        // otherwise insets the chart area by the largest point's
+                        // radius + border (2 + 1 = 3px here) so points can't be
+                        // clipped, which leaves a white margin inside the card.
+                        // padding:0 alone does not override that, and neither
+                        // does clip:false on the dataset.
+                        layout: { padding: 0, autoPadding: false },
                     }
                 });
             }
