@@ -5,6 +5,20 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * These tests call the closures registered in routes/channels.php directly
+ * via Broadcast::driver()->getChannels(), bypassing HTTP entirely. That
+ * proves the closures' own logic is correct — it does NOT prove anything in
+ * the application ever invokes them.
+ *
+ * Nothing does, today: every event in src/Events/ broadcasts on a public
+ * `new Channel(...)`, and Laravel only routes a subscription through
+ * /broadcasting/auth (and therefore through these closures) for channels
+ * prefixed `private-`/`presence-`. So this suite is green while the
+ * realtime stream is unauthenticated end-to-end — that gap is exactly why
+ * it survived six task reviews on this branch. See the "NOT CURRENTLY
+ * CONSULTED" note atop routes/channels.php.
+ */
 function stickleChannelCallback(string $configKey): callable
 {
     $channels = Broadcast::driver()->getChannels();

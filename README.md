@@ -87,12 +87,35 @@ and committed in the package.
 Stickle is closed until you say who may open it. Add to `AppServiceProvider::boot()`:
 
 ```php
+use Illuminate\Support\Facades\Gate;
+
 Gate::define('viewStickle', fn ($user) => $user->is_admin);
 ```
 
-Every Stickle URL returns 403 until this is defined, and every broadcast
-subscription is rejected. Stickle does not scope data by tenant, so anyone
-allowed here sees every tenant's data.
+Every Stickle URL returns 403 until this is defined. This Gate does **not**
+cover the broadcast channels; see "Known limitation: broadcasting is not
+authenticated" below. Stickle does not scope data by tenant, so anyone this
+Gate allows sees every tenant's data — in a multi-tenant application this
+ability should name administrators, not customer-facing staff.
+
+### Known limitation: broadcasting is not authenticated
+
+Stickle's realtime broadcast stream is **not** authenticated. The events in
+`src/Events/` broadcast on public channels (`new Channel`, not
+`PrivateChannel`), and the JS client subscribes with `Echo.channel()`, not
+`Echo.private()`. Laravel only runs channel authorizers — including the
+`viewStickle` check in `routes/channels.php` — for `private-`/`presence-`
+prefixed channels, so they are never consulted here.
+
+Practically: anyone holding your application's Reverb/Pusher app key —
+public by design, since it ships in your frontend bundle — can subscribe to
+Stickle's channels directly and receive every tracked event in real time,
+including the full model row on attribute-change events, without passing
+the Gate above and without being authenticated at all.
+
+Until the channels and client are converted to private/presence channels
+(separate work, not done in this release), your realistic options are to
+disable broadcasting for Stickle or to accept this exposure knowingly.
 
 ## Initialization
 

@@ -96,6 +96,16 @@ Stickle is therefore administrator-only in a multi-tenant application, whatever 
 
 Real tenant scoping would touch every query, the segment builder, and the channel names. It is separate work.
 
+## Known limitation: broadcast channels are not authorized
+
+Found during implementation, not anticipated at design time: §4's claim that "HTTP and WebSocket share one rule with nothing to keep in sync" is wrong in practice, though the code it describes is correct as far as it goes.
+
+`routes/channels.php` does call `Gate::allows('viewStickle', ...)`, exactly as designed. But every event in `src/Events/` broadcasts on `new Channel(...)` — a public channel — not `PrivateChannel`. Laravel (via pusher-js) only sends a subscription through `/broadcasting/auth`, and therefore through the closures in `routes/channels.php`, for channel names prefixed `private-` or `presence-`. A public channel name never triggers that request, so the authorizers this section describes are never invoked by anything. `tests/Feature/Access/ChannelGuardTest.php` calls them directly via `Broadcast::driver()->getChannels()`, which verifies their logic but not that anything in the running application calls them — which is how this passed six task reviews before being caught in the final one.
+
+The practical effect: Stickle's realtime broadcast stream remains exactly as open as it was before this design — anyone holding the application's Reverb/Pusher app key can subscribe unauthenticated and receive every tracked event, including the full model row on attribute-change events. The Gate closes the UI and the read API only.
+
+Closing this requires converting the events in `src/Events/` to `PrivateChannel`/`PresenceChannel`, updating the JS client (`Echo.channel()` → `Echo.private()`/`Echo.join()`) and the channel-name construction on both sides to match Laravel's `private-`/`presence-` prefix convention. That is a materially larger change than this design and was deliberately not folded into it; it is tracked as separate follow-up work. `routes/channels.php` is left in place with its Gate checks because they are correct and become load-bearing the moment that follow-up ships — but until then they are inert, and the shipped documentation must not claim otherwise.
+
 ## Testing
 
 Pest, written failing first per test-driven development.
