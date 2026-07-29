@@ -92,11 +92,13 @@ use Illuminate\Support\Facades\Gate;
 Gate::define('viewStickle', fn ($user) => $user->is_admin);
 ```
 
-Every Stickle URL returns 403 until this is defined. This Gate does **not**
-cover the broadcast channels; see "Known limitation: broadcasting is not
-authenticated" below. Stickle does not scope data by tenant, so anyone this
-Gate allows sees every tenant's data — in a multi-tenant application this
-ability should name administrators, not customer-facing staff.
+Every Stickle URL returns 403 until this is defined. `viewStickle` receives
+only `$user`, over both the HTTP routes and the broadcast channels — write it
+as `fn ($user) => ...`, not `fn ($user, $model) => ...`. This Gate does
+**not** cover the broadcast channels; see "Known limitation: broadcasting is
+not authenticated" below. Stickle does not scope data by tenant, so anyone
+this Gate allows sees every tenant's data — in a multi-tenant application
+this ability should name administrators, not customer-facing staff.
 
 ### Known limitation: broadcasting is not authenticated
 

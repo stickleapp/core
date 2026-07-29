@@ -237,6 +237,10 @@ use Illuminate\Support\Facades\Gate;
 Gate::define('viewStickle', fn ($user) => $user->is_admin);
 ```
 
+`viewStickle` receives only `$user`, over both the HTTP routes and the
+broadcast channels in `routes/channels.php` -- there is no per-record
+context to inspect.
+
 The Gate is the only thing granting access to the UI and read API.
 `routes.api.middleware` and `routes.web.middleware` (above) are transport
 plumbing -- session, cookies, throttling -- not authorization. They are plain

@@ -66,6 +66,18 @@ it('denies the object channel when no gate is defined', function (): void {
     expect($callback(null, 'user', '1'))->toBeFalse();
 });
 
+it('allows the object channel without forwarding the model or id to the gate', function (): void {
+
+    // A gate that only accepts $user -- the shape required over HTTP -- must
+    // still work here even though the closure receives $model and $id: those
+    // are no longer passed through to Gate::allows().
+    Gate::define('viewStickle', fn ($user = null): bool => true);
+
+    $callback = stickleChannelCallback('stickle.broadcasting.channels.object');
+
+    expect($callback(null, 'user', '1'))->toBeTrue();
+});
+
 it('denies the class channel when no gate is defined', function (): void {
 
     withoutStickleGate();
@@ -73,4 +85,15 @@ it('denies the class channel when no gate is defined', function (): void {
     $callback = stickleChannelCallback('stickle.broadcasting.channels.class');
 
     expect($callback(null, 'user'))->toBeFalse();
+});
+
+it('allows the class channel without forwarding the model to the gate', function (): void {
+
+    // Same guarantee as the object channel above: the gate only accepts
+    // $user, and the closure's $model argument is not forwarded to it.
+    Gate::define('viewStickle', fn ($user = null): bool => true);
+
+    $callback = stickleChannelCallback('stickle.broadcasting.channels.class');
+
+    expect($callback(null, 'user'))->toBeTrue();
 });

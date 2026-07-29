@@ -20,6 +20,10 @@ administrator — a column, a `spatie/laravel-permission` role, an existing
 method. Until you do, every Stickle URL returns 403. Defining nothing is a
 valid choice; it leaves Stickle closed.
 
+`viewStickle` receives only `$user`, over both the HTTP routes and the
+broadcast channels. Write it as `fn ($user) => ...`; a signature that expects
+a model or record id will error on the HTTP path.
+
 `POST /stickle/api/track` is unaffected and stays public, so browser
 tracking keeps working.
 

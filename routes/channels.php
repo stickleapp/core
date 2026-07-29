@@ -31,12 +31,15 @@ use Illuminate\Support\Facades\Gate;
  * ability that was never defined, so an application that has not defined it
  * rejects subscriptions.
  *
- * Route parameters are forwarded as the Gate's context, which lets an
- * application scope per record without being required to: PHP ignores extra
- * arguments passed to a closure, so fn ($user) => $user->is_admin still works.
+ * viewStickle receives only the user, over both transports. Route
+ * parameters are still accepted by these closures (Laravel requires the
+ * signature to match the channel pattern) but are not forwarded to the
+ * Gate: passing them would let a `viewStickle` defined for one transport
+ * error out on the other, for no real gain -- the same data is reachable
+ * through the read API, which never receives them either.
  */
 Broadcast::channel(config('stickle.broadcasting.channels.firehose'), fn ($user): bool => Gate::forUser($user)->allows('viewStickle'));
 
-Broadcast::channel(config('stickle.broadcasting.channels.object'), fn ($user, $model, $id): bool => Gate::forUser($user)->allows('viewStickle', [$model, $id]));
+Broadcast::channel(config('stickle.broadcasting.channels.object'), fn ($user, $model, $id): bool => Gate::forUser($user)->allows('viewStickle'));
 
-Broadcast::channel(config('stickle.broadcasting.channels.class'), fn ($user, $model): bool => Gate::forUser($user)->allows('viewStickle', [$model]));
+Broadcast::channel(config('stickle.broadcasting.channels.class'), fn ($user, $model): bool => Gate::forUser($user)->allows('viewStickle'));
