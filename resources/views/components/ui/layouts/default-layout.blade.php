@@ -7,16 +7,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
     <title>{{ config("app.name", "Laravel") }}</title>
-    <link rel="icon" type="image/svg+xml" href="{{ asset('vendor/stickle/favicon.svg') }}" />
+    <link rel="icon" type="image/svg+xml" href="{{ asset('vendor/stickleapp/core/favicon.svg') }}" />
 
-    @if(file_exists(public_path('build/manifest.json')) && !in_array(app()->environment(), ['local', 'development']))
-    <link rel="preload" as="style" href="{{ stickle_asset('resources/css/app.css') }}" />
-    <link rel="modulepreload" as="script" href="{{ stickle_asset('resources/js/app.js') }}" />
-    <link rel="stylesheet" href="{{ stickle_asset('resources/css/app.css') }}" />
-    <script type="module" src="{{ stickle_asset('resources/js/app.js') }}"></script>
-    @else
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @endif
+    {{-- Stickle's own assets, published by `vendor:publish --tag=package-assets`. --}}
+    {{ app('stickle.vite') }}
 
     <!-- Alpine.js -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.8/cdn.js"></script>

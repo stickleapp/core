@@ -13,6 +13,7 @@
     "dev": "vite",
     "serve": "vite",
     "build": "vite build",
+    "build:publish": "vite build && vendor/bin/testbench vendor:publish --tag=package-assets --force",
     "preview": "vite preview",
     "pre-commit": "vite build"
   },

@@ -68,6 +68,20 @@ After you have specified your configuration options in the installation script, 
 
     php artisan migrate
 
+## Publishing Assets
+
+Stickle ships prebuilt CSS and JS. Publish them into your application's `public` directory:
+
+    php artisan vendor:publish --tag=package-assets --force
+
+Add this to your deploy script rather than running it once. Asset filenames are
+content-hashed, so every Stickle release produces new ones and a stale publish
+leaves the UI without styles. If the assets are missing, Stickle raises
+`ViteManifestNotFoundException` naming the expected path.
+
+You do not need Node or a build step in your application — the assets are built
+and committed in the package.
+
 ## Initialization
 
 When complete you can run Stickle with the following command:
