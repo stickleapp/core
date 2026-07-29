@@ -42,7 +42,7 @@
                     $attribute = data_get($chart, 'attribute');
                     $currentValue = data_get($model, 'modelAttributes.data.'.$attribute);
                 @endphp
-                <div class="w-full sm:w-1/2 lg:w-1/4 flex-shrink-0 sm:px-2">
+                <div class="w-full sm:w-1/2 lg:w-1/4 flex-shrink-0 sm:px-2 self-stretch">
                     <x-stickle::ui.charts.model
                         :key="md5(json_encode($chart))"
                         :model="$model"

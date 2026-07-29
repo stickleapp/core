@@ -5,14 +5,19 @@
             'bg-red-100 text-red-800': delta?.percentage_change < 0,
             'bg-gray-100 text-gray-800': delta?.percentage_change == 0 || delta?.percentage_change == null
         }"
-    class="inline-flex items-baseline rounded-full px-2.5 py-0.5 text-sm font-medium text-green-800 md:mt-2 lg:mt-0"
+    {{-- No static text-* colour here: it survives alongside whatever :class binds
+         and the two rules fight, so a negative delta carried both text-green-800
+         and text-red-800. The margin utilities are gone too -- they only existed
+         to space the badge once it wrapped onto its own line, which it no longer
+         does. --}}
+    class="inline-flex shrink-0 items-baseline rounded-full px-2.5 py-0.5 text-sm font-medium whitespace-nowrap"
 >
     <svg
-        class="mr-0.5 -ml-1 size-5 shrink-0 self-center text-green-500"
+        class="mr-0.5 -ml-1 size-5 shrink-0 self-center"
         :class="{
-            'bg-green-100 text-green-500': delta?.percentage_change > 0,
-            'bg-red-100 text-red-500': delta?.percentage_change < 0,
-            'bg-gray-100 text-gray-500': delta?.percentage_change == 0 || delta?.percentage_change == null
+            'text-green-500': delta?.percentage_change > 0,
+            'text-red-500': delta?.percentage_change < 0,
+            'text-gray-500': delta?.percentage_change == 0 || delta?.percentage_change == null
         }"
         viewBox="0 0 20 20"
         fill="currentColor"
@@ -29,5 +34,10 @@
     </svg>
 
     <span class="sr-only"> Increased by </span>
-    <span x-text="delta?.percentage_change"></span>%
+    {{-- One decimal place: the API returns two, which widens the badge enough to
+         crowd the label out of the row. Guarded so a null delta renders empty
+         rather than NaN. --}}
+    <span
+        x-text="delta?.percentage_change != null ? Number(delta.percentage_change).toFixed(1) : ''"
+    ></span>%
 </div>

@@ -114,7 +114,7 @@
                                 pointBackgroundColor: "white", // White center
                                 pointBorderColor: "rgba(250, 204, 21, .7)", // Same as line color
                                 pointBorderWidth: 1, // Border thickness
-                                pointHoverRadius: 2, // Slightly larger on hover
+                                pointHoverRadius: 4, // Slightly larger on hover
                                 pointHoverBackgroundColor: "white",
                                 pointHoverBorderColor: "rgba(250, 204, 21, 1)", // Full opacity on hover
                                 pointHoverBorderWidth: 1,
@@ -144,9 +144,28 @@
                                 },
                             },
                         },
+                        // intersect:false means the nearest point along the x
+                        // axis wins, so a 2px dot does not have to be hit exactly.
+                        interaction: { mode: 'index', intersect: false },
                         plugins: {
                             legend: { display: false },
-                            tooltip: { enabled: false },
+                            tooltip: {
+                                enabled: true,
+                                displayColors: false,
+                                callbacks: {
+                                    title: (items) => {
+                                        const d = new Date(items[0].label);
+                                        return isNaN(d) ? items[0].label : d.toLocaleDateString(undefined, {
+                                            year: 'numeric', month: 'short', day: 'numeric',
+                                        });
+                                    },
+                                    // formattedValue passes the raw value through
+                                    // (54.806); cap the noise at two decimals.
+                                    label: (item) => Number(item.parsed.y).toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                    }),
+                                },
+                            },
                         },
                         // autoPadding:false is the one that matters. Chart.js
                         // otherwise insets the chart area by the largest point's
