@@ -3,13 +3,23 @@
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use StickleApp\Core\Models\Segment;
 
 /**
  * Routes for the demo
  */
-Route::middleware(config('stickle.routes.web.middleware', []))
+/**
+ * can:viewStickle is written here rather than read from config, so no
+ * configuration value can remove it. The configured list is transport
+ * plumbing only -- session, cookies, and optionally auth for a login
+ * redirect instead of a bare 403.
+ */
+Route::middleware([
+    ...Arr::wrap(config('stickle.routes.web.middleware', ['web'])),
+    'can:viewStickle',
+])
     ->prefix(config('stickle.routes.web.prefix', 'stickle'))
     ->group(function (): void {
         /** Stickle UI */
