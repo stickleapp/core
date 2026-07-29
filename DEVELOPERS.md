@@ -137,6 +137,19 @@ npm run build
 git add public/build
 ```
 
+Note that Tailwind scans `resources/views` (`@source "../views"`), so editing a
+Blade file changes the CSS bundle too — not just editing `app.css`.
+
+Two things check this for you. `npm install` points `core.hooksPath` at
+`.githooks`, whose `pre-push` hook rebuilds and refuses the push if
+`public/build` comes out dirty. Because hooks are local and `--no-verify` skips
+them, the `assets-are-current` workflow runs the same check in CI. Neither
+rebuilds and stages for you: silently amending a push would hide exactly the
+drift they exist to catch.
+
+There is also a `pre-commit` hook running `composer pre-commit` (rector and pint
+in check mode, plus PHPStan and the test suite).
+
 ## Testing
 
 ```bash

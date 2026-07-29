@@ -1,0 +1,64 @@
+name: assets-are-current
+
+# This package ships prebuilt assets: composer pulls public/build into an
+# installing app, which publishes them with `vendor:publish --tag=package-assets`.
+# Nothing rebuilds them downstream, so whatever is committed is what every install
+# gets -- and stale assets surface as missing styles in a deployed app, not as a
+# failure here.
+#
+# The .githooks/pre-push hook runs the same check locally, but hooks are opt-in
+# and bypassable with --no-verify. This job is the one that cannot be skipped.
+
+on:
+  push:
+    paths:
+      - "resources/css/**"
+      - "resources/js/**"
+      - "resources/views/**"
+      - "public/build/**"
+      - "vite.config.js"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/assets-are-current.yml"
+  pull_request:
+    paths:
+      - "resources/css/**"
+      - "resources/js/**"
+      - "resources/views/**"
+      - "public/build/**"
+      - "vite.config.js"
+      - "package.json"
+      - "package-lock.json"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Rebuild assets
+        # vite.config.js targets ./public/build for `build` (testbench only for
+        # `serve`), so this writes the same artifact that is committed.
+        run: npm run build
+
+      - name: Check public/build matches the sources
+        run: |
+          if ! git diff --quiet -- public/build; then
+            echo "::error::public/build is stale. Run 'npm run build' and commit the result."
+            git diff --stat -- public/build
+            git diff -- public/build/manifest.json
+            exit 1
+          fi
+          echo "public/build is up to date."

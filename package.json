@@ -15,7 +15,7 @@
     "build": "vite build",
     "build:publish": "vite build && vendor/bin/testbench vendor:publish --tag=package-assets --force",
     "preview": "vite preview",
-    "pre-commit": "vite build"
+    "prepare": "git config core.hooksPath .githooks || true"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.15",

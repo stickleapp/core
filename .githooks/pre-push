@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+# Fail the push if the committed assets in public/build are stale.
+#
+# This package ships prebuilt CSS/JS: composer pulls public/build into an
+# installing app, which publishes it with `vendor:publish --tag=package-assets`.
+# Nothing rebuilds it on the consumer side, so whatever is committed here is
+# exactly what every install gets.
+#
+# That went unnoticed for five months once: resources/css/app.css kept changing
+# while public/build stayed at its February build, and the drift only surfaced as
+# missing styles in a deployed app.
+#
+# The hook rebuilds and reports rather than rebuilding and staging. Silently
+# amending a push hides the very drift it is meant to catch, and the build is
+# deterministic (identical input gives a byte-identical bundle), so a dirty tree
+# here means the committed assets genuinely do not match the sources.
+#
+# Enable with `npm install`, or directly:  git config core.hooksPath .githooks
+# Bypass with --no-verify; CI runs the same check, so it will still be caught.
+
+set -e
+
+# Nothing to check if the toolchain is not installed (e.g. a PHP-only checkout).
+if [ ! -d node_modules ]; then
+    echo "pre-push: node_modules missing, skipping asset freshness check." >&2
+    exit 0
+fi
+
+npm run build --silent >/dev/null
+
+if ! git diff --quiet -- public/build; then
+    echo >&2
+    echo "  pre-push: public/build is stale." >&2
+    echo >&2
+    echo "  The committed assets do not match resources/. Rebuilding produced:" >&2
+    echo >&2
+    git diff --stat -- public/build >&2
+    echo >&2
+    echo "  Run 'npm run build' and commit public/build, then push again." >&2
+    echo >&2
+    exit 1
+fi
+
+exit 0
