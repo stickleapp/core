@@ -82,7 +82,7 @@ Routes are always registered. The previous draft omitted them when unconfigured,
 
 The three `return true` authorizers in `routes/channels.php` become `Gate::allows('viewStickle', ...)` calls, so HTTP and WebSocket share one rule with nothing to keep in sync. The same deny-by-default applies: an undefined Gate rejects the subscription.
 
-Each authorizer forwards its route parameters as the Gate's context — the model class for the class channel, the class and id for the object channel. That lets an application scope per record if it wants to, without requiring it: PHP ignores extra arguments passed to a closure, so an existing `fn ($user) => $user->is_admin` keeps working unchanged.
+As shipped, each authorizer accepts its route parameters — Laravel requires the closure signature to match the channel pattern — but forwards only the user to the Gate. An earlier draft of this section forwarded the model class and id as context; that was removed before release (issue #36) because a `viewStickle` written for the HTTP routes, which have no such context, would then behave differently on the two transports for no real gain: the same data is reachable through the read API, which never receives them either.
 
 One consequence worth naming: a user who passes the HTTP guard on an application that defines `viewStickle` will also pass the channel check, so the two cannot drift apart. That is the point of using one ability for both.
 
@@ -96,15 +96,18 @@ Stickle is therefore administrator-only in a multi-tenant application, whatever 
 
 Real tenant scoping would touch every query, the segment builder, and the channel names. It is separate work.
 
-## Known limitation: broadcast channels are not authorized
+## Resolved: broadcast channels are now authorized
 
-Found during implementation, not anticipated at design time: §4's claim that "HTTP and WebSocket share one rule with nothing to keep in sync" is wrong in practice, though the code it describes is correct as far as it goes.
+Found during implementation of this design, fixed in the follow-up tracked as issue #35.
 
-`routes/channels.php` does call `Gate::allows('viewStickle', ...)`, exactly as designed. But every event in `src/Events/` broadcasts on `new Channel(...)` — a public channel — not `PrivateChannel`. Laravel (via pusher-js) only sends a subscription through `/broadcasting/auth`, and therefore through the closures in `routes/channels.php`, for channel names prefixed `private-` or `presence-`. A public channel name never triggers that request, so the authorizers this section describes are never invoked by anything. `tests/Feature/Access/ChannelGuardTest.php` calls them directly via `Broadcast::driver()->getChannels()`, which verifies their logic but not that anything in the running application calls them — which is how this passed six task reviews before being caught in the final one.
+§4's claim that "HTTP and WebSocket share one rule with nothing to keep in sync" was wrong in practice when this design shipped, though the code it described was correct as far as it went. `routes/channels.php` did call `Gate::allows('viewStickle')`, exactly as designed — but every event in `src/Events/` broadcast on `new Channel(...)`, a public channel. Laravel (via pusher-js) only sends a subscription through `/broadcasting/auth`, and therefore through those closures, for names prefixed `private-` or `presence-`, so nothing ever invoked them and the realtime stream was open to anyone holding the application's Reverb/Pusher app key. The test that was meant to cover this called the closures directly via `Broadcast::driver()->getChannels()`, proving their logic but not their reachability, which is how it survived six task reviews.
 
-The practical effect: Stickle's realtime broadcast stream remains exactly as open as it was before this design — anyone holding the application's Reverb/Pusher app key can subscribe unauthenticated and receive every tracked event, including the full model row on attribute-change events. The Gate closes the UI and the read API only.
+All eight events now broadcast on `PrivateChannel` and the UI subscribes with `Echo.private()`, so §4's claim holds: one `viewStickle` ability, both transports. Two consequences worth recording:
 
-Closing this requires converting the events in `src/Events/` to `PrivateChannel`/`PresenceChannel`, updating the JS client (`Echo.channel()` → `Echo.private()`/`Echo.join()`) and the channel-name construction on both sides to match Laravel's `private-`/`presence-` prefix convention. That is a materially larger change than this design and was deliberately not folded into it; it is tracked as separate follow-up work. `routes/channels.php` is left in place with its Gate checks because they are correct and become load-bearing the moment that follow-up ships — but until then they are inert, and the shipped documentation must not claim otherwise.
+- The authorizer patterns had to be rewritten. The channel names in config are `sprintf()` formats (`stickle.object.%s.%s`), and `%s` is not a Laravel channel wildcard, so the object and class patterns matched no name at all. They are now registered as `stickle.object.{model}.{id}` and `stickle.class.{model}`, derived from the same config values. While the channels were public this was invisible; once private it would have denied every object and class subscription.
+- Authorization only happens where the application put an endpoint for it. Stickle does not call `Broadcast::routes()` on an application's behalf, so the requirement is documented instead — without it every subscription is refused and the UI degrades to polling the read API, which the same Gate guards.
+
+`tests/Feature/Access/ChannelGuardTest.php` now drives `/broadcasting/auth` over HTTP with the channel names taken from the events themselves, so making the channels public again fails the suite.
 
 ## Testing
 
@@ -119,7 +122,11 @@ Pest, written failing first per test-driven development.
 | `POST /stickle/api/track` | 200 under all three Gate states |
 | Guard is not configurable away | with `stickle.routes.web.middleware` set to `[]` and no Gate defined, `GET /stickle/live` still returns 403 |
 | Transport middleware still applies | with it set to `['web', 'auth']` and no authenticated user, `GET /stickle/live` redirects to login rather than returning 403 |
-| Channel authorizers | no Gate yields `false`; allowing Gate yields `true`; denying Gate yields `false` |
+| `POST /broadcasting/auth`, unauthenticated | 403 — fails if the channels are public, because Laravel stops guarding them |
+| `POST /broadcasting/auth`, no Gate defined | 403 |
+| `POST /broadcasting/auth`, Gate denies | 403 |
+| `POST /broadcasting/auth`, Gate allows | 200, for the firehose, object and class channel names |
+| `broadcastOn()` | every event in `src/Events/` returns `PrivateChannel` instances only |
 
 `tests/TestCase.php::getEnvironmentSetUp` defines an allowing `viewStickle` Gate so existing UI and API tests keep passing. `workbench/` defines one so the development server keeps working.
 
