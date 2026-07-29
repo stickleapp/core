@@ -17,3 +17,46 @@ updates:
       interval: "weekly"
     labels:
       - "dependencies"
+
+  # npm was missing here, so Dependabot raised security alerts for it but never
+  # opened update PRs to clear them -- which is how 50 accumulated.
+  #
+  # Both npm manifests are build-time only. Consumers install via Composer and
+  # never run npm (the package ships prebuilt output in public/build), and
+  # /workbench is export-ignore'd from the Composer archive. Composer above is
+  # the ecosystem that actually reaches an install.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+    groups:
+      # These move together and are only exercised by `npm run build`; a separate
+      # PR per package is review noise.
+      build-tooling:
+        patterns:
+          - "vite"
+          - "@vitejs/*"
+          - "rollup"
+          - "esbuild"
+          - "laravel-vite-plugin"
+          - "@tailwindcss/*"
+          - "tailwindcss"
+    ignore:
+      # vitepress 1.6.4 is the latest release and pins vite 5.x, so its
+      # advisories have no upstream fix; 2.x is still alpha. Documentation
+      # tooling only -- revisit when 2.x is stable.
+      - dependency-name: "vitepress"
+
+  # The Testbench development app. Not shipped.
+  - package-ecosystem: "npm"
+    directory: "/workbench"
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+    groups:
+      workbench-dev:
+        patterns:
+          - "*"
