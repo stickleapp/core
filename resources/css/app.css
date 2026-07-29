@@ -1,2 +1,54 @@
 @import "tailwindcss";
 @source "../views";
+
+/*
+ * Brand mark comet (see components/ui/logo.blade.php).
+ *
+ * transform-box: view-box makes transform-origin resolve against the SVG
+ * viewBox, so 30px 30px is the exact circle centre. fill-box would use the
+ * group's bounding box instead -- and because the trail is only a partial arc,
+ * that box is off-centre and the mark would wobble as it spun.
+ */
+@keyframes stickle-mark-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.stickle-mark__trail {
+    /*
+     * A true conic gradient, which SVG has no native equivalent for. Drawing the
+     * ring as N stepped-opacity arc segments was the obvious workaround, but
+     * overlapping semi-transparent strokes composite darker at every join and the
+     * seams read as a serrated edge -- worse the more segments you add.
+     *
+     * Masking one solid stroked circle sidesteps compositing entirely: the ring
+     * is opaque, and the mask alone carries the 100% -> 50% falloff.
+     *
+     * Degrades to a solid ring where mask-image is unsupported.
+     */
+    -webkit-mask-image: conic-gradient(from 0deg, rgb(0 0 0) 0deg, rgb(0 0 0 / 0.5) 359.9deg);
+    mask-image: conic-gradient(from 0deg, rgb(0 0 0) 0deg, rgb(0 0 0 / 0.5) 359.9deg);
+    transform-box: view-box;
+    transform-origin: 30px 30px;
+
+    /*
+     * Declared but paused, rather than only applying the animation on hover:
+     * toggling play-state resumes from the current angle, where adding the
+     * animation on hover would restart it from 0deg every time.
+     */
+    animation: stickle-mark-spin 2.4s linear infinite;
+    animation-play-state: paused;
+}
+
+/* The mark always sits inside the brand link, so hovering the wordmark spins it too. */
+.stickle-mark:hover .stickle-mark__trail,
+a:hover .stickle-mark__trail {
+    animation-play-state: running;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .stickle-mark__trail {
+        animation: none;
+    }
+}
