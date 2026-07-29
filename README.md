@@ -82,6 +82,18 @@ leaves the UI without styles. If the assets are missing, Stickle raises
 You do not need Node or a build step in your application — the assets are built
 and committed in the package.
 
+### Grant access
+
+Stickle is closed until you say who may open it. Add to `AppServiceProvider::boot()`:
+
+```php
+Gate::define('viewStickle', fn ($user) => $user->is_admin);
+```
+
+Every Stickle URL returns 403 until this is defined, and every broadcast
+subscription is rejected. Stickle does not scope data by tenant, so anyone
+allowed here sees every tenant's data.
+
 ## Initialization
 
 When complete you can run Stickle with the following command:

@@ -209,11 +209,8 @@ URL prefix for API routes.
 
 _Default: 'stickle/api'_
 
-#### `STICKLE_API_MIDDLEWARE`
-
-Middleware to apply to API routes.
-
-_Default: ['api']_
+`routes.api.middleware` is not an environment variable; see [Access](#access)
+below.
 
 ### web
 
@@ -225,11 +222,34 @@ URL prefix for web routes.
 
 _Default: 'stickle'_
 
-#### `STICKLE_WEB_MIDDLEWARE`
+`routes.web.middleware` is not an environment variable; see [Access](#access)
+below.
 
-Middleware to apply to web routes.
+### Access
 
-_Default: ['web']_
+Stickle's UI, read API and broadcast channels are authorized by a single
+Gate ability, `viewStickle`, which your application defines in
+`AppServiceProvider::boot()`:
+
+```php
+Gate::define('viewStickle', fn ($user) => $user->is_admin);
+```
+
+The Gate is the only thing granting access. `routes.api.middleware` and
+`routes.web.middleware` (above) are transport plumbing -- session, cookies,
+throttling -- not authorization. They are plain arrays in `config/stickle.php`
+and are no longer read from `STICKLE_API_MIDDLEWARE` or
+`STICKLE_WEB_MIDDLEWARE`; neither one can grant, weaken, or remove access to
+Stickle. If `viewStickle` is never defined, Laravel denies the ability by
+default and every Stickle URL and broadcast subscription is closed.
+
+Add `'auth'` to `routes.web.middleware` if you would rather a signed-out
+visitor be redirected to your login page than shown a bare 403.
+
+**Stickle does not scope data by tenant.** Anyone the Gate allows sees
+every tenant's users, events and sessions, not only their own. In a
+multi-tenant application `viewStickle` should name administrators, not
+customer-facing staff.
 
 ## Broadcasting
 
