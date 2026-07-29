@@ -4,6 +4,7 @@ namespace Workbench\App\Providers;
 
 use Illuminate\Foundation\Events\DiscoverEvents;
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Override;
@@ -25,6 +26,11 @@ class WorkbenchServiceProvider extends ServiceProvider
     {
 
         Broadcast::routes();
+
+        // The workbench stands in as the host application, which is what has to
+        // decide who may open Stickle. Everything is permitted here because the
+        // dev server has no notion of an administrator.
+        Gate::define('viewStickle', fn ($user = null): bool => true);
 
         if ($this->app->runningInConsole()) {
             $this->commands(
