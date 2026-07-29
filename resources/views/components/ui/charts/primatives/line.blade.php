@@ -57,7 +57,9 @@
                 legend: { display: false },
                 tooltip: { enabled: false },
             },
-            layout: { padding: 0 },
+            // See charts/segment.blade.php: autoPadding, not padding, is what
+            // removes Chart.js's point-radius inset around the plot.
+            layout: { padding: 0, autoPadding: false },
         },
     });
 </script>

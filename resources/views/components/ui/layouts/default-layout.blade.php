@@ -62,7 +62,10 @@
             <!-- Main content -->
             <main class="flex flex-1 flex-col pb-2 lg:min-w-0 lg:pt-2 lg:pr-2 lg:pl-64">
                 <div class="grow p-6 lg:rounded-lg lg:bg-white lg:p-10 lg:shadow-xs lg:ring-1 lg:ring-zinc-950/5">
-                    <div class="mx-auto max-w-6xl">
+                    {{-- Constrained but left-aligned against the sidebar. Was
+                         `mx-auto max-w-6xl`; dropping mx-auto keeps the reading
+                         width without centring it in dead space. --}}
+                    <div class="max-w-6xl">
                         {{ $slot }}
                     </div>
                 </div>

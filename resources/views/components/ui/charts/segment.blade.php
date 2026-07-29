@@ -12,8 +12,10 @@
             ></dd>
             <dd class="mt-1">@include('stickle::components.ui.charts.primatives.delta')</dd>
         </div>
+        {{-- `block` matters: a canvas is inline by default, so it sits on the text
+             baseline and leaves a few px of white below it inside the card. --}}
         <div class="w-full shrink-0" style="height: 112px">
-            <canvas x-ref="{{ $key }}" id="{{ $key }}"></canvas>
+            <canvas x-ref="{{ $key }}" id="{{ $key }}" class="block h-full w-full"></canvas>
         </div>
     </div>
 </div>
@@ -101,6 +103,13 @@
                                 borderWidth: 2,
                                 fill: true,
 
+                                // Let the line, fill and points draw past the chart
+                                // area instead of being inset by their own radius
+                                // and stroke width, so the series bleeds to the
+                                // card edge. The card's overflow-hidden trims it
+                                // to the rounded corners.
+                                clip: false,
+
                                 pointRadius: 2, // Size of the points (adjust as needed)
                                 pointBackgroundColor: "white", // White center
                                 pointBorderColor: "rgba(250, 204, 21, .7)", // Same as line color
@@ -139,7 +148,13 @@
                             legend: { display: false },
                             tooltip: { enabled: false },
                         },
-                        layout: { padding: 0 },
+                        // autoPadding:false is the one that matters. Chart.js
+                        // otherwise insets the chart area by the largest point's
+                        // radius + border (2 + 1 = 3px here) so points can't be
+                        // clipped, which leaves a white margin inside the card.
+                        // padding:0 alone does not override that, and neither
+                        // does clip:false on the dataset.
+                        layout: { padding: 0, autoPadding: false },
                     }
                 });
             }

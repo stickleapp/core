@@ -23,8 +23,13 @@
     }"
     x-init="updateItemsPerPage(); window.addEventListener('resize', () => updateItemsPerPage())"
 >
+    {{-- overflow-hidden is required to hide off-page slides, but it also crops the
+         cards' drop shadows. CSS cannot scroll one axis and overflow the other
+         (overflow-y: visible computes to auto next to overflow-x: hidden), so the
+         padding gives the shadow room inside the clip box; -my-3 keeps the
+         surrounding vertical rhythm unchanged. --}}
     <div
-        class="overflow-hidden"
+        class="-my-3 overflow-hidden py-3"
         @touchstart="handleTouchStart($event)"
         @touchend="handleTouchEnd($event)"
     >
