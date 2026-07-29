@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use Illuminate\Foundation\ViteManifestNotFoundException;
 
 if (! function_exists('stickle_asset')) {
     /**
@@ -11,9 +12,9 @@ if (! function_exists('stickle_asset')) {
      *             remains only for host apps running a published copy of
      *             default-layout.blade.php from before that change.
      *
-     * @throws \Illuminate\Foundation\ViteManifestNotFoundException when the package
-     *                                                              assets have not been published. It previously returned an unresolvable
-     *                                                              URL here, turning a missing publish step into a silent 404.
+     * @throws ViteManifestNotFoundException when the package
+     *                                       assets have not been published. It previously returned an unresolvable
+     *                                       URL here, turning a missing publish step into a silent 404.
      */
     function stickle_asset(string $path): string
     {
