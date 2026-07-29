@@ -7,9 +7,12 @@ namespace StickleApp\Core\Views\Components\Ui\Timelines;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\View\Component;
 use Illuminate\View\View;
+use StickleApp\Core\Views\Components\Concerns\ResolvesPolling;
 
 class Sessions extends Component
 {
+    use ResolvesPolling;
+
     /**
      * Create the component instance.
      */
@@ -19,7 +22,11 @@ class Sessions extends Component
         public string $requestsEndpoint,
         public ?string $heading = null,
         public ?string $description = null,
-    ) {}
+        #[Config('stickle.broadcasting.polling.interval')] int|string|null $pollInterval = null,
+        #[Config('stickle.broadcasting.polling.enabled')] bool|string|int|null $pollingEnabled = null,
+    ) {
+        $this->resolvePolling($pollInterval, $pollingEnabled);
+    }
 
     /**
      * Get the view / contents that represents the component.

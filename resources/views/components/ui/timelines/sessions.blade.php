@@ -147,13 +147,26 @@
                 });
         };
 
-        // Update listener for Echo
-        if (window.Echo) {
-            window.Echo.channel("{{ $channel }}").listenToAll(
-                (eventName, data) => {
-                    // Add new activity from websocket
-                    if (data && data.payload) {
-                        requests.unshift(data.payload);
+        return {
+            isLoading: false,
+            modelAttributes: {},
+            async init() {
+                const data = await fetchData();
+                if (data) {
+                    requests.push(...data);
+                    renderSessions();
+                }
+
+                // Set up real-time updates, over the websocket where it is
+                // available and by polling where it is not
+                const stream = window.stickleStream({
+                    channel: "{{ $channel }}",
+                    endpoint: "{!! $requestsEndpoint !!}",
+                    intervalSeconds: {{ $pollInterval }},
+                    pollingEnabled: @json($pollingEnabled),
+                    onRecords: (records) => {
+                        // Add new activity from the websocket or a poll
+                        requests.unshift(...records);
 
                         // Keep only the most recent 100 requests to prevent memory issues
                         if (requests.length > 100) {
@@ -161,19 +174,11 @@
                         }
 
                         renderSessions();
-                    }
-                }
-            );
-        }
+                    },
+                });
 
-        return {
-            isLoading: false,
-            modelAttributes: {},
-            async init() {
-                const data = await fetchData();
-                if (!data) return;
-                requests.push(...data);
-                renderSessions();
+                stream.seed(data ?? []);
+                stream.start();
             },
         };
     }

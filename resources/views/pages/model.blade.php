@@ -64,7 +64,10 @@
             <x-stickle::ui.timelines.events :channel="sprintf(config('stickle.broadcasting.channels.object'),
             str_replace('\\', '-', strtolower(class_basename($model))),
             $model->getKey()
-        )"></x-stickle::ui.timelines.events>
+        )" :requests-endpoint="route('stickle::api.requests', [
+            'model_class' => class_basename($model),
+            'object_uid' => $model->getKey(),
+        ])"></x-stickle::ui.timelines.events>
         </div>
     </div>
 </x-stickle::ui.layouts.default-layout>

@@ -64,7 +64,7 @@
                     event?.data?.properties?.title ||
                     event?.data?.properties?.url
                     }
-                                        <span class="whitespace-nowrap">${event?.created_at || "just now"
+                                        <span class="whitespace-nowrap">${window.stickleTimeAgo(event?.data?.timestamp)
                     }</span>
                                     </div>
                                 </div>
@@ -78,22 +78,33 @@
         // Initial render and setup updates
         renderEvents();
 
-        // Update listener for Echo
-        if (window.Echo) {
-            window.Echo.channel("{{ $channel }}").listenToAll(
-                (eventName, data) => {
-                    events.unshift({ name: eventName, data: data.payload });
-                    if (events.length > 25) {
-                        events.pop();
-                    }
-                    console.log(eventName, data);
-                    renderEvents();
+        // The ages are relative, so they go stale on their own. Redraw them on
+        // a timer rather than only when a new event happens to arrive.
+        setInterval(renderEvents, 30000);
+
+        // Set up real-time updates, over the websocket where it is available
+        // and by polling where it is not
+        const stream = window.stickleStream({
+            channel: "{{ $channel }}",
+            endpoint: "{!! $requestsEndpoint !!}",
+            intervalSeconds: {{ $pollInterval }},
+            pollingEnabled: @json($pollingEnabled),
+            onRecords: (records) => {
+                // A polled record carries its own type where a broadcast
+                // carries the event name, and the two are otherwise the
+                // same shape.
+                records.forEach((record) => {
+                    events.unshift({ name: record.type, data: record });
+                });
+
+                if (events.length > 25) {
+                    events.splice(25);
                 }
-            );
-        } else {
-            console.error(
-                "Please initialize a window.Echo object. https://laravel.com/docs/11.x/broadcasting#client-side-installation"
-            );
-        }
+
+                renderEvents();
+            },
+        });
+
+        stream.start();
     });
 </script>

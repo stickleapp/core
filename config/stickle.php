@@ -234,6 +234,18 @@ return [
                 'stickle.class.%s',
             ),
         ],
+
+        /*
+        | Reverb speaks only the Pusher WebSocket protocol. It does not serve
+        | the HTTP fallback endpoints pusher-js would need to degrade to long
+        | polling on its own, so the live components poll the requests endpoint
+        | whenever the socket is unavailable. Interval is in seconds, and any
+        | component accepts a :poll-interval attribute to override it.
+        */
+        'polling' => [
+            'enabled' => env('STICKLE_BROADCASTING_POLLING_ENABLED', true),
+            'interval' => env('STICKLE_BROADCASTING_POLLING_INTERVAL', 15),
+        ],
     ],
 
     /*

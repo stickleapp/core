@@ -26,11 +26,17 @@ Route::middleware(config('stickle.routes.web.middleware', []))
                     ),
                     $request->string('uid'),
                 );
+                /** Scoped to match the channel, for the polling fallback */
+                $eventsEndpoint = route('stickle::api.requests', [
+                    'model_class' => class_basename($modelClass),
+                    'object_uid' => $request->string('uid'),
+                ]);
                 $model = $modelClass::findOrFail($request->route('uid'));
             } else {
                 $eventsChannel = config(
                     'stickle.broadcasting.channels.firehose',
                 );
+                $eventsEndpoint = route('stickle::api.requests');
             }
 
             return view('stickle::pages/live', [
@@ -38,6 +44,7 @@ Route::middleware(config('stickle.routes.web.middleware', []))
                 'uid' => $request->string('uid'),
                 'model' => $model ?? null,
                 'eventsChannel' => $eventsChannel,
+                'eventsEndpoint' => $eventsEndpoint,
                 'location' => $request->string('location'),
             ]);
         })->name('stickle::live');

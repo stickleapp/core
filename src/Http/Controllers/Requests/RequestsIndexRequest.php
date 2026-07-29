@@ -29,7 +29,7 @@ class RequestsIndexRequest extends FormRequest
             'start_at' => ['nullable', 'date'],
             'end_at' => ['nullable', 'date', 'after_or_equal:start_at'],
             'event_types' => ['nullable', 'string', 'in:page_view,event'],
-            'limit' => ['nullable', 'integer', 'min:1', 'max:250'],
+            'per_page' => ['nullable', 'integer', 'min:1', 'max:250'],
             'include_location' => ['nullable', 'boolean'],
         ];
     }
@@ -59,7 +59,7 @@ class RequestsIndexRequest extends FormRequest
     {
         $this->merge([
             'include_location' => $this->boolean('include_location', true),
-            'limit' => $this->integer('limit', 250),
+            'per_page' => $this->integer('per_page', 250),
             'start_at' => $this->input('start_at', now()->subMinutes(30)->toDateTimeString()),
         ]);
     }

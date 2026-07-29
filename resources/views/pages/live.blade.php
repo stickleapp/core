@@ -52,7 +52,8 @@
 
             <!-- Events List Section (bottom right) -->
             <div class="p-6 rounded-lg h-96 overflow-y-hidden">
-                <x-stickle::ui.timelines.events :channel="$eventsChannel"></x-stickle::ui.timelines.event>
+                <x-stickle::ui.timelines.events :channel="$eventsChannel"
+                    :requests-endpoint="$eventsEndpoint"></x-stickle::ui.timelines.events>
             </div>
         </div>
     </div>

@@ -57,7 +57,9 @@
                 <div id="modelsEvents" class="modelsSideBarToggleContent w-full hidden">
                     <x-stickle::ui.timelines.events :channel="sprintf(config('stickle.broadcasting.channels.class'),
                         str_replace('\\', '-', strtolower(class_basename($modelClass)))
-                    )"></x-stickle::ui.timelines.events>
+                    )" :requests-endpoint="route('stickle::api.requests', [
+                        'model_class' => class_basename($modelClass),
+                    ])"></x-stickle::ui.timelines.events>
                 </div>
             </div>
         </div>

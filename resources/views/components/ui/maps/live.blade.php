@@ -207,24 +207,27 @@
                     updateSessionMarkers();
                 }
 
-                // Set up websocket listener for real-time updates
-                const channel = "{!! $channel !!}";
-                if (window.Echo && channel) {
-                    window.Echo.channel(channel).listenToAll(
-                        (eventName, data) => {
-                            if (data && data.payload) {
-                                requests.unshift(data.payload);
+                // Set up real-time updates, over the websocket where it is
+                // available and by polling where it is not
+                const stream = window.stickleStream({
+                    channel: "{!! $channel !!}",
+                    endpoint: "{!! $requestsEndpoint !!}",
+                    intervalSeconds: {{ $pollInterval }},
+                    pollingEnabled: @json($pollingEnabled),
+                    onRecords: (records) => {
+                        requests.unshift(...records);
 
-                                // Keep only the most recent 100 requests to prevent memory issues
-                                if (requests.length > 100) {
-                                    requests.splice(100);
-                                }
-
-                                updateSessionMarkers();
-                            }
+                        // Keep only the most recent 100 requests to prevent memory issues
+                        if (requests.length > 100) {
+                            requests.splice(100);
                         }
-                    );
-                }
+
+                        updateSessionMarkers();
+                    },
+                });
+
+                stream.seed(data ?? []);
+                stream.start();
             },
         };
     }
