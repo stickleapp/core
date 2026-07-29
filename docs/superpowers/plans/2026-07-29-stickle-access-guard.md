@@ -15,7 +15,7 @@
 - Adds **no new PHP classes**. Anything that feels like it needs `Support\Access` or `EnsureStickleAccess` is out of scope — see spec §1 and §2.
 - The ability name is exactly `viewStickle` everywhere — route files, channel files, tests, docs.
 - `can:viewStickle` is appended by the route file. It must never be read from, or be removable by, `stickle.routes.*.middleware`.
-- `POST /stickle/api/track` must return 200 regardless of Gate state.
+- `POST /stickle/api/track` must be unguarded: its response must be identical under every Gate state, and must never be 403. (The spec's table says "200"; that was written before `IngestController` was read. It throws on invalid input and returns 204 on success, so the invariant — not the number — is the requirement.)
 - Every task ends green: `composer test` passes before you commit.
 - The pre-commit hook runs `rector --dry-run`, `pint --test`, `phpstan`, and the full Pest suite. A commit that fails any of them is rejected, so run `composer test` before committing rather than discovering it at commit time.
 - Commit messages: imperative subject, body explaining *why*. End with:
@@ -126,29 +126,26 @@ it('allows a read endpoint when the gate allows', function (): void {
     $this->getJson('/stickle/api/segments')->assertOk();
 });
 
-it('keeps ingest public when no gate is defined', function (): void {
+it('does not apply the guard to ingest, and its response never varies with the gate', function (): void {
 
     withoutStickleGate();
-
-    $this->postJson('/stickle/api/track', [])->assertStatus(422);
-});
-
-it('keeps ingest public when the gate denies', function (): void {
+    $undefined = $this->postJson('/stickle/api/track', [])->status();
 
     Gate::define('viewStickle', fn ($user = null): bool => false);
-
-    $this->postJson('/stickle/api/track', [])->assertStatus(422);
-});
-
-it('keeps ingest reachable when the gate allows', function (): void {
+    $denies = $this->postJson('/stickle/api/track', [])->status();
 
     Gate::define('viewStickle', fn ($user = null): bool => true);
+    $allows = $this->postJson('/stickle/api/track', [])->status();
 
-    $this->postJson('/stickle/api/track', [])->assertStatus(422);
+    expect($undefined)->toBe($denies)
+        ->and($denies)->toBe($allows)
+        ->and($undefined)->not->toBe(403);
 });
 ```
 
-The ingest tests assert 422, not 200: an empty body fails `IngestController`'s validation. That is the point — a 422 proves the request reached the controller rather than being stopped by the guard, which is exactly what these two tests exist to show. A 403 here would mean the guard leaked onto `/track`.
+**Read this before writing the test — the obvious version does not work.** `IngestController::store()` does not return 422 on invalid input; it throws `Exception('Request invalid')`. Nor does the happy path return 200 — it ends in `response()->noContent()`, a 204, and getting there needs `model_class`, an `object_uid` matching a real record (`getModelDto()` calls `findOrFail`), and a session the `api` middleware group may not start.
+
+So the test asserts the property this task actually owns: ingest's response is identical under all three Gate states and is never 403. 403 is the guard's signal, so that pair proves the guard did not leak onto `/track` without coupling the test to whether ingest itself succeeds end to end. Do not "improve" this into `assertOk()` or `assertStatus(422)` — both are wrong, and the spec's table entry of "200" was written before this controller's behavior was checked.
 
 - [ ] **Step 4: Run the tests and watch them fail**
 
@@ -156,7 +153,9 @@ The ingest tests assert 422, not 200: an empty body fails `IngestController`'s v
 php -d memory_limit=1G vendor/bin/pest tests/Feature/Access/ApiGuardTest.php
 ```
 
-Expected: the two `denies` tests FAIL with 200 instead of 403, because nothing guards the route yet. The `allows` and both ingest tests should already PASS. If a `denies` test passes at this point, the test is wrong — check that `withoutStickleGate()` is being applied.
+Expected: the two `denies` tests FAIL with 200 instead of 403, because nothing guards the route yet. The `allows` test and the ingest test should already PASS. If a `denies` test passes at this point, the test is wrong — check that `withoutStickleGate()` is being applied.
+
+Note what the ingest test's baseline pass means: it is currently vacuous, because nothing is guarded yet. It only becomes meaningful after Step 5. That is expected, and it is why Step 6 re-runs it.
 
 - [ ] **Step 5: Guard the read endpoints**
 
@@ -217,7 +216,7 @@ Route::middleware(config('stickle.routes.api.middleware', ['api']))
 php -d memory_limit=1G vendor/bin/pest tests/Feature/Access/ApiGuardTest.php
 ```
 
-Expected: 5 passed.
+Expected: 4 passed.
 
 - [ ] **Step 7: Run the whole suite**
 
@@ -241,9 +240,10 @@ ability that was never defined, so an application that has not defined
 viewStickle is closed without any deny-by-default code of our own.
 
 POST /track stays outside the group. The browser snippet posts from
-unauthenticated visitors, and the tests assert it returns 422 rather
-than 403 under every gate state -- a validation failure proves the
-request reached the controller.
+unauthenticated visitors, so the test asserts the property that matters:
+its status is identical under all three gate states and is never 403.
+Pinning a number would have been wrong -- IngestController throws on
+invalid input rather than returning 422, and its success path is a 204.
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
 EOF
@@ -501,7 +501,7 @@ Broadcast::channel(config('stickle.broadcasting.channels.class'), function ($use
 php -d memory_limit=1G vendor/bin/pest tests/Feature/Access/ChannelGuardTest.php
 ```
 
-Expected: 5 passed.
+Expected: 4 passed.
 
 - [ ] **Step 5: Keep the development server working**
 
@@ -600,20 +600,25 @@ it('cannot be opened by unsetting the configured middleware', function (): void 
     $this->get('/stickle/live')->assertForbidden();
 });
 
-it('still applies the configured transport middleware', function (): void {
+it('composes the configured transport middleware ahead of the guard', function (): void {
 
-    // Without a login route the auth middleware's redirect would throw
-    // RouteNotFoundException rather than producing an assertable response.
-    Route::get('/login', fn (): string => 'login')->name('login');
+    $route = collect(Route::getRoutes()->getRoutes())
+        ->first(fn ($route): bool => $route->uri() === 'stickle/live');
 
-    config()->set('stickle.routes.web.middleware', ['web', 'auth']);
+    expect($route)->not->toBeNull();
 
-    Gate::define('viewStickle', fn ($user = null): bool => true);
+    $middleware = $route->gatherMiddleware();
 
-    // auth runs ahead of the guard, so an unauthenticated visitor is sent to
-    // log in rather than shown a bare 403. This is the only reason these
-    // config keys were kept, so it is worth asserting rather than assuming.
-    $this->get('/stickle/live')->assertRedirect('/login');
+    // The configured list supplies transport and the route file appends the
+    // guard after it. NOTE: this asserts composition only. Routes are
+    // registered at boot, so a test body cannot config()->set() new middleware
+    // onto an already-registered route -- an earlier draft of this plan tried
+    // exactly that and was unrunnable. Proving that a configured 'auth'
+    // redirects end to end is therefore NOT covered; see the ledger.
+    expect($middleware)->toContain('web')
+        ->and($middleware)->toContain('can:viewStickle')
+        ->and(array_search('can:viewStickle', $middleware, true))
+        ->toBeGreaterThan(array_search('web', $middleware, true));
 });
 
 it('does not read the removed environment variables', function (): void {

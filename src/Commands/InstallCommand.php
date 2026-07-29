@@ -56,9 +56,7 @@ class InstallCommand extends Command
             'STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED' => 'Track Authentication Events',
             'STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE' => 'Client Load Middleware',
             'STICKLE_WEB_PREFIX' => 'StickleUI Path',
-            'STICKLE_WEB_MIDDLEWARE' => 'Web Middleware',
             'STICKLE_API_PREFIX' => 'API Prefix',
-            'STICKLE_API_MIDDLEWARE' => 'API Middleware',
             'interval' => 'Default Process Interval (minutes)',
             'STICKLE_FREQUENCY_EXPORT_SEGMENTS' => 'Export Segments Frequency (minutes)',
         ];
@@ -176,13 +174,6 @@ class InstallCommand extends Command
                 validate: ['STICKLE_WEB_PREFIX' => 'string'],
                 name: 'STICKLE_WEB_PREFIX'
             )
-            ->note('Stickle will apply middleware you require to the web routes.')
-            ->text(
-                label: 'What middleware would you like to apply to the web routes?',
-                default: 'web',
-                validate: ['STICKLE_WEB_MIDDLEWARE' => 'string'],
-                name: 'STICKLE_WEB_MIDDLEWARE'
-            )
             ->note('Stickle exposes some API routes used by the UI.')
             ->note('We prefix the routes (`api/stickle`) to distinguish them from your other routes.')
             ->text(
@@ -190,13 +181,6 @@ class InstallCommand extends Command
                 default: 'api/stickle',
                 validate: ['STICKLE_API_PREFIX' => 'string'],
                 name: 'STICKLE_API_PREFIX'
-            )
-            ->note('Stickle will apply middleware you require to the API routes.')
-            ->text(
-                label: 'What middleware would you like to apply to the API routes?',
-                default: 'api',
-                validate: ['STICKLE_API_MIDDLEWARE' => 'string'],
-                name: 'STICKLE_API_MIDDLEWARE'
             )
             ->note('Stickle processes some items in real-time but other items are refreshed on a schedule.')
             ->note('You can specify how frequently data should be refreshed.')
@@ -329,6 +313,10 @@ class InstallCommand extends Command
                 exec("xdg-open {$repoUrl}");
             }
         }
+
+        note('Stickle is closed until you define who may open it.');
+        note('Add this to AppServiceProvider::boot():');
+        note("    Gate::define('viewStickle', fn (\$user) => \$user->is_admin);");
 
         outro('You are all set! Let us know what you build with Stickle!');
 

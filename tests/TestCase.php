@@ -6,6 +6,7 @@ namespace StickleApp\Core\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Gate;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Override;
 use StickleApp\Core\CoreServiceProvider;
@@ -57,6 +58,11 @@ class TestCase extends Orchestra
 
         // $migration = include __DIR__.'/../database/migrations/initial_structure.php';
         // $migration->up();
+
+        // The package denies until the application defines this. The suite exercises
+        // the routes themselves, so it stands in as that application. Tests that need
+        // the unconfigured state call withoutStickleGate().
+        Gate::define('viewStickle', fn ($user = null): bool => true);
     }
 
     // /**

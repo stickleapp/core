@@ -18,33 +18,46 @@ use StickleApp\Core\Http\Controllers\SegmentStatisticsController;
 Route::middleware(config('stickle.routes.api.middleware', ['api']))
     ->prefix(config('stickle.routes.api.prefix', 'stickle/api'))->group(function (): void {
 
+        /**
+         * Public. The browser tracking snippet posts from unauthenticated
+         * visitors, so this must stay outside the guard below.
+         */
         Route::post('/track', [IngestController::class, 'store'])
             ->name('stickle/track');
 
-        Route::get('/requests', [RequestsController::class, 'index'])
-            ->name('stickle::api.requests');
+        /**
+         * Everything else reads customer data. can:viewStickle is written
+         * here rather than read from config, so no configuration value can
+         * remove it. Laravel denies an ability that was never defined, so an
+         * application that has not defined viewStickle is closed.
+         */
+        Route::middleware('can:viewStickle')->group(function (): void {
 
-        Route::get('/segment-statistics', [SegmentStatisticsController::class, 'index'])
-            ->name('segment-statistics');
+            Route::get('/requests', [RequestsController::class, 'index'])
+                ->name('stickle::api.requests');
 
-        Route::get('/segment-models', [SegmentModelsController::class, 'index'])
-            ->name('segment-models');
+            Route::get('/segment-statistics', [SegmentStatisticsController::class, 'index'])
+                ->name('segment-statistics');
 
-        Route::get('/segments', [SegmentsController::class, 'index'])
-            ->name('segments');
+            Route::get('/segment-models', [SegmentModelsController::class, 'index'])
+                ->name('segment-models');
 
-        Route::get('/models', [ModelsController::class, 'index'])
-            ->name('models');
+            Route::get('/segments', [SegmentsController::class, 'index'])
+                ->name('segments');
 
-        Route::get('/models-statistics', [ModelsStatisticsController::class, 'index'])
-            ->name('models-statistics');
+            Route::get('/models', [ModelsController::class, 'index'])
+                ->name('models');
 
-        Route::get('/model-relationship', [ModelRelationshipController::class, 'index'])
-            ->name('models-relationship');
+            Route::get('/models-statistics', [ModelsStatisticsController::class, 'index'])
+                ->name('models-statistics');
 
-        Route::get('/model-relationship-statistics', [ModelRelationshipStatisticsController::class, 'index'])
-            ->name('model-relationship-statistics');
+            Route::get('/model-relationship', [ModelRelationshipController::class, 'index'])
+                ->name('models-relationship');
 
-        Route::get('/model-attribute-audit', [ModelAttributeAuditController::class, 'index'])
-            ->name('model-attribute-audit');
+            Route::get('/model-relationship-statistics', [ModelRelationshipStatisticsController::class, 'index'])
+                ->name('model-relationship-statistics');
+
+            Route::get('/model-attribute-audit', [ModelAttributeAuditController::class, 'index'])
+                ->name('model-attribute-audit');
+        });
     });

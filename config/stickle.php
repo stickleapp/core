@@ -204,11 +204,26 @@ return [
     'routes' => [
         'api' => [
             'prefix' => env('STICKLE_API_PREFIX', 'stickle/api'),
-            'middleware' => env('STICKLE_API_MIDDLEWARE', ['api']),
+
+            /*
+            | Transport plumbing only. Authorization is the viewStickle Gate,
+            | which this list cannot grant, weaken, or remove.
+            |
+            | An array, not env(): env() can only return a scalar, so
+            | STICKLE_API_MIDDLEWARE="auth,throttle:60" used to register one
+            | middleware with a comma in its name and fail silently.
+            */
+            'middleware' => ['api'],
         ],
         'web' => [
             'prefix' => env('STICKLE_WEB_PREFIX', 'stickle'),
-            'middleware' => env('STICKLE_WEB_MIDDLEWARE', ['web']),
+
+            /*
+            | Transport plumbing only -- see the note above. Add 'auth' here
+            | if you would rather a signed-out visitor were redirected to your
+            | login page than shown a bare 403.
+            */
+            'middleware' => ['web'],
         ],
     ],
 
