@@ -139,6 +139,15 @@ final class CoreServiceProvider extends ServiceProvider
 
         /**
          * Publish Assets
+         *
+         * Tagged 'laravel-assets' as well as 'package-assets', because the
+         * default Laravel application's composer.json runs
+         * `vendor:publish --tag=laravel-assets --force` on post-update-cmd.
+         * Without that tag an installing app has to add its own publish step,
+         * and a stale copy survives an upgrade -- or, on a first install,
+         * nothing is copied at all and the scoped Vite instance registered
+         * above throws ViteManifestNotFoundException on every UI page. Horizon
+         * and Telescope dual-tag their assets for the same reason.
          */
         $this->publishes(
             [
@@ -151,7 +160,7 @@ final class CoreServiceProvider extends ServiceProvider
                     'vendor/stickleapp/core/favicon.svg',
                 ),
             ],
-            'package-assets',
+            ['package-assets', 'laravel-assets'],
         );
 
         /**
