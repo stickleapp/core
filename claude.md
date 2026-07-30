@@ -2,14 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## IMPORTANT: Sound Notification
-
-After finishing responding to my request or running a command, run this command to notify me by sound:
-
-```bash
-afplay ~/airhorn.aiff
-```
-
 ## What is Stickle Core?
 
 Stickle Core is a Laravel package for customer analytics and engagement. It provides:
