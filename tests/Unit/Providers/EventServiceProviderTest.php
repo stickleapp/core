@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Contracts\Events\Dispatcher;
-use StickleApp\Core\Events\Identify;
+use StickleApp\Core\Events\Page;
 use StickleApp\Core\EventServiceProvider;
 
 it('can be instantiated', function (): void {
@@ -13,7 +13,7 @@ it('can be instantiated', function (): void {
 
 it('registers events correctly', function (): void {
     $dispatcher = resolve(Dispatcher::class);
-    $listeners = $dispatcher->getListeners(Identify::class);
+    $listeners = $dispatcher->getListeners(Page::class);
     expect($listeners)
         ->toBeArray()
         ->toHaveCount(1);

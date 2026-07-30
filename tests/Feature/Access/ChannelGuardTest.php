@@ -8,13 +8,10 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Gate;
 use StickleApp\Core\Dto\ModelDto;
 use StickleApp\Core\Dto\RequestDto;
-use StickleApp\Core\Events\Group;
-use StickleApp\Core\Events\Identify;
 use StickleApp\Core\Events\ModelAttributeChanged;
 use StickleApp\Core\Events\ModelEnteredSegment;
 use StickleApp\Core\Events\ModelExitedSegment;
 use StickleApp\Core\Events\Page;
-use StickleApp\Core\Events\RequestReceived;
 use StickleApp\Core\Events\Track;
 use StickleApp\Core\Models\Segment;
 use Workbench\App\Models\User;
@@ -70,11 +67,6 @@ beforeEach(function (): void {
  */
 function stickleBroadcastEvent(string $event): object
 {
-    $payload = [
-        'model_class' => User::class,
-        'object_uid' => '1',
-    ];
-
     $dto = new RequestDto(
         type: 'page',
         model_class: User::class,
@@ -99,9 +91,6 @@ function stickleBroadcastEvent(string $event): object
     return match ($event) {
         Track::class => new Track($dto),
         Page::class => new Page($dto),
-        Identify::class => new Identify($payload),
-        Group::class => new Group($payload),
-        RequestReceived::class => new RequestReceived($payload),
         ModelAttributeChanged::class => new ModelAttributeChanged(User::class, '1', 'email'),
         ModelEnteredSegment::class => new ModelEnteredSegment($user, new Segment),
         ModelExitedSegment::class => new ModelExitedSegment($user, new Segment),
@@ -141,9 +130,6 @@ it('broadcasts only on private channels', function (string $event): void {
 })->with([
     Track::class,
     Page::class,
-    Identify::class,
-    Group::class,
-    RequestReceived::class,
     ModelAttributeChanged::class,
     ModelEnteredSegment::class,
     ModelExitedSegment::class,

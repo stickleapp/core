@@ -2,6 +2,28 @@
 
 ## Unreleased
 
+### `Identify`, `Group` and `RequestReceived` are removed
+
+`StickleApp\Core\Events\Identify`, `StickleApp\Core\Events\Group` and
+`StickleApp\Core\Events\RequestReceived`, along with their listeners
+(`IdentifyListener`, `GroupListener`), are gone. No replacement is coming.
+
+None of the three were ever dispatched by Stickle. `identify()` and
+`group()` exist in analytics clients like Segment because those tools have
+no knowledge of your domain and need the browser to tell them who a visitor
+is and which account they belong to. Stickle already knows both from the
+host application's own database: identity comes from the session
+(`IngestController` falls back to `$request->user()`), and group membership
+comes from a declared Eloquent relationship between your models. Adding
+those verbs would create a second, browser-supplied source of truth — over
+a deliberately public, unauthenticated endpoint — for facts the database
+already holds. `RequestReceived` was unrelated dead scaffolding: no
+dispatcher, no listener, no documentation.
+
+If your application referenced any of these three classes — for example in
+its own `$listen` map — remove that reference. Nothing dispatches them, so
+removing the reference has no behavioral effect.
+
 ### Stickle now requires an access guard
 
 Stickle's UI and read API used to be reachable by anyone who could reach the

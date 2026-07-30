@@ -6,13 +6,9 @@ namespace StickleApp\Core;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Override;
-use StickleApp\Core\Events\Group;
-use StickleApp\Core\Events\Identify;
 use StickleApp\Core\Events\Page;
 use StickleApp\Core\Events\Track;
 use StickleApp\Core\Listeners\AuthenticatableEventListener;
-use StickleApp\Core\Listeners\GroupListener;
-use StickleApp\Core\Listeners\IdentifyListener;
 use StickleApp\Core\Listeners\PageListener;
 use StickleApp\Core\Listeners\TrackListener;
 
@@ -22,14 +18,8 @@ class EventServiceProvider extends ServiceProvider
         Page::class => [
             PageListener::class,
         ],
-        Group::class => [
-            GroupListener::class,
-        ],
         Track::class => [
             TrackListener::class,
-        ],
-        Identify::class => [
-            IdentifyListener::class,
         ],
     ];
 
