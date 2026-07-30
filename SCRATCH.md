@@ -241,28 +241,6 @@ Meanwhile, Stickle is refreshing your Segments:
 
 -   Added to Segment alert in Admin
 
-## Tracking End User Behavior
-
-### On the Server
-
-```
-use StickleApp\Core\Events\Track;
-use StickleApp\Core\Events\Group;
-
-Track::dispatch(...args);
-Group::dispatch(...args);
-Identify::dispatch(...args);
-```
-
-### On the Browser
-
-```
-Stickle('track', []);
-Stickle('identify', []);
-Stickle('page', []);
-Stickle('group', []);
-```
-
 ## Tracking Model Attribute Changes
 
 In your StickleEntity model, you can have Stickle track numerical attributes over time. To do so, add the attribute to the `$tracked` array on the model.
