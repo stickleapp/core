@@ -21,5 +21,10 @@
     "@tailwindcss/vite": "^4.0.15",
     "laravel-vite-plugin": "^1.2.0",
     "tailwindcss": "^4.0.15"
+  },
+  "overrides": {
+    "vitepress": {
+      "vite": "^6.4.3"
+    }
   }
 }
