@@ -92,30 +92,31 @@ use Illuminate\Support\Facades\Gate;
 Gate::define('viewStickle', fn ($user) => $user->is_admin);
 ```
 
-Every Stickle URL returns 403 until this is defined. This Gate does **not**
-cover the broadcast channels; see "Known limitation: broadcasting is not
-authenticated" below. Stickle does not scope data by tenant, so anyone this
-Gate allows sees every tenant's data — in a multi-tenant application this
-ability should name administrators, not customer-facing staff.
+Every Stickle URL returns 403 until this is defined. `viewStickle` receives
+only `$user`, over both the HTTP routes and the broadcast channels — write it
+as `fn ($user) => ...`, not `fn ($user, $model) => ...`. Stickle does not
+scope data by tenant, so anyone this Gate allows sees every tenant's data —
+in a multi-tenant application this ability should name administrators, not
+customer-facing staff.
 
-### Known limitation: broadcasting is not authenticated
+### Register the broadcast auth endpoint
 
-Stickle's realtime broadcast stream is **not** authenticated. The events in
-`src/Events/` broadcast on public channels (`new Channel`, not
-`PrivateChannel`), and the JS client subscribes with `Echo.channel()`, not
-`Echo.private()`. Laravel only runs channel authorizers — including the
-`viewStickle` check in `routes/channels.php` — for `private-`/`presence-`
-prefixed channels, so they are never consulted here.
+Stickle's events broadcast on private channels, so a browser subscribing to
+them is authorized against `viewStickle` first — at `/broadcasting/auth`.
+Your application has to register that endpoint; Stickle does not add routes
+to your application on its behalf. In `AppServiceProvider::boot()`:
 
-Practically: anyone holding your application's Reverb/Pusher app key —
-public by design, since it ships in your frontend bundle — can subscribe to
-Stickle's channels directly and receive every tracked event in real time,
-including the full model row on attribute-change events, without passing
-the Gate above and without being authenticated at all.
+```php
+use Illuminate\Support\Facades\Broadcast;
 
-Until the channels and client are converted to private/presence channels
-(separate work, not done in this release), your realistic options are to
-disable broadcasting for Stickle or to accept this exposure knowingly.
+Broadcast::routes();
+```
+
+Laravel's own `install:broadcasting` does this for you, so most applications
+already have it. **Without it there is no endpoint at which a subscription
+can be authorized**, so every subscription is refused — Stickle's UI then
+falls back to polling the read API, which is guarded by the same Gate, and
+stays correct but no longer live.
 
 ## Initialization
 

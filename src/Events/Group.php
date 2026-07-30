@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Events;
 
-use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -23,15 +23,15 @@ class Group implements ShouldBroadcast
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return array<int, Channel>
+     * @return array<int, PrivateChannel>
      */
     public function broadcastOn(): array
     {
         return [
-            new Channel(
+            new PrivateChannel(
                 config('stickle.broadcasting.channels.firehose')
             ),
-            new Channel(
+            new PrivateChannel(
                 sprintf(config('stickle.broadcasting.channels.object'),
                     str_replace('\\', '-', strtolower((string) data_get($this->payload, 'model_class'))),
                     data_get($this->payload, 'object_uid')
