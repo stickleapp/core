@@ -172,7 +172,11 @@ BEGIN
     IF start_id > end_id THEN RETURN; END IF;
 
     /* aggregate the requests, merge results if the entry already exists */
+    /* The column list is required, not decorative: the table declares
+       object_uid before model_class, so an unqualified INSERT maps this
+       SELECT positionally and silently transposes the two. */
     INSERT INTO {$prefix}requests_rollup_1min
+        (model_class, object_uid, type, name, title, path, url, minute, request_count)
         SELECT  model_class,
                 object_uid,
                 type,
@@ -207,7 +211,11 @@ BEGIN
     IF start_id > end_id THEN RETURN; END IF;
 
     /* aggregate the requests, merge results if the entry already exists */
+    /* The column list is required, not decorative: the table declares
+       object_uid before model_class, so an unqualified INSERT maps this
+       SELECT positionally and silently transposes the two. */
     INSERT INTO {$prefix}requests_rollup_5min
+        (model_class, object_uid, type, name, title, path, url, minute, request_count)
         SELECT  model_class,
                 object_uid,
                 type,
@@ -242,7 +250,11 @@ BEGIN
     IF start_id > end_id THEN RETURN; END IF;
 
     /* aggregate the requests, merge results if the entry already exists */
+    /* The column list is required, not decorative: the table declares
+       object_uid before model_class, so an unqualified INSERT maps this
+       SELECT positionally and silently transposes the two. */
     INSERT INTO {$prefix}requests_rollup_1hr
+        (model_class, object_uid, type, name, title, path, url, hour, request_count)
         SELECT  model_class,
                 object_uid,
                 type,
@@ -277,7 +289,11 @@ BEGIN
     IF start_id > end_id THEN RETURN; END IF;
 
     /* aggregate the requests, merge results if the entry already exists */
+    /* The column list is required, not decorative: the table declares
+       object_uid before model_class, so an unqualified INSERT maps this
+       SELECT positionally and silently transposes the two. */
     INSERT INTO {$prefix}requests_rollup_1day
+        (model_class, object_uid, type, name, title, path, url, day, request_count)
         SELECT  model_class,
                 object_uid,
                 type,

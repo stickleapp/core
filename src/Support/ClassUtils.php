@@ -5,15 +5,57 @@ declare(strict_types=1);
 namespace StickleApp\Core\Support;
 
 use Composer\Autoload\ClassLoader;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelInspector;
 use Illuminate\Foundation\Application;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
 use RegexIterator;
+use RuntimeException;
 
 class ClassUtils
 {
+    /**
+     * The shape a model is recorded as in a model_class column: the class
+     * basename, so `App\Models\User` is stored as `User`.
+     *
+     * Deliberately not getMorphClass(). No morph map is registered anywhere in
+     * the package, so getMorphClass() would return a fully-qualified name and
+     * disagree with every row already written. Use this on both sides of a
+     * model_class comparison and the two cannot drift.
+     *
+     * @param  Model|class-string  $model
+     */
+    public static function storeModelClass(mixed $model): string
+    {
+        return class_basename(is_object($model) ? $model::class : $model);
+    }
+
+    /**
+     * Resolve a stored model_class back to a loadable class name.
+     *
+     * The inverse of storeModelClass(), and the reason that method cannot just
+     * store the fully-qualified name: the round trip assumes every tracked
+     * model lives under the single configured namespace. That assumption is
+     * the package's, not this method's -- see stickle.namespaces.models.
+     *
+     * @return class-string
+     */
+    public static function resolveModelClass(string $stored): string
+    {
+        $resolved = config('stickle.namespaces.models').'\\'.ucfirst($stored);
+
+        throw_unless(
+            class_exists($resolved),
+            RuntimeException::class,
+            sprintf('Model [%s] resolved to [%s], which does not exist.', $stored, $resolved)
+        );
+
+        /** @var class-string $resolved */
+        return $resolved;
+    }
+
     /**
      * Check if a class uses a specific trait (including parent classes)
      *

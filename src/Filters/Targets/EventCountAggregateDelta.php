@@ -13,6 +13,7 @@ use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 use Override;
 use StickleApp\Core\Contracts\FilterTargetContract;
+use StickleApp\Core\Support\ClassUtils;
 
 class EventCountAggregateDelta extends FilterTargetContract
 {
@@ -74,7 +75,7 @@ class EventCountAggregateDelta extends FilterTargetContract
         return DB::table($this->prefix.'requests_rollup_1day')
             ->where('type', 'event')
             ->where('name', $this->event)
-            ->where('model_class', $this->builder->getModel()->getMorphClass())
+            ->where('model_class', ClassUtils::storeModelClass($this->builder->getModel()))
             ->where(function (\Illuminate\Contracts\Database\Query\Builder $builder) use ($currentStart, $currentEnd, $previousStart, $previousEnd): void {
                 $builder->whereBetween('day', [$currentStart, $currentEnd])
                     ->orWhereBetween('day', [$previousStart, $previousEnd]);

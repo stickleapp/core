@@ -40,11 +40,23 @@ final class ProcessSegmentEventsCommand extends Command implements Isolatable
             })
             // ->lazyById(1000, column: 'id')
             ->each(function ($item): void {
-                if (data_get($item, 'operation') === 'ENTER' && $item->segment !== null) {
-                    event(new ModelEnteredSegment($item->object, $item->segment));
-                } elseif (data_get($item, 'operation') === 'EXIT' && $item->segment !== null) {
-                    event(new ModelExitedSegment($item->object, $item->segment));
+                /**
+                 * Resolved once, and both may be null: an audit row outlives the
+                 * model and the segment it refers to. Such a row is still marked
+                 * processed below -- leaving it unprocessed would retry it on
+                 * every run forever.
+                 */
+                $model = $item->object;
+                $segment = $item->segment;
+
+                if ($model !== null && $segment !== null) {
+                    if (data_get($item, 'operation') === 'ENTER') {
+                        event(new ModelEnteredSegment($model, $segment));
+                    } elseif (data_get($item, 'operation') === 'EXIT') {
+                        event(new ModelExitedSegment($model, $segment));
+                    }
                 }
+
                 $item->update(['event_processed_at' => now()]);
             });
     }

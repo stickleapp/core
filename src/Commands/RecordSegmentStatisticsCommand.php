@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Jobs\RecordSegmentStatisticJob;
 use StickleApp\Core\Models\Segment;
+use StickleApp\Core\Support\ClassUtils;
 
 final class RecordSegmentStatisticsCommand extends Command implements Isolatable
 {
@@ -58,7 +59,7 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
         DB::table('temp_attributes')->insert(array_values($statistics));
 
         $rows = DB::table('temp_attributes')
-            ->join("{$this->prefix}segments", "{$this->prefix}segments.model_class", '=', 'temp_attributes.model')
+            ->join("{$this->prefix}segments", "{$this->prefix}segments.model_class", '=', 'temp_attributes.model_class')
             ->leftJoin("{$this->prefix}segment_statistic_exports", function ($query): void {
                 $query->on("{$this->prefix}segment_statistic_exports.segment_id", '=', "{$this->prefix}segments.id");
                 $query->on("{$this->prefix}segment_statistic_exports.attribute", '=', 'temp_attributes.attribute');
@@ -99,7 +100,8 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
                 continue;
             }
 
-            $stickleTrackedAttributes = $modelClass::stickleObservedAttributes();
+            /** model_class is stored as a basename and is not loadable as-is. */
+            $stickleTrackedAttributes = ClassUtils::resolveModelClass($modelClass)::stickleObservedAttributes();
             $stickleTrackedAttributes[] = 'count';
             foreach ($stickleTrackedAttributes as $stickleTrackedAttribute) {
                 $return[md5($modelClass.$stickleTrackedAttribute)] = [

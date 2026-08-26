@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Override;
 use StickleApp\Core\Contracts\FilterTargetContract;
+use StickleApp\Core\Support\ClassUtils;
 
 class RequestCountAggregate extends FilterTargetContract
 {
@@ -64,7 +65,7 @@ class RequestCountAggregate extends FilterTargetContract
         return DB::table($this->prefix.'requests_rollup_1day')
             ->where('type', 'request')
             ->when($this->url, fn ($query) => $query->where('url', $this->url))
-            ->where('model_class', $this->builder->getModel()->getMorphClass())
+            ->where('model_class', ClassUtils::storeModelClass($this->builder->getModel()))
             ->whereDate('day', '>=', Date::parse($this->startDate)->toDateString())
             ->whereDate('day', '<', Date::parse($this->endDate)->toDateString())
             ->groupBy(['model_class', 'object_uid'])
