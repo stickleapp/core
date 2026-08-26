@@ -37,7 +37,7 @@ class IngestController
         $rules = [
             'payload' => ['required', 'array'],
             'payload.*.type' => ['required', Rule::enum(RequestType::class)],
-            'payload.*.model_class' => ['sometimes', $this->availableModels()],
+            'payload.*.model_class' => ['sometimes', Rule::in($this->availableModels())],
             'payload.*.object_uid' => ['sometimes', 'string', 'alpha_dash:ascii'],
             'payload.*.properties.name' => ['required_if:type,track', 'string', 'alpha_dash:ascii'],
             'payload.*.timestamp' => ['sometimes', 'nullable', 'date'],
@@ -133,13 +133,20 @@ class IngestController
     }
 
     /**
+     * The trackable models, in the shape model_class is stored and sent in:
+     * a basename. getClassesWithTrait() returns fully-qualified names, so
+     * comparing them to an incoming value directly would never match.
+     *
      * @return array<string>
      */
     private function availableModels(): array
     {
-        return ClassUtils::getClassesWithTrait(
-            config('stickle.namespaces.models'),
-            StickleEntity::class
+        return array_map(
+            ClassUtils::storeModelClass(...),
+            ClassUtils::getClassesWithTrait(
+                config('stickle.namespaces.models'),
+                StickleEntity::class
+            )
         );
     }
 

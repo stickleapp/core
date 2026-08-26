@@ -53,3 +53,48 @@ test('createInitialPartitions seeds current and future partitions for maintained
             ->and($partitionExists($table, $nextWeek))->toBeTrue();
     }
 });
+
+test('formatSettings writes each answer into the env key it belongs to', function (): void {
+    $installCommand = resolve(InstallCommand::class);
+
+    $formatted = (new ReflectionMethod($installCommand, 'formatSettings'))->invoke($installCommand, [
+        'interval' => 15,
+        'STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE' => true,
+        'STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED' => true,
+    ]);
+
+    // The interval answer fans out to all four scheduling frequencies. The
+    // relationship-statistics key was the one previously missing, and the
+    // client-middleware key was overwritten with 15 in its place.
+    expect($formatted)
+        ->toHaveKey('STICKLE_FREQUENCY_EXPORT_SEGMENTS', 15)
+        ->toHaveKey('STICKLE_FREQUENCY_RECORD_MODEL_ATTRIBUTES', 15)
+        ->toHaveKey('STICKLE_FREQUENCY_RECORD_MODEL_RELATIONSHIP_STATISTICS', 15)
+        ->toHaveKey('STICKLE_FREQUENCY_RECORD_SEGMENT_STATISTICS', 15)
+        ->and($formatted)->not->toHaveKey('interval');
+
+    // The client middleware answer survives as the boolean CoreServiceProvider
+    // compares with ===, rather than becoming the authentication event list.
+    expect($formatted['STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE'])->toBeTrue();
+
+    // config/stickle.php explodes this key on commas, so the boolean answer has
+    // to be expanded into the list before it is written.
+    expect($formatted['STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED'])
+        ->toContain('Login')
+        ->toContain('Registered')
+        ->and(explode(',', (string) $formatted['STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED']))
+        ->toHaveCount(9);
+});
+
+test('formatSettings disables authentication tracking when declined', function (): void {
+    $installCommand = resolve(InstallCommand::class);
+
+    $formatted = (new ReflectionMethod($installCommand, 'formatSettings'))->invoke($installCommand, [
+        'interval' => 360,
+        'STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE' => false,
+        'STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED' => false,
+    ]);
+
+    expect($formatted['STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED'])->toBe('')
+        ->and($formatted['STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE'])->toBeFalse();
+});
