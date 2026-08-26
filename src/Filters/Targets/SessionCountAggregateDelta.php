@@ -57,7 +57,7 @@ class SessionCountAggregateDelta extends FilterTargetContract
             $this->currentPeriod[1]->format('Y-m-d'),
             $this->previousPeriod[0]->format('Y-m-d'),
             $this->previousPeriod[1]->format('Y-m-d'),
-            $this->builder->getModel()->getMorphClass(),
+            ClassUtils::storeModelClass($this->builder->getModel()),
         ];
 
         return md5(implode('|', $keyData));

@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use StickleApp\Core\Dto\ModelDto;
 use StickleApp\Core\Dto\RequestDto;
@@ -39,6 +38,13 @@ class IngestController
             'payload.*.type' => ['required', Rule::enum(RequestType::class)],
             'payload.*.model_class' => ['sometimes', Rule::in($this->availableModels())],
             'payload.*.object_uid' => ['sometimes', 'string', 'alpha_dash:ascii'],
+            /**
+             * The properties bag needs a rule of its own. validated() returns
+             * only keys a rule covers, so with just the properties.name rule
+             * below every other client-supplied property -- the page url and
+             * title among them -- was silently dropped before it was stored.
+             */
+            'payload.*.properties' => ['sometimes', 'array'],
             'payload.*.properties.name' => ['required_if:type,track', 'string', 'alpha_dash:ascii'],
             'payload.*.timestamp' => ['sometimes', 'nullable', 'date'],
         ];
@@ -57,17 +63,34 @@ class IngestController
 
         $dt = new Carbon;
 
+        /**
+         * These describe the page the event happened on, not the beacon POST
+         * that carried it. Defaulting url and path from the request recorded
+         * every row at /stickle/api/track with method POST -- and path is one
+         * of the eight columns in the rollup unique index, so the constant was
+         * baked into every aggregated row.
+         *
+         * The client sends url for a page view. For anything else the Referer
+         * header is the page the beacon fired from, which is the same answer.
+         */
         $defaultProperties = [
             'title' => $request->header('X-Title', ''),
-            'path' => $request->getPathInfo(),
-            'url' => $request->fullUrl(),
-            'referrer' => $request->headers->get('referer', ''),
-            'search' => $request->getQueryString(),
+            'url' => $request->headers->get('referer') ?: null,
+            'referrer' => '',
             'user_agent' => $request->userAgent(),
-            'method' => $request->getMethod(),
         ];
 
-        foreach (data_get($validated, 'payload') as $item) {
+        /**
+         * The route is registered in the api middleware group, which starts no
+         * session, so $request->session() raises rather than returning null.
+         * A missing session is not an error here -- session_uid is nullable and
+         * the visitor may genuinely not have one. Hosts that want the beacon's
+         * events scoped to a session can add the session middleware through
+         * stickle.routes.api.middleware, and this picks it up.
+         */
+        $sessionUid = $request->hasSession() ? $request->session()->getId() : null;
+
+        foreach (data_get($validated, 'payload') as $index => $item) {
 
             throw_unless($modelClass = $this->modelClass(
                 data_get($item, 'model_class'),
@@ -79,13 +102,24 @@ class IngestController
                 $request->user()
             ), Exception::class, 'Object id not specified');
 
-            $itemProperties = array_merge($defaultProperties, data_get($item, 'properties', []));
+            /**
+             * Read from the raw payload, not from $validated: validated()
+             * returns only what a rule covers, and the properties.name rule
+             * narrows the bag to that one key -- so everything else the client
+             * sent, the page url included, was dropped here before it was
+             * stored. name itself stays validated above, since TrackListener
+             * turns it into a class name.
+             */
+            $itemProperties = $this->withDerivedPath(array_merge(
+                $defaultProperties,
+                (array) data_get($payload, "payload.{$index}.properties", [])
+            ));
 
             $requestDto = new RequestDto(
                 type: $item['type'] === 'track' ? 'event' : 'request',
                 model_class: $modelClass,
                 object_uid: $objectUid,
-                session_uid: $request->session()->getId(),
+                session_uid: $sessionUid,
                 timestamp: data_get($item, 'timestamp', $dt),
                 model: $this->getModelDto($modelClass, $objectUid),
                 ip_address: $request->ip(),
@@ -104,6 +138,27 @@ class IngestController
         }
 
         return response()->noContent();
+    }
+
+    /**
+     * Fill in path and search from the reported url, so they describe the page
+     * rather than the beacon. An explicitly supplied path is left alone.
+     *
+     * @param  array<string, mixed>  $properties
+     * @return array<string, mixed>
+     */
+    private function withDerivedPath(array $properties): array
+    {
+        $url = $properties['url'] ?? null;
+
+        if (! is_string($url) || $url === '') {
+            return $properties;
+        }
+
+        $properties['path'] ??= parse_url($url, PHP_URL_PATH) ?: '/';
+        $properties['search'] ??= parse_url($url, PHP_URL_QUERY) ?: null;
+
+        return $properties;
     }
 
     private function modelClass(?string $explicit, ?object $object): ?string
@@ -152,9 +207,7 @@ class IngestController
 
     private function getModelDto(string $modelClass, string $objectUid): ModelDto
     {
-        $fullModelClass = config('stickle.namespaces.models').'\\'.Str::ucfirst($modelClass);
-
-        throw_unless(class_exists($fullModelClass), Exception::class, 'Model not found: '.$fullModelClass);
+        $fullModelClass = ClassUtils::resolveModelClass($modelClass);
 
         throw_unless(ClassUtils::usesTrait($fullModelClass, StickleEntity::class), Exception::class, 'Model does not use StickleTrait.');
 

@@ -13,6 +13,7 @@ use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 use Override;
 use StickleApp\Core\Contracts\FilterTargetContract;
+use StickleApp\Core\Support\ClassUtils;
 
 class NumberDelta extends FilterTargetContract
 {
@@ -50,7 +51,7 @@ class NumberDelta extends FilterTargetContract
             'attribute' => $this->attribute,
             'startDate' => $this->startDate->format('Y-m-d'),
             'endDate' => $this->endDate?->format('Y-m-d'),
-            'modelClass' => $this->builder->getModel()->getMorphClass(),
+            'modelClass' => ClassUtils::storeModelClass($this->builder->getModel()),
         ];
 
         return md5(implode('|', array_values($keyData)));

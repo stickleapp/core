@@ -5,7 +5,6 @@ namespace StickleApp\Core\Http\Controllers\Resources;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Str;
 use Override;
 use StickleApp\Core\Dto\ModelDto;
 use StickleApp\Core\Models\Request as RequestModel;
@@ -49,9 +48,7 @@ class RequestResource extends JsonResource
      */
     private function getModelData(): array
     {
-        $modelClass = config('stickle.namespaces.models').'\\'.Str::ucfirst($this->model_class);
-
-        throw_unless(class_exists($modelClass), Exception::class, 'Model not found: '.$modelClass);
+        $modelClass = ClassUtils::resolveModelClass($this->model_class);
 
         throw_unless(ClassUtils::usesTrait($modelClass, StickleEntity::class), Exception::class, 'Model does not use StickleTrait.');
 

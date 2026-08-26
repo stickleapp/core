@@ -16,7 +16,8 @@ readonly class RequestDto
         public string $type,
         public string $model_class,
         public string $object_uid,
-        public string $session_uid,
+        /** Null where the request has no session -- see IngestController. */
+        public ?string $session_uid,
         public Carbon $timestamp,
         public ModelDto $model,
         public ?string $ip_address,
@@ -33,7 +34,7 @@ readonly class RequestDto
             type: $data['type'],
             model_class: $data['model_class'],
             object_uid: $data['object_uid'],
-            session_uid: $data['session_uid'],
+            session_uid: $data['session_uid'] ?? null,
             timestamp: $data['timestamp'] instanceof Carbon ? $data['timestamp'] : Date::parse($data['timestamp']),
             model: $data['model'] instanceof ModelDto ? $data['model'] : ModelDto::fromArray($data['model']),
             ip_address: $data['ip_address'],

@@ -20,33 +20,83 @@ class ScheduleServiceProvider extends ServiceProvider
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
 
             /**
-             * Advance the 1day request rollup. Only this grain is scheduled
-             * because only this grain is read: the eventCount and requestCount
-             * filter targets query {prefix}requests_rollup_1day, and nothing in
-             * the package reads the 1min, 5min or 1hr tables. Those are still
-             * reachable on demand -- `stickle:rollup-requests 1min` -- so a
-             * host app that queries them directly can schedule its own.
+             * Advance the request rollups. Every grain is scheduled, not only
+             * the 1day one the filter targets read. The finer grains back the
+             * live views, and leaving them unscheduled is not free: each keeps
+             * its own last_aggregated_id, so one that has never run is pinned
+             * at zero and its first run would sweep the entire history of
+             * stc_requests into minute buckets -- needing rollup partitions
+             * back to the beginning to survive it. Running them keeps the
+             * bookmark current, and a run with nothing new is a no-op.
              *
-             * Hourly rather than daily: bucket size does not dictate run
-             * frequency. Each run aggregates whatever rows are new since its
-             * own last_aggregated_id into the correct day bucket, so running
-             * more often makes the series fresher, never double-counted.
-             * Daily would leave a segment a full day behind.
+             * Bucket size does not dictate run frequency: a run aggregates
+             * whatever is new into the correct bucket, so a less frequent
+             * grain is staler, never wrong.
              */
+            $schedule->command('stickle:rollup-requests', ['1min'])
+                ->everyMinute()
+                ->withoutOverlapping();
+
+            $schedule->command('stickle:rollup-requests', ['5min'])
+                ->everyFiveMinutes()
+                ->withoutOverlapping();
+
+            $schedule->command('stickle:rollup-requests', ['1hr'])
+                ->everyFifteenMinutes()
+                ->withoutOverlapping();
+
+            /** Hourly, not daily: this grain backs eventCount and requestCount. */
             $schedule->command('stickle:rollup-requests', ['1day'])
                 ->hourly()
                 ->withoutOverlapping();
 
-            // Register the rollup sessions command
             $schedule->command('stickle:rollup-sessions', [
                 3, // Go back 3 days by default
-            ])->hourly();
+            ])->hourly()->withoutOverlapping();
 
-            // Register the export segments command
+            /**
+             * The four commands below tick every five minutes and decide for
+             * themselves what is due: each compares a last-recorded timestamp
+             * against its own key in the schedule block of config/stickle.php
+             * -- ExportSegmentsCommand:114, RecordModelAttributesCommand:72,
+             * RecordSegmentStatisticsCommand:74 and
+             * RecordModelRelationshipStatisticsCommand:95.
+             *
+             * So the cadence here is a floor, not the refresh rate: those
+             * config values are the refresh rate, and driving cron from them
+             * as well would halve it -- a 360 minute threshold checked every
+             * 360 minutes refreshes every 12 hours, not 6.
+             */
             $schedule->command('stickle:export-segments', [
                 config('stickle.namespaces.segments'),
-                10, // Limit to 5 segments
-            ])->everyFiveMinutes();
+                10,
+            ])->everyFiveMinutes()->withoutOverlapping();
+
+            /**
+             * These were registered but never scheduled, so three statistics
+             * tables had partitions created and dropped twice daily while
+             * nothing ever wrote a row into them.
+             */
+            $schedule->command('stickle:record-model-attributes', [
+                config('stickle.namespaces.models'),
+            ])->everyFiveMinutes()->withoutOverlapping();
+
+            $schedule->command('stickle:record-segment-statistics')
+                ->everyFiveMinutes()
+                ->withoutOverlapping();
+
+            $schedule->command('stickle:record-model-relationship-statistics')
+                ->everyFiveMinutes()
+                ->withoutOverlapping();
+
+            /**
+             * Turns model_segment audit rows into ModelEnteredSegment and
+             * ModelExitedSegment events. Unprocessed rows accumulate until it
+             * runs, so it runs often.
+             */
+            $schedule->command('stickle:process-segment-events')
+                ->everyFiveMinutes()
+                ->withoutOverlapping();
         });
 
     }
@@ -84,6 +134,18 @@ class ScheduleServiceProvider extends ServiceProvider
                 $intervalRequests,
                 now()->add(CarbonInterval::fromString($extentionRequests))->format('Y-m-d'),
             ])->twiceDailyAt(7, 19, 0);
+
+            /**
+             * stc_requests is the highest-volume table in the package and was
+             * the only partitioned one with creation but no retention, so it
+             * grew without bound while its own rollups were pruned.
+             */
+            $schedule->command('stickle:drop-partitions', [
+                $tablePrefix.'requests',
+                $schema,
+                $intervalRequests,
+                now()->sub(CarbonInterval::fromString($retentionRequests))->format('Y-m-d'),
+            ])->twiceDailyAt(7, 19, 30);
 
             // Requests partition creation
             $schedule->command('stickle:create-partitions', [

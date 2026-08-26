@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace StickleApp\Core\Models;
 
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
+use StickleApp\Core\Support\ClassUtils;
 
 /**
  * @property int $id
@@ -98,9 +98,7 @@ class Segment extends Model
 
         $prefix = config('stickle.database.tablePrefix');
 
-        $modelClass = config('stickle.namespaces.models').'\\'.$this->model_class;
-
-        throw_unless(class_exists($modelClass), Exception::class, "Invalid model class specified: {$modelClass}");
+        $modelClass = ClassUtils::resolveModelClass($this->model_class);
 
         $pivotTable = $prefix.'model_segment';
 

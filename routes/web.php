@@ -6,6 +6,30 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use StickleApp\Core\Models\Segment;
+use StickleApp\Core\Support\ClassUtils;
+use StickleApp\Core\Traits\StickleEntity;
+
+/**
+ * The model segment matches only models that actually use StickleEntity, so an
+ * unknown name 404s here rather than reaching a view that tries to load it and
+ * throws. '[^/]+' let /stickle/segments -- a reasonable guess -- resolve as a
+ * model named "Segments" and return a 500.
+ *
+ * Resolved once per request rather than per route, and falls back to the old
+ * catch-all if the namespace cannot be scanned, so a misconfigured
+ * namespaces.models makes the pages 404 rather than vanish.
+ */
+$trackedModels = array_map(
+    ClassUtils::storeModelClass(...),
+    ClassUtils::getClassesWithTrait(
+        config('stickle.namespaces.models'),
+        StickleEntity::class
+    )
+);
+
+$modelPattern = $trackedModels === []
+    ? '[^/]+'
+    : implode('|', array_map(preg_quote(...), $trackedModels));
 
 /**
  * Routes for the demo
@@ -21,7 +45,7 @@ Route::middleware([
     'can:viewStickle',
 ])
     ->prefix(config('stickle.routes.web.prefix', 'stickle'))
-    ->group(function (): void {
+    ->group(function () use ($modelPattern): void {
         /** Stickle UI */
         Route::get('/live', function (Request $request): Factory|View {
             $modelClass = config('stickle.namespaces.models').'\\User';
@@ -65,10 +89,10 @@ Route::middleware([
             'stickle::pages/segment',
         )
             ->name('stickle::segments')
-            ->where('modelClass', '[^/]+');
+            ->where('modelClass', $modelPattern);
         Route::view('/{modelClass}/segments', 'stickle::pages/segments')
             ->name('stickle::segments')
-            ->where('modelClass', '[^/]+');
+            ->where('modelClass', $modelPattern);
 
         Route::get('/{modelClass}/segments', function (
             Request $request,
@@ -83,7 +107,7 @@ Route::middleware([
             ]);
         })
             ->name('stickle::segments')
-            ->where('modelClass', '[^/]+');
+            ->where('modelClass', $modelPattern);
 
         Route::get('/{modelClass}/segments/{segmentId}', function (
             Request $request,
@@ -102,7 +126,7 @@ Route::middleware([
             ]);
         })
             ->name('stickle::segment')
-            ->where('modelClass', '[^/]+')
+            ->where('modelClass', $modelPattern)
             ->where('segmentId', '[^/]+');
 
         Route::get('/{modelClass}/{uid}/{relationship}', function (
@@ -122,7 +146,7 @@ Route::middleware([
             ]);
         })
             ->name('stickle::model.relationship')
-            ->where('modelClass', '[^/]+')
+            ->where('modelClass', $modelPattern)
             ->where('uid', '[^/]+')
             ->where('relationship', '[^/]+');
 
@@ -142,7 +166,7 @@ Route::middleware([
             ]);
         })
             ->name('stickle::model')
-            ->where('modelClass', '[^/]+')
+            ->where('modelClass', $modelPattern)
             ->where('uid', '[^/]+');
 
         Route::get(
@@ -155,7 +179,7 @@ Route::middleware([
             ),
         )
             ->name('stickle::models')
-            ->where('modelClass', '[^/]+');
+            ->where('modelClass', $modelPattern);
 
         /** Installation Demo */
         Route::view('/demo', 'stickle::demo/index')->name(

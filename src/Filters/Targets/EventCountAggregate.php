@@ -54,7 +54,7 @@ class EventCountAggregate extends FilterTargetContract
             'aggregate' => $this->aggregate,
             'startDate' => $this->startDate?->format('Y-m-d') ?? '',
             'endDate' => $this->endDate?->format('Y-m-d') ?? '',
-            'modelClass' => $this->builder->getModel()->getMorphClass(),
+            'modelClass' => ClassUtils::storeModelClass($this->builder->getModel()),
         ];
 
         return md5(implode('|', array_values($keyData)));

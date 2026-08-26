@@ -44,13 +44,34 @@ class ClassUtils
      */
     public static function resolveModelClass(string $stored): string
     {
-        $resolved = config('stickle.namespaces.models').'\\'.ucfirst($stored);
+        $resolved = self::tryResolveModelClass($stored);
 
         throw_unless(
-            class_exists($resolved),
+            $resolved !== null,
             RuntimeException::class,
-            sprintf('Model [%s] resolved to [%s], which does not exist.', $stored, $resolved)
+            sprintf(
+                'Model [%s] resolved to [%s], which does not exist.',
+                $stored,
+                config('stickle.namespaces.models').'\\'.ucfirst($stored)
+            )
         );
+
+        return $resolved;
+    }
+
+    /**
+     * resolveModelClass() for callers that answer a miss with a 404 or an empty
+     * result rather than an error.
+     *
+     * @return class-string|null
+     */
+    public static function tryResolveModelClass(string $stored): ?string
+    {
+        $resolved = config('stickle.namespaces.models').'\\'.ucfirst($stored);
+
+        if (! class_exists($resolved)) {
+            return null;
+        }
 
         /** @var class-string $resolved */
         return $resolved;

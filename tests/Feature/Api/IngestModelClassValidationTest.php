@@ -31,28 +31,38 @@ it('rejects an untracked model_class through validation, not a missing rule', fu
     expect(RequestModel::query()->where('model_class', 'NotATrackedModel')->exists())->toBeFalse();
 });
 
-it('lets a tracked model_class through validation', function (): void {
+it('accepts a tracked model_class and records it', function (): void {
 
-    User::factory()->create();
+    $user = User::factory()->create();
 
-    $this->withoutExceptionHandling();
+    /** PageListener is queued; the test queue is database, so run it inline. */
+    config()->set('queue.default', 'sync');
 
-    /**
-     * Reaching the session lookup is the assertion: validation accepted
-     * 'User' rather than rejecting it or failing to resolve a rule named
-     * after the class.
-     *
-     * The request still cannot succeed. IngestController reads
-     * $request->session() for session_uid, but the route is registered in the
-     * api middleware group, which starts no session -- so a valid payload
-     * raises here on a stock install. When that is fixed, replace this with
-     * assertNoContent() and an assertion on the recorded row.
-     */
-    expect(fn () => $this->postJson('/stickle/api/track', [
+    $this->postJson('/stickle/api/track', [
         'payload' => [[
             'type' => 'page',
             'model_class' => 'User',
-            'object_uid' => '1',
+            'object_uid' => (string) $user->getKey(),
+            'properties' => ['name' => 'Home', 'url' => 'https://example.test/pricing?plan=pro'],
         ]],
-    ]))->toThrow(RuntimeException::class, 'Session store not set on request');
+    ])->assertNoContent();
+
+    $request = RequestModel::query()
+        ->where('model_class', 'User')
+        ->where('object_uid', (string) $user->getKey())
+        ->sole();
+
+    /**
+     * The api middleware group starts no session, so session_uid is null
+     * rather than the request raising "Session store not set on request".
+     */
+    expect($request->session_uid)->toBeNull()
+        ->and($request->type)->toBe('request');
+
+    /**
+     * path and search describe the reported page, not the beacon POST that
+     * carried it -- which used to record every row at /stickle/api/track.
+     */
+    expect($request->properties['path'])->toBe('/pricing')
+        ->and($request->properties['search'])->toBe('plan=pro');
 });
