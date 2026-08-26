@@ -37,6 +37,21 @@ final class CoreServiceProvider extends ServiceProvider
     #[Override]
     public function register(): void
     {
+        /**
+         * Merge before anything else registers, so every config('stickle.*')
+         * lookup has a value whether or not the application has published the
+         * file. Only publishing it left the whole namespace null on a fresh
+         * install: routes/channels.php built its channel names by sprintf()ing
+         * a null pattern, producing empty channel names whose authorization
+         * closures then received the wrong number of arguments; the UI
+         * components were handed null where they require a string; and the
+         * ModelAttributes observer was gated on a flag that could not be true.
+         *
+         * A published file still wins -- mergeConfigFrom only fills in keys the
+         * application has not set.
+         */
+        $this->mergeConfigFrom(__DIR__.'/../config/stickle.php', 'stickle');
+
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ScheduleServiceProvider::class);
 
