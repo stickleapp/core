@@ -68,7 +68,7 @@ beforeEach(function (): void {
 function stickleBroadcastEvent(string $event): object
 {
     $dto = new RequestDto(
-        type: 'page',
+        type: 'request',
         model_class: User::class,
         object_uid: '1',
         session_uid: 'session-uid',

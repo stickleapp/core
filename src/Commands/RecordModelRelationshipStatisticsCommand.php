@@ -20,7 +20,7 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
     /**
      * @var string
      */
-    protected $signature = 'stickle:record-model-relationship-statitics { limit? : The maximum number of objects to export. }';
+    protected $signature = 'stickle:record-model-relationship-statistics { limit? : The maximum number of objects to export. }';
 
     /**
      * @var string

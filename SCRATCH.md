@@ -129,9 +129,9 @@ You can access a test page at the URL specified in the terminal.
 
 `vendor/bin/testbench stickle:export-segments \\Workbench\\App\\Segments 10 ~/Projects/StickleApp/Core/workbench/app/Segments`
 
-`vendor/bin/testbench stickle:record-segment-statitics`
+`vendor/bin/testbench stickle:record-segment-statistics`
 
-'vendor/bin/testbench stickle:record-model-statitics'
+'vendor/bin/testbench stickle:record-model-statistics'
 
 `vendor/bin/testbench stickle:process-segment-events`
 

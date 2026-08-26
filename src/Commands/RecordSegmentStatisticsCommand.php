@@ -19,7 +19,7 @@ final class RecordSegmentStatisticsCommand extends Command implements Isolatable
     /**
      * @var string
      */
-    protected $signature = 'stickle:record-segment-statitics {segmentId? : A specific segment to export}
+    protected $signature = 'stickle:record-segment-statistics {segmentId? : A specific segment to export}
                                                             {limit? : The maximum number of segments to export.}';
 
     /**

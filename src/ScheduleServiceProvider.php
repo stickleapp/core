@@ -19,6 +19,24 @@ class ScheduleServiceProvider extends ServiceProvider
 
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
 
+            /**
+             * Advance the 1day request rollup. Only this grain is scheduled
+             * because only this grain is read: the eventCount and requestCount
+             * filter targets query {prefix}requests_rollup_1day, and nothing in
+             * the package reads the 1min, 5min or 1hr tables. Those are still
+             * reachable on demand -- `stickle:rollup-requests 1min` -- so a
+             * host app that queries them directly can schedule its own.
+             *
+             * Hourly rather than daily: bucket size does not dictate run
+             * frequency. Each run aggregates whatever rows are new since its
+             * own last_aggregated_id into the correct day bucket, so running
+             * more often makes the series fresher, never double-counted.
+             * Daily would leave a segment a full day behind.
+             */
+            $schedule->command('stickle:rollup-requests', ['1day'])
+                ->hourly()
+                ->withoutOverlapping();
+
             // Register the rollup sessions command
             $schedule->command('stickle:rollup-sessions', [
                 3, // Go back 3 days by default

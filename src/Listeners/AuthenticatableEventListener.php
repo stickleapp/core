@@ -42,7 +42,7 @@ class AuthenticatableEventListener implements ShouldQueue
         ];
 
         \StickleApp\Core\Models\Request::query()->create([
-            'type' => 'track',
+            'type' => 'event',
             'model_class' => class_basename($event->user),
             'object_uid' => (string) $event->user->id,
             'session_uid' => $timestamp,

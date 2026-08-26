@@ -82,7 +82,7 @@ class IngestController
             $itemProperties = array_merge($defaultProperties, data_get($item, 'properties', []));
 
             $requestDto = new RequestDto(
-                type: $item['type'] === 'track' ? 'event' : $item['type'],
+                type: $item['type'] === 'track' ? 'event' : 'request',
                 model_class: $modelClass,
                 object_uid: $objectUid,
                 session_uid: $request->session()->getId(),
