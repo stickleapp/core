@@ -7,29 +7,14 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use StickleApp\Core\Models\Segment;
 use StickleApp\Core\Support\ClassUtils;
-use StickleApp\Core\Traits\StickleEntity;
 
 /**
- * The model segment matches only models that actually use StickleEntity, so an
- * unknown name 404s here rather than reaching a view that tries to load it and
- * throws. '[^/]+' let /stickle/segments -- a reasonable guess -- resolve as a
- * model named "Segments" and return a 500.
- *
- * Resolved once per request rather than per route, and falls back to the old
- * catch-all if the namespace cannot be scanned, so a misconfigured
- * namespaces.models makes the pages 404 rather than vanish.
+ * Constrained to the models that use StickleEntity, so an unknown name 404s
+ * rather than reaching a view that tries to load it. '[^/]+' let
+ * /stickle/segments -- a reasonable guess -- resolve as a model named
+ * "Segments" and return a 500. Resolved once for all seven routes below.
  */
-$trackedModels = array_map(
-    ClassUtils::storeModelClass(...),
-    ClassUtils::getClassesWithTrait(
-        config('stickle.namespaces.models'),
-        StickleEntity::class
-    )
-);
-
-$modelPattern = $trackedModels === []
-    ? '[^/]+'
-    : implode('|', array_map(preg_quote(...), $trackedModels));
+$modelPattern = ClassUtils::trackedModelPattern();
 
 /**
  * Routes for the demo

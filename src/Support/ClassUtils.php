@@ -13,6 +13,8 @@ use RecursiveIteratorIterator;
 use ReflectionClass;
 use RegexIterator;
 use RuntimeException;
+use StickleApp\Core\Traits\StickleEntity;
+use Throwable;
 
 class ClassUtils
 {
@@ -57,6 +59,39 @@ class ClassUtils
         );
 
         return $resolved;
+    }
+
+    /**
+     * A route-parameter pattern matching only the models that use
+     * StickleEntity, so /stickle/{modelClass} 404s on an unknown name instead
+     * of reaching a view that tries to load it.
+     *
+     * Every failure mode returns the unconstrained pattern rather than
+     * raising. This runs while routes are registered -- including from
+     * composer scripts that boot before config/stickle.php exists, where the
+     * namespace is null -- and a pattern that cannot be built is not a reason
+     * for the application to have no pages.
+     */
+    public static function trackedModelPattern(): string
+    {
+        $namespace = config('stickle.namespaces.models');
+
+        if (! is_string($namespace) || $namespace === '') {
+            return '[^/]+';
+        }
+
+        try {
+            $models = array_map(
+                self::storeModelClass(...),
+                self::getClassesWithTrait($namespace, StickleEntity::class)
+            );
+        } catch (Throwable) {
+            return '[^/]+';
+        }
+
+        return $models === []
+            ? '[^/]+'
+            : implode('|', array_map(preg_quote(...), $models));
     }
 
     /**
