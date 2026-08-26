@@ -441,17 +441,38 @@ functions inserted without naming their columns.
 
 ```sql
 SELECT proname,
-       position('(model_class, object_uid, type' in pg_get_functiondef(oid)) > 0
-         AS fixed
+       position('request_count)' in pg_get_functiondef(oid)) > 0 AS fixed
 FROM pg_proc
 WHERE proname LIKE 'stc_rollup_requests%'
 ORDER BY proname;
 ```
 
-Four rows reading `f` means your database still has the old functions. Because the
-fix was made to a migration that has already run, `php artisan migrate` will **not**
-apply it — the functions must be redefined explicitly, and any rows already
-aggregated discarded. See the upgrade notes for the exact sequence.
+Four rows reading `f` means your database still has the old functions.
+
+::: tip Match the INSERT, not the ON CONFLICT
+Both versions of the function name these columns in their `ON CONFLICT` clause, so
+searching for `(model_class, object_uid` reports every database as fixed. Only the
+corrected version names them on the `INSERT`, and `request_count)` closes that list.
+:::
+
+**The fix ships as a migration.** `2026-08-26-120000_redefine_rollup_request_functions`
+redefines all four, so `php artisan migrate` repairs an existing database. It uses
+`CREATE OR REPLACE`, touches no data and no bookmarks, and is a no-op where the
+definitions are already correct.
+
+Rows already aggregated by the broken functions still have the two columns
+transposed, and there is no in-place repair for them. The rollups are derived data —
+rebuild them:
+
+```sql
+TRUNCATE stc_requests_rollup_1min,
+         stc_requests_rollup_5min,
+         stc_requests_rollup_1hr,
+         stc_requests_rollup_1day;
+
+UPDATE stc_rollups SET last_aggregated_id = 0
+WHERE name LIKE 'stc_requests_rollup_%';
+```
 
 ### Requests Are Recorded but the Types Look Wrong
 
