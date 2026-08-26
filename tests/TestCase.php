@@ -20,15 +20,50 @@ class TestCase extends Orchestra
 
     protected $tablePrefix;
 
+    /**
+     * Publishing is per-process, not per-test: the files do not change between
+     * tests and the copy is not free.
+     */
+    private static bool $assetsPublished = false;
+
     #[Override]
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->publishPackageAssets();
+
         Factory::guessFactoryNamesUsing(
             fn (string $modelName): string => 'StickleApp\\Core\\Laravelstickle\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
 
+    }
+
+    /**
+     * Put the package's built assets where the UI views expect to find them.
+     *
+     * Those views render through app('stickle.vite'), which resolves against a
+     * manifest in the application's public/vendor/stickleapp/core. Nothing in a
+     * checkout puts it there. `npm run build:publish` does, so a developer who
+     * has run it sees these tests pass while CI -- which never does -- got
+     * ViteManifestNotFoundException from every test that renders a page.
+     *
+     * public/build is committed, so this is a file copy rather than a build,
+     * and it keeps the suite runnable from any checkout state instead of
+     * depending on which npm scripts happen to have been run.
+     */
+    private function publishPackageAssets(): void
+    {
+        if (self::$assetsPublished) {
+            return;
+        }
+
+        Artisan::call('vendor:publish', [
+            '--tag' => 'package-assets',
+            '--force' => true,
+        ]);
+
+        self::$assetsPublished = true;
     }
 
     protected function getPackageProviders($app)
