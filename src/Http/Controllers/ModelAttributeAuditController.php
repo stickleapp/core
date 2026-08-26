@@ -27,10 +27,9 @@ class ModelAttributeAuditController
 
         $request->string('attribute');
 
-        $modelClass = config('stickle.namespaces.models').'\\'.
-            $request->string('model_class');
+        $modelClass = ClassUtils::tryResolveModelClass((string) $request->string('model_class'));
 
-        if (! class_exists($modelClass)) {
+        if ($modelClass === null) {
             return response()->json(['error' => 'Model not found'], 404);
         }
 

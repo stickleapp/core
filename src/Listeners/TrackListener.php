@@ -24,7 +24,7 @@ class TrackListener implements ShouldQueue
         Log::debug('TrackListener->handle()', [$track]);
 
         Request::query()->create([
-            'type' => 'track',
+            'type' => $track->payload->type,
             'model_class' => $track->payload->model_class,
             'object_uid' => $track->payload->object_uid,
             'session_uid' => $track->payload->session_uid,

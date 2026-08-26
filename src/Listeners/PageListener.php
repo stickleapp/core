@@ -22,7 +22,7 @@ class PageListener implements ShouldQueue
         Log::debug('PageListener->handle()', [$page]);
 
         Request::query()->create([
-            'type' => 'page',
+            'type' => $page->payload->type,
             'model_class' => $page->payload->model_class,
             'object_uid' => $page->payload->object_uid,
             'session_uid' => $page->payload->session_uid,

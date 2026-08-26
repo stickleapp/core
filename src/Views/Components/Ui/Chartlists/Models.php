@@ -6,7 +6,6 @@ namespace StickleApp\Core\Views\Components\Ui\Chartlists;
 
 use Exception;
 use Illuminate\Container\Attributes\Config;
-use Illuminate\Support\Str;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 use StickleApp\Core\Support\ClassUtils;
@@ -35,9 +34,7 @@ class Models extends Component
     public function chartData(): array
     {
 
-        $modelClass = config('stickle.namespaces.models').'\\'.Str::ucfirst($this->modelClass);
-
-        throw_unless(class_exists($modelClass), Exception::class, 'Model not found: '.$modelClass);
+        $modelClass = ClassUtils::resolveModelClass($this->modelClass);
 
         throw_unless(ClassUtils::usesTrait($modelClass, StickleEntity::class), Exception::class, 'Model does not use StickleTrait.');
 

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use StickleApp\Core\Support\ClassUtils;
 
 /**
  * @use HasFactory<Factory<static>>
@@ -69,7 +70,11 @@ class ModelSegmentAudit extends Model
     /**
      * Get the Object associated with the audit
      *
-     * @return Attribute<Model, string>
+     * Nullable on both paths: the segment may be gone, and find() returns null
+     * for an audit row whose model has since been deleted. ProcessSegmentEvents
+     * relies on that being visible in the type.
+     *
+     * @return Attribute<Model|null, string>
      */
     protected function object(): Attribute
     {
@@ -79,7 +84,8 @@ class ModelSegmentAudit extends Model
                     return null;
                 }
 
-                $modelClass = $this->segment->model_class;
+                /** model_class is stored as a basename and is not loadable as-is. */
+                $modelClass = ClassUtils::resolveModelClass($this->segment->model_class);
 
                 return $modelClass::find($this->object_uid);
             }

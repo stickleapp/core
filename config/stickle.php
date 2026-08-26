@@ -6,7 +6,12 @@ return [
     | Scheduling Frequencies
     |--------------------------------------------------------------------------
     |
-    | How frequently (in minutes) should the various tasks be run.
+    | How stale (in minutes) a record may get before the task refreshes it.
+    |
+    | These are not cron cadences. Each task is scheduled to tick every five
+    | minutes and compares a last-recorded timestamp against the value below,
+    | so this is the effective refresh rate. Lower it and records refresh
+    | sooner; the schedule itself does not change.
     |
     | - Export Segments. Store the objects (users, groups, etc) that are part of each segment
     | - Record Segment Statistics. Store the number of users in each segment

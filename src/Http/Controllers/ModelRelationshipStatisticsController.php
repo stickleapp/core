@@ -6,7 +6,6 @@ namespace StickleApp\Core\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use StickleApp\Core\Support\ClassUtils;
 use StickleApp\Core\Traits\StickleEntity;
 
@@ -22,9 +21,9 @@ class ModelRelationshipStatisticsController
 
         $relationship = $request->string('relationship')->toString();
 
-        $modelClass = config('stickle.namespaces.models').'\\'.Str::ucfirst((string) $modelClass);
+        $modelClass = ClassUtils::tryResolveModelClass((string) $modelClass);
 
-        if (! class_exists($modelClass)) {
+        if ($modelClass === null) {
             return response()->json(['error' => 'Model not found'], 404);
         }
 

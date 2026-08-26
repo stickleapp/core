@@ -190,7 +190,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 # Contributing
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+Please see [DEVELOPERS](DEVELOPERS.md) for local setup, the asset pipeline, and how to run the test suite.
 
 # Security Vulnerabilities
 

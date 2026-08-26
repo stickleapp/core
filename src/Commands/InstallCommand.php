@@ -23,6 +23,25 @@ use function Laravel\Prompts\table;
 class InstallCommand extends Command
 {
     /**
+     * The Laravel authentication events Stickle can subscribe to. Must stay in
+     * step with the default for STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED
+     * in config/stickle.php and with the map in AuthenticatableEventListener.
+     *
+     * @var list<string>
+     */
+    private const array AUTHENTICATION_EVENTS = [
+        'Authenticated',
+        'CurrentDeviceLogout',
+        'Login',
+        'Logout',
+        'OtherDeviceLogout',
+        'PasswordReset',
+        'Registered',
+        'Validated',
+        'Verified',
+    ];
+
+    /**
      * The name and signature of the console command.
      *
      * @var string
@@ -386,15 +405,30 @@ class InstallCommand extends Command
      */
     private function formatSettings(array $settings): array
     {
+        $interval = $settings['interval'] ?? 360;
 
-        $settings['STICKLE_FREQUENCY_EXPORT_SEGMENTS'] = $settings['interval'] ?? 360;
-        $settings['STICKLE_FREQUENCY_RECORD_MODEL_ATTRIBUTES'] = $settings['interval'] ?? 360;
-        $settings['STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE'] = $settings['interval'] ?? 360;
-        $settings['STICKLE_FREQUENCY_RECORD_SEGMENT_STATISTICS'] = $settings['interval'] ?? 360;
+        /** The four keys under `schedule` in config/stickle.php. */
+        $settings['STICKLE_FREQUENCY_EXPORT_SEGMENTS'] = $interval;
+        $settings['STICKLE_FREQUENCY_RECORD_MODEL_ATTRIBUTES'] = $interval;
+        $settings['STICKLE_FREQUENCY_RECORD_MODEL_RELATIONSHIP_STATISTICS'] = $interval;
+        $settings['STICKLE_FREQUENCY_RECORD_SEGMENT_STATISTICS'] = $interval;
 
         unset($settings['interval']);
 
-        $settings['STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE'] = Arr::get($settings, 'STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE', false) ? 'Authenticated,CurrentDeviceLogout,Login,Logout,OtherDeviceLogout,PasswordReset,Registered,Validated,Verified' : '';
+        /**
+         * The prompt collects a yes/no, but config/stickle.php explodes this
+         * key on commas, so the answer has to be expanded into the list before
+         * it is written. Writing the raw boolean would yield ['true'], which
+         * matches no event class in AuthenticatableEventListener.
+         *
+         * STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE is deliberately untouched: it
+         * stays the boolean CoreServiceProvider compares with ===.
+         */
+        $settings['STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED'] = Arr::get(
+            $settings,
+            'STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED',
+            false
+        ) ? implode(',', self::AUTHENTICATION_EVENTS) : '';
 
         return $settings;
     }

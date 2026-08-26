@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Override;
 use StickleApp\Core\Contracts\FilterTargetContract;
+use StickleApp\Core\Support\ClassUtils;
 
 class SessionCountAggregate extends FilterTargetContract
 {
@@ -51,7 +52,7 @@ class SessionCountAggregate extends FilterTargetContract
             'aggregate' => $this->aggregate,
             'startDate' => $this->startDate?->format('Y-m-d'),
             'endDate' => $this->endDate?->format('Y-m-d'),
-            'modelClass' => $this->builder->getModel()->getMorphClass(),
+            'modelClass' => ClassUtils::storeModelClass($this->builder->getModel()),
         ];
 
         return md5(implode('|', array_values($keyData)));
@@ -60,7 +61,7 @@ class SessionCountAggregate extends FilterTargetContract
     private function subJoin(): QueryBuilder
     {
         return DB::table($this->prefix.'sessions_rollup_1day')
-            ->where('model_class', $this->builder->getModel()->getMorphClass())
+            ->where('model_class', ClassUtils::storeModelClass($this->builder->getModel()))
             ->whereDate('day', '>=', Date::parse($this->startDate)->toDateString())
             ->whereDate('day', '<', Date::parse($this->endDate)->toDateString())
             ->groupBy(['model_class', 'object_uid'])

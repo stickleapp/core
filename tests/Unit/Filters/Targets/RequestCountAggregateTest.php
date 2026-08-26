@@ -62,5 +62,7 @@ test('RequestCountAggregate applies join correctly', function (): void {
     expect($sql)->toContain('left join');
     expect($sql)->toContain('avg(request_count)');
     expect($sql)->toContain($prefix.'requests_rollup_1day');
-    expect($sql)->toContain('"url" = ?');
+    // Matched on path, not url: RequestLogger stores url from fullUrl(),
+    // which is absolute, while the documented argument is a path.
+    expect($sql)->toContain('"path" = ?');
 });

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Override;
 use StickleApp\Core\Contracts\FilterTargetContract;
+use StickleApp\Core\Support\ClassUtils;
 
 class RequestCountAggregate extends FilterTargetContract
 {
@@ -53,7 +54,7 @@ class RequestCountAggregate extends FilterTargetContract
             'aggregate' => $this->aggregate,
             'startDate' => $this->startDate?->format('Y-m-d'),
             'endDate' => $this->endDate?->format('Y-m-d'),
-            'modelClass' => $this->builder->getModel()->getMorphClass(),
+            'modelClass' => ClassUtils::storeModelClass($this->builder->getModel()),
         ];
 
         return md5(implode('|', array_values($keyData)));
@@ -63,8 +64,13 @@ class RequestCountAggregate extends FilterTargetContract
     {
         return DB::table($this->prefix.'requests_rollup_1day')
             ->where('type', 'request')
-            ->when($this->url, fn ($query) => $query->where('url', $this->url))
-            ->where('model_class', $this->builder->getModel()->getMorphClass())
+            /**
+             * Matched against path, not url: RequestLogger stores url from
+             * fullUrl() -- absolute, with scheme and host -- while the
+             * documented argument is a path like '/api/data'.
+             */
+            ->when($this->url, fn ($query) => $query->where('path', $this->url))
+            ->where('model_class', ClassUtils::storeModelClass($this->builder->getModel()))
             ->whereDate('day', '>=', Date::parse($this->startDate)->toDateString())
             ->whereDate('day', '<', Date::parse($this->endDate)->toDateString())
             ->groupBy(['model_class', 'object_uid'])

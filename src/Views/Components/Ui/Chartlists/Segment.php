@@ -33,9 +33,9 @@ class Segment extends Component
     public function chartData(): array
     {
 
-        $modelClass = config('stickle.namespaces.models').'\\'.$this->segment->model_class;
+        $modelClass = ClassUtils::tryResolveModelClass($this->segment->model_class);
 
-        if (! ClassUtils::usesTrait($modelClass, StickleEntity::class)) {
+        if ($modelClass === null || ! ClassUtils::usesTrait($modelClass, StickleEntity::class)) {
             return [];
         }
 

@@ -5,15 +5,113 @@ declare(strict_types=1);
 namespace StickleApp\Core\Support;
 
 use Composer\Autoload\ClassLoader;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelInspector;
 use Illuminate\Foundation\Application;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
 use RegexIterator;
+use RuntimeException;
+use StickleApp\Core\Traits\StickleEntity;
+use Throwable;
 
 class ClassUtils
 {
+    /**
+     * The shape a model is recorded as in a model_class column: the class
+     * basename, so `App\Models\User` is stored as `User`.
+     *
+     * Deliberately not getMorphClass(). No morph map is registered anywhere in
+     * the package, so getMorphClass() would return a fully-qualified name and
+     * disagree with every row already written. Use this on both sides of a
+     * model_class comparison and the two cannot drift.
+     *
+     * @param  Model|class-string  $model
+     */
+    public static function storeModelClass(mixed $model): string
+    {
+        return class_basename(is_object($model) ? $model::class : $model);
+    }
+
+    /**
+     * Resolve a stored model_class back to a loadable class name.
+     *
+     * The inverse of storeModelClass(), and the reason that method cannot just
+     * store the fully-qualified name: the round trip assumes every tracked
+     * model lives under the single configured namespace. That assumption is
+     * the package's, not this method's -- see stickle.namespaces.models.
+     *
+     * @return class-string
+     */
+    public static function resolveModelClass(string $stored): string
+    {
+        $resolved = self::tryResolveModelClass($stored);
+
+        throw_unless(
+            $resolved !== null,
+            RuntimeException::class,
+            sprintf(
+                'Model [%s] resolved to [%s], which does not exist.',
+                $stored,
+                config('stickle.namespaces.models').'\\'.ucfirst($stored)
+            )
+        );
+
+        return $resolved;
+    }
+
+    /**
+     * A route-parameter pattern matching only the models that use
+     * StickleEntity, so /stickle/{modelClass} 404s on an unknown name instead
+     * of reaching a view that tries to load it.
+     *
+     * Every failure mode returns the unconstrained pattern rather than
+     * raising. This runs while routes are registered -- including from
+     * composer scripts that boot before config/stickle.php exists, where the
+     * namespace is null -- and a pattern that cannot be built is not a reason
+     * for the application to have no pages.
+     */
+    public static function trackedModelPattern(): string
+    {
+        $namespace = config('stickle.namespaces.models');
+
+        if (! is_string($namespace) || $namespace === '') {
+            return '[^/]+';
+        }
+
+        try {
+            $models = array_map(
+                self::storeModelClass(...),
+                self::getClassesWithTrait($namespace, StickleEntity::class)
+            );
+        } catch (Throwable) {
+            return '[^/]+';
+        }
+
+        return $models === []
+            ? '[^/]+'
+            : implode('|', array_map(preg_quote(...), $models));
+    }
+
+    /**
+     * resolveModelClass() for callers that answer a miss with a 404 or an empty
+     * result rather than an error.
+     *
+     * @return class-string|null
+     */
+    public static function tryResolveModelClass(string $stored): ?string
+    {
+        $resolved = config('stickle.namespaces.models').'\\'.ucfirst($stored);
+
+        if (! class_exists($resolved)) {
+            return null;
+        }
+
+        /** @var class-string $resolved */
+        return $resolved;
+    }
+
     /**
      * Check if a class uses a specific trait (including parent classes)
      *

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Override;
 use StickleApp\Core\Contracts\FilterTargetContract;
+use StickleApp\Core\Support\ClassUtils;
 
 class EventCountAggregate extends FilterTargetContract
 {
@@ -53,7 +54,7 @@ class EventCountAggregate extends FilterTargetContract
             'aggregate' => $this->aggregate,
             'startDate' => $this->startDate?->format('Y-m-d') ?? '',
             'endDate' => $this->endDate?->format('Y-m-d') ?? '',
-            'modelClass' => $this->builder->getModel()->getMorphClass(),
+            'modelClass' => ClassUtils::storeModelClass($this->builder->getModel()),
         ];
 
         return md5(implode('|', array_values($keyData)));
@@ -64,7 +65,7 @@ class EventCountAggregate extends FilterTargetContract
         return DB::table($this->prefix.'requests_rollup_1day')
             ->where('type', 'event')
             ->where('name', $this->event)
-            ->where('model_class', $this->builder->getModel()->getMorphClass())
+            ->where('model_class', ClassUtils::storeModelClass($this->builder->getModel()))
             ->whereDate('day', '>=', Date::parse($this->startDate)->toDateString())
             ->whereDate('day', '<', Date::parse($this->endDate)->toDateString())
             ->groupBy(['model_class', 'object_uid'])

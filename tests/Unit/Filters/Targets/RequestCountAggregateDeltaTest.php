@@ -73,6 +73,8 @@ test('RequestCountAggregateDelta applies join correctly', function (): void {
     expect($sql)->toContain('left join');
     expect($sql)->toContain('delta');
     expect($sql)->toContain($prefix.'requests_rollup_1day');
-    expect($sql)->toContain('"url" = ?');
+    // Matched on path, not url: RequestLogger stores url from fullUrl(),
+    // which is absolute, while the documented argument is a path.
+    expect($sql)->toContain('"path" = ?');
     expect($sql)->toContain('CASE WHEN');
 });

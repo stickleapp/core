@@ -13,6 +13,7 @@ use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 use Override;
 use StickleApp\Core\Contracts\FilterTargetContract;
+use StickleApp\Core\Support\ClassUtils;
 
 class NumberAggregateDelta extends FilterTargetContract
 {
@@ -58,7 +59,7 @@ class NumberAggregateDelta extends FilterTargetContract
             $this->currentPeriod[1]->format('Y-m-d'),
             $this->previousPeriod[0]->format('Y-m-d'),
             $this->previousPeriod[1]->format('Y-m-d'),
-            $this->builder->getModel()->getMorphClass(),
+            ClassUtils::storeModelClass($this->builder->getModel()),
         ];
 
         return md5(implode('|', $keyData));
@@ -72,7 +73,7 @@ class NumberAggregateDelta extends FilterTargetContract
         $previousEnd = $this->previousPeriod[1]->format('Y-m-d');
 
         return DB::table($this->prefix.'model_attributes')
-            ->where('model_class', $this->builder->getModel()->getMorphClass())
+            ->where('model_class', ClassUtils::storeModelClass($this->builder->getModel()))
             ->where(function (\Illuminate\Contracts\Database\Query\Builder $builder) use ($currentStart, $currentEnd, $previousStart, $previousEnd): void {
                 $builder->whereBetween('updated_at', [$currentStart, $currentEnd])
                     ->orWhereBetween('updated_at', [$previousStart, $previousEnd]);

@@ -6,16 +6,16 @@ namespace StickleApp\Core\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use StickleApp\Core\Support\ClassUtils;
 
 class ModelRelationshipController
 {
     public function index(Request $request): JsonResponse
     {
 
-        $modelClass = config('stickle.namespaces.models').'\\'.
-            $request->string('model_class')->toString();
+        $modelClass = ClassUtils::tryResolveModelClass($request->string('model_class')->toString());
 
-        if (! class_exists($modelClass)) {
+        if ($modelClass === null) {
             return response()->json(['error' => 'Model not found'], 404);
         }
 
