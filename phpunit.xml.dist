@@ -29,6 +29,15 @@
         </include>
     </source>
     <php>
+        <!--
+            The suite supplies its own APP_KEY. composer install runs
+            post-autoload-dump -> package:purge-skeleton, which deletes the
+            testbench skeleton's .env and never restores it, so on a clean
+            checkout every test touching encryption or a signed cookie raised
+            MissingAppKeyException. A throwaway key for tests only: not a
+            secret, and used nowhere else.
+        -->
+        <env name="APP_KEY" value="base64:2fl+Ktvkfl+Fuz4Qp/A75G2RTiWVA/ZoKZvp6fiiM10="/>
         <env name="DB_CONNECTION" value="pgsql"/>
         <env name="DB_DATABASE" value="postgres"/>
         <env name="DB_USERNAME" value="postgres"/>
