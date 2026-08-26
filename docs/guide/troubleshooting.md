@@ -389,6 +389,90 @@ location /app {
 }
 ```
 
+## Rollup Issues
+
+### Segments Using eventCount or requestCount Always Match Nobody
+
+`Filter::eventCount()`, `Filter::requestCount()` and `Filter::sessionCount()` read the
+rollup tables, not `stc_requests`. If nothing has aggregated into them, every such
+filter returns an empty set — with no error, because an empty join is a valid query.
+
+**Check whether the rollups have run at all:**
+
+```sql
+SELECT name, last_aggregated_id FROM stc_rollups ORDER BY name;
+SELECT count(*) FROM stc_requests_rollup_1day;
+```
+
+`last_aggregated_id` at `0` with an empty table means the rollup has never run.
+Compare it to `SELECT max(id) FROM stc_requests` — a bookmark far behind the table
+means the scheduler is not running the job.
+
+**Run it by hand to see the failure:**
+
+```bash
+php artisan stickle:rollup-requests 1day
+```
+
+The most common error on a first run is:
+
+```
+no partition of relation "stc_requests_rollup_1day" found for row
+```
+
+The bookmark starts at `0`, so the first run tries to aggregate the entire history of
+`stc_requests` — and the scheduled partition jobs only create partitions going
+forward. Either create partitions covering the full history, or start the grain from
+now:
+
+```sql
+UPDATE stc_rollups
+SET last_aggregated_id = (SELECT coalesce(max(id), 0) FROM stc_requests)
+WHERE name = 'stc_requests_rollup_1day';
+```
+
+### Rollup Rows Have model_class and object_uid the Wrong Way Round
+
+Databases created before this was fixed have the two columns transposed —
+`model_class` holds ids and `object_uid` holds class names — because the rollup
+functions inserted without naming their columns.
+
+**Check:**
+
+```sql
+SELECT proname,
+       position('(model_class, object_uid, type' in pg_get_functiondef(oid)) > 0
+         AS fixed
+FROM pg_proc
+WHERE proname LIKE 'stc_rollup_requests%'
+ORDER BY proname;
+```
+
+Four rows reading `f` means your database still has the old functions. Because the
+fix was made to a migration that has already run, `php artisan migrate` will **not**
+apply it — the functions must be redefined explicitly, and any rows already
+aggregated discarded. See the upgrade notes for the exact sequence.
+
+### Requests Are Recorded but the Types Look Wrong
+
+`stc_requests.type` holds `request` for a page or API request and `event` for a
+tracked event. `track` and `page` are the *wire* vocabulary the JavaScript client
+posts — they are translated on the way in and should never appear in the column.
+
+```sql
+SELECT type, count(*) FROM stc_requests GROUP BY type;
+```
+
+Rows with `page` or `track` were written by a version that stored the wire values
+directly. Filters will not match them:
+
+```sql
+UPDATE stc_requests SET type = 'event'   WHERE type = 'track';
+UPDATE stc_requests SET type = 'request' WHERE type = 'page';
+```
+
+On a large partitioned table, do this one partition at a time.
+
 ## Segment Issues
 
 ### Segments Not Updating

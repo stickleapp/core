@@ -60,6 +60,7 @@ export default defineConfig({
                 text: "Reference",
                 collapsed: false,
                 items: [
+                    { text: "Artisan Commands", link: "/guide/commands" },
                     { text: "API Endpoints", link: "/guide/api-endpoints" },
                     { text: "Filter Reference", link: "/guide/filter-reference" },
                     { text: "Events Reference", link: "/guide/events-reference" },

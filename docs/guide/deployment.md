@@ -236,11 +236,12 @@ Access Horizon dashboard at `/horizon` to monitor:
 
 ## Scheduled Tasks
 
-Stickle requires scheduled tasks for periodic operations.
+Stickle schedules its own work. You do not register anything in your application's
+console kernel — the package's service provider adds every job when it boots.
 
 ### Configure Cron
 
-Add this single cron entry:
+One entry is all Stickle needs:
 
 ```bash
 * * * * * cd /path/to/your/app && php artisan schedule:run >> /dev/null 2>&1
@@ -248,43 +249,70 @@ Add this single cron entry:
 
 ### Verify Schedule
 
-Check what tasks will run:
-
 ```bash
 php artisan schedule:list
 ```
 
-You should see these Stickle tasks:
+You should see the rollups, the four record/export commands, and the partition
+maintenance jobs:
 
 ```
-stickle:calculate-attributes    Every 5 minutes
-stickle:export-segments         Every hour
-stickle:cleanup-old-sessions    Daily at 2:00 AM
+* * * * *     php artisan stickle:rollup-requests '1min'
+*/5 * * * *   php artisan stickle:rollup-requests '5min'
+*/15 * * * *  php artisan stickle:rollup-requests '1hr'
+0 * * * *     php artisan stickle:rollup-requests '1day'
+0 * * * *     php artisan stickle:rollup-sessions 3
+*/5 * * * *   php artisan stickle:export-segments 'App\Segments' 10
+*/5 * * * *   php artisan stickle:record-model-attributes 'App\Models'
+*/5 * * * *   php artisan stickle:record-segment-statistics
+*/5 * * * *   php artisan stickle:record-model-relationship-statistics
+*/5 * * * *   php artisan stickle:process-segment-events
 ```
 
-### Customize Schedule
+plus `stickle:create-partitions` and `stickle:drop-partitions` twice daily for each
+partitioned table. See [Artisan Commands](/guide/commands) for what each one does.
 
-Override default schedules in `app/Console/Kernel.php`:
+If the rollup jobs are missing, the scheduler is not seeing Stickle's service
+provider — check that the package is discovered and that `schedule:run` is executing
+as the same user and environment as your application.
+
+### Changing How Often Work Happens
+
+Do not re-register these commands in your kernel; you would get two of each. Change
+the `schedule` block in `config/stickle.php` instead:
 
 ```php
-protected function schedule(Schedule $schedule): void
-{
-    // Run attribute calculations every 10 minutes instead of 5
-    $schedule->command('stickle:calculate-attributes')
-        ->everyTenMinutes()
-        ->withoutOverlapping();
-
-    // Export segments more frequently for high-priority segments
-    $schedule->command('stickle:export-segments --priority=high')
-        ->everyFifteenMinutes()
-        ->withoutOverlapping();
-
-    // Regular segment exports
-    $schedule->command('stickle:export-segments')
-        ->hourly()
-        ->withoutOverlapping();
-}
+'schedule' => [
+    'exportSegments' => 60,                       // minutes
+    'recordModelAttributes' => 60,
+    'recordModelRelationshipStatistics' => 360,
+    'recordSegmentStatistics' => 360,
+],
 ```
+
+These are **staleness thresholds, not cron cadences**. Each command ticks every five
+minutes and refreshes only records older than its threshold, so lowering a value
+makes that data fresher without changing the schedule. Raising one reduces database
+load.
+
+Partition retention and interval are separate, under `database.partitions`:
+
+```php
+'partitions' => [
+    'requests' => [
+        'interval' => 'week',
+        'extension' => '1 week',   // how far ahead to create
+        'retention' => '1 years',  // how far back to keep
+    ],
+],
+```
+
+::: danger Retention deletes data
+`stickle:drop-partitions` runs twice daily and removes partitions older than the
+retention window. Confirm these values before your first production deploy — the
+default is one year, and the first run on a database that has never had retention
+may drop a great deal at once.
+:::
 
 ## WebSockets (Real-Time Features)
 
