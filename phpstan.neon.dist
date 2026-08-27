@@ -8,6 +8,10 @@ parameters:
         - src/
         - database/
         - resources/
+        # Not shipped. Exercises the magic filter surface a consumer writes
+        # against, so a wrong or missing method annotation on Filters\Base is
+        # caught here rather than in someone else's build.
+        - workbench/app/Filters/
 
     level: 8
 

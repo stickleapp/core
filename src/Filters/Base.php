@@ -8,9 +8,66 @@ use DateTimeInterface;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Number;
 use StickleApp\Core\Contracts\FilterTargetContract;
 use StickleApp\Core\Contracts\FilterTestContract;
 
+/**
+ * The filter entry point. Both halves of its surface are magic, so both are
+ * declared here or no consumer can analyse a segment written against it.
+ *
+ * Static calls resolve through __callStatic() to Targets\{Ucfirst}. The nine
+ * derived targets (*Aggregate, *AggregateDelta, NumberDelta) are deliberately
+ * absent: they are reached by way of baseTarget() from the targets below, and
+ * calling one by name resolves it straight back to its base -- Filter::numberDelta('x')
+ * yields a plain Number, not a delta -- so declaring them would advertise a
+ * surface that does not behave as its name reads.
+ *
+ * Instance calls resolve through __call() to Tests\{Ucfirst}, and their
+ * signatures are those classes' constructors.
+ *
+ * @method static self boolean(string $attribute)
+ * @method static self date(string $attribute)
+ * @method static self datetime(string $attribute)
+ * @method static self number(string $attribute)
+ * @method static self text(string $attribute)
+ * @method static self segment(string $segmentIdentifier)
+ * @method static self segmentHistory(string $segmentIdentifier)
+ * @method static self eventCount(string $event)
+ * @method static self requestCount(?string $url = null)
+ * @method static self sessionCount()
+ * @method self beginsWith(string $comparator, bool $caseSensitive = false)
+ * @method self between(mixed $start, mixed $end)
+ * @method self contains(string $comparator, bool $caseSensitive = false)
+ * @method self equals(mixed $comparator)
+ * @method self equalsColumn(string $comparator)
+ * @method self greaterThan(mixed $comparator)
+ * @method self greaterThanColumn(string $comparator)
+ * @method self greaterThanOrEqualTo(mixed $comparator)
+ * @method self greaterThanOrEqualToColumn(string $comparator)
+ * @method self hasBeenInSegment()
+ * @method self hasNeverBeenInSegment()
+ * @method self isAfter(DateTimeInterface|string|Number|int $comparator)
+ * @method self isBefore(DateTimeInterface|string|Number|int $comparator)
+ * @method self isFalse()
+ * @method self isInSegment()
+ * @method self isNotFalse()
+ * @method self isNotInSegment()
+ * @method self isNotNull()
+ * @method self isNotTrue()
+ * @method self isNull()
+ * @method self isTrue()
+ * @method self lessThan(mixed $comparator)
+ * @method self lessThanColumn(string $comparator)
+ * @method self lessThanOrEqualTo(mixed $comparator)
+ * @method self lessThanOrEqualToColumn(string $comparator)
+ * @method self notEquals(mixed $comparator)
+ * @method self notEqualsColumn(string $comparator)
+ * @method self occurredAfter(mixed $comparator)
+ * @method self occurredBefore(mixed $comparator)
+ * @method self willOccurAfter(mixed $comparator)
+ * @method self willOccurBefore(mixed $comparator)
+ */
 class Base
 {
     public ?FilterTestContract $test = null;
