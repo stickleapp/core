@@ -157,7 +157,51 @@ class ClassUtils
             // Check if class uses the trait
             self::usesTrait($className, $trait));
 
-        return array_values($classesWithTrait);
+        $found = array_values($classesWithTrait);
+
+        self::guardAgainstStoredNameCollisions($found);
+
+        return $found;
+    }
+
+    /**
+     * Refuse a set of tracked models that cannot be told apart once stored.
+     *
+     * model_class holds a basename, so App\Models\Thing and
+     * App\Models\Vendor\Thing are the same string in every table -- their
+     * attributes, audits, requests and statistics would share one bucket, and
+     * resolveModelClass() could only ever hand back the first.
+     *
+     * Two classes directly under one namespace cannot share a name, so this was
+     * unreachable while sub-namespaced models went undiscovered. Now that they
+     * are found, silently merging them would be worse than not finding them.
+     *
+     * @param  array<int, class-string>  $classes
+     */
+    private static function guardAgainstStoredNameCollisions(array $classes): void
+    {
+        $byStoredName = [];
+
+        foreach ($classes as $class) {
+            $byStoredName[self::storeModelClass($class)][] = $class;
+        }
+
+        $collisions = array_filter($byStoredName, fn (array $names): bool => count($names) > 1);
+
+        throw_unless(
+            $collisions === [],
+            RuntimeException::class,
+            sprintf(
+                'Tracked models share a model_class: %s. model_class stores a class basename, '
+                .'so these cannot be told apart in any Stickle table. Rename one, move one out '
+                .'of the tracked namespace, or register a morph map.',
+                implode('; ', array_map(
+                    fn (string $stored, array $names): string => sprintf('"%s" is %s', $stored, implode(' and ', $names)),
+                    array_keys($collisions),
+                    $collisions
+                ))
+            )
+        );
     }
 
     /**
@@ -183,12 +227,12 @@ class ClassUtils
 
         foreach ($phpFiles as $phpFile) {
             $filePath = $phpFile->getRealPath();
-            $className = self::getClassNameFromFile($filePath);
-
-            if (strlen($appendNamespace) !== 0) {
-                $className = $appendNamespace.'\\'.self::getClassNameFromFile($filePath);
-            }
-            $classes[] = $className;
+            /**
+             * getClassNameFromFile() returns the namespace declared in the
+             * file, falling back to $appendNamespace only when the file
+             * declares none. Prepending here as well would double it.
+             */
+            $classes[] = self::getClassNameFromFile($filePath, $appendNamespace);
         }
 
         $validClasses = array_filter($classes, fn (?string $className): bool => $className !== null && class_exists($className));
@@ -220,7 +264,15 @@ class ClassUtils
         for ($i = 0; $i < $count; $i++) {
             if ($tokens[$i][0] === T_NAMESPACE) {
                 $i += 2;
-                while ($i < $count && ($tokens[$i][0] === T_STRING || $tokens[$i][0] === T_NS_SEPARATOR)) {
+
+                /**
+                 * T_NAME_QUALIFIED is the whole of `App\Models\Vendor` in one
+                 * token as of PHP 8.0. Matching only the PHP 7 spelling --
+                 * T_STRING and T_NS_SEPARATOR in sequence -- left the parsed
+                 * namespace empty for every file, so a class below the scanned
+                 * root resolved to the wrong name and was silently discarded.
+                 */
+                while ($i < $count && in_array($tokens[$i][0], [T_NAME_QUALIFIED, T_STRING, T_NS_SEPARATOR], true)) {
                     $fileNamespace .= $tokens[$i][1];
                     $i++;
                 }
