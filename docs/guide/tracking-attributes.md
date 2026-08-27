@@ -473,7 +473,7 @@ class User extends Model
         'label' => 'Monthly Recurring Revenue',
         'description' => 'Current MRR from active subscriptions',
         'dataType' => DataType::NUMBER,
-        'primaryAggregateType' => PrimaryAggregate::SUM,
+        'primaryAggregate' => PrimaryAggregate::SUM,
     ])]
     protected function subscriptionMrr(): Attribute
     {

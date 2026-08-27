@@ -7,9 +7,9 @@ namespace StickleApp\Core\Views\Components\Ui\Charts;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\View\Component;
 use Illuminate\View\View;
-use StickleApp\Core\Enums\AggregateType;
 use StickleApp\Core\Enums\ChartType;
 use StickleApp\Core\Enums\DataType;
+use StickleApp\Core\Enums\PrimaryAggregate;
 
 class ModelRelationship extends Component
 {
@@ -27,7 +27,7 @@ class ModelRelationship extends Component
         public ?string $label,
         public ?string $description,
         public ?DataType $dataType,
-        public ?AggregateType $primaryAggregate
+        public ?PrimaryAggregate $primaryAggregate
     ) {}
 
     /**

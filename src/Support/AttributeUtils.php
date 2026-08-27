@@ -6,7 +6,6 @@ namespace StickleApp\Core\Support;
 
 use Exception;
 use ReflectionClass;
-use ReflectionMethod;
 
 class AttributeUtils
 {
@@ -36,7 +35,7 @@ class AttributeUtils
     }
 
     /**
-     * @return array<''|class-string, non-empty-array<string, mixed>>
+     * @return array<string, mixed>
      */
     public static function getAllAttributesForClass_targetMethod(string $className, ?string $attributeClass = null): array
     {
@@ -47,43 +46,52 @@ class AttributeUtils
         $reflectionClass = new ReflectionClass($className);
         $metadata = [];
 
-        // Check methods for the attribute
-        foreach ($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-            $methodName = $reflectionMethod->getName();
+        foreach ($reflectionClass->getMethods() as $reflectionMethod) {
+            $attributes = $reflectionMethod->getAttributes($attributeClass);
 
-            // Match for accessor methods (get*Attribute)
-            if (preg_match('/^get(.+)Attribute$/', $methodName, $matches)) {
-
-                $attributeName = lcfirst($matches[1]);
-
-                // First, add underscore before each uppercase letter
-                $pattern = '/(?<!^)[A-Z]/';
-                $result = preg_replace($pattern, '_$0', $attributeName);
-                $attributeName = $result ?? $attributeName;
-
-                // Then add underscore before numeric sequences
-                $pattern = '/([a-zA-Z])(\d+)/';
-                $result = preg_replace($pattern, '$1_$2', $attributeName);
-                $attributeName = $result ?? $attributeName;
-
-                $attributeName = strtolower($attributeName);
-
-                $attributes = $reflectionMethod->getAttributes($attributeClass);
-
-                if (! empty($attributes)) {
-                    $instance = $attributes[0]->newInstance();
-                    if (property_exists($instance, 'value')) {
-                        $metadata[$attributeClass][$attributeName] = $instance->value;
-                    }
-                }
+            if ($attributes === []) {
+                continue;
             }
+
+            $instance = $attributes[0]->newInstance();
+
+            if (! property_exists($instance, 'value')) {
+                continue;
+            }
+
+            $metadata[self::attributeNameFromMethod($reflectionMethod->getName())] = $instance->value;
         }
 
         return $metadata;
     }
 
     /**
-     * @return array<''|class-string, non-empty-array<string, mixed>>
+     * Derive the tracked attribute name from an accessor method name.
+     *
+     * A Laravel 9+ accessor is named for the attribute (`userRating`) and is
+     * usually protected; the legacy form wraps it (`getUserRatingAttribute`)
+     * and must be public. Both reduce to the same camel form before being
+     * normalised to the snake_case key `stickleTrackedAttributes()` uses.
+     */
+    private static function attributeNameFromMethod(string $methodName): string
+    {
+        $attributeName = preg_match('/^get(.+)Attribute$/', $methodName, $matches) === 1
+            ? lcfirst($matches[1])
+            : lcfirst($methodName);
+
+        // First, add underscore before each uppercase letter
+        $result = preg_replace('/(?<!^)[A-Z]/', '_$0', $attributeName);
+        $attributeName = $result ?? $attributeName;
+
+        // Then add underscore before numeric sequences
+        $result = preg_replace('/([a-zA-Z])(\d+)/', '$1_$2', $attributeName);
+        $attributeName = $result ?? $attributeName;
+
+        return strtolower($attributeName);
+    }
+
+    /**
+     * @return array<string, mixed>
      */
     public static function getAllAttributesForClass_targetProperty(string $className, ?string $attributeClass = null): array
     {
@@ -100,7 +108,7 @@ class AttributeUtils
             if (! empty($attributes)) {
                 $instance = $attributes[0]->newInstance();
                 if (property_exists($instance, 'value')) {
-                    $metadata[$attributeClass][$reflectionProperty->getName()] = $instance->value;
+                    $metadata[$reflectionProperty->getName()] = $instance->value;
                 }
             }
         }

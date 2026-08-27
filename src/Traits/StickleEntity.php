@@ -359,7 +359,7 @@ trait StickleEntity
                 'label' => $meta['label'] ?? Str::title(str_replace('_', ' ', $trackedAttribute)),
                 'description' => $meta['description'] ?? null,
                 'dataType' => $meta['dataType'] ?? null,
-                'primaryAggregateType' => $meta['primaryAggregateType'] ?? null,
+                'primaryAggregate' => $meta['primaryAggregate'] ?? null,
             ];
         }
 
