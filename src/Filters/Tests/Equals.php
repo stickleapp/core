@@ -15,6 +15,6 @@ class Equals extends FilterTestContract
 
     public function applyFilter(Builder $builder, FilterTargetContract $filterTargetContract, string $operator): Builder
     {
-        return $builder->where(DB::raw($filterTargetContract->castProperty()), '=', $this->comparator, $operator);
+        return $builder->where(DB::raw($filterTargetContract->castProperty()), '=', $filterTargetContract->castValue($this->comparator), $operator);
     }
 }

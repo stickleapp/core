@@ -15,6 +15,6 @@ class Between extends FilterTestContract
 
     public function applyFilter(Builder $builder, FilterTargetContract $filterTargetContract, string $operator): Builder
     {
-        return $builder->whereBetween(DB::raw($filterTargetContract->castProperty()), [$this->start, $this->end], $operator);
+        return $builder->whereBetween(DB::raw($filterTargetContract->castProperty()), [$filterTargetContract->castValue($this->start), $filterTargetContract->castValue($this->end)], $operator);
     }
 }
