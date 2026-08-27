@@ -61,10 +61,10 @@ namespace App\Segments;
 
 use App\Models\Account;
 use Illuminate\Database\Eloquent\Builder;
-use StickleApp\Core\Contracts\Segment;
-use StickleApp\Core\Filters\Filter;
+use StickleApp\Core\Contracts\SegmentContract;
+use StickleApp\Core\Filters\Base as Filter;
 
-class HighMRRAccounts extends Segment
+class HighMRRAccounts extends SegmentContract
 {
     public string $model = Account::class;
 
@@ -92,15 +92,15 @@ namespace App\Segments;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use StickleApp\Core\Attributes\StickleSegmentMetadata;
-use StickleApp\Core\Contracts\Segment;
-use StickleApp\Core\Filters\Filter;
+use StickleApp\Core\Contracts\SegmentContract;
+use StickleApp\Core\Filters\Base as Filter;
 
 #[StickleSegmentMetadata([
     'name' => 'At Risk of Churning',
     'description' => 'Paying customers with declining engagement',
     'exportInterval' => 60, // Check hourly
 ])]
-class AtRiskCustomers extends Segment
+class AtRiskCustomers extends SegmentContract
 {
     public string $model = User::class;
 
@@ -140,14 +140,14 @@ class AtRiskCustomers extends Segment
 
 namespace App\Listeners;
 
-use StickleApp\Core\Events\ObjectEnteredSegment;
+use StickleApp\Core\Events\ModelEnteredSegment;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ReEngagementOffer;
 
 class SendReEngagementEmail implements ShouldQueue
 {
-    public function handle(ObjectEnteredSegment $event): void
+    public function handle(ModelEnteredSegment $event): void
     {
         if ($event->segment->as_class === 'AtRiskCustomers') {
             $user = $event->object;
@@ -171,10 +171,10 @@ namespace App\Segments;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use StickleApp\Core\Contracts\Segment;
-use StickleApp\Core\Filters\Filter;
+use StickleApp\Core\Contracts\SegmentContract;
+use StickleApp\Core\Filters\Base as Filter;
 
-class PowerUsers extends Segment
+class PowerUsers extends SegmentContract
 {
     public string $model = User::class;
 
@@ -226,7 +226,7 @@ Automatically notify users when they achieve a milestone:
 
 namespace App\Listeners;
 
-use StickleApp\Core\Events\ObjectEnteredSegment;
+use StickleApp\Core\Events\ModelEnteredSegment;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\HighValueWelcome;
@@ -234,7 +234,7 @@ use App\Mail\PowerUserBadge;
 
 class SegmentEntryNotification implements ShouldQueue
 {
-    public function handle(ObjectEnteredSegment $event): void
+    public function handle(ModelEnteredSegment $event): void
     {
         $user = $event->object;
         $segment = $event->segment->as_class;
@@ -446,14 +446,14 @@ class Customer extends Model
 
 namespace App\Listeners;
 
-use StickleApp\Core\Events\ObjectAttributeChanged;
+use StickleApp\Core\Events\ModelAttributeChanged;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\LowHealthScoreAlert;
 
 class CustomerHealthScoreListener implements ShouldQueue
 {
-    public function handle(ObjectAttributeChanged $event): void
+    public function handle(ModelAttributeChanged $event): void
     {
         $customer = $event->object;
         $newScore = $event->newValue;
@@ -489,7 +489,7 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\VIPLogin;
-use StickleApp\Core\Filters\Filter;
+use StickleApp\Core\Filters\Base as Filter;
 
 class NotifyVIPLogin implements ShouldQueue
 {
@@ -524,7 +524,7 @@ Sync customer data to your CRM:
 
 namespace App\Listeners;
 
-use StickleApp\Core\Events\ObjectAttributeChanged;
+use StickleApp\Core\Events\ModelAttributeChanged;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Services\CRMService;
 
@@ -534,7 +534,7 @@ class AccountMrrListener implements ShouldQueue
         protected CRMService $crm
     ) {}
 
-    public function handle(ObjectAttributeChanged $event): void
+    public function handle(ModelAttributeChanged $event): void
     {
         $account = $event->object;
         $newMRR = $event->newValue;
@@ -568,10 +568,10 @@ namespace App\Segments;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use StickleApp\Core\Contracts\Segment;
-use StickleApp\Core\Filters\Filter;
+use StickleApp\Core\Contracts\SegmentContract;
+use StickleApp\Core\Filters\Base as Filter;
 
-class ActiveTrialUsers extends Segment
+class ActiveTrialUsers extends SegmentContract
 {
     public string $model = User::class;
 
@@ -589,7 +589,7 @@ class ActiveTrialUsers extends Segment
     }
 }
 
-class TrialExpiringS Soon extends Segment
+class TrialExpiringS Soon extends SegmentContract
 {
     public string $model = User::class;
 
@@ -609,14 +609,14 @@ class TrialExpiringS Soon extends Segment
 
 namespace App\Listeners;
 
-use StickleApp\Core\Events\ObjectEnteredSegment;
+use StickleApp\Core\Events\ModelEnteredSegment;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TrialExpiringEmail;
 
 class SendTrialExpiringEmail implements ShouldQueue
 {
-    public function handle(ObjectEnteredSegment $event): void
+    public function handle(ModelEnteredSegment $event): void
     {
         if ($event->segment->as_class === 'TrialExpiringSoon') {
             $user = $event->object;

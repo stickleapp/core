@@ -189,8 +189,8 @@
   - [x] Listening to attribute changes
   - [x] Complete example
 - [x] Write "Segment Events" section
-  - [x] ObjectEnteredSegment
-  - [x] ObjectExitedSegment
+  - [x] ModelEnteredSegment
+  - [x] ModelExitedSegment
   - [x] Complete examples
 - [x] Write "Authentication Events" section
   - [x] Illuminate\Auth events
@@ -332,9 +332,9 @@
   - [x] Class signature
   - [x] Properties
   - [x] Example payload
-- [x] Document ObjectAttributeChanged event
-- [x] Document ObjectEnteredSegment event
-- [x] Document ObjectExitedSegment event
+- [x] Document ModelAttributeChanged event
+- [x] Document ModelEnteredSegment event
+- [x] Document ModelExitedSegment event
 - [x] Add "See Also" link to event-listeners.md
 - [x] Proofread
 

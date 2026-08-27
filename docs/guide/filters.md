@@ -82,6 +82,7 @@ Date filters test date attributes stored in the model's JSON data field.
 **Available Tests:**
 
 -   `equals(date)` - Tests if the date equals the given value
+-   `notEquals(date)` - Tests if the date does not equal the given value
 -   `isBefore(date)` - Tests if the date is before the given value
 -   `isAfter(date)` - Tests if the date is after the given value
 -   `occurredBefore(date)` - Alias for `isBefore()`
@@ -108,6 +109,7 @@ Datetime filters test datetime attributes stored in the model's JSON data field.
 **Available Tests:**
 
 -   `equals(datetime)` - Tests if the datetime equals the given value
+-   `notEquals(datetime)` - Tests if the datetime does not equal the given value
 -   `isBefore(datetime)` - Tests if the datetime is before the given value
 -   `isAfter(datetime)` - Tests if the datetime is after the given value
 -   `occurredBefore(datetime)` - Alias for `isBefore()`
@@ -141,6 +143,7 @@ EventCount filters aggregate event data over specified time periods. All EventCo
 **Available Tests:**
 
 -   `equals(value)` - Tests if the aggregated value equals the given value
+-   `notEquals(value)` - Tests if the aggregated value does not equal the given value
 -   `greaterThan(value)` - Tests if the aggregated value is greater than the given value
 -   `lessThan(value)` - Tests if the aggregated value is less than the given value
 -   `greaterThanOrEqualTo(value)` - Tests if the aggregated value is greater than or equal to the given value
@@ -198,6 +201,7 @@ Number filters test numeric attributes stored in the model's JSON data field. Th
 **Available Tests:**
 
 -   `equals(value)` - Tests if the value equals the given value
+-   `notEquals(value)` - Tests if the value does not equal the given value
 -   `greaterThan(value)` - Tests if the value is greater than the given value
 -   `lessThan(value)` - Tests if the value is less than the given value
 -   `greaterThanOrEqualTo(value)` - Tests if the value is greater than or equal to the given value
@@ -256,6 +260,7 @@ RequestCount filters aggregate HTTP request data for specific URLs over time per
 **Available Tests:**
 
 -   `equals(value)` - Tests if the aggregated value equals the given value
+-   `notEquals(value)` - Tests if the aggregated value does not equal the given value
 -   `greaterThan(value)` - Tests if the aggregated value is greater than the given value
 -   `lessThan(value)` - Tests if the aggregated value is less than the given value
 -   `greaterThanOrEqualTo(value)` - Tests if the aggregated value is greater than or equal to the given value
@@ -296,6 +301,7 @@ SessionCount filters aggregate session data over time periods. All SessionCount 
 **Available Tests:**
 
 -   `equals(value)` - Tests if the aggregated value equals the given value
+-   `notEquals(value)` - Tests if the aggregated value does not equal the given value
 -   `greaterThan(value)` - Tests if the aggregated value is greater than the given value
 -   `lessThan(value)` - Tests if the aggregated value is less than the given value
 -   `greaterThanOrEqualTo(value)` - Tests if the aggregated value is greater than or equal to the given value
@@ -331,6 +337,7 @@ Text filters test text attributes stored in the model's JSON data field.
 **Available Tests:**
 
 -   `equals(text)` - Tests if the text equals the given value
+-   `notEquals(text)` - Tests if the text does not equal the given value
 -   `contains(text)` - Tests if the text contains the given substring
 -   `beginsWith(text)` - Tests if the text begins with the given substring
 
@@ -345,6 +352,54 @@ $users = User::stickleWhere(Filter::text('bio')->contains('developer'))->get();
 $users = User::stickleWhere(Filter::text('job_title')->beginsWith('Senior'))->get();
 ```
 
+## Count Filters Only See the Authenticated User
+
+`Filter::requestCount()`, `Filter::sessionCount()` and `Filter::eventCount()`
+count rows in `stc_requests`, and they match those rows on `model_class`. Every
+row is written for the **authenticated user**: `RequestLogger` skips any request
+with no user at all, and records the one it finds under that user's class.
+
+So on a user-shaped model these filters work as documented, and on an
+account-shaped model -- a tenant, company or organisation the user belongs to --
+they always return zero. A `Tenant` segment looking for `requestCount()` finds no
+rows with `model_class = 'Tenant'`, because nothing writes any.
+
+This is a deliberate boundary, not an oversight. Stickle tracks authenticated
+subjects, and a request has exactly one of those. Teaching `RequestLogger` to fan
+a single request out to additional subjects would mean new public API on
+`StickleEntity` for naming them, and multiplying request volume by the number of
+parents.
+
+**If you need account-level counts, pick one of these:**
+
+1. **Emit a second event for the parent.** Where you already `Track` a domain
+   event, emit it again with the parent as the subject. Explicit, and you choose
+   which events are worth the extra rows.
+
+   ```php
+   event(new Track($dtoForUser));
+   event(new Track($dtoForTenant));
+   ```
+
+2. **Roll the count up as a tracked attribute.** Have the parent track its own
+   count and filter on that with `Filter::number()`, which does work on any
+   model:
+
+   ```php
+   class Tenant extends Model
+   {
+       use StickleEntity;
+
+       public static function stickleTrackedAttributes(): array
+       {
+           return ['weekly_request_count'];
+       }
+   }
+   ```
+
+3. **Query the child and pivot.** Segment the users, then group by their parent
+   in application code.
+
 ## Creating Custom Scopes
 
 While you can use filters directly in your queries, creating custom scopes makes your code more readable and maintainable. Laravel's local scopes are perfect for encapsulating common Stickle filters.
@@ -358,7 +413,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use StickleApp\Core\Filters\Filter;
+use StickleApp\Core\Filters\Base as Filter;
 
 class User extends Model
 {

@@ -101,15 +101,15 @@ namespace App\Segments;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use StickleApp\Core\Attributes\StickleSegmentMetadata;
-use StickleApp\Core\Contracts\Segment;
-use StickleApp\Core\Filters\Filter;
+use StickleApp\Core\Contracts\SegmentContract;
+use StickleApp\Core\Filters\Base as Filter;
 
 #[StickleSegmentMetadata([
     'name' => 'All Users',
     'description' => 'Every user in your system',
     'exportInterval' => 360, // Re-calculate every 6 hours
 ])]
-class AllUsers extends Segment
+class AllUsers extends SegmentContract
 {
     public string $model = User::class;
 
@@ -130,15 +130,15 @@ namespace App\Segments;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use StickleApp\Core\Attributes\StickleSegmentMetadata;
-use StickleApp\Core\Contracts\Segment;
-use StickleApp\Core\Filters\Filter;
+use StickleApp\Core\Contracts\SegmentContract;
+use StickleApp\Core\Filters\Base as Filter;
 
 #[StickleSegmentMetadata([
     'name' => 'Active Users',
     'description' => 'Users that have made a request in the last 7 days',
     'exportInterval' => 360, // Re-calculate every 6 hours
 ])]
-class ActiveUsers extends Segment
+class ActiveUsers extends SegmentContract
 {
     public string $model = User::class;
 
@@ -151,6 +151,7 @@ class ActiveUsers extends Segment
                     ->greaterThan(0)
                     ->betweenDates(
                         startDate: now()->subDays(7)->startOfDay(),
+                        endDate: today(),
                     )
             );
     }

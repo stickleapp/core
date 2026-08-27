@@ -23,7 +23,7 @@ Stickle distinguishes between two types of attributes:
 
 ### Observed Attributes
 
-**Observed attributes** are monitored for changes. When an observed attribute changes, Stickle dispatches an `ObjectAttributeChanged` event, allowing you to respond in real-time.
+**Observed attributes** are monitored for changes. When an observed attribute changes, Stickle dispatches an `ModelAttributeChanged` event, allowing you to respond in real-time.
 
 Use observed attributes for:
 - Triggering notifications when values change
@@ -290,39 +290,56 @@ $company = Company::find(1);
 
 // Get aggregate user ratings for this company
 $stats = $company->modelRelationshipStatistics()
-    ->where('relationship_name', 'users')
-    ->where('attribute_name', 'user_rating')
+    ->where('relationship', 'users')
+    ->where('attribute', 'user_rating')
     ->first();
 
-echo "Average user rating: {$stats->avg}";
-echo "Total rated users: {$stats->count}";
-echo "Highest rating: {$stats->max}";
-echo "Lowest rating: {$stats->min}";
-echo "Sum of all ratings: {$stats->sum}";
+echo "Average user rating: {$stats->value_avg}";
+echo "Total rated users: {$stats->value_count}";
+echo "Highest rating: {$stats->value_max}";
+echo "Lowest rating: {$stats->value_min}";
+echo "Sum of all ratings: {$stats->value_sum}";
 ```
 
 **Stickle provides:**
-- `count` - Number of related records with the attribute
-- `avg` - Average value
-- `sum` - Sum of all values
-- `min` - Minimum value
-- `max` - Maximum value
+- `value_count` - Number of related records with the attribute
+- `value_avg` - Average value
+- `value_sum` - Sum of all values
+- `value_min` - Minimum value
+- `value_max` - Maximum value
 
-### Multi-Level Aggregation
+Note that the attribute aggregated here (`user_rating`) is declared on the
+child. `Company` need not track it, or track anything at all -- the work list
+comes from the related model.
 
-For hierarchies like ParentCompany → Company → User, aggregates roll up through all levels:
+### One Level At A Time
+
+Aggregates are computed per `HasMany` relationship, over the related model's own
+tracked attributes. They do **not** roll up transitively.
+
+For a `ParentCompany → Company → User` hierarchy, `ParentCompany`'s statistics
+cover the attributes `Company` tracks, and `Company`'s statistics cover the
+attributes `User` tracks. To get user ratings at the `ParentCompany` level, have
+`Company` track its own aggregate as an attribute:
 
 ```php
-// Get aggregated metrics from grandchild models
-$parentCompany = ParentCompany::find(1);
+class Company extends Model
+{
+    use StickleEntity;
 
-$userStats = $parentCompany->modelRelationshipStatistics()
-    ->where('relationship_name', 'companies')
-    ->where('attribute_name', 'user_rating')
-    ->first();
+    public static function stickleTrackedAttributes(): array
+    {
+        return ['average_user_rating'];
+    }
 
-// This includes ratings from users across ALL child companies
+    protected function averageUserRating(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->users()->avg('rating'));
+    }
+}
 ```
+
+`ParentCompany` then aggregates `average_user_rating` across its companies.
 
 ## Complete Examples
 
@@ -475,7 +492,7 @@ To disable automatic observation of model attribute changes entirely, set the fo
 STICKLE_TRACK_SERVER_MODEL_ATTRIBUTES=false
 ```
 
-When disabled, the model attribute observer is not registered and no `ObjectAttributeChanged` events will be dispatched on model save. Scheduled tracking via `STICKLE_FREQUENCY_RECORD_MODEL_ATTRIBUTES` is not affected.
+When disabled, the model attribute observer is not registered and no `ModelAttributeChanged` events will be dispatched on model save. Scheduled tracking via `STICKLE_FREQUENCY_RECORD_MODEL_ATTRIBUTES` is not affected.
 
 ## Performance Considerations
 
@@ -487,7 +504,7 @@ Attributes in `stickleObservedAttributes()` are updated automatically when the m
 $user = User::find(1);
 $user->email = 'newemail@example.com';
 $user->save();
-// ObjectAttributeChanged event dispatched immediately
+// ModelAttributeChanged event dispatched immediately
 ```
 
 ### Scheduled Updates

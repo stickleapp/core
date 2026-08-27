@@ -14,9 +14,9 @@ Stickle dispatches several types of events throughout your application:
 |-------|----------------|-----------|
 | `Track` | Custom user events | Track button clicks, feature usage, custom actions |
 | `Page` | Page views | Monitor navigation, build user journeys |
-| `ObjectAttributeChanged` | Model attribute changes | Alert on status changes, audit critical fields |
-| `ObjectEnteredSegment` | User enters segment | Send welcome emails, trigger workflows |
-| `ObjectExitedSegment` | User leaves segment | Re-engagement campaigns, alerts |
+| `ModelAttributeChanged` | Model attribute changes | Alert on status changes, audit critical fields |
+| `ModelEnteredSegment` | User enters segment | Send welcome emails, trigger workflows |
+| `ModelExitedSegment` | User leaves segment | Re-engagement campaigns, alerts |
 | `Illuminate\Auth\Events\*` | Authentication events | Track logins, registrations, logouts |
 
 ## User Events (Track)
@@ -92,8 +92,13 @@ class ClickedUpgradeButtonListener implements ShouldQueue
 
 A listener named `IDidAThingListener` will catch any of these event names:
 - `i:did:a:thing`
+- `i.did.a.thing`
 - `i_did_a_thing`
+- `i-did-a-thing`
 - `IDidAThing`
+
+The `:` and `.` separators are normalised to `_` before the name is converted,
+so all five spellings resolve to the same class.
 
 ## Page View Events
 
@@ -156,10 +161,10 @@ Monitor changes to specific model attributes and respond in real-time.
 ### How It Works
 
 **Standard Attributes:**
-Model attributes that exist as database columns are tracked in real-time. When a model is saved with a new value, `ObjectAttributeChanged` is dispatched immediately.
+Model attributes that exist as database columns are tracked in real-time. When a model is saved with a new value, `ModelAttributeChanged` is dispatched immediately.
 
 **Calculated Attributes:**
-Custom or calculated attributes (defined as accessors) are updated on a schedule. When changed, an `ObjectAttributeChanged` event is dispatched.
+Custom or calculated attributes (defined as accessors) are updated on a schedule. When changed, an `ModelAttributeChanged` event is dispatched.
 
 ### Listening to Attribute Changes
 
@@ -176,14 +181,14 @@ For example, to respond to changes in the User's `order_count` attribute:
 
 namespace App\Listeners;
 
-use StickleApp\Core\Events\ObjectAttributeChanged;
+use StickleApp\Core\Events\ModelAttributeChanged;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MilestoneAchieved;
 
 class UserOrderCountListener implements ShouldQueue
 {
-    public function handle(ObjectAttributeChanged $event): void
+    public function handle(ModelAttributeChanged $event): void
     {
         $user = $event->object;
         $oldValue = $event->oldValue;
@@ -215,7 +220,7 @@ $event->changed_at      // Timestamp of change
 
 Respond when users enter or exit customer segments.
 
-### ObjectEnteredSegment
+### ModelEnteredSegment
 
 Triggered when a model is added to a segment:
 
@@ -224,14 +229,14 @@ Triggered when a model is added to a segment:
 
 namespace App\Listeners;
 
-use StickleApp\Core\Events\ObjectEnteredSegment;
+use StickleApp\Core\Events\ModelEnteredSegment;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WelcomeToSegment;
 
 class SendHighValueWelcome implements ShouldQueue
 {
-    public function handle(ObjectEnteredSegment $event): void
+    public function handle(ModelEnteredSegment $event): void
     {
         // Only act on HighValueCustomers segment
         if ($event->segment->as_class === 'HighValueCustomers') {
@@ -244,7 +249,7 @@ class SendHighValueWelcome implements ShouldQueue
 }
 ```
 
-### ObjectExitedSegment
+### ModelExitedSegment
 
 Triggered when a model is removed from a segment:
 
@@ -253,14 +258,14 @@ Triggered when a model is removed from a segment:
 
 namespace App\Listeners;
 
-use StickleApp\Core\Events\ObjectExitedSegment;
+use StickleApp\Core\Events\ModelExitedSegment;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\CustomerAtRisk;
 
 class AlertWhenExitingActive implements ShouldQueue
 {
-    public function handle(ObjectExitedSegment $event): void
+    public function handle(ModelExitedSegment $event): void
     {
         // Only act on ActiveUsers segment
         if ($event->segment->as_class === 'ActiveUsers') {
@@ -279,8 +284,8 @@ class AlertWhenExitingActive implements ShouldQueue
 ```php
 $event->object      // The model instance
 $event->segment     // The segment object
-$event->entered_at  // When they entered (for ObjectEnteredSegment)
-$event->exited_at   // When they exited (for ObjectExitedSegment)
+$event->entered_at  // When they entered (for ModelEnteredSegment)
+$event->exited_at   // When they exited (for ModelExitedSegment)
 ```
 
 ## Authentication Events
@@ -365,14 +370,14 @@ class UserLoggedIn implements ShouldQueue
 
 namespace App\Listeners;
 
-use StickleApp\Core\Events\ObjectEnteredSegment;
+use StickleApp\Core\Events\ModelEnteredSegment;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ReEngagementOffer;
 
 class SendReEngagementEmail implements ShouldQueue
 {
-    public function handle(ObjectEnteredSegment $event): void
+    public function handle(ModelEnteredSegment $event): void
     {
         if ($event->segment->as_class === 'AtRiskCustomers') {
             $customer = $event->object;
@@ -395,7 +400,7 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\HighValueLogin;
-use StickleApp\Core\Filters\Filter;
+use StickleApp\Core\Filters\Base as Filter;
 
 class NotifyHighValueLogin implements ShouldQueue
 {
@@ -426,7 +431,7 @@ class NotifyHighValueLogin implements ShouldQueue
 
 namespace App\Listeners;
 
-use StickleApp\Core\Events\ObjectAttributeChanged;
+use StickleApp\Core\Events\ModelAttributeChanged;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Services\CRMService;
 
@@ -436,7 +441,7 @@ class UserSubscriptionStatusListener implements ShouldQueue
         protected CRMService $crm
     ) {}
 
-    public function handle(ObjectAttributeChanged $event): void
+    public function handle(ModelAttributeChanged $event): void
     {
         $user = $event->object;
         $status = $event->newValue;

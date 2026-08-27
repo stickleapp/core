@@ -42,6 +42,7 @@ Filter::date('attribute_name')
 
 **Available Methods:**
 - `->equals(date)` - Exact match
+- `->notEquals(date)` - Anything but an exact match
 - `->isBefore(date)` - Before given date
 - `->isAfter(date)` - After given date
 - `->occurredBefore(date)` - Alias for isBefore
@@ -58,6 +59,7 @@ Filter::datetime('attribute_name')
 
 **Available Methods:**
 - `->equals(datetime)` - Exact match
+- `->notEquals(datetime)` - Anything but an exact match
 - `->isBefore(datetime)` - Before given datetime
 - `->isAfter(datetime)` - After given datetime
 - `->occurredBefore(datetime)` - Alias for isBefore
@@ -88,6 +90,7 @@ Filter::eventCount('event_name')
 
 **Comparison Methods:**
 - `->equals(value)`
+- `->notEquals(value)`
 - `->greaterThan(value)`
 - `->lessThan(value)`
 - `->greaterThanOrEqualTo(value)`
@@ -102,6 +105,7 @@ Filter::number('attribute_name')
 
 **Simple Comparison (no aggregation needed):**
 - `->equals(value)`
+- `->notEquals(value)`
 - `->greaterThan(value)`
 - `->lessThan(value)`
 - `->greaterThanOrEqualTo(value)`
@@ -158,6 +162,7 @@ Filter::text('attribute_name')
 
 **Available Methods:**
 - `->equals(text)` - Exact match
+- `->notEquals(text)` - Anything but an exact match
 - `->contains(text)` - Contains substring
 - `->beginsWith(text)` - Starts with substring
 

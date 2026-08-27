@@ -396,14 +396,14 @@
 [Listening to page views]
 [Complete example]
 
-## Attribute Change Events (ObjectAttributeChanged)
+## Attribute Change Events (ModelAttributeChanged)
 [When triggered]
 [Listening to attribute changes]
 [Complete example]
 
 ## Segment Events
-[ObjectEnteredSegment]
-[ObjectExitedSegment]
+[ModelEnteredSegment]
+[ModelExitedSegment]
 [Complete examples]
 
 ## Authentication Events

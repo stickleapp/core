@@ -431,6 +431,14 @@ SET last_aggregated_id = (SELECT coalesce(max(id), 0) FROM stc_requests)
 WHERE name = 'stc_requests_rollup_1day';
 ```
 
+**If the rollups have run and the segment is still empty, check what the segment's
+model is.** These filters match rows on `model_class`, and every row in
+`stc_requests` is written for the authenticated user. An account-level model — a
+tenant, company or organisation — has no rows of its own, so a count filter on one
+always returns zero no matter how healthy the rollups are. See
+[Count Filters Only See the Authenticated User](/guide/filters#count-filters-only-see-the-authenticated-user)
+for the ways around it.
+
 ### Rollup Rows Have model_class and object_uid the Wrong Way Round
 
 Databases created before this was fixed have the two columns transposed —
@@ -537,7 +545,7 @@ Verify `exportInterval` in segment class:
 #[StickleSegmentMetadata([
     'exportInterval' => 60, // Minutes between exports
 ])]
-class MySegment extends Segment
+class MySegment extends SegmentContract
 {
     // ...
 }
@@ -636,7 +644,7 @@ dd(DB::getQueryLog());
 **Symptoms:**
 - Attribute values are stale
 - Changes not reflected in StickleUI
-- `ObjectAttributeChanged` events not firing
+- `ModelAttributeChanged` events not firing
 
 **Solutions:**
 
@@ -697,7 +705,7 @@ php artisan stickle:calculate-attributes
 ### Attribute Changes Not Triggering Listeners
 
 **Problem:**
-`ObjectAttributeChanged` event not dispatched when attribute changes.
+`ModelAttributeChanged` event not dispatched when attribute changes.
 
 **Solutions:**
 
@@ -726,11 +734,11 @@ Listener must follow naming convention:
 // app/Listeners/UserSubscriptionStatusListener.php
 namespace App\Listeners;
 
-use StickleApp\Core\Events\ObjectAttributeChanged;
+use StickleApp\Core\Events\ModelAttributeChanged;
 
 class UserSubscriptionStatusListener
 {
-    public function handle(ObjectAttributeChanged $event): void
+    public function handle(ModelAttributeChanged $event): void
     {
         // ...
     }

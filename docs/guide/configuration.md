@@ -320,7 +320,7 @@ Server-side tracking configuration options.
 
 #### `STICKLE_TRACK_SERVER_MODEL_ATTRIBUTES`
 
-Whether to observe model attribute changes. When disabled, the model attribute observer is not registered and no `ObjectAttributeChanged` events will be dispatched on model save.
+Whether to observe model attribute changes. When disabled, the model attribute observer is not registered and no `ModelAttributeChanged` events will be dispatched on model save.
 
 _Default: true_
 

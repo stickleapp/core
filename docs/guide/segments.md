@@ -38,14 +38,14 @@ namespace App\Segments;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use StickleApp\Core\Attributes\StickleSegmentMetadata;
-use StickleApp\Core\Contracts\Segment;
+use StickleApp\Core\Contracts\SegmentContract;
 
 #[StickleSegmentMetadata([
     'name' => 'Active Users',
     'description' => 'Users who have logged in within the last 7 days',
     'exportInterval' => 360, // Re-calculate every 6 hours
 ])]
-class ActiveUsers extends Segment
+class ActiveUsers extends SegmentContract
 {
     public string $model = User::class;
 
@@ -76,9 +76,9 @@ Stickle provides powerful filters for building segments based on user behavior a
 ### Filter by Recent Activity
 
 ```php
-use StickleApp\Core\Filters\Filter;
+use StickleApp\Core\Filters\Base as Filter;
 
-class ActiveUsers extends Segment
+class ActiveUsers extends SegmentContract
 {
     public string $model = User::class;
 
@@ -101,7 +101,7 @@ class ActiveUsers extends Segment
 ### Filter by Attribute Values
 
 ```php
-class HighValueCustomers extends Segment
+class HighValueCustomers extends SegmentContract
 {
     public string $model = User::class;
 
@@ -119,7 +119,7 @@ class HighValueCustomers extends Segment
 ### Combine Multiple Filters
 
 ```php
-class AtRiskCustomers extends Segment
+class AtRiskCustomers extends SegmentContract
 {
     public string $model = User::class;
 
@@ -148,7 +148,7 @@ class AtRiskCustomers extends Segment
 ### Mix Eloquent and Stickle Queries
 
 ```php
-class PremiumActiveUsers extends Segment
+class PremiumActiveUsers extends SegmentContract
 {
     public string $model = User::class;
 
@@ -179,7 +179,7 @@ class PremiumActiveUsers extends Segment
 Users who have logged in recently:
 
 ```php
-class ActiveUsers extends Segment
+class ActiveUsers extends SegmentContract
 {
     public string $model = User::class;
 
@@ -196,7 +196,7 @@ class ActiveUsers extends Segment
 Customers above a revenue threshold:
 
 ```php
-class HighValueCustomers extends Segment
+class HighValueCustomers extends SegmentContract
 {
     public string $model = User::class;
 
@@ -216,7 +216,7 @@ class HighValueCustomers extends Segment
 Customers showing signs of churn:
 
 ```php
-class AtRiskCustomers extends Segment
+class AtRiskCustomers extends SegmentContract
 {
     public string $model = User::class;
 
@@ -246,7 +246,7 @@ class AtRiskCustomers extends Segment
 Users in trial period, segmented by engagement:
 
 ```php
-class EngagedTrialUsers extends Segment
+class EngagedTrialUsers extends SegmentContract
 {
     public string $model = User::class;
 
@@ -273,7 +273,7 @@ class EngagedTrialUsers extends Segment
 Highly engaged customers:
 
 ```php
-class PowerUsers extends Segment
+class PowerUsers extends SegmentContract
 {
     public string $model = User::class;
 
@@ -307,7 +307,7 @@ class PowerUsers extends Segment
 Customers matching your ideal profile:
 
 ```php
-class IdealCustomerProfile extends Segment
+class IdealCustomerProfile extends SegmentContract
 {
     public string $model = Company::class;
 
@@ -383,7 +383,7 @@ Or per-segment using metadata:
 #[StickleSegmentMetadata([
     'exportInterval' => 60,  # Recalculate hourly
 ])]
-class CriticalSegment extends Segment
+class CriticalSegment extends SegmentContract
 {
     // ...
 }

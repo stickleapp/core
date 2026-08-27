@@ -12,9 +12,9 @@ Quick reference for all events dispatched by Stickle. For detailed usage and exa
 |-------|----------------|-----------|
 | [Track](#track-event) | Custom user events | `StickleApp\Core\Events` |
 | [Page](#page-event) | Page views | `StickleApp\Core\Events` |
-| [ObjectAttributeChanged](#objectattributechanged-event) | Model attribute changes | `StickleApp\Core\Events` |
-| [ObjectEnteredSegment](#objectenteredsegment-event) | Model enters segment | `StickleApp\Core\Events` |
-| [ObjectExitedSegment](#objectexitedsegment-event) | Model leaves segment | `StickleApp\Core\Events` |
+| [ModelAttributeChanged](#objectattributechanged-event) | Model attribute changes | `StickleApp\Core\Events` |
+| [ModelEnteredSegment](#objectenteredsegment-event) | Model enters segment | `StickleApp\Core\Events` |
+| [ModelExitedSegment](#objectexitedsegment-event) | Model leaves segment | `StickleApp\Core\Events` |
 | [Illuminate\Auth\Events\*](#authentication-events) | Auth events | `Illuminate\Auth\Events` |
 
 ---
@@ -129,9 +129,9 @@ stickle.page({ section: 'pricing' });
 
 ---
 
-## ObjectAttributeChanged Event
+## ModelAttributeChanged Event
 
-**Class:** `StickleApp\Core\Events\ObjectAttributeChanged`
+**Class:** `StickleApp\Core\Events\ModelAttributeChanged`
 
 **When Dispatched:** When a tracked model attribute value changes.
 
@@ -168,9 +168,9 @@ Example: `UserSubscriptionStatusListener` for User's `subscription_status` attri
 
 ---
 
-## ObjectEnteredSegment Event
+## ModelEnteredSegment Event
 
-**Class:** `StickleApp\Core\Events\ObjectEnteredSegment`
+**Class:** `StickleApp\Core\Events\ModelEnteredSegment`
 
 **When Dispatched:** When a model is added to a segment during segment recalculation.
 
@@ -196,7 +196,7 @@ $event->entered_at;             // Carbon instance
 ```php
 class SendWelcomeEmail implements ShouldQueue
 {
-    public function handle(ObjectEnteredSegment $event): void
+    public function handle(ModelEnteredSegment $event): void
     {
         if ($event->segment->as_class === 'HighValueCustomers') {
             // Send VIP welcome email
@@ -207,9 +207,9 @@ class SendWelcomeEmail implements ShouldQueue
 
 ---
 
-## ObjectExitedSegment Event
+## ModelExitedSegment Event
 
-**Class:** `StickleApp\Core\Events\ObjectExitedSegment`
+**Class:** `StickleApp\Core\Events\ModelExitedSegment`
 
 **When Dispatched:** When a model is removed from a segment during segment recalculation.
 
@@ -235,7 +235,7 @@ $event->exited_at;              // Carbon instance
 ```php
 class AlertInactiveUser implements ShouldQueue
 {
-    public function handle(ObjectExitedSegment $event): void
+    public function handle(ModelExitedSegment $event): void
     {
         if ($event->segment->as_class === 'ActiveUsers') {
             // Send re-engagement email
@@ -351,7 +351,7 @@ class ClickedUpgradeButtonListener implements ShouldQueue
 ```php
 class HighValueSegmentListener implements ShouldQueue
 {
-    public function handle(ObjectEnteredSegment $event): void
+    public function handle(ModelEnteredSegment $event): void
     {
         if ($event->segment->as_class === 'HighValueCustomers') {
             Notification::route('slack', config('slack.webhook'))
@@ -366,7 +366,7 @@ class HighValueSegmentListener implements ShouldQueue
 ```php
 class UserEmailListener implements ShouldQueue
 {
-    public function handle(ObjectAttributeChanged $event): void
+    public function handle(ModelAttributeChanged $event): void
     {
         $user = $event->object;
         CRM::updateContact($user->email, [
@@ -384,9 +384,9 @@ class UserEmailListener implements ShouldQueue
 |-----------|--------|-------|
 | Track | Immediate | Yes (queued) |
 | Page | After response sent | Yes (queued) |
-| ObjectAttributeChanged | On model save or schedule | Yes (queued) |
-| ObjectEnteredSegment | During segment export | Yes (queued) |
-| ObjectExitedSegment | During segment export | Yes (queued) |
+| ModelAttributeChanged | On model save or schedule | Yes (queued) |
+| ModelEnteredSegment | During segment export | Yes (queued) |
+| ModelExitedSegment | During segment export | Yes (queued) |
 | Auth Events | Immediate | Depends on listener |
 
 ## Best Practices
