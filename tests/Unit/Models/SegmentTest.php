@@ -39,3 +39,27 @@ test('objects() joins the pivot table under the configured prefix', function ():
     expect($sql)->toContain('acme_model_segment')
         ->and($sql)->not->toContain('stc_model_segment');
 });
+
+/**
+ * object_uid is text and the model key is a bigint, and Postgres refuses
+ * bigint = text outright, so the join genuinely needs a cast that
+ * belongsToMany() cannot express. The old approach let Laravel build the join
+ * it wanted, deleted it back out of $query->joins, and appended a replacement
+ * -- which also re-added the segment_id condition belongsToMany() had already
+ * applied as its relation constraint, so the query constrained it twice.
+ */
+test('objects() casts the model key to text in the join', function (): void {
+    $segment = SegmentModel::query()->create([
+        'name' => 'Casts', 'model_class' => 'User', 'as_class' => 'Casts', 'description' => 'c',
+    ]);
+
+    expect($segment->objects()->toSql())->toContain('users.id::text');
+});
+
+test('objects() constrains segment_id exactly once', function (): void {
+    $segment = SegmentModel::query()->create([
+        'name' => 'Once', 'model_class' => 'User', 'as_class' => 'Once', 'description' => 'o',
+    ]);
+
+    expect(substr_count($segment->objects()->toSql(), 'segment_id'))->toBe(1);
+});

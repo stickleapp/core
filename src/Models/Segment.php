@@ -6,12 +6,14 @@ namespace StickleApp\Core\Models;
 
 use Carbon\Carbon;
 use Illuminate\Container\Attributes\Config as ConfigAttribute;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Relations\Pivot;
+use StickleApp\Core\Relations\TextKeyBelongsToMany;
 use StickleApp\Core\Support\ClassUtils;
 
 /**
@@ -91,46 +93,52 @@ class Segment extends Model
     /**
      * Get the Objects associated with this Segment
      *
-     * @return BelongsToMany<Model, Model>
+     * @return BelongsToMany<Model, $this, Pivot>
      */
     public function objects(): BelongsToMany
     {
-
         $prefix = config('stickle.database.tablePrefix');
 
         $modelClass = ClassUtils::resolveModelClass($this->model_class);
 
-        $pivotTable = $prefix.'model_segment';
-
-        // Start with a base relationship
         /** @var class-string<Model> $modelClass */
-        $belongsToMany = $this->belongsToMany(
+        return $this->belongsToMany(
             $modelClass,
-            $pivotTable,
+            $prefix.'model_segment',
             'segment_id',
             'object_uid'
         )->withTimestamps();
+    }
 
-        // Get the underlying query builder
-        $builder = $belongsToMany->getQuery();
-
-        // Remove the default join constraints
-        $joins = $builder->getQuery()->joins;
-        if ($joins !== null) {
-            $builder->getQuery()->joins = array_filter($joins, fn ($join): bool => $join->table !== $pivotTable);
-        }
-
-        // Add our custom join with type casting
-        /** @var Model $modelInstance */
-        $modelInstance = new $modelClass;
-        $modelTable = $modelInstance->getTable();
-        $primaryKey = $modelInstance->getKeyName();
-
-        $builder->join($pivotTable, function ($join) use ($modelTable, $primaryKey, $pivotTable): void {
-            $join->on(DB::raw($modelTable.'.'.$primaryKey.'::text'), '=', $pivotTable.'.object_uid')
-                ->where($pivotTable.'.segment_id', '=', $this->id);
-        });
-
-        return $belongsToMany;
+    /**
+     * Build the pivot join with the related key cast to text.
+     *
+     * object_uid is a text column and a model key generally is not, and
+     * Postgres will not compare the two without a cast. This is Eloquent's
+     * own hook for substituting the relation class, which is why the join is
+     * built correctly once here rather than generated and then rewritten.
+     *
+     * @param  Builder<Model>  $query
+     * @param  string  $table
+     * @param  string  $foreignPivotKey
+     * @param  string  $relatedPivotKey
+     * @param  string  $parentKey
+     * @param  string  $relatedKey
+     * @param  string|null  $relationName
+     * @return BelongsToMany<Model, Model, Pivot>
+     */
+    protected function newBelongsToMany(
+        Builder $query,
+        Model $parent,
+        $table,
+        $foreignPivotKey,
+        $relatedPivotKey,
+        $parentKey,
+        $relatedKey,
+        $relationName = null,
+    ) {
+        return new TextKeyBelongsToMany(
+            $query, $parent, $table, $foreignPivotKey, $relatedPivotKey, $parentKey, $relatedKey, $relationName
+        );
     }
 }
