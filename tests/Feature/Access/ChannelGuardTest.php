@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use StickleApp\Core\Dto\ModelDto;
 use StickleApp\Core\Dto\RequestDto;
@@ -50,6 +51,19 @@ use Workbench\App\Models\User;
  * shipped ones.
  */
 beforeEach(function (): void {
+    /**
+     * These tests drive real HTTP requests as an authenticated user, so the
+     * package's own RequestLogger middleware fires a Page event on every one
+     * of them. Page implements ShouldBroadcast, so with `redis` selected below
+     * it is broadcast for real and the suite needs a running Redis server --
+     * which CI does not have, and which DEVELOPERS.md does not ask for.
+     *
+     * The broadcaster is chosen for its auth() semantics, not to move
+     * messages, so faking the one incidental event keeps this test about
+     * channel authorization and keeps the suite PostgreSQL-only.
+     */
+    Event::fake([Page::class]);
+
     config()->set('broadcasting.connections.redis', [
         'driver' => 'redis',
         'connection' => 'default',
