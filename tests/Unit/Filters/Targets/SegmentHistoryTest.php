@@ -81,7 +81,7 @@ test('property returns correct column', function (): void {
     $builder = User::query();
     $target = $filter->getTarget($builder);
 
-    expect($target->property())->toBe($prefix.'model_segment_audit.segment_id');
+    expect($target->property())->toBe($prefix.'model_segment_audit_'.$target->segmentId.'.segment_id');
 });
 
 test('castProperty returns property without casting', function (): void {
@@ -91,7 +91,7 @@ test('castProperty returns property without casting', function (): void {
     $builder = User::query();
     $target = $filter->getTarget($builder);
 
-    expect($target->castProperty())->toBe($prefix.'model_segment_audit.segment_id');
+    expect($target->castProperty())->toBe($prefix.'model_segment_audit_'.$target->segmentId.'.segment_id');
 });
 
 test('avoids duplicate joins', function (): void {

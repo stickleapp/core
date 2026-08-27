@@ -30,9 +30,22 @@ class SegmentHistory extends FilterTargetContract
         $this->segmentId = $this->resolveSegmentId($segmentIdentifier);
     }
 
+    /**
+     * The alias this target's join is given.
+     *
+     * Must cover everything that varies in the join condition. Today that is
+     * the segment; `operation` is a constant. If operation ever becomes a
+     * parameter it has to be part of this key too, or two filters differing
+     * only by operation would silently share one join.
+     */
+    public function joinAlias(): string
+    {
+        return $this->modelSegmentAuditTable.'_'.$this->segmentId;
+    }
+
     public function property(): ?string
     {
-        return $this->modelSegmentAuditTable.'.segment_id';
+        return $this->joinAlias().'.segment_id';
     }
 
     #[Override]
@@ -45,18 +58,18 @@ class SegmentHistory extends FilterTargetContract
     {
         $modelTable = $this->builder->getModel()->getTable();
         $primaryKey = $this->builder->getModel()->getKeyName();
+        $alias = $this->joinAlias();
+        $joinExpression = $this->modelSegmentAuditTable.' as '.$alias;
 
-        // Check if join already exists to avoid duplicate joins
-        $existingJoins = $this->builder->getQuery()->joins ?? [];
-        $joinExists = collect($existingJoins)->contains(fn ($join): bool => $join->table === $this->modelSegmentAuditTable);
-
-        if (! $joinExists) {
-            $this->builder->leftJoin($this->modelSegmentAuditTable, function ($join) use ($modelTable, $primaryKey): void {
-                $join->on(DB::raw($modelTable.'.'.$primaryKey.'::text'), '=', $this->modelSegmentAuditTable.'.object_uid')
-                    ->where($this->modelSegmentAuditTable.'.segment_id', '=', $this->segmentId)
-                    ->where($this->modelSegmentAuditTable.'.operation', '=', 'ENTER');
-            });
+        if ($this->builder->hasJoin($joinExpression)) {
+            return;
         }
+
+        $this->builder->leftJoin($joinExpression, function ($join) use ($modelTable, $primaryKey, $alias): void {
+            $join->on(DB::raw($modelTable.'.'.$primaryKey.'::text'), '=', $alias.'.object_uid')
+                ->where($alias.'.segment_id', '=', $this->segmentId)
+                ->where($alias.'.operation', '=', 'ENTER');
+        });
     }
 
     /**

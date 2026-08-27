@@ -30,9 +30,22 @@ class Segment extends FilterTargetContract
         $this->segmentId = $this->resolveSegmentId($segmentIdentifier);
     }
 
+    /**
+     * The alias this target's join is given.
+     *
+     * A segment join is distinguished by its segment_id, which lives inside
+     * the join condition rather than in the table name. Keying the alias on
+     * the segment lets two different segments coexist in one query, while two
+     * filters on the SAME segment still share a single join.
+     */
+    public function joinAlias(): string
+    {
+        return $this->modelSegmentTable.'_'.$this->segmentId;
+    }
+
     public function property(): string
     {
-        return $this->modelSegmentTable.'.segment_id';
+        return $this->joinAlias().'.segment_id';
     }
 
     #[Override]
@@ -45,17 +58,17 @@ class Segment extends FilterTargetContract
     {
         $modelTable = $this->builder->getModel()->getTable();
         $primaryKey = $this->builder->getModel()->getKeyName();
+        $alias = $this->joinAlias();
+        $joinExpression = $this->modelSegmentTable.' as '.$alias;
 
-        // Check if join already exists to avoid duplicate joins
-        $existingJoins = $this->builder->getQuery()->joins ?? [];
-        $joinExists = collect($existingJoins)->contains(fn ($join): bool => $join->table === $this->modelSegmentTable);
-
-        if (! $joinExists) {
-            $this->builder->leftJoin($this->modelSegmentTable, function ($join) use ($modelTable, $primaryKey): void {
-                $join->on(DB::raw($modelTable.'.'.$primaryKey.'::text'), '=', $this->modelSegmentTable.'.object_uid')
-                    ->where($this->modelSegmentTable.'.segment_id', '=', $this->segmentId);
-            });
+        if ($this->builder->hasJoin($joinExpression)) {
+            return;
         }
+
+        $this->builder->leftJoin($joinExpression, function ($join) use ($modelTable, $primaryKey, $alias): void {
+            $join->on(DB::raw($modelTable.'.'.$primaryKey.'::text'), '=', $alias.'.object_uid')
+                ->where($alias.'.segment_id', '=', $this->segmentId);
+        });
     }
 
     /**
