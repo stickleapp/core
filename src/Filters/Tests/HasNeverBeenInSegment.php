@@ -15,6 +15,6 @@ class HasNeverBeenInSegment extends FilterTestContract
     {
         throw_if($filterTargetContract->property() === null, InvalidArgumentException::class, 'Filter target property cannot be null');
 
-        return $builder->whereNull($filterTargetContract->property());
+        return $builder->whereNull($filterTargetContract->property(), $operator);
     }
 }

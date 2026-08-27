@@ -15,6 +15,6 @@ class LessThanColumn extends FilterTestContract
 
     public function applyFilter(Builder $builder, FilterTargetContract $filterTargetContract, string $operator): Builder
     {
-        return $builder->whereColumn(DB::raw($filterTargetContract->castProperty()), '<', $this->comparator);
+        return $builder->whereColumn(DB::raw($filterTargetContract->castProperty()), '<', $this->comparator, $operator);
     }
 }

@@ -42,3 +42,18 @@ test('works with relative dates', function (): void {
         now()->subDays(10)->format('Y-m-d'),
     ]);
 });
+
+test('Joins with or when the operator is or', function (): void {
+
+    $filter = Filter::text('a_column')->equals('something');
+
+    $builder = User::query()->where('id', '>', 0);
+
+    $target = $filter->getTarget($builder);
+
+    $filter->test->applyFilter($builder, $target, 'or');
+
+    expect($builder->toSql())->toBe(
+        "select * from \"users\" where \"id\" > ? or data->>'a_column'::text = ?"
+    );
+});

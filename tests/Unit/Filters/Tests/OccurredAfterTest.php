@@ -75,3 +75,18 @@ test('works with relative dates', function (): void {
     expect($builder->getBindings()[0])->toEqual(now()->subDays(10)->format('Y-m-d'));
     expect(Date::createFromDate($builder->getBindings()[1])->toDateString())->toEqual(Date::today()->toDateString());
 });
+
+test('Joins with or when the operator is or', function (): void {
+
+    $filter = Filter::date('a_column')->occurredAfter(fake()->date());
+
+    $builder = User::query()->where('id', '>', 0);
+
+    $target = $filter->getTarget($builder);
+
+    $filter->test->applyFilter($builder, $target, 'or');
+
+    expect($builder->toSql())->toBe(
+        "select * from \"users\" where \"id\" > ? or (data->>'a_column'::date > ? and data->>'a_column'::date < ?)"
+    );
+});

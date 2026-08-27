@@ -13,6 +13,6 @@ class IsTrue extends FilterTestContract
 {
     public function applyFilter(Builder $builder, FilterTargetContract $filterTargetContract, string $operator): Builder
     {
-        return $builder->where(DB::raw($filterTargetContract->castProperty()), '=', true);
+        return $builder->where(DB::raw($filterTargetContract->castProperty()), '=', true, $operator);
     }
 }

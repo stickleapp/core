@@ -13,6 +13,6 @@ class IsNull extends FilterTestContract
 {
     public function applyFilter(Builder $builder, FilterTargetContract $filterTargetContract, string $operator): Builder
     {
-        return $builder->whereNull(DB::raw($filterTargetContract->castProperty()));
+        return $builder->whereNull(DB::raw($filterTargetContract->castProperty()), $operator);
     }
 }

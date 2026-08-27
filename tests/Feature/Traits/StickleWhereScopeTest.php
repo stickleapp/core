@@ -80,3 +80,27 @@ test('stickleOrWhere() joins on the model key rather than a hard-coded id column
     expect($workspaces)->toHaveCount(1)
         ->and($workspaces->first()->name)->toBe('Tracked');
 });
+
+/**
+ * Every test class has to forward the boolean it is handed. Equals used the
+ * two-argument where(), so the query builder fell back to its own 'and'
+ * default and an or-segment silently returned the narrower intersection.
+ * greaterThan() already forwarded, so the cases above never caught this.
+ */
+test('stickleOrWhere() ors rather than ands when the filter test is Equals', function (): void {
+    $documents = User::factory()->create(['name' => 'Has Documents']);
+    $owner = User::factory()->create(['name' => 'Is Owner']);
+    $neither = User::factory()->create(['name' => 'Has Neither']);
+
+    $documents->trackable_attributes = ['user_type' => 'member'];
+    $owner->trackable_attributes = ['user_type' => 'owner'];
+    $neither->trackable_attributes = ['user_type' => 'member'];
+
+    $users = User::query()
+        ->where('name', 'Has Documents')
+        ->stickleOrWhere(Filter::text('user_type')->equals('owner'))
+        ->get();
+
+    expect($users->pluck('name')->sort()->values()->all())
+        ->toBe(['Has Documents', 'Is Owner']);
+});

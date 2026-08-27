@@ -19,6 +19,6 @@ class OccurredBefore extends FilterTestContract
         return $builder->where(function (\Illuminate\Contracts\Database\Query\Builder $builder) use ($filterTargetContract): void {
             $builder->where(DB::raw($filterTargetContract->castProperty()), '<', $filterTargetContract->castValue($this->comparator));
             $builder->where(DB::raw($filterTargetContract->castProperty()), '<', Date::now()->toDateTimeString());
-        });
+        }, null, null, $operator);
     }
 }

@@ -64,3 +64,19 @@ test('hasBeenInSegment() with stickleWhere integration', function (): void {
     expect($sql)->toContain($prefix.'model_segment_audit');
     expect($sql)->toContain('is not null');
 });
+
+test('Joins with or when the operator is or', function (): void {
+
+    $filter = Filter::segmentHistory('VipUsers')->hasBeenInSegment();
+
+    $builder = User::query()->where('id', '>', 0);
+
+    $target = $filter->getTarget($builder);
+    $target->applyJoin();
+
+    $filter->test->applyFilter($builder, $target, 'or');
+
+    $wheres = $builder->getQuery()->wheres;
+
+    expect(end($wheres)['boolean'])->toBe('or');
+});

@@ -63,3 +63,19 @@ test('isNotInSegment() with stickleWhere integration', function (): void {
     expect($sql)->toContain($prefix.'model_segment');
     expect($sql)->toContain('is null');
 });
+
+test('Joins with or when the operator is or', function (): void {
+
+    $filter = Filter::segment('InactiveUsers')->isNotInSegment();
+
+    $builder = User::query()->where('id', '>', 0);
+
+    $target = $filter->getTarget($builder);
+    $target->applyJoin();
+
+    $filter->test->applyFilter($builder, $target, 'or');
+
+    $wheres = $builder->getQuery()->wheres;
+
+    expect(end($wheres)['boolean'])->toBe('or');
+});

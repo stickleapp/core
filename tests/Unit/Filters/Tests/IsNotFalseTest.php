@@ -22,3 +22,18 @@ test('Creates correct sql', function (): void {
         sprintf("select * from \"users\" where ((data->'a_column')::boolean != false or (data->'a_column')::boolean is null)", $prefix)
     );
 });
+
+test('Joins with or when the operator is or', function (): void {
+
+    $filter = Filter::boolean('a_column')->isNotFalse();
+
+    $builder = User::query()->where('id', '>', 0);
+
+    $target = $filter->getTarget($builder);
+
+    $filter->test->applyFilter($builder, $target, 'or');
+
+    expect($builder->toSql())->toBe(
+        "select * from \"users\" where \"id\" > ? or ((data->'a_column')::boolean != false or (data->'a_column')::boolean is null)"
+    );
+});

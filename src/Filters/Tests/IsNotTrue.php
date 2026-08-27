@@ -16,6 +16,6 @@ class IsNotTrue extends FilterTestContract
         return $builder->where(function (Builder $builder) use ($filterTargetContract): void {
             $builder->where(DB::raw($filterTargetContract->castProperty()), '!=', true);
             $builder->orWhereNull(DB::raw($filterTargetContract->castProperty()));
-        });
+        }, null, null, $operator);
     }
 }
