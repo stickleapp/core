@@ -6,7 +6,7 @@ namespace StickleApp\Core\Attributes;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_METHOD)]
 class StickleAttributeMetadata
 {
     /**

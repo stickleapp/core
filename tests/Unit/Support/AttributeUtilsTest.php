@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use StickleApp\Core\Attributes\StickleAttributeMetadata;
 use StickleApp\Core\Support\AttributeUtils;
-use StickleApp\Core\Tests\Fixtures\Attributes\AnnotatedProperty;
 use Workbench\App\Models\User;
 
 /**
@@ -45,20 +44,4 @@ test('the method scanner normalises camel case and digits to snake case', functi
 
     expect($metadata)->toHaveKey('tickets_resolved_last_30_days')
         ->and($metadata)->toHaveKey('average_resolution_time_7_days');
-});
-
-/**
- * The class ships two scanners and merges their results, so metadata on a
- * property is clearly intended to work. StickleAttributeMetadata declared
- * only Attribute::TARGET_METHOD, so the property scanner could never return
- * anything -- newInstance() rejects the target.
- */
-test('the property scanner reads an annotation declared on a property', function (): void {
-    $metadata = AttributeUtils::getAllAttributesForClass_targetProperty(
-        AnnotatedProperty::class,
-        StickleAttributeMetadata::class
-    );
-
-    expect($metadata)->toHaveKey('seat_count')
-        ->and($metadata['seat_count']['label'])->toBe('Seat Count');
 });

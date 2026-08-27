@@ -90,32 +90,6 @@ class AttributeUtils
         return strtolower($attributeName);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public static function getAllAttributesForClass_targetProperty(string $className, ?string $attributeClass = null): array
-    {
-        throw_unless(class_exists($className), Exception::class, 'Class not found');
-
-        throw_if($attributeClass !== null && ! class_exists($attributeClass), Exception::class, 'Attribute not found');
-
-        $reflectionClass = new ReflectionClass($className);
-        $metadata = [];
-
-        // Check properties for the attribute (if needed)
-        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            $attributes = $reflectionProperty->getAttributes($attributeClass);
-            if (! empty($attributes)) {
-                $instance = $attributes[0]->newInstance();
-                if (property_exists($instance, 'value')) {
-                    $metadata[$reflectionProperty->getName()] = $instance->value;
-                }
-            }
-        }
-
-        return $metadata;
-    }
-
     public static function getAttributeForClass(string $className, string $attributeClass): mixed
     {
         $attributes = self::getAllAttributesForClass_targetClass($className, $attributeClass);

@@ -335,17 +335,10 @@ trait StickleEntity
         $trackedAttributes = static::stickleTrackedAttributes();
 
         // Get the metadata [ 'attribute' => [ 'chartType' => 'line', 'label' => 'Attribute', 'description' => 'Description', 'dataType' => 'string', 'primaryAggregateType' => 'sum' ] ]
-        $metadataMethods = AttributeUtils::getAllAttributesForClass_targetMethod(
+        $metadata = AttributeUtils::getAllAttributesForClass_targetMethod(
             static::class,
             StickleAttributeMetadata::class
         );
-
-        $metadataProperties = AttributeUtils::getAllAttributesForClass_targetProperty(
-            static::class,
-            StickleAttributeMetadata::class
-        );
-
-        $metadata = array_merge($metadataMethods, $metadataProperties);
 
         // Directly build chart data for tracked attributes
         $chartData = [];
