@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -288,9 +290,24 @@ return [
             'authenticationEventsTracked' => array_filter(
                 explode(
                     ',',
+                    /*
+                     * Authenticated and Validated are deliberately absent.
+                     *
+                     * Laravel dispatches Authenticated on every request that
+                     * resolves a user -- not once per login -- and Validated on
+                     * every credential check. Tracking either roughly doubles
+                     * stc_requests and adds no signal the request rows do not
+                     * already carry. Both remain valid values here; they are
+                     * just not worth their volume as a default.
+                     *
+                     * A comma-separated list. Every name must appear in
+                     * AuthenticatableEventListener::EVENT_CLASSES, and one that
+                     * does not now fails at boot rather than silently tracking
+                     * nothing. Leave it empty to switch this off.
+                     */
                     (string) env(
                         'STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED',
-                        'Authenticated,CurrentDeviceLogout,Login,Logout,OtherDeviceLogout,PasswordReset,Registered,Validated,Verified',
+                        'CurrentDeviceLogout,Login,Logout,OtherDeviceLogout,PasswordReset,Registered,Verified',
                     ),
                 ),
             ),

@@ -78,12 +78,16 @@ test('formatSettings writes each answer into the env key it belongs to', functio
     expect($formatted['STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE'])->toBeTrue();
 
     // config/stickle.php explodes this key on commas, so the boolean answer has
-    // to be expanded into the list before it is written.
+    // to be expanded into the list before it is written. What gets written is
+    // the recommended default, which is not the full set: Authenticated and
+    // Validated fire per request and per credential check, so they are opt-in.
     expect($formatted['STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED'])
         ->toContain('Login')
         ->toContain('Registered')
         ->and(explode(',', (string) $formatted['STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED']))
-        ->toHaveCount(9);
+        ->not->toContain('Authenticated')
+        ->not->toContain('Validated')
+        ->toHaveCount(7);
 });
 
 test('formatSettings disables authentication tracking when declined', function (): void {

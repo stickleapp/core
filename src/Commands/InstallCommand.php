@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Log;
 use StickleApp\Core\CoreServiceProvider;
 
 use function Laravel\Prompts\alert;
-use function Laravel\Prompts\clear;
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\form;
 use function Laravel\Prompts\info;
@@ -23,21 +22,25 @@ use function Laravel\Prompts\table;
 class InstallCommand extends Command
 {
     /**
-     * The Laravel authentication events Stickle can subscribe to. Must stay in
+     * The authentication events an install opts into by default. Must stay in
      * step with the default for STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED
-     * in config/stickle.php and with the map in AuthenticatableEventListener.
+     * in config/stickle.php, and every name must appear in
+     * AuthenticatableEventListener::EVENT_CLASSES.
+     *
+     * Not the full set: Authenticated and Validated fire on every request and
+     * every credential check respectively, so they roughly double stc_requests
+     * for no signal the request rows do not already carry. Both can still be
+     * added by hand.
      *
      * @var list<string>
      */
     private const array AUTHENTICATION_EVENTS = [
-        'Authenticated',
         'CurrentDeviceLogout',
         'Login',
         'Logout',
         'OtherDeviceLogout',
         'PasswordReset',
         'Registered',
-        'Validated',
         'Verified',
     ];
 
