@@ -9,9 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use StickleApp\Core\Attributes\StickleAttributeMetadata;
-use StickleApp\Core\Attributes\StickleObservedAttribute;
 use StickleApp\Core\Attributes\StickleRelationshipMetadata;
-use StickleApp\Core\Attributes\StickleTrackedAttribute;
 use StickleApp\Core\Enums\ChartType;
 use StickleApp\Core\Enums\DataType;
 use StickleApp\Core\Enums\PrimaryAggregate;
@@ -55,6 +53,24 @@ class Customer extends Model
     public function stickleLabel(): string
     {
         return $this->name;
+    }
+
+    public static function stickleObservedAttributes(): array
+    {
+        return ['mrr'];
+    }
+
+    public static function stickleTrackedAttributes(): array
+    {
+        return [
+            'ticket_count',
+            'open_ticket_count',
+            'tickets_closed',
+            'tickets_closed_last_30_days',
+            'average_resolution_time',
+            'average_resolution_time_30_days',
+            'mrr',
+        ];
     }
 
     // public static function stickleTrackedAggregates(): array {}
@@ -138,7 +154,6 @@ class Customer extends Model
             ->where('user_type', UserType::ADMIN);
     }
 
-    #[StickleTrackedAttribute]
     #[StickleAttributeMetadata([
         'label' => 'Ticket Count',
         'description' => 'The total number of tickets for the customer.',
@@ -153,7 +168,6 @@ class Customer extends Model
         );
     }
 
-    #[StickleTrackedAttribute]
     #[StickleAttributeMetadata([
         'label' => 'Open Ticket Count',
         'description' => 'The total number of open tickets for the customer.',
@@ -168,7 +182,6 @@ class Customer extends Model
             ->count());
     }
 
-    #[StickleTrackedAttribute]
     #[StickleAttributeMetadata([
         'label' => 'Tickets Closed',
         'description' => 'The total number of tickets closed.',
@@ -183,7 +196,6 @@ class Customer extends Model
             ->count());
     }
 
-    #[StickleTrackedAttribute]
     #[StickleAttributeMetadata([
         'label' => 'Tickets Closed (Last 30 Days)',
         'description' => 'The total number of tickets closed by the customer in the last 30 days.',
@@ -214,7 +226,6 @@ class Customer extends Model
             ->count());
     }
 
-    #[StickleTrackedAttribute]
     #[StickleAttributeMetadata([
         'label' => 'Average Resolution Time (All-time)',
         'description' => 'The average resolution time for the customer.',
@@ -229,7 +240,6 @@ class Customer extends Model
             ->avg('resolved_in_seconds'));
     }
 
-    #[StickleTrackedAttribute]
     #[StickleAttributeMetadata([
         'label' => 'Average Ticket Resolution Time (Last 30 Days)',
         'description' => 'The average resolution time for the customer in the last 30 days.',
@@ -273,8 +283,6 @@ class Customer extends Model
             ?? '');
     }
 
-    #[StickleObservedAttribute]
-    #[StickleTrackedAttribute]
     #[StickleAttributeMetadata([
         'label' => 'Monthly Recurring Revenue',
         'description' => 'The total monthly recurring revenue for the customer.',
