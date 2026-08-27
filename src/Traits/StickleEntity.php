@@ -51,7 +51,7 @@ trait StickleEntity
                 return $join->table->getValue($join->getGrammar()) === "({$table}) as \"{$alias}\"";
             }
 
-            return $join->table === $table;
+            return $join->table === ($alias === null ? $table : "{$table} as {$alias}");
         }));
 
         Builder::macro('joinRelationship', function (Relation $relation, string $alias, string $joinType = 'inner'): object {
