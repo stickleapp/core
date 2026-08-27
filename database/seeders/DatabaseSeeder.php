@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StickleApp\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;

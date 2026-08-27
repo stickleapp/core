@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StickleApp\Core\Enums;
 
 enum PrimaryAggregate: string

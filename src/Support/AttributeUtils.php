@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace StickleApp\Core\Support;
 
-use Attribute;
 use Exception;
 use ReflectionClass;
 use ReflectionMethod;

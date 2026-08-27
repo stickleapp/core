@@ -37,7 +37,6 @@ class ExportSegmentAction
             'Cannot get temporary file path',
         );
 
-        /** @var string $csvPath */
         $csvPath = $metaData['uri'];
 
         throw_unless(

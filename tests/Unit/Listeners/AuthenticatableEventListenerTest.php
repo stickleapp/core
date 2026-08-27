@@ -1,8 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
 use StickleApp\Core\Listeners\AuthenticatableEventListener;

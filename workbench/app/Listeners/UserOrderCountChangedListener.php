@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Workbench\App\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;

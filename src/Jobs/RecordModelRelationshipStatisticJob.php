@@ -6,7 +6,6 @@ namespace StickleApp\Core\Jobs;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Support\Facades\Log;
 use StickleApp\Core\Actions\RecordModelRelationshipStatisticAction;
 
