@@ -13,17 +13,30 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use StickleApp\Core\Contracts\AnalyticsRepositoryContract;
-use StickleApp\Core\Models\Request as StickleRequest;
+use StickleApp\Core\Jobs\RecordAuthenticationEventJob;
 use StickleApp\Core\Support\ClassUtils;
 
-class AuthenticatableEventListener implements ShouldQueue
+/**
+ * Deliberately NOT ShouldQueue.
+ *
+ * A queued listener is constructed by the worker's container, so the Request it
+ * injects is a synthetic CLI request -- no session, no client IP. This has to
+ * run while the real request is still bound, which is the only moment those
+ * values exist. The database write is what goes on the queue, via
+ * RecordAuthenticationEventJob, which carries the captured values rather than
+ * re-reading them.
+ *
+ * PageListener and TrackListener stay queued because their request state was
+ * already captured upstream by RequestLogger and rides in on a RequestDto.
+ * Laravel's auth events carry no such payload, so the capture happens here.
+ */
+class AuthenticatableEventListener
 {
     /**
      * Create the event listener.
@@ -43,25 +56,19 @@ class AuthenticatableEventListener implements ShouldQueue
         ];
 
         /**
-         * The request is the only source for any of this.
+         * The request is the only source for the session and the IP, and this
+         * is the only moment they are available. Read them here and hand them
+         * to the job as plain values.
          *
-         * session_uid held `new DateTime` -- a timestamp in the column that
-         * joins an event to its session. And ip_address and timestamp were
+         * session_uid once held `new DateTime` -- a timestamp in the column
+         * that joins an event to its session. ip_address and timestamp were
          * read off $event->payload, which no Illuminate\Auth\Events class
-         * defines, so the read raised Undefined property and the row was never
-         * written at all.
+         * defines, so the read raised Undefined property and no row was written
+         * at all.
          */
-        StickleRequest::query()->create([
-            'type' => 'event',
-            'model_class' => ClassUtils::storeModelClass($event->user),
-            'object_uid' => (string) $event->user->getKey(),
-            'session_uid' => $this->request->hasSession()
-                ? $this->request->session()->getId()
-                : null,
-            'ip_address' => $this->request->header('X-Forwarded-For') ?: $this->request->ip(),
-            'timestamp' => Date::now(),
-            'properties' => $properties,
-        ]);
+        dispatch(new RecordAuthenticationEventJob(modelClass: ClassUtils::storeModelClass($event->user), objectUid: (string) $event->user->getKey(), sessionUid: $this->request->hasSession()
+            ? $this->request->session()->getId()
+            : null, ipAddress: $this->request->header('X-Forwarded-For') ?: $this->request->ip(), timestamp: Date::now(), properties: $properties));
     }
 
     /**

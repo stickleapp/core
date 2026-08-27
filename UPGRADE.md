@@ -2,6 +2,29 @@
 
 ## Unreleased
 
+### Authentication events now record the session and IP on every queue driver
+
+No action needed. Recorded here because it changes what the data means.
+
+`AuthenticatableEventListener` was a queued listener, so it was constructed by
+the **worker's** container and the `Illuminate\Http\Request` it injected was a
+synthetic CLI request -- no session, no client IP. Every authentication event row
+written under a real queue driver therefore has `session_uid` and `ip_address`
+set to null. Only `QUEUE_CONNECTION=sync` was unaffected, because the job runs
+inline while the real request is still bound.
+
+The listener now runs on the request thread, where those values exist, and
+dispatches `RecordAuthenticationEventJob` carrying them. The database write is
+still queued; only the capture moved. The job never touches a request, so it
+cannot regress this way again.
+
+**Existing rows cannot be backfilled** -- the session and IP were never recorded,
+so there is nothing to recover. If you have been joining authentication events to
+sessions and getting nothing, this is why. Rows written from here on are correct.
+
+`PageListener` and `TrackListener` are unchanged and remain queued: their request
+state is captured upstream by `RequestLogger` and travels on a `RequestDto`.
+
 ### Check `STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED` in your `.env`
 
 **If you ran `php artisan stickle:install` before 2026-08-26, your `.env` is
