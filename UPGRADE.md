@@ -2,6 +2,53 @@
 
 ## Unreleased
 
+### Check `STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED` in your `.env`
+
+**If you ran `php artisan stickle:install` before 2026-08-26, your `.env` is
+almost certainly wrong and no authentication events have been recorded since.**
+
+Before cfb4526, `InstallCommand::formatSettings()` wrote the authentication
+event list to the wrong key. It assigned the comma-separated list to
+`STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE` -- which takes a boolean -- and left
+`STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED` holding the raw `true`
+from the confirmation prompt. So an affected `.env` looks like this:
+
+```dotenv
+STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED=true
+STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE=Authenticated,CurrentDeviceLogout,Login,Logout,OtherDeviceLogout,PasswordReset,Registered,Validated,Verified
+```
+
+Both lines are wrong, and both failed silently:
+
+- The tracked-event list is parsed by splitting on commas, so `true` became
+  the single entry `"1"`. That is non-empty, so the subscriber registered, but
+  it matches no event class, so no listener was ever attached and **not one row
+  of `type = 'event'` was written**.
+- Client load tracking is read as a boolean, and a non-empty string is truthy,
+  so it stayed on -- for the wrong reason, and it would switch off the moment
+  the list was emptied.
+
+cfb4526 fixed the writer. Nothing repairs an `.env` the old writer produced,
+so fix it by hand:
+
+```dotenv
+STICKLE_TRACK_SERVER_AUTHENTICATION_EVENTS_TRACKED=CurrentDeviceLogout,Login,Logout,OtherDeviceLogout,PasswordReset,Registered,Verified
+STICKLE_TRACK_CLIENT_LOAD_MIDDLEWARE=true
+```
+
+Then `php artisan config:clear`.
+
+Stickle no longer fails quietly here. A name in the list that matches no
+authentication event now raises at boot, naming the bad value and the valid
+set, so a leftover `true` is a startup error rather than a month of missing
+data. Leave the variable empty to switch authentication event tracking off.
+
+Note that `Authenticated` and `Validated` are no longer in the default list.
+Laravel dispatches `Authenticated` on every request that resolves a user and
+`Validated` on every credential check, so tracking either roughly doubles
+`stc_requests` for signal the request rows already carry. Both remain valid
+values if you want them.
+
 ### `Identify`, `Group` and `RequestReceived` are removed
 
 `StickleApp\Core\Events\Identify`, `StickleApp\Core\Events\Group` and
