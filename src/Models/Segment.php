@@ -126,9 +126,9 @@ class Segment extends Model
         $modelTable = $modelInstance->getTable();
         $primaryKey = $modelInstance->getKeyName();
 
-        $builder->join('stc_model_segment', function ($join) use ($modelTable, $primaryKey): void {
-            $join->on(DB::raw($modelTable.'.'.$primaryKey.'::text'), '=', 'stc_model_segment.object_uid')
-                ->where('stc_model_segment.segment_id', '=', $this->id);
+        $builder->join($pivotTable, function ($join) use ($modelTable, $primaryKey, $pivotTable): void {
+            $join->on(DB::raw($modelTable.'.'.$primaryKey.'::text'), '=', $pivotTable.'.object_uid')
+                ->where($pivotTable.'.segment_id', '=', $this->id);
         });
 
         return $belongsToMany;
