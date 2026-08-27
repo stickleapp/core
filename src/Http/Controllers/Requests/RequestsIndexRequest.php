@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StickleApp\Core\Http\Controllers\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -54,13 +56,18 @@ class RequestsIndexRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
+     *
+     * The default window is a day, not the half hour it used to be. A quiet
+     * application rendered "No recent events" on /stickle/live, which reads as
+     * tracking being broken. The pane renders 25 rows and per_page caps at 250,
+     * so the wider default costs one indexed range scan and nothing else.
      */
     protected function prepareForValidation(): void
     {
         $this->merge([
             'include_location' => $this->boolean('include_location', true),
             'per_page' => $this->integer('per_page', 250),
-            'start_at' => $this->input('start_at', now()->subMinutes(30)->toDateTimeString()),
+            'start_at' => $this->input('start_at', now()->subDay()->toDateTimeString()),
         ]);
     }
 }
