@@ -30,11 +30,13 @@ layers (see [Security](#security)).
 composer require laravel/mcp
 ```
 
-- `laravel/mcp` requires Laravel 11+. The README already states Laravel 11+ / PHP 8.3+ even
-  though `composer.json` still allows `illuminate/contracts ^10`. **Decision needed:** either
-  drop the `^10` constraint (recommended — it matches the documented requirement), or make
-  `laravel/mcp` a `suggest` dependency and register the server only when
-  `class_exists(\Laravel\Mcp\Server::class)`. This spec assumes the hard dependency.
+- `laravel/mcp` is a hard dependency. It requires Laravel 11+, and Stickle plans to raise
+  its minimum to Laravel 13 (possibly 14), so the current `illuminate/contracts ^10`
+  constraint goes away as part of that bump — no `suggest`/`class_exists` gating is needed.
+- The `laravel/mcp` API is identical on Laravel 12 and 13 (same package, base classes,
+  `Mcp::web`/`Mcp::local` registration, and artisan commands); 13 only adds features
+  (resource annotations, streaming responses, MCP Apps). Nothing in this spec depends on
+  the framework version beyond the package's own floor.
 - Pin the version at implementation time (`^1.0` if released; otherwise the current `0.x`
   minor, since pre-1.0 minors may break).
 - No new JS/CSS. No database changes — the server reads existing `stc_*` tables only.
@@ -435,8 +437,9 @@ Manual verification: `php artisan mcp:inspector stickle` against the workbench a
 
 ## Open questions
 
-1. **Laravel 10:** drop `illuminate/* ^10` (README already says 11+) or gate MCP behind
-   `class_exists`? Spec recommends dropping.
+1. **Sequencing vs. the Laravel 13/14 minimum bump:** land the MCP server before or after
+   the framework-minimum raise? Landing after (or in the same release) keeps composer
+   constraints to a single change; the MCP code itself is identical either way.
 2. **Gate for stdio:** is "host must define `viewStickle` to allow `null` user" acceptable
    for the local dev server, or should local skip the Gate entirely (current lean: keep the
    Gate; dev annoyance beats a surprise hole).
