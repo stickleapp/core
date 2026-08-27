@@ -39,7 +39,9 @@ class TrackListener implements ShouldQueue
          *
          * So:
          * i:did:a:thing => IDidAThingListener
+         * i.did.a.thing => IDidAThingListener
          * i_did_a_thing => IDidAThingListener
+         * i-did-a-thing => IDidAThingListener
          * IDidAThing => IDidAThingListener
          */
         Log::debug('TrackListener->handle() - listeners', [$track]);
@@ -66,12 +68,20 @@ class TrackListener implements ShouldQueue
     /**
      * Format the name of the listener class file that -- should it exist --
      * will handle this event
+     *
+     * The separators are normalised first. Str::studly() splits on - and _
+     * only, so the colon form the package's own examples use came through
+     * untouched: `document:signed` gave `Document:signed`, which is not a
+     * class name, so class_exists() was false and the listener silently never
+     * ran.
      */
     public function listenerName(Track $track): string
     {
+        $name = class_basename($track->payload->properties['name'] ?? 'unknown');
+
         return config('stickle.namespaces.listeners').
             '\\'.
-            Str::studly(class_basename($track->payload->properties['name'] ?? 'unknown')).
+            Str::studly(str_replace([':', '.'], '_', $name)).
             'Listener';
     }
 }
