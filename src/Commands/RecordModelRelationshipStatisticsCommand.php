@@ -52,16 +52,26 @@ final class RecordModelRelationshipStatisticsCommand extends Command implements 
             StickleEntity::class
         );
 
+        /**
+         * The attribute list belongs to the *related* model, not this one.
+         *
+         * RecordModelRelationshipStatisticAction aggregates the related
+         * model's stc_model_attributes.data, so an attribute taken from the
+         * parent is a key the children do not carry: every aggregate comes
+         * back NULL, and a parent that tracks nothing of its own -- the usual
+         * case for an account rolling up its users -- produced no rows at all.
+         */
         $attributes = [];
         foreach ($modelClasses as $modelClass) {
-            $stickleTrackedAttributes = $modelClass::stickleTrackedAttributes();
             if ($relationships = ClassUtils::getRelationshipsWith(app(), $modelClass, [HasMany::class], $modelClasses)) {
                 foreach ($relationships as $relationship) {
-                    foreach ($stickleTrackedAttributes as $stickleTrackedAttribute) {
+                    $relatedClass = $relationship['related'];
+
+                    foreach ($relatedClass::stickleTrackedAttributes() as $stickleTrackedAttribute) {
                         $attributes[] = [
                             'model_class' => $modelClass,
                             'relationship' => $relationship['name'],
-                            'related_class' => $relationship['related'],
+                            'related_class' => $relatedClass,
                             'attribute' => $stickleTrackedAttribute,
                         ];
                     }

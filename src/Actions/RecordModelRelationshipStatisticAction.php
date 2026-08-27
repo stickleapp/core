@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use stdClass;
 use StickleApp\Core\Models\ModelRelationshipStatistic;
 use StickleApp\Core\Models\ModelRelationshipStatisticExport;
+use StickleApp\Core\Support\ClassUtils;
 
 class RecordModelRelationshipStatisticAction
 {
@@ -70,8 +71,14 @@ class RecordModelRelationshipStatisticAction
             ->groupBy(
                 "{$model->getTable()}.{$model->getKeyName()}"
             )
+            /**
+             * $model is a Model instance, so interpolating it stringified it
+             * through Model::__toString() and wrote its JSON into model_class.
+             * Nothing could read those rows back: modelRelationshipStatistics()
+             * matches on the stored basename.
+             */
             ->selectRaw(
-                "'{$model}' AS model_class"
+                "'".ClassUtils::storeModelClass($model)."' AS model_class"
             )
             ->selectRaw("{$model->getTable()}.{$model->getKeyName()} AS object_uid")
             ->selectRaw(
