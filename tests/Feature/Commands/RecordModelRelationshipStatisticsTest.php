@@ -38,9 +38,17 @@ test('a parent that tracks nothing still aggregates its children tracked attribu
         ->where('attribute', 'user_rating')
         ->first();
 
+    /**
+     * Cast before comparing: these rows are read straight off the driver, and
+     * pdo_pgsql returns a numeric column as a float on PHP 8.4 but as a string
+     * on 8.3. The value is right either way; only its PHP type differs, so
+     * asserting the type would make the suite pass on one runner and fail on
+     * the other. (ModelRelationshipStatistic declares no casts for these
+     * columns, so the Eloquent read below is driver-native too.)
+     */
     expect($row)->not->toBeNull()
-        ->and($row->value_avg)->toBe(3.0)
-        ->and($row->value_count)->toBe(2.0)
+        ->and((float) $row->value_avg)->toBe(3.0)
+        ->and((float) $row->value_count)->toBe(2.0)
         ->and($row->model_class)->toBe('Customer');
 });
 
@@ -66,8 +74,8 @@ test('the documented accessor reads the aggregate back', function (): void {
         ->first();
 
     expect($statistic)->not->toBeNull()
-        ->and($statistic->value_avg)->toBe(3.0)
-        ->and($statistic->value_min)->toBe(1.0)
-        ->and($statistic->value_max)->toBe(5.0)
-        ->and($statistic->value_sum)->toBe(6.0);
+        ->and((float) $statistic->value_avg)->toBe(3.0)
+        ->and((float) $statistic->value_min)->toBe(1.0)
+        ->and((float) $statistic->value_max)->toBe(5.0)
+        ->and((float) $statistic->value_sum)->toBe(6.0);
 });
