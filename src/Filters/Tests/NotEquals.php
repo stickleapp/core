@@ -1,0 +1,25 @@
+<?php
+
+declare(strict_types=1);
+
+namespace StickleApp\Core\Filters\Tests;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
+use StickleApp\Core\Contracts\FilterTargetContract;
+use StickleApp\Core\Contracts\FilterTestContract;
+
+class NotEquals extends FilterTestContract
+{
+    public function __construct(public mixed $comparator) {}
+
+    public function applyFilter(Builder $builder, FilterTargetContract $filterTargetContract, string $operator): Builder
+    {
+        return $builder->where(
+            DB::raw($filterTargetContract->castProperty()),
+            '!=',
+            $filterTargetContract->castValue($this->comparator),
+            $operator
+        );
+    }
+}
