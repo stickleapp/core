@@ -70,7 +70,7 @@ test('the collision names both classes and points at the fix', function (): void
     } catch (RuntimeException $runtimeException) {
         expect($runtimeException->getMessage())
             ->toContain(Thing::class)
-            ->toContain(\StickleApp\Core\Tests\Fixtures\CollidingModels\Vendor\Thing::class)
+            ->toContain(StickleApp\Core\Tests\Fixtures\CollidingModels\Vendor\Thing::class)
             ->toContain('model_class');
     }
 });
