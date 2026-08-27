@@ -40,23 +40,23 @@ class ModelsStatisticsController
         $builder = $modelClass::query()
             ->join("{$prefix}model_attributes", function ($join) use ($prefix, $model): void {
                 $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw("{$model->getTable()}.{$model->getKeyName()}::text"));
-                $join->where("{$prefix}model_attributes.model_class", '=', class_basename($model));
+                $join->where("{$prefix}model_attributes.model_class", '=', ClassUtils::storeModelClass($model));
             })
             ->selectRaw(
-                "AVG((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_avg",
-                [$stringable]
+                "AVG(CASE WHEN jsonb_typeof({$prefix}model_attributes.data -> ?) = 'number' THEN (jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float END) as value_avg",
+                [$stringable, $stringable]
             )
             ->selectRaw(
-                "MIN((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_min",
-                [$stringable]
+                "MIN(CASE WHEN jsonb_typeof({$prefix}model_attributes.data -> ?) = 'number' THEN (jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float END) as value_min",
+                [$stringable, $stringable]
             )
             ->selectRaw(
-                "MAX((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_max",
-                [$stringable]
+                "MAX(CASE WHEN jsonb_typeof({$prefix}model_attributes.data -> ?) = 'number' THEN (jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float END) as value_max",
+                [$stringable, $stringable]
             )
             ->selectRaw(
-                "SUM((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_sum",
-                [$stringable]
+                "SUM(CASE WHEN jsonb_typeof({$prefix}model_attributes.data -> ?) = 'number' THEN (jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float END) as value_sum",
+                [$stringable, $stringable]
             )
             ->selectRaw(
                 'COUNT(*) as value_count'

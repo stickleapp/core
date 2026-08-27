@@ -71,6 +71,7 @@ class User extends Authenticatable
             'average_resolution_time',
             'average_resolution_time_7_days',
             'average_resolution_time_30_days',
+            'plan_name',
         ];
     }
 
@@ -104,6 +105,29 @@ class User extends Authenticatable
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    /**
+     * A deliberately non-numeric tracked attribute.
+     *
+     * Every other tracked attribute in this workbench is a number, which is how
+     * the relationship-statistics rollup came to assume all of them are. A plan
+     * name is the ordinary case that breaks that assumption.
+     */
+    #[
+        StickleAttributeMetadata([
+            'label' => 'Plan Name',
+            'description' => 'The subscription plan the user is on.',
+            'chartType' => ChartType::LINE,
+            'dataType' => DataType::STRING,
+            'primaryAggregate' => PrimaryAggregate::COUNT,
+        ]),
+    ]
+    protected function planName(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => $this->user_type === UserType::ADMIN ? 'enterprise' : 'starter',
+        );
     }
 
     #[

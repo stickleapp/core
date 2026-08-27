@@ -66,7 +66,7 @@ class RecordModelRelationshipStatisticAction
         )
             ->join("{$prefix}model_attributes", function ($join) use ($prefix, $relationship, $relatedModel): void {
                 $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw('"'.$relationship.'"."'.$relatedModel->getKeyName().'"::text'));
-                $join->where("{$prefix}model_attributes.model_class", '=', class_basename($relatedModel));
+                $join->where("{$prefix}model_attributes.model_class", '=', ClassUtils::storeModelClass($relatedModel));
             })
             ->groupBy(
                 "{$model->getTable()}.{$model->getKeyName()}"
@@ -88,20 +88,20 @@ class RecordModelRelationshipStatisticAction
                 "'{$attribute}' AS attribute"
             )
             ->selectRaw(
-                "AVG((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_avg",
-                [$attribute]
+                "AVG(CASE WHEN jsonb_typeof({$prefix}model_attributes.data -> ?) = 'number' THEN (jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float END) as value_avg",
+                [$attribute, $attribute]
             )
             ->selectRaw(
-                "MIN((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_min",
-                [$attribute]
+                "MIN(CASE WHEN jsonb_typeof({$prefix}model_attributes.data -> ?) = 'number' THEN (jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float END) as value_min",
+                [$attribute, $attribute]
             )
             ->selectRaw(
-                "MAX((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_max",
-                [$attribute]
+                "MAX(CASE WHEN jsonb_typeof({$prefix}model_attributes.data -> ?) = 'number' THEN (jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float END) as value_max",
+                [$attribute, $attribute]
             )
             ->selectRaw(
-                "SUM((jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float) as value_sum",
-                [$attribute]
+                "SUM(CASE WHEN jsonb_typeof({$prefix}model_attributes.data -> ?) = 'number' THEN (jsonb_extract_path_text({$prefix}model_attributes.data, ?))::float END) as value_sum",
+                [$attribute, $attribute]
             )
             ->selectRaw(
                 'COUNT(*) as value_count'

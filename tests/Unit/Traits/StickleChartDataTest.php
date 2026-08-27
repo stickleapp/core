@@ -53,13 +53,16 @@ test('chart data still falls back to defaults for an unannotated attribute', fun
 });
 
 /**
- * The workbench User annotates all nine of its tracked attributes. Before the
- * scanner could see modern accessors, none of the nine was ever read.
+ * The workbench User annotates every one of its tracked attributes. Before the
+ * scanner could see modern accessors, none of them was ever read.
+ *
+ * The count includes plan_name, the one non-numeric attribute, added so the
+ * relationship rollup is exercised against a string.
  */
 test('every annotated workbench attribute now resolves its metadata', function (): void {
     $charts = collect(User::getStickleChartData());
 
-    expect($charts)->toHaveCount(9);
+    expect($charts)->toHaveCount(10);
 
     $unresolved = $charts
         ->filter(fn (array $chart): bool => $chart['description'] === null
