@@ -65,7 +65,7 @@ final class RecordModelAttributesCommand extends Command implements Isolatable
                         $join->where(
                             "{$this->prefix}model_attributes.model_class",
                             '=',
-                            $model::class
+                            ClassUtils::storeModelClass($model)
                         );
                     }
                 )->where(function ($query): void {
