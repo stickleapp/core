@@ -125,43 +125,56 @@ trait StickleEntity
 
     /**
      * Enables a ->stickleWhere() method on the model
+     *
+     * @param  Builder<Model>  $builder
+     * @return Builder<Model>
      */
     public static function scopeStickleWhere(Builder $builder, Filter $filter): Builder
     {
-
-        $prefix = config('stickle.database.tablePrefix');
-
-        /**
-         * We'll need this join for the filters but do not want to add it twice
-         */
-        if (! $builder->hasJoin("{$prefix}model_attributes")) {
-            $builder->leftJoin("{$prefix}model_attributes", function ($join) use ($prefix): void {
-                $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw(self::getTableName().'.id::text'));
-                $join->where("{$prefix}model_attributes.model_class", '=', self::class);
-            });
-        }
-
-        return $filter->apply($builder, 'and');
+        return $filter->apply(self::joinModelAttributes($builder), 'and');
     }
 
     /**
      * Enables a ->stickleOrWhere() method on the model
+     *
+     * @param  Builder<Model>  $builder
+     * @return Builder<Model>
      */
     public static function scopeStickleOrWhere(Builder $builder, Filter $filter): Builder
     {
+        return $filter->apply(self::joinModelAttributes($builder), 'or');
+    }
+
+    /**
+     * The join both stickle scopes filter through, added at most once.
+     *
+     * Everything it needs comes off the builder's model rather than the trait:
+     * the key name, because a tracked model need not key on `id`, and the
+     * stored model_class, because `self::class` inside a trait is the fully
+     * qualified name while every writer stores a basename -- a join on the
+     * long form matches no row, so every attribute segment came back empty.
+     *
+     * @param  Builder<Model>  $builder
+     */
+    private static function joinModelAttributes(Builder $builder): Builder
+    {
         $prefix = config('stickle.database.tablePrefix');
 
-        /**
-         * We'll need this join for the filters but do not want to add it twice
-         */
-        if (! $builder->hasJoin("{$prefix}model_attributes")) {
-            $builder->leftJoin("{$prefix}model_attributes", function ($join) use ($prefix): void {
-                $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw(self::getTableName().'.'.self::getKeyName().'::text'));
-                $join->where("{$prefix}model_attributes.model_class", '=', self::class);
-            });
+        if ($builder->hasJoin("{$prefix}model_attributes")) {
+            return $builder;
         }
 
-        return $filter->apply($builder, 'or');
+        $model = $builder->getModel();
+        $modelClass = ClassUtils::storeModelClass($model);
+        $qualifiedKey = $model->getTable().'.'.$model->getKeyName();
+
+        return $builder->leftJoin(
+            "{$prefix}model_attributes",
+            function ($join) use ($prefix, $modelClass, $qualifiedKey): void {
+                $join->on("{$prefix}model_attributes.object_uid", '=', DB::raw($qualifiedKey.'::text'));
+                $join->where("{$prefix}model_attributes.model_class", '=', $modelClass);
+            }
+        );
     }
 
     public function stickleLabel(): string
@@ -264,6 +277,10 @@ trait StickleEntity
      *
      * It will retrieve or create the one-to-one relationship with the ModelAttributes model
      * and merge the provided attributes with the existing ones and persist it to the database
+     *
+     * object_uid comes from getKey(), not `id`: on a model keyed on anything
+     * else the lookup matched null, so every write missed the existing row and
+     * tried to insert a duplicate.
      */
     protected function trackableAttributes(): Attribute
     {
@@ -272,8 +289,8 @@ trait StickleEntity
                 $this->modelAttributes()
                     ->firstOrNew(
                         [
-                            'model_class' => class_basename(self::class),
-                            'object_uid' => $this->id,
+                            'model_class' => ClassUtils::storeModelClass(static::class),
+                            'object_uid' => (string) $this->getKey(),
                         ]
                     )->data ?? [];
             },
@@ -283,8 +300,8 @@ trait StickleEntity
                         ->modelAttributes()
                         ->updateOrCreate(
                             [
-                                'model_class' => class_basename(self::class),
-                                'object_uid' => $this->id,
+                                'model_class' => ClassUtils::storeModelClass(static::class),
+                                'object_uid' => (string) $this->getKey(),
                             ],
                             [
                                 'data' => array_merge(

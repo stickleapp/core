@@ -102,6 +102,14 @@ return new class extends Migration
 
             $blueprint->index(['subscription_id', 'stripe_price']);
         });
+
+        // A tracked model whose primary key is not `id`, so the Stickle scopes
+        // are exercised against something other than the convention.
+        Schema::create('workspaces', function (Blueprint $blueprint): void {
+            $blueprint->bigIncrements('workspace_id');
+            $blueprint->text('name')->nullable(false);
+            $blueprint->timestamps();
+        });
     }
 
     /**
@@ -109,6 +117,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('workspaces');
+
         Schema::dropIfExists('subscription_items');
 
         Schema::dropIfExists('subscriptions');
