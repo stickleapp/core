@@ -12,6 +12,8 @@ class ResponsiveTabs extends Component
 {
     /**
      * Create the component instance.
+     *
+     * @param  array<int, array<string, mixed>>  $tabs
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
@@ -29,6 +31,9 @@ class ResponsiveTabs extends Component
 
     /**
      * Get tabs visible on desktop (filters out hideOnDesktop tabs).
+     */
+    /**
+     * @return array<int, array<string, mixed>>
      */
     public function desktopTabs(): array
     {

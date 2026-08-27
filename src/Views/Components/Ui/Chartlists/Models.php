@@ -31,6 +31,9 @@ class Models extends Component
         return view('stickle::components/ui/chartlists/models');
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function chartData(): array
     {
 

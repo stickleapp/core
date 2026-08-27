@@ -11,6 +11,8 @@ class LineChart extends Component
 {
     /**
      * Create the component instance.
+     *
+     * @param  array<string, mixed>|null  $apiData
      */
     public function __construct(
         public string $key,

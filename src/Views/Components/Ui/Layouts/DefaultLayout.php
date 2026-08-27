@@ -19,6 +19,9 @@ class DefaultLayout extends Component
         return view('stickle::components/ui/layouts/default-layout');
     }
 
+    /**
+     * @return array<int, class-string>
+     */
     public function models(): array
     {
         return ClassUtils::getClassesWithTrait(

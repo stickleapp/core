@@ -14,6 +14,11 @@ class Segment extends Component
 {
     /**
      * Create the component instance.
+     *
+     * $segment stays `object` at runtime so the component stays permissive; the
+     * docblock tells the analyser what every caller actually supplies.
+     *
+     * @param  \StickleApp\Core\Models\Segment  $segment
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
@@ -30,6 +35,9 @@ class Segment extends Component
         return view('stickle::components/ui/chartlists/segment');
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function chartData(): array
     {
 

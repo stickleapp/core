@@ -11,6 +11,8 @@ class Breadcrumbs extends Component
 {
     /**
      * Create the component instance.
+     *
+     * @param  array<int, array<string, mixed>>  $pages
      */
     public function __construct(
         public array $pages,

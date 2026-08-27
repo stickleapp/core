@@ -15,6 +15,11 @@ class Model extends Component
 {
     /**
      * Create the component instance.
+     *
+     * $model stays `object` at runtime so any model can be passed; the docblock
+     * tells the analyser what every caller actually supplies.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,

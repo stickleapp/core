@@ -32,6 +32,9 @@ class ModelRelationship extends Component
         return view('stickle::components/ui/chartlists/model-relationship');
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function chartData(): array
     {
 

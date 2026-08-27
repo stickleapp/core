@@ -12,6 +12,8 @@ class Tabs extends Component
 {
     /**
      * Create the component instance.
+     *
+     * @param  array<int, array<string, mixed>>  $tabs
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,

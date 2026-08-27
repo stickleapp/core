@@ -12,6 +12,8 @@ class ModelSummary extends Component
 {
     /**
      * Create the component instance.
+     *
+     * @param  array<string, mixed>|null  $model
      */
     public function __construct(
         #[Config('stickle.routes.api.prefix')] protected ?string $apiPrefix,
