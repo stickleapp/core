@@ -14,6 +14,16 @@ use StickleApp\Core\Listeners\TrackListener;
 
 class EventServiceProvider extends ServiceProvider
 {
+    /**
+     * Laravel reads this PROPERTY in EventServiceProvider::register(). A method
+     * returning subscribers is Symfony's convention and is never called here.
+     *
+     * @var array<int, class-string>
+     */
+    protected $subscribe = [
+        AuthenticatableEventListener::class,
+    ];
+
     protected $listen = [
         Page::class => [
             PageListener::class,
@@ -22,21 +32,6 @@ class EventServiceProvider extends ServiceProvider
             TrackListener::class,
         ],
     ];
-
-    /**
-     * Get the subscriber classes that should be registered.
-     *
-     * @return array<string, class-string>
-     */
-    public function getSubscribedEvents(): array
-    {
-        $subscribers = [];
-        if (count(config('stickle.tracking.server.authenticationEventsTracked', [])) > 0) {
-            $subscribers['auth'] = AuthenticatableEventListener::class;
-        }
-
-        return $subscribers;
-    }
 
     /**
      * Register any events for your application.

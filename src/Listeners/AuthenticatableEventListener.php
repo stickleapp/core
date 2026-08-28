@@ -66,9 +66,16 @@ class AuthenticatableEventListener
          * defines, so the read raised Undefined property and no row was written
          * at all.
          */
-        dispatch(new RecordAuthenticationEventJob(modelClass: ClassUtils::storeModelClass($event->user), objectUid: (string) $event->user->getKey(), sessionUid: $this->request->hasSession()
-            ? $this->request->session()->getId()
-            : null, ipAddress: $this->request->header('X-Forwarded-For') ?: $this->request->ip(), timestamp: Date::now(), properties: $properties));
+        dispatch(
+            new RecordAuthenticationEventJob(
+                modelClass: ClassUtils::storeModelClass($event->user),
+                objectUid: (string) $event->user->getKey(),
+                sessionUid: $this->request->hasSession() ? $this->request->session()->getId() : null,
+                ipAddress: $this->request->header('X-Forwarded-For') ?: $this->request->ip(),
+                timestamp: Date::now(),
+                properties: $properties
+            )
+        );
     }
 
     /**
