@@ -128,7 +128,7 @@ class ClassUtils
         $traits = [];
         $currentClass = $reflectionClass;
 
-        while ($currentClass) {
+        while ($currentClass instanceof ReflectionClass) {
             $traits = array_merge($traits, array_keys($currentClass->getTraits()));
             $currentClass = $currentClass->getParentClass();
         }

@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector;
 use RectorLaravel\Rector\Class_\ModelCastsPropertyToCastsMethodRector;
 use RectorLaravel\Set\LaravelLevelSetList;
 use RectorLaravel\Set\LaravelSetList;
-use RectorLaravel\Set\LaravelSetProvider;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -34,10 +34,13 @@ return RectorConfig::configure()
         ModelCastsPropertyToCastsMethodRector::class => [
             __DIR__.'/src/Models/ModelAttributes.php',
         ],
+        // Renames domain-meaningful variables ($filter, $target) after their
+        // return types ($base, $filterTargetContract) and needs several passes
+        // to settle, so the pre-commit dry-run can fail right after a refactor
+        RenameVariableToMatchMethodCallReturnTypeRector::class,
     ])
     ->withCache(cacheDirectory: __DIR__.'/storage/rector')
     ->withPhpSets(php83: true)
-    ->withSetProviders(LaravelSetProvider::class)
     ->withSets([
         LaravelLevelSetList::UP_TO_LARAVEL_120,
         LaravelSetList::LARAVEL_CODE_QUALITY,
