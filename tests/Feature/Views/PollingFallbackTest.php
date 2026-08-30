@@ -73,6 +73,19 @@ it('times events off the timestamp both transports actually send', function (): 
     expect($html)->toContain('stickleTimeAgo(event?.data?.timestamp)');
 });
 
+it('backfills the events timeline from the read API before the stream starts', function (): void {
+
+    $html = Blade::render(
+        '<x-stickle::ui.timelines.events channel="stickle.firehose" requests-endpoint="/stickle/api/requests" />'
+    );
+
+    // The stream is live-only while the websocket is healthy, so history has
+    // to come from one bounded read of the endpoint, seeded into the stream
+    // so neither transport replays it.
+    expect($html)->toContain('per_page');
+    expect($html)->toContain('stream.seed(');
+});
+
 it('leaves the endpoint empty when the events timeline is given none', function (): void {
 
     $html = Blade::render('<x-stickle::ui.timelines.events channel="stickle.firehose" />');
