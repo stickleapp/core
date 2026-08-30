@@ -86,6 +86,19 @@ it('backfills the events timeline from the read API before the stream starts', f
     expect($html)->toContain('stream.seed(');
 });
 
+it('falls back to polling when the channel subscription is refused', function (): void {
+
+    $html = Blade::render(
+        '<x-stickle::ui.layouts.default-layout>ok</x-stickle::ui.layouts.default-layout>'
+    );
+
+    // A refused private-channel subscription (missing Broadcast::routes(), a
+    // failed viewStickle check) leaves the connection itself healthy, so the
+    // state_change fallback never fires; the subscription error must start
+    // polling itself.
+    expect($html)->toContain('subscription.error(');
+});
+
 it('leaves the endpoint empty when the events timeline is given none', function (): void {
 
     $html = Blade::render('<x-stickle::ui.timelines.events channel="stickle.firehose" />');

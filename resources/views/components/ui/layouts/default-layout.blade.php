@@ -217,13 +217,22 @@
             if (window.Echo && channel) {
                 // Private: Stickle's events broadcast on private channels, so
                 // this subscription is authorized against viewStickle at
-                // /broadcasting/auth before any event reaches the browser. A
-                // rejected subscription falls through to polling below, which
-                // is authorized by the same ability.
-                window.Echo.private(channel).listenToAll((eventName, data) => {
+                // /broadcasting/auth before any event reaches the browser.
+                const subscription = window.Echo.private(channel);
+
+                subscription.listenToAll((eventName, data) => {
                     if (data && data.payload) {
                         deliver([data.payload]);
                     }
+                });
+
+                // A refused subscription -- no Broadcast::routes(), a failed
+                // viewStickle check -- leaves the connection itself healthy,
+                // so the state_change fallback below never fires. Poll
+                // instead; the read API is guarded by the same ability, so a
+                // viewer the channel refuses sees exactly what it grants.
+                subscription.error(() => {
+                    startPolling();
                 });
 
                 const connection = window.Echo.connector?.pusher?.connection;
