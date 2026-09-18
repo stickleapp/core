@@ -1,7 +1,7 @@
 {
   "type": "module",
   "devDependencies": {
-    "laravel-echo": "^2.1.7",
+    "laravel-echo": "^2.5.0",
     "pusher-js": "^8.4.0",
     "vite": "^6.2.3",
     "vitepress": "^1.6.4"
