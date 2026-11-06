@@ -3,7 +3,7 @@
   "devDependencies": {
     "laravel-echo": "^2.6.3",
     "pusher-js": "^8.4.0",
-    "vite": "^6.2.3",
+    "vite": "^8.3.5",
     "vitepress": "^1.6.4"
   },
   "scripts": {
@@ -18,8 +18,8 @@
     "prepare": "git config core.hooksPath .githooks || true"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.0.15",
-    "laravel-vite-plugin": "^1.2.0",
+    "@tailwindcss/vite": "^4.3.4",
+    "laravel-vite-plugin": "^3.2.0",
     "tailwindcss": "^4.0.15"
   },
   "overrides": {
